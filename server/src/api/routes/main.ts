@@ -9,6 +9,6 @@ export default (app: Router) => {
 
   route.get('/', (req: Request, res: Response) => {
     const item: Array<number> = [1, 2, 4, 3, 5, 6, 8];
-    res.status(200).send(item);
+    res.status(200).json(item);
   });
 };
