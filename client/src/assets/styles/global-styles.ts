@@ -1,6 +1,6 @@
 import { createGlobalStyle } from 'styled-components';
 import { normalize } from 'styled-normalize';
-import Bangers from '../fonts/Bangers/Bangers-Regular.ttf';
+import Bangers from '@fonts/Bangers/Bangers-Regular.ttf';
 
 const GlobalStyle = createGlobalStyle`
   ${normalize}
