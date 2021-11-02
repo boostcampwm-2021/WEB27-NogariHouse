@@ -6,13 +6,15 @@
   "scripts": {
     "start": "ts-node src/app.ts",
     "start:dev": "nodemon -x ts-node src/app.ts",
-    "test": "nodemon src/app.ts"
+    "test": "nodemon src/app.ts",
+    "ts-node": "ts-node -r tsconfig-paths/register ./src/app.ts"
   },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "helmet": "^4.6.0"
+    "helmet": "^4.6.0",
+    "module-alias": "^2.2.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
@@ -25,10 +27,27 @@
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.25.2",
+    "eslint-import-resolver-typescript": "^2.5.0",
     "jest": "^27.3.1",
     "nodemon": "^2.0.14",
     "ts-node": "^10.4.0",
     "tsc-watch": "^4.5.0",
+    "tsconfig-paths": "^3.11.0",
     "typescript": "^4.4.4"
+  },
+  "_moduleAliases": {
+    "@src/*": "src/*",
+    "@tests/*": "tests/*",
+    "@api/*": "src/api",
+    "@middlewares/*": "src/api/middlewares/*",
+    "@routes/*": "src/api/routes/*",
+    "@config/*": "src/config/*",
+    "@interfaces/*": "interfaces/*",
+    "@loaders/*": "src/loaders/*",
+    "@models/*": "models/*",
+    "@services/*": "src/services/*",
+    "@subscribers/*": "src/subscribers/*",
+    "@types/*": "src/types/*",
+    "@utils/*": "src/utils/*"
   }
 }
