@@ -1,6 +1,7 @@
+import 'module-alias/register';
 import express from 'express';
-import config from './config';
-import init from './loaders';
+import config from '@config/index';
+import init from '@loaders/index';
 
 async function startServer() {
   const app = express();

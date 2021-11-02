@@ -17,7 +17,8 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "import/extensions": "off"
+        "import/extensions": "off",
+        "import/no-unresolved": 1
     },
     "settings": {
         "import/resolver": {
@@ -25,5 +26,5 @@
             "extensions": [".js", ".jsx", ".ts", ".tsx"]
           }
         }
-      }
+    }
 }
