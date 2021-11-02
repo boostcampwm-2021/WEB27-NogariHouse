@@ -1,18 +1,19 @@
+/* eslint-disable import/no-unresolved */
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
-import ActivityView from '../views/activity-view';
-import ChatRoomDetailView from '../views/chat-room-detail-view';
-import ChatRoomsNewView from '../views/chat-rooms-new-view';
-import ChatRoomsView from '../views/chat-rooms-view';
-import EventView from '../views/event-view';
-import FollowersView from '../views/followers-view';
-import FollowingView from '../views/following-view';
-import InviteView from '../views/invite-view';
-import ProfileSettingView from '../views/profile-settings-view';
-import ProfileView from '../views/profile-view';
-import RecentSearchView from '../views/recent-search-view';
-import SearchView from '../views/serach-view';
+import ActivityView from '@views/activity-view';
+import ChatRoomDetailView from '@views/chat-room-detail-view';
+import ChatRoomsNewView from '@views/chat-rooms-new-view';
+import ChatRoomsView from '@views/chat-rooms-view';
+import EventView from '@views/event-view';
+import FollowersView from '@views/followers-view';
+import FollowingView from '@views/following-view';
+import InviteView from '@views/invite-view';
+import ProfileSettingView from '@views/profile-settings-view';
+import ProfileView from '@views/profile-view';
+import RecentSearchView from '@views/recent-search-view';
+import SearchView from '@src/views/search-view';
 
 function MainRouter() {
   return (
