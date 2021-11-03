@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import DefaultButton from '@styled-components/default-button';
-import DefaultHeader from '@components/header';
+import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
 import LargeLogo from '@src/components/large-logo';
 import LeftSideBar from '@src/components/left-sidebar';
@@ -32,7 +32,7 @@ function MainView() {
   if (isLoggedIn) {
     return (
       <>
-        <DefaultHeader />
+        <HeaderRouter />
         <LeftSideBar />
         <MainRouter />
         <RightSideBar />
