@@ -1,0 +1,20 @@
+import { createGlobalStyle } from 'styled-components';
+import { normalize } from 'styled-normalize';
+import Bangers from '@fonts/Bangers/Bangers-Regular.ttf';
+
+const GlobalStyle = createGlobalStyle`
+  ${normalize}
+
+  @font-face {
+    font-family: 'Bangers';
+    font-weight: normal;
+    font-style: normal;
+    src: url(${Bangers});
+  }
+
+  body {
+      background-color: #F1F0E4;
+  }
+`;
+
+export default GlobalStyle;
