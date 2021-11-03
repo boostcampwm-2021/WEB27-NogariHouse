@@ -24,7 +24,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     // "noFallthroughCasesInSwitch": true,
-    "module": "commonjs",
+    "module": "commonjs"
     // "moduleResolution": "node",
     // "resolveJsonModule": true,
     // "isolatedModules": true,
@@ -35,5 +35,5 @@
       "module": "commonjs"
     }
   },
-  "include": ["src"],
+  "include": ["src"]
 }
