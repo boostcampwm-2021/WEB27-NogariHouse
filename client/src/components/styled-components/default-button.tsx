@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styled from 'styled-components';
 
 interface DefaultButtonProps {
@@ -6,6 +6,7 @@ interface DefaultButtonProps {
   size: 'small' | 'medium' | 'large';
   children?: string;
   isDisabled?: boolean;
+  onClick?: (event : MouseEvent) => void;
 }
 
 const sizes = {
@@ -51,6 +52,7 @@ function DefaultButton({
   children,
   size,
   isDisabled,
+  onClick,
 }: DefaultButtonProps) {
   return (
     <CustomDefaultButton
@@ -58,6 +60,7 @@ function DefaultButton({
       buttonType={buttonType}
       size={size}
       disabled={isDisabled}
+      onClick={onClick}
     >
       {children}
     </CustomDefaultButton>
