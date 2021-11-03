@@ -8,7 +8,7 @@
       "@middlewares/*": [ "src/api/middlewares/*" ],
       "@routes/*": [ "src/api/routes/*" ],
       "@config/*": [ "src/config/*" ],
-      "@interfaces/*": [ "interfaces/*" ],
+      "@interfaces/*": [ "src/interfaces/*" ],
       "@loaders/*": [ "src/loaders/*" ],
       "@models/*": [ "src/models/*" ],
       "@services/*": [ "src/services/*" ],

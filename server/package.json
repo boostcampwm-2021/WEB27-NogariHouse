@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node src/app.ts",
-    "start:dev": "nodemon -x ts-node src/app.ts",
+    "start:dev": "nodemon -x ts-node -r tsconfig-paths/register ./src/app.ts",
     "test": "nodemon src/app.ts",
     "ts-node": "ts-node -r tsconfig-paths/register ./src/app.ts"
   },
@@ -44,9 +44,9 @@
     "@middlewares/*": "src/api/middlewares/*",
     "@routes/*": "src/api/routes/*",
     "@config/*": "src/config/*",
-    "@interfaces/*": "interfaces/*",
+    "@interfaces/*": "src/interfaces/*",
     "@loaders/*": "src/loaders/*",
-    "@models/*": "models/*",
+    "@models/*": "src/models/*",
     "@services/*": "src/services/*",
     "@subscribers/*": "src/subscribers/*",
     "@types/*": "src/types/*",
