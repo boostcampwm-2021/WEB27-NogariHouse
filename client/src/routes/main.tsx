@@ -14,11 +14,12 @@ import ProfileSettingView from '@views/profile-settings-view';
 import ProfileView from '@views/profile-view';
 import RecentSearchView from '@views/recent-search-view';
 import SearchView from '@src/views/search-view';
+import RoomView from '@src/views/room-view';
 
 function MainRouter() {
   return (
     <Switch>
-      <Route exact path="/" component={SearchView} />
+      <Route exact path="/" component={RoomView} />
       <Route exact path="/activity" component={ActivityView} />
       <Route exact path="/chat-rooms" component={ChatRoomsView} />
       <Route exact path="/chat-rooms/new" component={ChatRoomsNewView} />

@@ -8,7 +8,7 @@
       "@middlewares/*": [ "src/api/middlewares/*" ],
       "@routes/*": [ "src/api/routes/*" ],
       "@config/*": [ "src/config/*" ],
-      "@interfaces/*": [ "interfaces/*" ],
+      "@interfaces/*": [ "src/interfaces/*" ],
       "@loaders/*": [ "src/loaders/*" ],
       "@models/*": [ "src/models/*" ],
       "@services/*": [ "src/services/*" ],
@@ -24,7 +24,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     // "noFallthroughCasesInSwitch": true,
-    "module": "commonjs",
+    "module": "commonjs"
     // "moduleResolution": "node",
     // "resolveJsonModule": true,
     // "isolatedModules": true,
@@ -35,5 +35,5 @@
       "module": "commonjs"
     }
   },
-  "include": ["src"],
+  "include": ["src"]
 }
