@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import DefaultButton from '@styled-components/default-button';
+import DefaultHeader from '@components/header';
 import MainRouter from '@routes/main';
 import LargeLogo from '@src/components/large-logo';
+import LeftSideBar from '@src/components/left-sidebar';
+import RightSideBar from '@src/components/right-sidebar';
 
 const MainLayout = styled.div`
   display: flex;
@@ -29,9 +32,10 @@ function MainView() {
   if (isLoggedIn) {
     return (
       <>
-        <div>side bar이다</div>
+        <DefaultHeader />
+        <LeftSideBar />
         <MainRouter />
-        <div>side bar2이다</div>
+        <RightSideBar />
       </>
     );
   }
