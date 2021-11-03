@@ -28,7 +28,7 @@ const ButtonLayout = styled.div`
 `;
 
 function MainView() {
-  const [isLoggedIn] = useState(false);
+  const [isLoggedIn] = useState(true);
   if (isLoggedIn) {
     return (
       <>
