@@ -6,7 +6,7 @@ export default async () => {
       mongoose.set('debug', true);
     }
     const uri = process.env.DB_URL as string;
-    await mongoose.connect(uri, { useNewUrlParser: true } as ConnectOptions);
+    await mongoose.connect(uri, { useNewUrlParser: true, dbName: 'NogariHouse' } as ConnectOptions);
   } catch (error) {
     console.error(error);
   }
