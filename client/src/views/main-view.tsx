@@ -1,13 +1,19 @@
-import React, { useState } from 'react';
+/* eslint-disable*/
+
+import React, { useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import DefaultButton from '@styled-components/default-button';
+import { nowFetchingState } from '@atoms/main-section-scroll'
+import LargeLogo from '@components/large-logo';
+import LeftSideBar from '@components/left-sidebar';
+import RightSideBar from '@components/right-sidebar';
 import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
-import LargeLogo from '@src/components/large-logo';
-import LeftSideBar from '@src/components/left-sidebar';
-import RightSideBar from '@src/components/right-sidebar';
+import DefaultButton from '@styled-components/default-button';
+import ScrollBarStyle from '@styles/scrollbar-style';
+
 
 const MainLayout = styled.div`
   display: flex;
@@ -26,7 +32,7 @@ const SectionLayout = styled.div`
 `;
 
 const ActiveFollowingLayout = styled.div`
-  flex-grow : 1;
+  flex-grow: 1;
   margin: 10px;
   @media (min-width: 768px) and (max-width: 1024px) {
     display: none;
@@ -34,12 +40,19 @@ const ActiveFollowingLayout = styled.div`
 `;
 const MainSectionLayout = styled.div`
   width: 100%;
+  height: 500px;
   min-width: 500px;
-  flex-grow : 3;
+  flex-grow: 3;
   margin: 10px;
+
+  > div + div {
+    margin-top: 20px;
+  }
+  ${ScrollBarStyle}
 `;
+
 const RoomLayout = styled.div`
-  flex-grow : 2;
+  flex-grow: 2;
   margin: 10px;
 `;
 
@@ -52,8 +65,12 @@ const ButtonLayout = styled.div`
   justify-content: space-between;
 `;
 
+
 function MainView() {
   const [isLoggedIn] = useState(true);
+  const setNowFetching = useSetRecoilState(nowFetchingState);
+  const nowFetchingRef = useRef<boolean>(false);
+
   if (isLoggedIn) {
     return (
       <>
@@ -62,7 +79,19 @@ function MainView() {
           <ActiveFollowingLayout>
             <LeftSideBar />
           </ActiveFollowingLayout>
-          <MainSectionLayout>
+          <MainSectionLayout onScroll={(e) => {
+            if(nowFetchingRef.current){
+              return 0;
+            }
+            else{
+              const diff = (e.currentTarget as HTMLDivElement).scrollHeight - (e.currentTarget as HTMLDivElement).scrollTop;
+              if(diff < 700) {
+                setNowFetching(true);
+                nowFetchingRef.current = true;
+                setTimeout(() => {nowFetchingRef.current = false;}, 200);
+                }
+              }
+            }}>
             <MainRouter />
           </MainSectionLayout>
           <RoomLayout>

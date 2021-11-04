@@ -1,7 +1,7 @@
 import { Schema, Document, model } from 'mongoose';
 import { IEventChatUser } from '@interfaces/index';
 
-interface IEventsTypesModel extends Document{
+export interface IEventsTypesModel extends Document{
   date : Date,
   users: Array<IEventChatUser>,
   title: string,

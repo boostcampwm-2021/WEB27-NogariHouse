@@ -11,7 +11,7 @@ import { makeIconToLink } from '@utils/index';
 const CustomDefaultHeader = styled.nav`
   position: relative;
   width: calc(100%-96px);
-  height: 64px;
+  height: 48px;
   min-width: 900px;
   padding: 24px 48px;
 
