@@ -1,5 +1,7 @@
 import events, { IEventsTypesModel } from '@models/events';
 
+const makeDateToHour = (date : Date) => (String(date.getHours())).padStart(2,'0') + ':' + (String(date.getMinutes())).padStart(2,'0');
+
 export default {
   get10EventItems: async (count : number) => {
     try {
@@ -18,16 +20,12 @@ export default {
       console.error(e);
     }
   },
-  makeItemToEventInterface: (item : IEventsTypesModel & {_id: number}) => ({
+  makeItemToEventInterface: (item : IEventsTypesModel & {_id: number}) => (
+    {
     key: item._id,
-    time: item.date,
+    time: makeDateToHour(item.date),
     title: item.title,
     users: item.users,
     description: item.description,
   }),
-
-  makeDateToHour: (stringDate : string):string => {
-    const date = new Date(stringDate);
-    return `${((date.getHours).toString()).padStart(2, '0')}:${((date.getMinutes).toString()).padStart(2, '0')}`;
-  },
 };
