@@ -21,7 +21,26 @@ const MainLayout = styled.div`
 const SectionLayout = styled.div`
   position: relative;
   display: flex;
+  width: 100vw;
   height: 500px;
+`;
+
+const ActiveFollowingLayout = styled.div`
+  flex-grow : 1;
+  margin: 10px;
+  @media (min-width: 768px) and (max-width: 1024px) {
+    display: none;
+  }
+`;
+const MainSectionLayout = styled.div`
+  width: 100%;
+  min-width: 500px;
+  flex-grow : 3;
+  margin: 10px;
+`;
+const RoomLayout = styled.div`
+  flex-grow : 2;
+  margin: 10px;
 `;
 
 const ButtonLayout = styled.div`
@@ -40,9 +59,15 @@ function MainView() {
       <>
         <HeaderRouter />
         <SectionLayout>
-          <LeftSideBar />
-          <MainRouter />
-          <RightSideBar />
+          <ActiveFollowingLayout>
+            <LeftSideBar />
+          </ActiveFollowingLayout>
+          <MainSectionLayout>
+            <MainRouter />
+          </MainSectionLayout>
+          <RoomLayout>
+            <RightSideBar />
+          </RoomLayout>
         </SectionLayout>
       </>
     );
