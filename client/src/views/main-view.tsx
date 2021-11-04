@@ -18,6 +18,12 @@ const MainLayout = styled.div`
   width: 100vw;
 `;
 
+const SectionLayout = styled.div`
+  position: relative;
+  display: flex;
+  height: 500px;
+`;
+
 const ButtonLayout = styled.div`
   margin-top: 150px;
   height: 200px;
@@ -33,9 +39,11 @@ function MainView() {
     return (
       <>
         <HeaderRouter />
-        <LeftSideBar />
-        <MainRouter />
-        <RightSideBar />
+        <SectionLayout>
+          <LeftSideBar />
+          <MainRouter />
+          <RightSideBar />
+        </SectionLayout>
       </>
     );
   }
