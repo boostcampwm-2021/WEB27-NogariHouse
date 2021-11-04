@@ -15,11 +15,13 @@ export default (app: Router) => {
   app.use('/event', eventRouter);
 
   eventRouter.get('/', get10EventItemsMiddleware);
-  eventRouter.post('/', (req: Request, res: Response) => {
+  eventRouter.post('/', async (req: Request, res: Response) => {
     try {
       const {
-        title, participants, date, description,
+        title, users, date, description,
       } = req.body;
+
+      eventsService.setEvent(title, users, date, description);
 
       res.status(200).send('success!');
     } catch (error) {

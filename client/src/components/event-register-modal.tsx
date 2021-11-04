@@ -50,7 +50,7 @@ function EventRegisterModal() {
   const publishButtonHandler = () => {
     const eventInfo = {
       title: inputTitleRef.current?.value,
-      participants: ['test'],
+      users: ['test'],
       date: new Date(`${inputDateRef.current?.value} ${inputTimeRef.current?.value}`),
       description: textDescRef.current?.value,
     };
@@ -82,7 +82,7 @@ function EventRegisterModal() {
             </div>
             <input type="date" ref={inputDateRef} name="date" />
             <input type="time" ref={inputTimeRef} name="time" />
-            <textarea ref={textDescRef} name="description" placeholder="description" />
+            <textarea ref={textDescRef} name="users" placeholder="users" />
           </CustomEventForm>
         </CustomEventRegisterModal>
       </>
