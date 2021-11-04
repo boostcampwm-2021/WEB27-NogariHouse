@@ -8,6 +8,7 @@ import MainRouter from '@routes/main';
 import LargeLogo from '@src/components/large-logo';
 import LeftSideBar from '@src/components/left-sidebar';
 import RightSideBar from '@src/components/right-sidebar';
+import ScrollBarStyle from '@styles/scrollbar-style';
 
 const MainLayout = styled.div`
   display: flex;
@@ -26,7 +27,7 @@ const SectionLayout = styled.div`
 `;
 
 const ActiveFollowingLayout = styled.div`
-  flex-grow : 1;
+  flex-grow: 1;
   margin: 10px;
   @media (min-width: 768px) and (max-width: 1024px) {
     display: none;
@@ -35,11 +36,17 @@ const ActiveFollowingLayout = styled.div`
 const MainSectionLayout = styled.div`
   width: 100%;
   min-width: 500px;
-  flex-grow : 3;
+  flex-grow: 3;
   margin: 10px;
+
+  > div + div {
+    margin-top: 20px;
+  }
+  ${ScrollBarStyle}
 `;
+
 const RoomLayout = styled.div`
-  flex-grow : 2;
+  flex-grow: 2;
   margin: 10px;
 `;
 
