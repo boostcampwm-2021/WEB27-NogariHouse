@@ -1,11 +1,9 @@
 import events, { IEventsTypesModel } from '@models/events';
 
-const makeDateToHour = (date : Date) => (String(date.getHours())).padStart(2,'0') + ':' + (String(date.getMinutes())).padStart(2,'0');
-
 export default {
   get10EventItems: async (count : number) => {
     try {
-      const items = await events.find().skip(count).limit(10);
+      const items = await events.find({}).sort({date: 1}).skip(count).limit(10);
       return items;
     } catch (e) {
       console.error(e);
@@ -23,7 +21,7 @@ export default {
   makeItemToEventInterface: (item : IEventsTypesModel & {_id: number}) => (
     {
     key: item._id,
-    time: makeDateToHour(item.date),
+    time: String(item.date),
     title: item.title,
     users: item.users,
     description: item.description,

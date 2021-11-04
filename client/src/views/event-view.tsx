@@ -18,8 +18,10 @@ interface EventCardProps {
   description: string;
 }
 
+const makeDateToHourMinute = (date : Date) => `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
 const makeEventToCard = (event: EventCardProps) => (
-  <EventCard key={event.key} time={event.time} title={event.title} users={event.users} description={event.description} />
+  <EventCard key={event.key} time={makeDateToHourMinute(new Date(event.time))} title={event.title} users={event.users} description={event.description} />
 );
 
 function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
