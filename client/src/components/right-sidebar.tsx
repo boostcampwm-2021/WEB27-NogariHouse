@@ -48,7 +48,7 @@ const TitleInputbar = styled.input`
 
 function RightSideBar() {
   const [roomType] = useRecoilState(roomTypeState);
-  const [isDisabled, setIsDisabled] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
   const submitButtonHandler = () => {
     console.log('submit', inputRef.current?.value);
