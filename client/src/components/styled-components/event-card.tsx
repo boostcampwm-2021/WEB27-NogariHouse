@@ -1,4 +1,4 @@
-/* eslint-disable object-curly-newline */
+/* eslint-disable object-curly-newline, max-len */
 
 import React from 'react';
 import styled from 'styled-components';
@@ -55,16 +55,16 @@ interface EventCardProps {
   time: string;
   title: string;
   users: EventUser[];
-  discription: string;
+  description: string;
 }
 
-const makeUserToImg = (user: EventUser) => <ImageLayout src={user.profileUrl} />;
+const makeUserToImg = (user: EventUser, idx: number) => <ImageLayout key={idx} src={user.profileUrl} />;
 
 function UserImageList({ users }: { users: EventUser[] }) {
-  return <>{users.map(makeUserToImg)}</>;
+  return <>{users?.map(makeUserToImg)}</>;
 }
 
-function EventCard({ time, title, users, discription }: EventCardProps) {
+function EventCard({ time, title, users, description }: EventCardProps) {
   return (
     <EventCardLayout>
       <TimeDiv>{time}</TimeDiv>
@@ -72,7 +72,7 @@ function EventCard({ time, title, users, discription }: EventCardProps) {
       <ImageDiv>
         <UserImageList users={users} />
       </ImageDiv>
-      <DiscriptionDiv>{discription}</DiscriptionDiv>
+      <DiscriptionDiv>{description}</DiscriptionDiv>
     </EventCardLayout>
   );
 }

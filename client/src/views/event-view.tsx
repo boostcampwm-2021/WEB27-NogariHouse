@@ -1,5 +1,8 @@
-/* eslint-disable max-len */
-import React from 'react';
+/* eslint-disable*/
+import React, { useEffect } from 'react';
+import { useRecoilState } from 'recoil';
+
+import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll'
 import EventCard from '@styled-components/event-card';
 
 interface EventUser {
@@ -9,40 +12,49 @@ interface EventUser {
 }
 
 interface EventCardProps {
+  key? : string,
   time: string,
   title: string,
   users: EventUser[],
-  discription: string,
+  description: string,
 }
 
-const dummy: EventCardProps = {
-  time: '20:00',
-  title: '스테레오/공간음향 소개',
-  users: [
-    {
-      userId: 'test',
-      userName: 'test',
-      profileUrl: 'https://avatars.githubusercontent.com/u/59464537?v=4',
-    },
-    {
-      userId: 'test',
-      userName: 'test',
-      profileUrl: 'https://avatars.githubusercontent.com/u/59464537?v=4',
-    },
-  ],
-  discription: '클럽하우스와 음(mm)에서 지원을 시작한 스테레오 기능을 활용하면 음악과 다양한 음성콘텐츠에서 공간음향을 경험할 수 있습니다.',
-};
 
 const makeEventToCard = (event: EventCardProps) => (
-  <EventCard time={event.time} title={event.title} users={event.users} discription={event.discription} />
+  <EventCard key={event.key} time={event.time} title={event.title} users={event.users} description={event.description} />
 );
 
 function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
-  return <>{eventList.map(makeEventToCard)}</>;
+  return <>{eventList?.map(makeEventToCard)}</>;
 }
 
 function EventView() {
-  return <EventCardList eventList={[dummy, dummy, dummy, dummy, dummy]} />;
+
+  const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState)
+  const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState)
+  console.log('render')
+
+  useEffect(() => {
+    console.log('nowFetchting')
+    if(nowFetching) {
+      setNowFetching(false);
+    }
+    else {
+      console.log("fetch")
+      const fetchItems = async() => {
+        try{
+          const newItemsList = await fetch(`http://localhost:3000/api/event?count=${nowItemsList.length}`).then(res => res.json()).then(json => json.items);
+          setNowItemsList((nowItemsList) => [...nowItemsList,...newItemsList]);
+        }
+        catch(e){
+          console.log(e);
+        }
+      }
+      fetchItems();
+    }
+  },[nowFetching])
+
+  return <EventCardList eventList={nowItemsList} />;
 }
 
 export default EventView;
