@@ -17,6 +17,7 @@
     "@types/react-dom": "^17.0.0",
     "@types/styled-components": "^5.1.15",
     "craco-alias": "^3.0.1",
+    "dotenv": "^10.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-icons": "^4.3.1",

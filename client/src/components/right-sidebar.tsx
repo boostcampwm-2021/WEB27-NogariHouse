@@ -56,7 +56,7 @@ function RightSideBar() {
       isAnonymous,
     };
 
-    fetch('http://localhost:3000/api/room', {
+    fetch(`${process.env.REACT_APP_API_URL}/api/room`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',

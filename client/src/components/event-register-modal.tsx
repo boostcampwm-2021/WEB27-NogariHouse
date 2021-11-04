@@ -5,6 +5,9 @@ import { useRecoilState } from 'recoil';
 import isOpenModalState from '@atoms/is-open-modal';
 
 const CustomEventRegisterModal = styled.div`
+  position: absolute;
+  top: 0;
+  z-index: 10;
   flex-grow: 3;
   display: flex;
   flex-direction: column;
@@ -52,7 +55,7 @@ function EventRegisterModal() {
       description: textDescRef.current?.value,
     };
 
-    fetch('http://localhost:3000/api/event', {
+    fetch(`${process.env.REACT_APP_API_URL}/api/event`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',

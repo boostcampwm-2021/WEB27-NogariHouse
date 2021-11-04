@@ -4,6 +4,7 @@ import { useRecoilState } from 'recoil';
 
 import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll'
 import EventCard from '@styled-components/event-card';
+import EventRegisterModal from '@components/event-register-modal';
 
 interface EventUser {
   userId: string,
@@ -28,7 +29,6 @@ function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
   return <>{eventList?.map(makeEventToCard)}</>;
 }
 
-import EventRegisterModal from '@components/event-register-modal';
 
 function EventView() {
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState)
@@ -44,7 +44,7 @@ function EventView() {
       console.log("fetch")
       const fetchItems = async() => {
         try{
-          const newItemsList = await fetch(`http://localhost:3000/api/event?count=${nowItemsList.length}`).then(res => res.json()).then(json => json.items);
+          const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/event?count=${nowItemsList.length}`).then(res => res.json()).then(json => json.items);
           setNowItemsList((nowItemsList) => [...nowItemsList,...newItemsList]);
         }
         catch(e){
