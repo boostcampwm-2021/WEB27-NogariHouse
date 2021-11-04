@@ -12,12 +12,6 @@ const GlobalStyle = createGlobalStyle`
     font-style: normal;
     src: url(${Bangers});
   }
-  @font-face {
-    font-family: 'Nunito';
-    font-weight: normal;
-    font-style: normal;
-    src: url(${Nunito});
-  }
 
   @font-face {
     font-family: 'Nunito';
