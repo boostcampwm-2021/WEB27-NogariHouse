@@ -47,7 +47,7 @@ const MainSectionLayout = styled.div`
   margin: 10px;
 
   > div + div {
-    margin-top: 20px;
+    margin-top: 10px;
   }
   ${ScrollBarStyle}
 `;
