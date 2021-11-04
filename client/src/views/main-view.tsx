@@ -1,6 +1,6 @@
 /* eslint-disable*/
 
-import React, {  useRef, useState } from 'react';
+import React, {  UIEvent, useRef, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -72,6 +72,19 @@ function MainView() {
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
 
+  const onScrollHandler = (e : UIEvent<HTMLDivElement>) => {
+    if(nowFetchingRef.current){
+      return 0;
+    }
+    else{
+      const diff = (e.currentTarget).scrollHeight - (e.currentTarget).scrollTop;
+      if(diff < 700) {
+        setNowFetching(true);
+        nowFetchingRef.current = true;
+        setTimeout(() => {nowFetchingRef.current = false;}, 200);
+        }
+      }
+    };
   if (isLoggedIn) {
     return (
       <>
@@ -80,19 +93,7 @@ function MainView() {
           <ActiveFollowingLayout>
             <LeftSideBar />
           </ActiveFollowingLayout>
-          <MainSectionLayout onScroll={(e) => {
-            if(nowFetchingRef.current){
-              return 0;
-            }
-            else{
-              const diff = (e.currentTarget as HTMLDivElement).scrollHeight - (e.currentTarget as HTMLDivElement).scrollTop;
-              if(diff < 700) {
-                setNowFetching(true);
-                nowFetchingRef.current = true;
-                setTimeout(() => {nowFetchingRef.current = false;}, 200);
-                }
-              }
-            }}>
+          <MainSectionLayout onScroll={onScrollHandler}>
             <MainRouter />
           </MainSectionLayout>
           <RoomLayout>
