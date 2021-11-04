@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { FormEvent } from 'react';
 import styled from 'styled-components';
 
-interface SmallCheckboxProps {
+export interface CheckBoxProps {
+  checked: boolean,
+  onChange: (event: FormEvent) => void;
+}
+
+interface SmallCheckboxProps extends CheckBoxProps{
   id?: string;
   isDisabled?: boolean;
 }
@@ -17,9 +22,11 @@ const CheckBox = styled.input`
     }
 `;
 
-function SmallCheckbox({ id, isDisabled }: SmallCheckboxProps) {
+function SmallCheckbox({
+  id, isDisabled, onChange, checked,
+}: SmallCheckboxProps) {
   return (
-    <CheckBox type="checkbox" id={id} disabled={isDisabled} />
+    <CheckBox type="checkbox" id={id} disabled={isDisabled} checked={checked} onChange={onChange} />
   );
 }
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import SmallCheckbox from '@styled-components/small-checkbox';
+import SmallCheckbox, { CheckBoxProps } from '@styled-components/small-checkbox';
 
 const AnonymousCheckBoxLayout = styled.div`
   display: flex;
@@ -10,10 +10,10 @@ const AnonymousCheckBoxLayout = styled.div`
   justify-content: space-between;
 `;
 
-function AnonymousCheckBox() {
+function AnonymousCheckBox({ checked, onChange }: CheckBoxProps) {
   return (
     <AnonymousCheckBoxLayout>
-      <SmallCheckbox id="c1" />
+      <SmallCheckbox id="c1" checked={checked} onChange={onChange} />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label htmlFor={'c1' as string}>Allow anonymous ?</label>
     </AnonymousCheckBoxLayout>
