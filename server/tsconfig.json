@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@src/*": [ "src/*" ],
+      "@tests/*": [ "tests/*" ],
+      "@api/*": [ "src/api" ],
+      "@middlewares/*": [ "src/api/middlewares/*" ],
+      "@routes/*": [ "src/api/routes/*" ],
+      "@config/*": [ "src/config/*" ],
+      "@interfaces/*": [ "src/interfaces/*" ],
+      "@loaders/*": [ "src/loaders/*" ],
+      "@models/*": [ "src/models/*" ],
+      "@services/*": [ "src/services/*" ],
+      "@subscribers/*": [ "src/subscribers/*" ],
+      "@types/*": [ "src/types/*" ],
+      "@utils/*": [ "src/utils/*" ]
+    },
+    "target": "es6",
+    // "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    // "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    // "noFallthroughCasesInSwitch": true,
+    "module": "commonjs"
+    // "moduleResolution": "node",
+    // "resolveJsonModule": true,
+    // "isolatedModules": true,
+    // "noEmit": true
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "commonjs"
+    }
+  },
+  "include": ["src"]
+}
