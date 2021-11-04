@@ -5,8 +5,9 @@ import { useRecoilState } from 'recoil';
 import roomTypeState from '@atoms/room-type';
 import DefaultButton from './styled-components/default-button';
 import RoomTypeCheckBox from './room-type-check-box';
+import AnonymousCheckBox from './anonymous-checkbox';
 
-const CreatRoomModal = styled.div`
+const RoomModal = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -21,26 +22,25 @@ const CreatRoomModal = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
-const AnonymousCheckBox = styled.div`
-  background-color: #ffffff;
-  border-radius: 30px;
-
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-`;
-
 const CustomTitleForm = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-
-  font-size: 16px;
+  flex-direction: column;
+  justify-content: space-between;
 `;
 
 const TitleInputbar = styled.input`
-  border: 1px solid;
+  border: 1px solid #58964F;
+  border-radius: 8px;
   padding: 0;
-  placeholder: 'input';
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+const TitleInputbarLabel = styled.label`
+  font-size: 12px;
+  color: #B6B6B6;
 `;
 
 function RightSideBar() {
@@ -57,19 +57,19 @@ function RightSideBar() {
   };
 
   return (
-    <CreatRoomModal>
+    <RoomModal>
       <RoomTypeCheckBox checkBoxName="public" />
       <RoomTypeCheckBox checkBoxName="social" />
       <RoomTypeCheckBox checkBoxName="closed" />
       <AnonymousCheckBox />
       <CustomTitleForm>
-        <div>Title:</div>
+        <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputOnChange} />
       </CustomTitleForm>
       <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
         Lets Go
       </DefaultButton>
-    </CreatRoomModal>
+    </RoomModal>
   );
 }
 
