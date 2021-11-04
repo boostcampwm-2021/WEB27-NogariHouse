@@ -17,6 +17,7 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "linebreak-style": 0,
         "import/extensions": "off",
         "import/no-unresolved": 1
     },

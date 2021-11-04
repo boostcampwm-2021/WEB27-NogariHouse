@@ -28,8 +28,9 @@ function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
   return <>{eventList?.map(makeEventToCard)}</>;
 }
 
-function EventView() {
+import EventRegisterModal from '@components/event-register-modal';
 
+function EventView() {
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState)
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState)
   console.log('render')
@@ -54,7 +55,7 @@ function EventView() {
     }
   },[nowFetching])
 
-  return <EventCardList eventList={nowItemsList} />;
+  return (<><EventCardList eventList={nowItemsList} /><EventRegisterModal /></>);
 }
 
 export default EventView;
