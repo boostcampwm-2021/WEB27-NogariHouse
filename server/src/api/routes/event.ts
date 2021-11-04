@@ -1,7 +1,14 @@
-import { Router } from 'express';
-import { get10EventItemsMiddleware } from '../middlewares/event-middlewares';
+import { Router, Request, Response  } from 'express';
+
+import eventsService from '@services/events-service';
 
   const eventRouter = Router();
+
+const get10EventItemsMiddleware = async (req:Request,res:Response) => {
+    const {count} = req.query;
+    const items = (await eventsService.get10EventItems(Number(count)))?.map(eventsService.makeItemToEventInterface);
+    res.json({items})
+}
 
   export default (app: Router) => {
     app.use('/event', eventRouter);
