@@ -46,14 +46,33 @@ const TitleInputbarLabel = styled.label`
 function RightSideBar() {
   const [roomType] = useRecoilState(roomTypeState);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const submitButtonHandler = () => {
-    console.log('submit', inputRef.current?.value);
-    console.log('submit', roomType);
+    const roomInfo = {
+      type: roomType,
+      title: inputRef.current?.value,
+      participants: ['test'],
+      isAnonymous,
+    };
+
+    fetch('http://localhost:3000/api/room', {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(roomInfo),
+
+    }).then((res) => console.log(res))
+      .catch((err) => console.error(err));
   };
 
   const inputOnChange = () => {
     setIsDisabled(!inputRef.current?.value);
+  };
+
+  const checkboxOnChange = () => {
+    setIsAnonymous(!isAnonymous);
   };
 
   return (
@@ -61,7 +80,7 @@ function RightSideBar() {
       <RoomTypeCheckBox checkBoxName="public" />
       <RoomTypeCheckBox checkBoxName="social" />
       <RoomTypeCheckBox checkBoxName="closed" />
-      <AnonymousCheckBox />
+      <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputOnChange} />
