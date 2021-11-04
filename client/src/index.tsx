@@ -1,9 +1,12 @@
+import dotenv from 'dotenv';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import GlobalStyle from '@styles/global-styles';
 import { RecoilRoot } from 'recoil';
 
+import GlobalStyle from '@styles/global-styles';
 import App from './App';
+
+dotenv.config();
 
 ReactDOM.render(
   <React.StrictMode>
