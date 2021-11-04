@@ -87,7 +87,7 @@ const RoomCardInfo = styled.div`
 const RoomCardLayout = styled.div`
   background-color: #FFFFFF;
   border-radius: 25px;
-  width: 600px;
+  width: 100%;
 `;
 
 export default function RoomCard({ title, users } : roomCardProps) {
