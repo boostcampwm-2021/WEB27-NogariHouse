@@ -1,7 +1,7 @@
 /* eslint-disable*/
 
-import React, { useEffect, useRef, useState } from 'react';
-import { useResetRecoilState, useSetRecoilState } from 'recoil';
+import React, {  useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -13,7 +13,6 @@ import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
 import DefaultButton from '@styled-components/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
-import { nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
 
 
 const MainLayout = styled.div`
@@ -71,12 +70,7 @@ const ButtonLayout = styled.div`
 function MainView() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
-  const resetItemList = useResetRecoilState(nowItemsListState);
   const nowFetchingRef = useRef<boolean>(false);
-
-  useEffect(()=> {
-    resetItemList();
-  })
 
   if (isLoggedIn) {
     return (

@@ -1,10 +1,11 @@
 import { nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
 import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+import { Resetter, useRecoilState, useResetRecoilState } from 'recoil';
 
-const useFetchItems = <T extends {}>(apiPath : string): [T[]] => {
+const useFetchItems = <T extends {}>(apiPath : string): [T[], Resetter] => {
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
+  const resetItemList = useResetRecoilState(nowItemsListState);
 
   useEffect(() => {
     if (nowFetching) {
@@ -24,7 +25,7 @@ const useFetchItems = <T extends {}>(apiPath : string): [T[]] => {
     }
   }, [nowFetching]);
 
-  return [nowItemsList];
+  return [nowItemsList, resetItemList];
 };
 
 export default useFetchItems;

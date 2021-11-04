@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React from 'react';
+import React, { useEffect } from 'react';
 import EventCard from '@styled-components/event-card';
 import EventRegisterModal from '@components/event-register-modal';
 import useFetchItems from '@src/hooks/useFetchItems';
@@ -27,7 +27,9 @@ function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
 }
 
 function EventView() {
-  const [nowItemList] = useFetchItems<EventCardProps>('/event');
+  const [nowItemList, resetItemList] = useFetchItems<EventCardProps>('/event');
+
+  useEffect(() => resetItemList(), []);
 
   return (
     <>
