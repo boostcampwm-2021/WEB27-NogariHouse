@@ -1,11 +1,11 @@
-/* eslint-disable*/
-
-import React, {  UIEvent, useRef, useState } from 'react';
+import React, {
+  UIEvent, useCallback, useRef, useState,
+} from 'react';
 import { useSetRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { nowFetchingState } from '@atoms/main-section-scroll'
+import { nowFetchingState } from '@atoms/main-section-scroll';
 import LargeLogo from '@components/large-logo';
 import LeftSideBar from '@components/left-sidebar';
 import RightSideBar from '@components/right-sidebar';
@@ -13,7 +13,6 @@ import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
 import DefaultButton from '@styled-components/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
-
 
 const MainLayout = styled.div`
   display: flex;
@@ -66,25 +65,22 @@ const ButtonLayout = styled.div`
   justify-content: space-between;
 `;
 
-
 function MainView() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
 
-  const onScrollHandler = (e : UIEvent<HTMLDivElement>) => {
-    if(nowFetchingRef.current){
-      return 0;
-    }
-    else{
+  const scrollBarChecker = useCallback((e : UIEvent<HTMLDivElement>) => {
+    if (!nowFetchingRef.current) {
       const diff = (e.currentTarget).scrollHeight - (e.currentTarget).scrollTop;
-      if(diff < 700) {
+      if (diff < 700) {
         setNowFetching(true);
         nowFetchingRef.current = true;
-        setTimeout(() => {nowFetchingRef.current = false;}, 200);
-        }
+        setTimeout(() => { nowFetchingRef.current = false; }, 200);
       }
-    };
+    }
+  }, []);
+
   if (isLoggedIn) {
     return (
       <>
@@ -93,7 +89,7 @@ function MainView() {
           <ActiveFollowingLayout>
             <LeftSideBar />
           </ActiveFollowingLayout>
-          <MainSectionLayout onScroll={onScrollHandler}>
+          <MainSectionLayout onScroll={scrollBarChecker}>
             <MainRouter />
           </MainSectionLayout>
           <RoomLayout>
@@ -114,7 +110,7 @@ function MainView() {
             </DefaultButton>
           </Link>
           <Link to="/">
-            <DefaultButton onClick={() => {setIsLoggedIn(true)}} buttonType="thirdly" size="large">
+            <DefaultButton onClick={() => { setIsLoggedIn(true); }} buttonType="thirdly" size="large">
               SIGN IN
             </DefaultButton>
           </Link>
