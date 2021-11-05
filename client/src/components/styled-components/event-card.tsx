@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-newline, max-len */
 
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 const EventCardLayout = styled.div`
@@ -61,7 +61,6 @@ interface EventCardProps {
   title: string,
   users: EventUser[],
   description: string,
-  onClick: (e:MouseEvent) => void,
 }
 
 const makeUserToImg = (user: EventUser, idx: number) => <ImageLayout key={idx} src={user.profileUrl} />;
@@ -70,9 +69,9 @@ function UserImageList({ users }: { users: EventUser[] }) {
   return <>{users?.map(makeUserToImg)}</>;
 }
 
-function EventCard({ time, title, users, description, onClick }: EventCardProps) {
+function EventCard({ time, title, users, description }: EventCardProps) {
   return (
-    <EventCardLayout onClick={onClick}>
+    <EventCardLayout>
       <TimeDiv>{time}</TimeDiv>
       <TitleDiv>{title}</TitleDiv>
       <ImageDiv>

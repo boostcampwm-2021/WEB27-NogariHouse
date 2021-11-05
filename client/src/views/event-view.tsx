@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 import React, { MouseEvent, useCallback, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
+import styled from 'styled-components';
 
 import EventRegisterModal from '@components/event-register-modal';
 import { isOpenEventModalState } from '@recoil/atoms/is-open-modal';
@@ -22,7 +23,24 @@ interface EventCardProps {
   description: string,
 }
 
-const makeEventToCard = (event: EventCardProps) => {
+const EventDiv = styled.div``;
+
+const makeEventToCard = (event: EventCardProps) => (
+  <EventCard
+    key={event.key}
+    time={makeDateToHourMinute(new Date(event.time))}
+    title={event.title}
+    users={event.users}
+    description={event.description}
+  />
+);
+
+function EventCardList({ eventList, setEventModal }: { eventList: EventCardProps[], setEventModal: ((e: MouseEvent) => void) }) {
+  return <EventDiv onClick={setEventModal}>{eventList?.map(makeEventToCard)}</EventDiv>;
+}
+
+function EventView() {
+  const [nowItemList, resetItemList] = useFetchItems<EventCardProps>('/event');
   const setIsOpenEventModal = useSetRecoilState(isOpenEventModalState);
 
   const setEventModal = useCallback((e: MouseEvent) => {
@@ -30,30 +48,11 @@ const makeEventToCard = (event: EventCardProps) => {
     console.log(e.currentTarget);
   }, []);
 
-  return (
-    <EventCard
-      key={event.key}
-      onClick={setEventModal}
-      time={makeDateToHourMinute(new Date(event.time))}
-      title={event.title}
-      users={event.users}
-      description={event.description}
-    />
-  );
-};
-
-function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
-  return <>{eventList?.map(makeEventToCard)}</>;
-}
-
-function EventView() {
-  const [nowItemList, resetItemList] = useFetchItems<EventCardProps>('/event');
-
   useEffect(() => resetItemList(), []);
 
   return (
     <>
-      <EventCardList eventList={nowItemList} />
+      <EventCardList setEventModal={setEventModal} eventList={nowItemList} />
       <EventRegisterModal />
     </>
   );
