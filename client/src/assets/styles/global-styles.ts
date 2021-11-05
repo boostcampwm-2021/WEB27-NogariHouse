@@ -26,6 +26,8 @@ const GlobalStyle = createGlobalStyle`
     font-style: normal;
     font-size: 16px;
     background-color: #F1F0E4;
+
+    overflow: hidden;
   }
 `;
 
