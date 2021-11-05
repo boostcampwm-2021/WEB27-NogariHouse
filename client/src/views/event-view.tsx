@@ -5,17 +5,17 @@ import EventRegisterModal from '@components/event-register-modal';
 import useFetchItems from '@src/hooks/useFetchItems';
 
 interface EventUser {
-  userId: string;
-  userName: string;
-  profileUrl: string;
+  userId: string,
+  userName: string,
+  profileUrl: string,
 }
 
 interface EventCardProps {
-  key?: string;
-  time: string;
-  title: string;
-  users: EventUser[];
-  description: string;
+  key?: string,
+  time: string,
+  title: string,
+  users: EventUser[],
+  description: string,
 }
 
 const makeDateToHourMinute = (date : Date) => `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
