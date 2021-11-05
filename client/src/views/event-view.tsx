@@ -1,10 +1,12 @@
-/* eslint-disable*/
-import React, { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
+/* eslint-disable max-len */
+import React, { MouseEvent, useCallback, useEffect } from 'react';
+import { useSetRecoilState } from 'recoil';
 
-import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll'
-import EventCard from '@styled-components/event-card';
 import EventRegisterModal from '@components/event-register-modal';
+import { isOpenEventModalState } from '@recoil/atoms/is-open-modal';
+import useFetchItems from '@src/hooks/useFetchItems';
+import { makeDateToHourMinute } from '@src/utils';
+import EventCard from '@styled-components/event-card';
 
 interface EventUser {
   userId: string,
@@ -13,49 +15,48 @@ interface EventUser {
 }
 
 interface EventCardProps {
-  key? : string,
+  key?: string,
   time: string,
   title: string,
   users: EventUser[],
   description: string,
 }
 
+const makeEventToCard = (event: EventCardProps) => {
+  const setIsOpenEventModal = useSetRecoilState(isOpenEventModalState);
 
-const makeEventToCard = (event: EventCardProps) => (
-  <EventCard key={event.key} time={event.time} title={event.title} users={event.users} description={event.description} />
-);
+  const setEventModal = useCallback((e: MouseEvent) => {
+    setIsOpenEventModal(true);
+    console.log(e.currentTarget);
+  }, []);
+
+  return (
+    <EventCard
+      key={event.key}
+      onClick={setEventModal}
+      time={makeDateToHourMinute(new Date(event.time))}
+      title={event.title}
+      users={event.users}
+      description={event.description}
+    />
+  );
+};
 
 function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
   return <>{eventList?.map(makeEventToCard)}</>;
 }
 
-
 function EventView() {
-  const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState)
-  const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState)
-  console.log('render')
+  const [nowItemList, resetItemList] = useFetchItems<EventCardProps>('/event');
 
-  useEffect(() => {
-    console.log('nowFetchting')
-    if(nowFetching) {
-      setNowFetching(false);
-    }
-    else {
-      console.log("fetch")
-      const fetchItems = async() => {
-        try{
-          const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/event?count=${nowItemsList.length}`).then(res => res.json()).then(json => json.items);
-          setNowItemsList((nowItemsList) => [...nowItemsList,...newItemsList]);
-        }
-        catch(e){
-          console.log(e);
-        }
-      }
-      fetchItems();
-    }
-  },[nowFetching])
+  useEffect(() => resetItemList(), []);
 
-  return (<><EventCardList eventList={nowItemsList} /><EventRegisterModal /></>);
+  return (
+    <>
+      <EventCardList eventList={nowItemList} />
+      <EventRegisterModal />
+    </>
+  );
 }
 
 export default EventView;

@@ -1,6 +1,6 @@
 /* eslint-disable object-curly-newline, max-len */
 
-import React from 'react';
+import React, { MouseEvent } from 'react';
 import styled from 'styled-components';
 
 const EventCardLayout = styled.div`
@@ -9,21 +9,26 @@ const EventCardLayout = styled.div`
   align-items: flex-start;
   position: relative;
 
-  width: 100%;
+  padding: 24px;
   height: max-content;
   max-height: 200px;
+  border-radius: 25px;
 
   div:not(:last-child) {
     margin-bottom: 10px;
   }
+
+  :hover{
+    background-color: #DDD9C7;
+  }
 `;
 
 const TimeDiv = styled.div`
-  font-size: 24px;
+  font-size: 18px;
 `;
 
 const TitleDiv = styled.div`
-  font-size: 24px;
+  font-size: 18px;
   font-weight: bold;
 `;
 const ImageDiv = styled.div`
@@ -42,20 +47,21 @@ const ImageLayout = styled.img`
 `;
 
 const DiscriptionDiv = styled.div`
-  font-size: 18px;
+  font-size: 14px;
 `;
 
 interface EventUser {
-  userId: string;
-  userName: string;
-  profileUrl: string;
+  userId: string,
+  userName: string,
+  profileUrl: string,
 }
 
 interface EventCardProps {
-  time: string;
-  title: string;
-  users: EventUser[];
-  description: string;
+  time: string,
+  title: string,
+  users: EventUser[],
+  description: string,
+  onClick: (e:MouseEvent) => void,
 }
 
 const makeUserToImg = (user: EventUser, idx: number) => <ImageLayout key={idx} src={user.profileUrl} />;
@@ -64,9 +70,9 @@ function UserImageList({ users }: { users: EventUser[] }) {
   return <>{users?.map(makeUserToImg)}</>;
 }
 
-function EventCard({ time, title, users, description }: EventCardProps) {
+function EventCard({ time, title, users, description, onClick }: EventCardProps) {
   return (
-    <EventCardLayout>
+    <EventCardLayout onClick={onClick}>
       <TimeDiv>{time}</TimeDiv>
       <TitleDiv>{title}</TitleDiv>
       <ImageDiv>

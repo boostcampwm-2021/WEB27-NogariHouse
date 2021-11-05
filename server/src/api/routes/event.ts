@@ -6,8 +6,8 @@ const eventRouter = Router();
 
 const get10EventItemsMiddleware = async (req:Request, res:Response) => {
   const { count } = req.query;
-  const items = (await eventsService.get10EventItems(Number(count)))?.map(eventsService
-    .makeItemToEventInterface);
+  const items = (await eventsService.get10EventItems(Number(count)))?.
+    map(eventsService.makeItemToEventInterface);
   res.json({ items });
 };
 

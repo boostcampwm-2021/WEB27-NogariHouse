@@ -3,7 +3,7 @@ import events, { IEventsTypesModel } from '@models/events';
 export default {
   get10EventItems: async (count : number) => {
     try {
-      const items = await events.find().skip(count).limit(10);
+      const items = await events.find({}).sort({date: 1}).skip(count).limit(10);
       return items;
     } catch (e) {
       console.error(e);
@@ -18,16 +18,12 @@ export default {
       console.error(e);
     }
   },
-  makeItemToEventInterface: (item : IEventsTypesModel & {_id: number}) => ({
+  makeItemToEventInterface: (item : IEventsTypesModel & {_id: number}) => (
+    {
     key: item._id,
-    time: item.date,
+    time: String(item.date),
     title: item.title,
     users: item.users,
     description: item.description,
   }),
-
-  makeDateToHour: (stringDate : string):string => {
-    const date = new Date(stringDate);
-    return `${((date.getHours).toString()).padStart(2, '0')}:${((date.getMinutes).toString()).padStart(2, '0')}`;
-  },
 };
