@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 
@@ -32,8 +32,33 @@ const CustomEventForm = styled.form`
   align-items: center;
 `;
 
+const CancelButton = styled.button`
+  color : #58964F;
+  border: none;
+  background-color: #FFFFFF;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const PublishButton = styled.button`
+  color :  #586A9A;
+  border: none;
+  background-color: #FFFFFF;
+  &:hover {
+    cursor: pointer;
+  }
+  :disabled{
+    color : #B6B6B6;
+    &:hover {
+      cursor: default;
+    }
+  }
+`;
+
 function EventRegisterModal() {
   const [isOpenModal, setIsOpenModal] = useRecoilState(isOpenModalState);
+  const [isDisabled, setIsDisabled] = useState(true);
   const inputTitleRef = useRef<HTMLInputElement>(null);
   const inputDateRef = useRef<HTMLInputElement>(null);
   const inputTimeRef = useRef<HTMLInputElement>(null);
@@ -41,6 +66,16 @@ function EventRegisterModal() {
 
   const changeModalState = () => {
     setIsOpenModal(!isOpenModal);
+  };
+
+  const inputOnChange = () => {
+    if (inputTitleRef.current?.value
+      && inputDateRef.current?.value
+      && inputTimeRef.current?.value) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
   };
 
   const publishButtonHandler = () => {
@@ -67,18 +102,18 @@ function EventRegisterModal() {
       <>
         <CustomEventRegisterModal>
           <ModalHeader>
-            <button type="button" onClick={changeModalState}>Cancel</button>
+            <CancelButton type="button" onClick={changeModalState}>Cancel</CancelButton>
             <span>NEW EVENT</span>
-            <button type="button" onClick={publishButtonHandler}>Publish</button>
+            <PublishButton type="button" onClick={publishButtonHandler} disabled={isDisabled}>Publish</PublishButton>
           </ModalHeader>
           <CustomEventForm>
-            <input type="text" ref={inputTitleRef} name="title" placeholder="Event Name" />
+            <input type="text" ref={inputTitleRef} name="title" placeholder="Event Name" onChange={inputOnChange} />
             <div>
               <span>with</span>
             </div>
-            <input type="date" ref={inputDateRef} name="date" />
-            <input type="time" ref={inputTimeRef} name="time" />
-            <textarea ref={textDescRef} name="users" placeholder="users" />
+            <input type="date" ref={inputDateRef} name="date" onChange={inputOnChange} />
+            <input type="time" ref={inputTimeRef} name="time" onChange={inputOnChange} />
+            <textarea ref={textDescRef} name="desc" placeholder="desc" onChange={inputOnChange} />
           </CustomEventForm>
         </CustomEventRegisterModal>
       </>
