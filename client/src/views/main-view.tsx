@@ -13,6 +13,7 @@ import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
 import DefaultButton from '@styled-components/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
+import EventRegisterModal from '@components/event-register-modal';
 
 const MainLayout = styled.div`
   display: flex;
@@ -40,15 +41,18 @@ const ActiveFollowingLayout = styled.div`
 const MainSectionLayout = styled.div`
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 80vh;
   min-width: 500px;
   flex-grow: 3;
   margin: 10px;
 
-  > div + div {
-    margin-top: 10px;
-  }
   ${ScrollBarStyle}
+`;
+
+const MainScrollSection = styled.div`
+  width: 100%;
+  height: 100%;
+  ${ScrollBarStyle};
 `;
 
 const RoomLayout = styled.div`
@@ -89,8 +93,11 @@ function MainView() {
           <ActiveFollowingLayout>
             <LeftSideBar />
           </ActiveFollowingLayout>
-          <MainSectionLayout onScroll={scrollBarChecker}>
-            <MainRouter />
+          <MainSectionLayout>
+            <MainScrollSection onScroll={scrollBarChecker}>
+              <MainRouter />
+            </MainScrollSection>
+            <EventRegisterModal />
           </MainSectionLayout>
           <RoomLayout>
             <RightSideBar />
