@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
@@ -52,10 +53,9 @@ function RightSideBar() {
     const roomInfo = {
       type: roomType,
       title: inputRef.current?.value,
-      participants: ['test'],
-      isAnonymous,
+      participants: 'dlatqdlatq',
+      isAnonymous: isAnonymous,
     };
-
     fetch(`${process.env.REACT_APP_API_URL}/api/room`, {
       method: 'post',
       headers: {

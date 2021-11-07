@@ -26,4 +26,4 @@ const roomSchema = new Schema({
   },
 });
 
-export default model<IRooms>('events', roomSchema);
+export default model<IRooms>('rooms', roomSchema);
