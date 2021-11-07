@@ -43,10 +43,6 @@ function EventRegisterModal() {
     setIsOpenModal(!isOpenModal);
   };
 
-  // const makeDateFormat = () => {
-
-  // };
-
   const publishButtonHandler = () => {
     const eventInfo = {
       title: inputTitleRef.current?.value,
