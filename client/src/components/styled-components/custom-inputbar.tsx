@@ -4,6 +4,7 @@ export const CustomInputBar = styled.input`
   border: none;
   background-color: #ffffff;
   width: 100%;
+  min-width: max-content;
   height: 60px;
   &:focus {
     outline: none;
@@ -21,5 +22,6 @@ export const CustomInputBox = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 60%;
+  min-width: max-content;
   margin: 20px;
 `;
