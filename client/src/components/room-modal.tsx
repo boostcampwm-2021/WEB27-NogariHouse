@@ -5,6 +5,7 @@ import { useRecoilState } from 'recoil';
 
 import roomTypeState from '@atoms/room-type';
 import userTypeState from '@atoms/user';
+import { generateURLQuery } from '@utils/index';
 import DefaultButton from './styled-components/default-button';
 import RoomTypeCheckBox from './room-type-check-box';
 import AnonymousCheckBox from './anonymous-checkbox';
@@ -30,6 +31,7 @@ const TitleInputbarLabel = styled.label`
   color: #B6B6B6;
 `;
 
+// 룸 생성 모달
 function RoomModal() {
   const [roomType] = useRecoilState(roomTypeState);
   const [user, setUser] = useRecoilState(userTypeState);
@@ -42,22 +44,18 @@ function RoomModal() {
     // userId 현재 아이디 가져와야함
     const roomInfo = {
       type: roomType,
-      title: inputRef.current?.value,
+      title: inputRef.current?.value as string,
       userId: 'dlatqdlatq',
       isAnonymous: isAnonymous,
     };
-    fetch(`${process.env.REACT_APP_API_URL}/api/room`, {
-      method: 'post',
+    fetch(`${process.env.REACT_APP_API_URL}/api/room?${generateURLQuery(roomInfo)}`, {
+      method: 'get',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(roomInfo),
-
-    }).then((res) => console.log(res))
+    }).then((res) => res.json())
+      .then((roomId) => setUser({ roomId }))
       .catch((err) => console.error(err));
-
-    // 유저가 방 접속했다고 상태 변경
-    setUser({ roomId: roomType });
   };
 
   const inputOnChange = () => {
