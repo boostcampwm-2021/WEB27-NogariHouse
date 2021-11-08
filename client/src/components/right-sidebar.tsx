@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 
 import RoomModal from '@components/room-modal';
+import InRoomModal from '@components/in-room-modal';
 import roomTypeState from '@atoms/room-type';
 import userTypeState from '@atoms/user';
 
@@ -42,7 +43,7 @@ function RightSideBar() {
   // 방에 들어가 있는 경우
   return (
     <RoomModalLayout>
-      <h1> 방에 들어감. </h1>
+      <InRoomModal />
     </RoomModalLayout>
   );
 }
