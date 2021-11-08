@@ -1,7 +1,8 @@
 import React, {
-  UIEvent, useCallback, useRef, useState,
+  UIEvent, useCallback, useEffect, useRef, useState,
 } from 'react';
 import { useSetRecoilState } from 'recoil';
+import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -62,7 +63,7 @@ const RoomLayout = styled.div`
 
 const ButtonLayout = styled.div`
   margin-top: 150px;
-  height: 200px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,6 +72,7 @@ const ButtonLayout = styled.div`
 
 function MainView() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [cookies] = useCookies(['jwt']);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
 
@@ -84,6 +86,17 @@ function MainView() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    // fetch(`${process.env.REACT_APP_API_URL}/api/user`)
+    //   .then((res) => res.json())
+    //   .then((json) => {
+    //     if (json.isLogin) setIsLoggedIn(true);
+    //     else setIsLoggedIn(false);
+    //   });
+    console.log(cookies.jwt);
+    if (cookies.jwt) setIsLoggedIn(true);
+  }, cookies.jwt);
 
   if (isLoggedIn) {
     return (
@@ -112,12 +125,12 @@ function MainView() {
         <LargeLogo />
         <ButtonLayout>
           <Link to="/signup">
-            <DefaultButton buttonType="secondary" size="large">
+            <DefaultButton buttonType="secondary" size="medium">
               SIGN UP
             </DefaultButton>
           </Link>
           <Link to="/signin">
-            <DefaultButton onClick={() => { setIsLoggedIn(false); }} buttonType="thirdly" size="large">
+            <DefaultButton onClick={() => { setIsLoggedIn(false); }} buttonType="thirdly" size="medium">
               SIGN IN
             </DefaultButton>
           </Link>
