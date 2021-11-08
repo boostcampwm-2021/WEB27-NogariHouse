@@ -1,7 +1,7 @@
 import {
   Router, Request, Response,
 } from 'express';
-import roomService from '@services/rooms-service';
+import RoomService from '@services/rooms-service';
 
 const route = Router();
 
@@ -14,8 +14,7 @@ export default (app: Router) => {
         title, type, userId, isAnonymous,
       } = req.body;
 
-      roomService.setRoom(title, type, userId, isAnonymous);
-
+      RoomService.setRoom(title, type, userId, isAnonymous);
       res.status(200).send('success!');
     } catch (error) {
       console.error(error);
