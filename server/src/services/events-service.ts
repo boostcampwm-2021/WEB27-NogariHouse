@@ -1,9 +1,9 @@
-import events, { IEventsTypesModel } from '@models/events';
+import Events, { IEventsTypesModel } from '@models/events';
 
 export default {
   get10EventItems: async (count : number) => {
     try {
-      const items = await events.find({}).sort({ date: 1 }).skip(count).limit(10);
+      const items = await Events.find({}).sort({ date: 1 }).skip(count).limit(10);
       return items;
     } catch (e) {
       console.error(e);
@@ -12,7 +12,7 @@ export default {
 
   get10EventItemsFromUser: async (userId: string, count : number) => {
     try {
-      const items = await events.find().skip(count).limit(10);
+      const items = await Events.find().skip(count).limit(10);
       return items;
     } catch (e) {
       console.error(e);
@@ -24,7 +24,7 @@ export default {
       key: item._id,
       time: String(item.date),
       title: item.title,
-      users: item.users,
+      users: item.participants,
       description: item.description,
     }),
 
@@ -33,10 +33,10 @@ export default {
     return `${((date.getHours).toString()).padStart(2, '0')}:${((date.getMinutes).toString()).padStart(2, '0')}`;
   },
 
-  setEvent: (title:string, user:object, date:Date, description:string) => {
-    const newEvent = new events({
+  setEvent: (title:string, participants:object, date:Date, description:string) => {
+    const newEvent = new Events({
       title,
-      user,
+      participants,
       date,
       description,
     });

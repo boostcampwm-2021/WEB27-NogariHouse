@@ -18,7 +18,7 @@ interface EventCardProps {
   key?: string,
   time: string,
   title: string,
-  users: EventUser[],
+  participants: EventUser[],
   description: string,
 }
 
@@ -29,7 +29,7 @@ const makeEventToCard = (event: EventCardProps) => (
     key={event.key}
     time={makeDateToHourMinute(new Date(event.time))}
     title={event.title}
-    users={event.users}
+    participants={event.participants}
     description={event.description}
   />
 );

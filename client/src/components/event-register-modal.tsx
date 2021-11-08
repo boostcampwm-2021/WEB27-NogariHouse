@@ -120,7 +120,7 @@ function EventRegisterModal() {
   const publishButtonHandler = () => {
     const eventInfo = {
       title: inputTitleRef.current?.value,
-      users: ['test'],
+      participants: ['test'],
       date: new Date(`${inputDateRef.current?.value} ${inputTimeRef.current?.value}`),
       description: textDescRef.current?.value,
     };

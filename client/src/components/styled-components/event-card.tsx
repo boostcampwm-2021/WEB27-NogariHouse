@@ -59,23 +59,23 @@ interface EventUser {
 interface EventCardProps {
   time: string,
   title: string,
-  users: EventUser[],
+  participants: EventUser[],
   description: string,
 }
 
-const makeUserToImg = (user: EventUser, idx: number) => <ImageLayout key={idx} src={user.profileUrl} />;
+const makeUserToImg = (participant: EventUser, idx: number) => <ImageLayout key={idx} src={participant.profileUrl} />;
 
-function UserImageList({ users }: { users: EventUser[] }) {
-  return <>{users?.map(makeUserToImg)}</>;
+function UserImageList({ participants }: { participants: EventUser[] }) {
+  return <>{participants?.map(makeUserToImg)}</>;
 }
 
-function EventCard({ time, title, users, description }: EventCardProps) {
+function EventCard({ time, title, participants, description }: EventCardProps) {
   return (
     <EventCardLayout>
       <TimeDiv>{time}</TimeDiv>
       <TitleDiv>{title}</TitleDiv>
       <ImageDiv>
-        <UserImageList users={users} />
+        <UserImageList participants={participants} />
       </ImageDiv>
       <DiscriptionDiv>{description}</DiscriptionDiv>
     </EventCardLayout>
