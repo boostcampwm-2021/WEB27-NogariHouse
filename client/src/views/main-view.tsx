@@ -70,7 +70,7 @@ const ButtonLayout = styled.div`
 `;
 
 function MainView() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
 
@@ -116,8 +116,8 @@ function MainView() {
               SIGN UP
             </DefaultButton>
           </Link>
-          <Link to="/">
-            <DefaultButton onClick={() => { setIsLoggedIn(true); }} buttonType="thirdly" size="large">
+          <Link to="/signin">
+            <DefaultButton onClick={() => { setIsLoggedIn(false); }} buttonType="thirdly" size="large">
               SIGN IN
             </DefaultButton>
           </Link>
