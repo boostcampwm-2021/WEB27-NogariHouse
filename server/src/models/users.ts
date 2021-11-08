@@ -1,4 +1,5 @@
 import { Schema, Document, model } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 export interface IUser {
     userName: string,
@@ -94,5 +95,27 @@ const usersSchema = new Schema({
     default: [],
   },
 });
+
+usersSchema.pre("save", function (next) { 
+  const user = this;
+  if (user.isModified("password")) { //패스워드가 변경될때만 해싱작업이 처리됨.
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) return next(err);
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        if (err) return next(err);
+        user.password = hash;
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
+
+usersSchema.methods.checkPassword = function(guess, next){
+  bcrypt.compare(guess, this.password, (err, isMatch) => {
+      next(err,isMatch);
+  });
+};
 
 export default model<IUserTypesModel>('users', usersSchema);
