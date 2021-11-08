@@ -4,32 +4,11 @@ import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
-import SignHeader from '@src/components/sign-header';
-import SignTitle from '@src/components/styled-components/sign-title';
-import SignBody from '@src/components/styled-components/sign-body';
-import DefaultButton from '@src/components/styled-components/default-button';
-
-const CustomInputBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  width: 60%;
-  margin: 20px;
-`;
-
-const CustomInput = styled.input`
-  border: none;
-  background-color: #FFFFFF;
-  width: 100%;
-  height: 60px;
-  &:focus {outline:none;}
-  margin: 10px;
-  font-size: 30px;
-  padding: 0 30px;
-  border-radius: 10px;
-  box-shadow: 0 2px 2px 0 #D6D6D6;
-`;
+import SignHeader from '@components/sign-header';
+import SignTitle from '@components/styled-components/sign-title';
+import SignBody from '@components/styled-components/sign-body';
+import DefaultButton from '@components/styled-components/default-button';
+import { CustomInputBox, CustomInputBar } from '@styled-components/custom-inputbar';
 
 function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
@@ -80,8 +59,8 @@ function SignInView() {
       <SignBody>
         <SignTitle title="sign in with user email" />
         <CustomInputBox>
-          <CustomInput ref={inputEmailRef} onChange={inputOnChange} type="text" placeholder="E-mail Address" />
-          <CustomInput ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
+          <CustomInputBar ref={inputEmailRef} onChange={inputOnChange} type="text" placeholder="E-mail Address" />
+          <CustomInputBar ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
         </CustomInputBox>
         <DefaultButton buttonType="secondary" size="medium" onClick={() => { signIn(); }} isDisabled={isDisabled}>
           NEXT
