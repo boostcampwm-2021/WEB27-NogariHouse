@@ -56,7 +56,8 @@ function SignInView() {
       },
       body: JSON.stringify(loginInfo),
 
-    }).then((res) => console.log(res.body))
+    }).then((res) => res.json())
+      .then(console.log)
       .catch((err) => console.error(err));
   };
 

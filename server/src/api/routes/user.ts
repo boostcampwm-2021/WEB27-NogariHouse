@@ -23,6 +23,6 @@ const checkLoginInfo = async (req: Request, res: Response) => {
 export default (app: Router) => {
     app.use('/user', userRouter);
   
-    userRouter.get('/signin', checkLoginInfo);
+    userRouter.post('/signin', checkLoginInfo);
   };
   
