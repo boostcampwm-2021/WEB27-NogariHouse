@@ -41,8 +41,8 @@ export interface IUsers {
     recentListenTo: Array<IRecentListenTo>
 }
 
-export interface IUserTypesModel extends IUser, Document {
-  checkPassword: (guess: string, next: (err: Error, isMatch: boolean) => void) => void
+export interface IUserTypesModel extends IUsers, Document {
+  checkPassword: (guess: string) => boolean
 }
 
 const usersSchema = new Schema({
@@ -114,10 +114,8 @@ usersSchema.pre('save', function (next) {
   }
 });
 
-usersSchema.methods.checkPassword = function (guess, next) {
-  bcrypt.compare(guess, this.password, (err, isMatch) => {
-    next(err, isMatch);
-  });
+usersSchema.methods.checkPassword = function (guess) {
+  return bcrypt.compareSync(guess, this.password);
 };
 
 export default model<IUserTypesModel>('users', usersSchema);
