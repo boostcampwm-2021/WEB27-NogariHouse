@@ -1,28 +1,21 @@
 import {
-    Router, Request, Response
-  } from 'express';
+  Router, Request, Response,
+} from 'express';
 
-import Users from '@models/users'
-  
+import usersService from '@services/users-service';
+
 const userRouter = Router();
 
-const checkLoginInfo = async (req: Request, res: Response) => {
-    const {email, password} = req.body;
-    const user = await Users.findOne({userEmail: email});
-    if(!user) {
-        res.json({result: false, msg: 'there is no user'});
-    }
-    else {
-        user.checkPassword(password, (err, isMatch) => {
-            if(isMatch) res.json({result: true, msg: 'ok'});
-            else res.json({result: false, msg: 'wrong password'});
-        })
-    }
-}
-  
 export default (app: Router) => {
-    app.use('/user', userRouter);
-  
-    userRouter.post('/signin', checkLoginInfo);
-  };
-  
+  app.use('/user', userRouter);
+
+  userRouter.post('/signin', async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    const result = await usersService.signIn(email, password);
+    console.log(result);
+    if (result?.token) {
+      res.status(200).json({ jwt: result.token, result: result.result, msg: result.msg });
+    }
+    res.status(400).json({ result: result?.result, msg: result?.msg });
+  });
+};
