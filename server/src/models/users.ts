@@ -5,23 +5,23 @@ export interface IUser {
     userName: string,
     profileUrl: string,
     description: string,
-};
+}
 
 export interface IFollow {
     [userId: string]: IUser,
-};
+}
 
 export interface IActivity {
     // 추가 설정 필요
-};
+}
 
 export interface IRecentSearch {
     // 추가 설정 필요
-};
+}
 
 export interface IRecentListenTo extends IUser{
     userId: string,
-};
+}
 
 export interface IUsers {
     userName: string,
@@ -39,11 +39,11 @@ export interface IUsers {
     activity: Array<IActivity>
     recentSearch: Array<IRecentSearch>,
     recentListenTo: Array<IRecentListenTo>
-};
+}
 
-export interface IUserTypesModel extends IUser, Document { 
-  checkPassword: (guess : string, next : (err : Error, isMatch : boolean) => void) => void
-};
+export interface IUserTypesModel extends IUsers, Document {
+  checkPassword: (guess: string) => boolean
+}
 
 const usersSchema = new Schema({
   userName: {
@@ -98,9 +98,9 @@ const usersSchema = new Schema({
   },
 });
 
-usersSchema.pre("save", function (next) { 
+usersSchema.pre('save', function (next) {
   const user = this;
-  if (user.isModified("password")) { //패스워드가 변경될때만 해싱작업이 처리됨.
+  if (user.isModified('password')) { // 패스워드가 변경될때만 해싱작업이 처리됨.
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return next(err);
       bcrypt.hash(user.password, salt, (err, hash) => {
@@ -114,10 +114,8 @@ usersSchema.pre("save", function (next) {
   }
 });
 
-usersSchema.methods.checkPassword = function(guess, next){
-  bcrypt.compare(guess, this.password, (err, isMatch) => {
-      next(err,isMatch);
-  });
+usersSchema.methods.checkPassword = function (guess) {
+  return bcrypt.compareSync(guess, this.password);
 };
 
 export default model<IUserTypesModel>('users', usersSchema);
