@@ -5,13 +5,13 @@ import redis from 'redis';
 
 export default {
   setRoom: async (title: string, type: string, userId: string, isAnonymous: boolean) => {
-    const roomUserList = [userId];
+    const participants = [userId];
     // userId 현재 아이디 가져와야 함
     const profileUrlObject : any = await Users.findOne({ userId: 'dlatqdlatq' }).select('profileUrl');
     const { profileUrl } = profileUrlObject.toObject();
 
     const newRoom = new Rooms({
-      title, type, isAnonymous, roomUserList,
+      title, type, isAnonymous, participants,
     });
     const redisClient = redis.createClient();
 

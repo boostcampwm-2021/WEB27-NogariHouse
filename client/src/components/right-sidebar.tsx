@@ -50,10 +50,11 @@ function RightSideBar() {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const submitButtonHandler = () => {
+    // userId 현재 아이디 가져와야함
     const roomInfo = {
       type: roomType,
       title: inputRef.current?.value,
-      participants: 'dlatqdlatq',
+      userId: 'dlatqdlatq',
       isAnonymous: isAnonymous,
     };
     fetch(`${process.env.REACT_APP_API_URL}/api/room`, {

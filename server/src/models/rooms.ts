@@ -20,7 +20,7 @@ const roomSchema = new Schema({
     type: Boolean,
     required: true,
   },
-  userList: {
+  participants: {
     type: [String],
     default: [],
   },
