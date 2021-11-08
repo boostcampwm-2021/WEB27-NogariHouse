@@ -2,18 +2,18 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface user{
+interface User{
   userName: string,
   profileURL: string
 }
 
-interface roomCardProps {
+interface RoomCardProps {
   title: string,
-  users: Array<user>
+  users: Array<User>
 }
 
-interface profileProps {
-  user: user,
+interface ProfileProps {
+  user: User,
   length: number
 }
 
@@ -28,13 +28,13 @@ const RoomCardProfileDiv = styled.div`
 const RoomCardFirstProfile = styled.div`
   position: absolute;
 
-  width: ${(props: profileProps) => (props.length === 1 ? 85 : 65)}px;
-  height: ${(props: profileProps) => (props.length === 1 ? 85 : 65)}px;
+  width: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
+  height: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
 
-  background: center / contain no-repeat url(${(props : profileProps) => props.user.profileURL});
+  background: center / contain no-repeat url(${(props : ProfileProps) => props.user.profileURL});
   border-radius: 25px;
 
-  background-size: ${(props: profileProps) => (props.length === 1 ? 120 : 100)}px;
+  background-size: ${(props: ProfileProps) => (props.length === 1 ? 120 : 100)}px;
   z-index: 2;
 `;
 
@@ -45,7 +45,7 @@ const RoomCardSecondProfile = styled.div`
 
   width: 55px;
   height: 55px;
-  background: center / contain no-repeat url(${(props : profileProps) => props.user.profileURL});
+  background: center / contain no-repeat url(${(props : ProfileProps) => props.user.profileURL});
   background-size: 80px;
   border-radius: 25px;
 
@@ -90,7 +90,7 @@ const RoomCardLayout = styled.div`
   width: 100%;
 `;
 
-export default function RoomCard({ title, users } : roomCardProps) {
+export default function RoomCard({ title, users } : RoomCardProps) {
   const userNames = [];
   for (let i = 0; i < 3 && i < users.length; i += 1) userNames.push(users[i]);
   return (
@@ -104,7 +104,7 @@ export default function RoomCard({ title, users } : roomCardProps) {
           {users.length > 1 && <RoomCardSecondProfile user={users[1]} length={users.length} /> }
         </RoomCardProfileDiv>
         <RoomCardUsers>
-          {userNames.map((v) => <div><span key={1}>{v.userName}</span></div>)}
+          {userNames.map((v) => <div key={v.userName}>{v.userName}</div>)}
           <div><span>{users.length}</span></div>
         </RoomCardUsers>
       </RoomCardInfo>

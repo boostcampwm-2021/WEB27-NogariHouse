@@ -4,15 +4,16 @@ import { IconType } from 'react-icons';
 
 interface IconAndLink {
     Component:IconType,
+    key: string | number,
     link: string,
     size?: number,
     color?: string,
   }
 
 export const makeIconToLink = ({
-  Component, link, size = 48, color = 'black',
+  Component, link, key, size = 48, color = 'black',
 }: IconAndLink) => (
-  <Link to={link}>
+  <Link to={link} key={key}>
     <Component size={size} color={color} />
   </Link>
 );

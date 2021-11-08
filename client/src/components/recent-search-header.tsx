@@ -6,14 +6,15 @@ import { CustomtHeader, HeaderTitleNunito } from '@styled-components/header';
 import { makeIconToLink } from '@utils/index';
 
 interface IconAndLink {
-  Component: IconType;
-  link: string;
-  size?: number;
-  color?: string;
+  Component:IconType,
+  key: string | number,
+  link: string,
+  size?: number,
+  color?: string,
 }
 
 function RecentSearchHeader() {
-  const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/search' };
+  const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/search', key: 'search' };
 
   return (
     <CustomtHeader>

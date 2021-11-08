@@ -48,7 +48,8 @@ const ImageLayout = styled.img`
 `;
 
 interface IconAndLink {
-  Component: IconType,
+  Component:IconType,
+  key: string | number,
   link: string,
   size?: number,
   color?: string,
@@ -56,13 +57,13 @@ interface IconAndLink {
 
 function DefaultHeader() {
   const leftSideIcons: IconAndLink[] = [
-    { Component: HiSearch, link: '/search' },
-    { Component: HiOutlinePaperAirplane, link: '/chat' },
+    { Component: HiSearch, link: '/search', key: 'search' },
+    { Component: HiOutlinePaperAirplane, link: '/chat', key: 'chat' },
   ];
   const rightSideIcons: IconAndLink[] = [
-    { Component: HiOutlineMail, link: '/invite' },
-    { Component: HiOutlineCalendar, link: '/event' },
-    { Component: HiOutlineBell, link: '/activity' },
+    { Component: HiOutlineMail, link: '/invite', key: 'invite' },
+    { Component: HiOutlineCalendar, link: '/event', key: 'event' },
+    { Component: HiOutlineBell, link: '/activity', key: 'activity' },
   ];
   return (
     <CustomDefaultHeader>

@@ -15,7 +15,7 @@ interface EventUser {
 }
 
 interface EventCardProps {
-  key?: string,
+  key: string,
   time: string,
   title: string,
   participants: EventUser[],
@@ -47,7 +47,7 @@ function EventView() {
     console.log(e.currentTarget);
   }, []);
 
-  useEffect(() => resetItemList(), []);
+  useEffect(() => () => resetItemList(), []);
 
   return (
     <>
