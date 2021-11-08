@@ -1,6 +1,7 @@
 import {
   Router, Request, Response,
 } from 'express';
+import roomService from '@services/rooms-service';
 
 const route = Router();
 
@@ -10,8 +11,10 @@ export default (app: Router) => {
   route.post('/', (req: Request, res: Response) => {
     try {
       const {
-        type, title, participants, isAnonymus,
+        title, type, userId, isAnonymous,
       } = req.body;
+
+      roomService.setRoom(title, type, userId, isAnonymous);
 
       res.status(200).send('success!');
     } catch (error) {
