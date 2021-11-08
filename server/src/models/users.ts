@@ -5,23 +5,23 @@ export interface IUser {
     userName: string,
     profileUrl: string,
     description: string,
-}
+};
 
 export interface IFollow {
     [userId: string]: IUser,
-}
+};
 
 export interface IActivity {
     // 추가 설정 필요
-}
+};
 
 export interface IRecentSearch {
     // 추가 설정 필요
-}
+};
 
 export interface IRecentListenTo extends IUser{
     userId: string,
-}
+};
 
 export interface IUsers {
     userName: string,
@@ -39,9 +39,11 @@ export interface IUsers {
     activity: Array<IActivity>
     recentSearch: Array<IRecentSearch>,
     recentListenTo: Array<IRecentListenTo>
-}
+};
 
-export interface IUserTypesModel extends IUser, Document { }
+export interface IUserTypesModel extends IUser, Document { 
+  checkPassword: (guess : string, next : (err : Error, isMatch : boolean) => void) => void
+};
 
 const usersSchema = new Schema({
   userName: {
