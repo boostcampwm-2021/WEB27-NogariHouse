@@ -2,7 +2,7 @@
 import { Schema, Document, model } from 'mongoose';
 
 export interface IRefreshTokenTypesModel extends Document{
-  user: Schema.Types.ObjectId
+  userId: String,
   token: String,
   expires: Date,
   created: Date,
@@ -15,7 +15,7 @@ export interface IRefreshTokenTypesModel extends Document{
 }
 
 const schema = new Schema({
-  user: { type: Schema.Types.ObjectId, ref: 'users' },
+  userId: String,
   token: String,
   expires: Date,
   created: { type: Date, default: Date.now },
