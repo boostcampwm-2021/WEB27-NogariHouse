@@ -43,6 +43,7 @@ function LeftSideBar() {
         .filter((list) => list.isActive)
         .map((list) => (
           <ActiveFollowingCard
+            key={list.userName}
             userName={list.userName}
             profileUrl={list.profileUrl}
           />

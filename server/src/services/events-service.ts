@@ -24,7 +24,7 @@ export default {
       key: item._id,
       time: String(item.date),
       title: item.title,
-      users: item.participants,
+      participants: item.participants,
       description: item.description,
     }),
 
