@@ -40,7 +40,7 @@ class UserService {
       // 로그인 로직에서 토큰을 디비에 저장하는게 맞는지?
       // tokenService를 따로 만들어줘야하는가?
       const existingRefreshToken = await RefreshTokens.findOneAndUpdate(
-        { userId: 'navi' }, { token: refreshToken },
+        { userId: user.userId }, { token: refreshToken },
       );
 
       if (!existingRefreshToken) {
