@@ -1,22 +1,28 @@
 import {
   Router, Request, Response,
 } from 'express';
-import roomService from '@services/rooms-service';
+import RoomService from '@services/rooms-service';
 
 const route = Router();
+
+interface Query {
+  title: string,
+  type: string,
+  userId: string,
+  isAnonymous: boolean
+}
 
 export default (app: Router) => {
   app.use('/room', route);
 
-  route.post('/', (req: Request, res: Response) => {
+  route.get('/', async (req: Request, res: Response) => {
     try {
       const {
         title, type, userId, isAnonymous,
-      } = req.body;
+      } = req.query as unknown as Query;
 
-      roomService.setRoom(title, type, userId, isAnonymous);
-
-      res.status(200).send('success!');
+      const roomId = await RoomService.setRoom(title, type, userId, isAnonymous);
+      res.status(200).json(roomId);
     } catch (error) {
       console.error(error);
     }

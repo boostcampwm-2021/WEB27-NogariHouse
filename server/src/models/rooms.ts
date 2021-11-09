@@ -4,7 +4,7 @@ export interface IRooms extends Document{
   title: string,
   type: string,
   isAnonymous: boolean,
-  userList: Array<String>,
+  participants: Array<String>,
 }
 
 const roomSchema = new Schema({

@@ -1,11 +1,13 @@
 import React, {
-  UIEvent, useCallback, useRef, useState,
+  UIEvent, useCallback, useRef, useState, useEffect,
 } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilState } from 'recoil';
+import client from 'socket.io-client';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { nowFetchingState } from '@atoms/main-section-scroll';
+import socketTypeState from '@atoms/socket';
 import LargeLogo from '@components/large-logo';
 import LeftSideBar from '@components/left-sidebar';
 import RightSideBar from '@components/right-sidebar';
@@ -72,6 +74,7 @@ const ButtonLayout = styled.div`
 function MainView() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
+  const [socket, setSocket] = useRecoilState(socketTypeState);
   const nowFetchingRef = useRef<boolean>(false);
 
   const scrollBarChecker = useCallback((e : UIEvent<HTMLDivElement>) => {
@@ -86,6 +89,19 @@ function MainView() {
   }, []);
 
   if (isLoggedIn) {
+    useEffect(() => {
+      if (socket === null) {
+        const url = process.env.REACT_APP_SERVER_URL as string;
+        setSocket(client(url));
+      }
+      return () => {
+        if (socket !== null) {
+          socket.disconnect();
+          setSocket(null);
+        }
+      };
+    }, [socket]);
+
     return (
       <>
         <HeaderRouter />
