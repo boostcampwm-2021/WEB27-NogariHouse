@@ -14,7 +14,7 @@ function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const [isDisabled, setIsDisabled] = useState(true);
-  const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
+  const [cookies, setCookie] = useCookies(['accessToken']);
   const history = useHistory();
 
   const inputOnChange = () => {
@@ -30,10 +30,9 @@ function SignInView() {
     {result: boolean,
       msg?: string,
       accessToken?:string,
-      refreshToken?:string}) => {
+    }) => {
     if (json.result) {
       setCookie('accessToken', json.accessToken);
-      setCookie('refreshToken', json.refreshToken);
       history.replace('/');
     } else {
       alert('로그인 정보를 확인하세요.');
