@@ -11,4 +11,4 @@ const handleConnection = (socket : Socket) => {
 
 server.on('connection', handleConnection);
 
-module.exports = server;
+export default server;

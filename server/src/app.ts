@@ -1,17 +1,22 @@
 import 'module-alias/register';
 import express from 'express';
 import dotenv from 'dotenv';
+import http from 'http';
+import io from '@sockets/index';
 
 import config from '@config/index';
 import init from '@loaders/index';
 
 async function startServer() {
-  const app = express();
   dotenv.config();
+  const app = express();
+
+  const server = http.createServer(app);
+  io.attach(server);
 
   await init({ app });
 
-  app.listen(config.port, () => {
+  server.listen(config.port, () => {
     console.info(`
       ################################################
       🛡️  Server listening on port: ${config.port} 🛡️
