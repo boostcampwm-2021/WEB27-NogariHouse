@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-underscore-dangle */
 import Events, { IEventsTypesModel } from '@models/events';
 
 export default {
@@ -10,7 +12,8 @@ export default {
     }
   },
 
-  get10EventItemsFromUser: async (userId: string, count : number) => {
+  // myEvent 구현시 해당 함수에서 추가적으로 구현해서 사용하실건지 아니면 따로 함수를 만들어주실건지 ...
+  get10EventItemsFromUser: async (userDocumentId: string, count : number) => {
     try {
       const items = await Events.find().skip(count).limit(10);
       return items;
