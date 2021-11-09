@@ -15,6 +15,7 @@ import MainRouter from '@routes/main';
 import DefaultButton from '@styled-components/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
 import EventRegisterModal from '@components/event-register-modal';
+import LoadingSpinner from '@styled-components/loading-spinner';
 
 const MainLayout = styled.div`
   display: flex;
@@ -72,7 +73,7 @@ const ButtonLayout = styled.div`
 
 function MainView() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  // const [cookies] = useCookies(['jwt']);
+  const [loading, setLoading] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
 
@@ -94,11 +95,15 @@ function MainView() {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
         if (json.ok) setIsLoggedIn(true);
         else setIsLoggedIn(false);
-      });
+      })
+      .then(() => { setLoading(false); });
   }, []);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   if (isLoggedIn) {
     return (

@@ -24,4 +24,21 @@ export default (app: Router) => {
       res.status(400).json({ result: result?.result, msg: result?.msg });
   });
 
+  userRouter.post('/signup/mail', async (req: Request, res: Response) => {
+    const { email } = req.body;
+
+    const verificationNumber = await usersService.sendVerificationMail(email);
+    
+    res.json({ verificationNumber });
+  });
+
+  userRouter.post('/signup/userInfo', async (req: Request, res: Response) => {
+    const info = req.body;
+    try {
+      await usersService.signup(info);
+      res.json({ok: true, msg: 'signup success' });
+    } catch(e) {
+      res.json({ ok: false, msg: 'signup error' })
+    }
+  })
 };
