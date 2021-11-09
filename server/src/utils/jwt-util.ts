@@ -2,9 +2,9 @@ import { IRefreshTokenTypesModel } from '@models/refresh-token';
 import usersService from '@src/services/users-service';
 
 // jwt-util.js
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
-const secret = process.env.SECRET;
+const secret = process.env.SECRET as string;
 
 export default {
   sign: (userId : string, userEmail : string) => { // access token 발급
@@ -21,7 +21,7 @@ export default {
   verify: (token : any) => { // access token 검증
     let decoded = null;
     try {
-      decoded = jwt.verify(token, secret);
+      decoded = jwt.verify(token, secret) as jwt.JwtPayload;
       return {
         ok: true,
         id: decoded.id,
@@ -37,7 +37,7 @@ export default {
     algorithm: 'HS256',
     expiresIn: '14d',
   }),
-  refreshVerify: async (token : IRefreshTokenTypesModel, userId:string) => { // refresh token 검증
+  refreshVerify: async (token : string, userId:string) => { // refresh token 검증
     try {
       const data = await usersService.getRefreshTokens(userId); // refresh token 가져오기
       if (token === data) {

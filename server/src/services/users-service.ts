@@ -30,6 +30,6 @@ export default {
     if (!refreshToken) {
       return null;
     }
-    return refreshToken;
+    return refreshToken.token;
   },
 };
