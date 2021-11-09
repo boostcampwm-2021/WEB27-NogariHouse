@@ -14,7 +14,7 @@ function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const [isDisabled, setIsDisabled] = useState(true);
-  const [cookies, setCookie] = useCookies(['jwt']);
+  const [cookies, setCookie] = useCookies(['accessToken', 'refreshToken']);
   const history = useHistory();
 
   const inputOnChange = () => {
@@ -26,9 +26,14 @@ function SignInView() {
     }
   };
 
-  const checkSigninResponse = (json : {result: boolean, msg?: string, jwt?:string}) => {
+  const checkSigninResponse = (json :
+    {result: boolean,
+      msg?: string,
+      accessToken?:string,
+      refreshToken?:string}) => {
     if (json.result) {
-      setCookie('jwt', json.jwt);
+      setCookie('accessToken', json.accessToken);
+      setCookie('refreshToken', json.refreshToken);
       history.replace('/');
     } else {
       alert('로그인 정보를 확인하세요.');
