@@ -24,21 +24,22 @@ export default {
     const user = await Users.findOne({ userEmail: email });
 
     if (!user) {
-      return { token: null, result: false, msg: 'there is no user' };
+      return { result: false, msg: 'there is no user' };
     }
 
     const isMatch = user.checkPassword(password);
 
     if (isMatch) {
-      const accessToken = await jwt.sign(user.userId, user.userEmail);
-      return { token: accessToken, result: true, msg: 'ok' };
+      const accessToken = jwt.sign(user.userId, user.userEmail);
+      const refreshToken = jwt.refresh();
+      return {
+        accessToken, refreshToken, result: true, msg: 'ok',
+      };
     }
-    return { token: null, result: false, msg: 'wrong password' };
+    return { result: false, msg: 'wrong password' };
   },
 
-  verifyAccessToken: (token: string) => {
-    return jwt.verify(token);
-  },
+  verifyAccessToken: (token: string) => jwt.verify(token),
 
   getRefreshTokens: async (userID: string) => {
     const refreshToken = await RefreshTokens.findOne({ userID });
@@ -63,7 +64,7 @@ export default {
 
     const VerificationNumber = String(Math.floor(Math.random() * 999999)).padStart(6, '0');
 
-    const send = await transporter.sendMail({
+    await transporter.sendMail({
       from: 'hyunee169@gmail.com',
       to: email,
       subject: '인증번호입니다.',
