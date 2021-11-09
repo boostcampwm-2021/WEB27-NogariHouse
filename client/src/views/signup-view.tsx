@@ -23,6 +23,7 @@ function SignUpView() {
   const [isEmailInputView, setIsEmailInputView] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
+  const emailState = useRef<string>();
   const history = useHistory();
 
   const setVerificationNumber = useCallback((number: number) => {
@@ -57,6 +58,7 @@ function SignUpView() {
         .then((json) => json.verificationNumber)
         .then(setVerificationNumber)
         .then(() => {
+          emailState.current = inputEmailValue;
           setLoading(false);
           setIsDisabled(true);
           setIsEmailInputView(false);
@@ -70,7 +72,7 @@ function SignUpView() {
     const inputVerificationValue = inputVerificationRef.current?.value as string;
 
     if (inputVerificationValue === (verificationNumber.current?.toString())) {
-      history.replace('/signup/info');
+      history.replace('/signup/info', { email: emailState.current });
     } else {
       alert('인증번호를 확인하세요.');
     }
