@@ -18,11 +18,22 @@ export default (app: Router) => {
   route.get('/', async (req: Request, res: Response) => {
     try {
       const {
-        title, type, userId, isAnonymous,
+        title, type, isAnonymous,
       } = req.query as unknown as Query;
 
-      const roomId = await RoomService.setRoom(title, type, userId, isAnonymous);
+      const roomId = await RoomService.setRoom(title, type, isAnonymous);
       res.status(200).json(roomId);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  route.get('/:roomDocumentId', async (req: Request, res: Response) => {
+    try {
+      const { roomDocumentId } = req.params;
+
+      const roomInfo = await RoomService.findRoom(roomDocumentId);
+      res.status(200).json(roomInfo);
     } catch (error) {
       console.error(error);
     }

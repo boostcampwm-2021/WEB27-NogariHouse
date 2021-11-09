@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable max-len */
 import Rooms from '@models/rooms';
-import Users from '@models/users';
-import redis from 'redis';
 
 let instance: any = null;
 class RoomService {
@@ -11,33 +10,24 @@ class RoomService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async insertUser(userId: string, roomId: string) {
-    // userId 현재 아이디 가져와야 함
-    const profileUrlObject : any = await Users.findOne({ userId: 'dlatqdlatq' }).select('profileUrl');
-    const { profileUrl } = profileUrlObject.toObject();
-
-    const redisClient = redis.createClient();
-
-    redisClient.hset(userId, 'roomId', `${roomId}`);
-    redisClient.hset(userId, 'profileUrl', `${profileUrl}`);
-    redisClient.hset(userId, 'mic', 'true');
-
-    redisClient.quit();
-  }
-
-  async addParticipant(roomId: string, userId: string) {
-    await Rooms.findOneAndUpdate({ _id: roomId }, { $push: { participants: userId } });
-    await this.insertUser(userId, roomId);
+  async addParticipant(roomDocumentId: string, userDocumentId: string) {
+    await Rooms.findOneAndUpdate({ _id: roomDocumentId }, { $push: { participants: userDocumentId } });
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async setRoom(title: string, type: string, userId: string, isAnonymous: boolean) {
+  async setRoom(title: string, type: string, isAnonymous: boolean) {
     const newRoom = new Rooms({
       title, type, isAnonymous,
     });
     await newRoom.save();
 
     return newRoom._id;
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async findRoom(roomDocumentId: string) {
+    const result = await Rooms.findOne({ _id: roomDocumentId });
+    return result;
   }
 }
 
