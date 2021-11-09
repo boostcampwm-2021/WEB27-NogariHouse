@@ -21,6 +21,10 @@ export default {
     return { token: null, result: false, msg: 'wrong password' };
   },
 
+  verifyAccessToken: (token: string) => {
+    return jwt.verify(token);
+  },
+
   getRefreshTokens: async (userID: string) => {
     const refreshToken = await RefreshTokens.findOne({ userID });
     if (!refreshToken) {

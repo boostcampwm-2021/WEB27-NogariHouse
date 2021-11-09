@@ -2,7 +2,7 @@ import React, {
   UIEvent, useCallback, useEffect, useRef, useState,
 } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { useCookies } from 'react-cookie';
+// import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -72,7 +72,7 @@ const ButtonLayout = styled.div`
 
 function MainView() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [cookies] = useCookies(['jwt']);
+  // const [cookies] = useCookies(['jwt']);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
 
@@ -88,15 +88,17 @@ function MainView() {
   }, []);
 
   useEffect(() => {
-    // fetch(`${process.env.REACT_APP_API_URL}/api/user`)
-    //   .then((res) => res.json())
-    //   .then((json) => {
-    //     if (json.isLogin) setIsLoggedIn(true);
-    //     else setIsLoggedIn(false);
-    //   });
-    console.log(cookies.jwt);
-    if (cookies.jwt) setIsLoggedIn(true);
-  }, cookies.jwt);
+    fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        console.log(json);
+        if (json.ok) setIsLoggedIn(true);
+        else setIsLoggedIn(false);
+      });
+  }, []);
 
   if (isLoggedIn) {
     return (

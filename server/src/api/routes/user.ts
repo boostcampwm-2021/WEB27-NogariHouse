@@ -8,6 +8,11 @@ const userRouter = Router();
 
 export default (app: Router) => {
   app.use('/user', userRouter);
+  
+  userRouter.get('/', (req: Request, res: Response) => {
+    const { jwt } = req.cookies;
+    res.json(usersService.verifyAccessToken(jwt));
+  })
 
   userRouter.post('/signin', async (req: Request, res: Response) => {
     const { email, password } = req.body;
