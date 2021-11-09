@@ -5,7 +5,21 @@ import Users from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwt from '@utils/jwt-util';
 
+interface ISignupUserInfo {
+  loginType: string,
+  userId: string,
+  password: string,
+  userName: string,
+  userEmail: string,
+  interesting: string[]
+}
+
 export default {
+  signup: (info: ISignupUserInfo) => {
+    const newResult = new Users(info);
+    return newResult.save();
+  },
+
   signIn: async (email: string, password: string) => {
     const user = await Users.findOne({ userEmail: email });
 

@@ -30,6 +30,12 @@ export default (app: Router) => {
     const verificationNumber = await usersService.sendVerificationMail(email);
     
     res.json({ verificationNumber });
-  })
+  });
 
+  userRouter.post('/signup/userInfo', async (req: Request, res: Response) => {
+    const info = req.body;
+    const result = await usersService.signup(info);
+    console.log(result)
+    res.json({ ok: true });
+  })
 };
