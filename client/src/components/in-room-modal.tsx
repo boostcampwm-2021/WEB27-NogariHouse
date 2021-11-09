@@ -13,6 +13,7 @@ import DefaultButton from '@styled-components/default-button';
 import InRoomUserBox, { IParticipant } from '@components/in-room-user-box';
 // import useConnectSocket from '@hooks/useConnectSocket';
 import { getRoomInfo } from '@api/index';
+import ScrollBarStyle from '@styles/scrollbar-style';
 
 export interface IRooms extends Document{
   title: string,
@@ -66,7 +67,19 @@ const InRoomFooter = styled.div`
 `;
 
 const InRoomUserList = styled.div`
+  position: absolute;
+
+  display: flex;
   flex-wrap: wrap;
+  justify-content: space-around;
+
+  box-sizing: border-box;
+  padding: 0px 30px;
+
+  width: 100%;
+  height: 70%;
+
+  ${ScrollBarStyle}
 `;
 
 const FooterBtnDiv = styled.div`
@@ -83,11 +96,9 @@ const FooterBtnDiv = styled.div`
   };
 `;
 
-const leaveEvent = () => 1;
-
 // 룸 생성 모달
 function InRoomModal() {
-  const [user] = useRecoilState(userTypeState);
+  const [user, setUser] = useRecoilState(userTypeState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [socket, setSocket] = useState<any>(null);
   const [isMic, setMic] = useState(false);
@@ -139,6 +150,11 @@ function InRoomModal() {
     // });
   }, [socket]);
 
+  const leaveEvent = () => {
+    const newUser = { ...user, roomId: '' };
+    setUser(newUser);
+  };
+
   return (
     <>
       <InRoomHeader>
@@ -152,7 +168,7 @@ function InRoomModal() {
         <InRoomUserBox userDocumentId={user.userDocumentId} isMicOn={isMic} />
       </InRoomUserList>
       <InRoomFooter>
-        <DefaultButton buttonType="active" size="small" onClick={leaveEvent} />
+        <DefaultButton buttonType="active" size="small" onClick={leaveEvent}> Leave a Quietly </DefaultButton>
         <FooterBtnDiv><FiScissors /></FooterBtnDiv>
         <FooterBtnDiv><FiPlus /></FooterBtnDiv>
         <FooterBtnDiv>{isMic ? <FiMic onClick={() => setMic(false)} /> : <FiMicOff onClick={() => setMic(true)} />}</FooterBtnDiv>

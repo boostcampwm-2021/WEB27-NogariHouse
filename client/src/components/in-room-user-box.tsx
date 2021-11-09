@@ -1,6 +1,11 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import {
+  FiMic, FiMicOff,
+} from 'react-icons/fi';
 
+import UserImage from '@styled-components/user-image';
 import { getUserInfo } from '@api/index';
 
 export interface IParticipant {
@@ -10,32 +15,45 @@ export interface IParticipant {
 
 const InRoomUserBoxStyle = styled.div`
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 80px;
+  height: 90px;
+
+  p {
+    margin: 5px;
+  }
 `;
 
-const InRoomUserProfile = styled.div`
-`;
+const InRoomUserMicDiv = styled.div`
+  position: absolute;
+  right: 10px;
+  bottom: 20px;
 
-const InRoomUserMic = styled.div`
+  width: 30px;
+  height: 30px;
 
+  background-color: #58964F;
+  border-radius: 30px;
+
+  svg {
+    transform: translate(6px, 6px);
+  }
 `;
 
 function InRoomUserBox({ userDocumentId, isMicOn } : IParticipant) {
   const [userInfo, setUserInfo] = useState<any>();
-  console.log('InRoomUserBox :: ', userInfo);
 
   useEffect(() => {
     getUserInfo(userDocumentId)
       .then((res) => setUserInfo(res));
-  });
-
-  console.log('in room user box ::: ', userDocumentId, isMicOn);
+  }, []);
 
   return (
     <InRoomUserBoxStyle>
-      <InRoomUserProfile />
-      <InRoomUserMic />
+      <UserImage profileUrl={userInfo?.profileUrl} />
+      <InRoomUserMicDiv>
+        { isMicOn ? <FiMic /> : <FiMicOff /> }
+      </InRoomUserMicDiv>
+      <p>{ userInfo?.userName }</p>
     </InRoomUserBoxStyle>
   );
 }
