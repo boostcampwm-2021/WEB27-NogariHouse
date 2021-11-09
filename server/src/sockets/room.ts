@@ -18,16 +18,15 @@ export default function registerRoomHandler(socket : Socket) {
     users[socket.id] = { roomDocumentID, userDocumentId };
 
     const userData = await RoomService.addParticipant(roomDocumentID, userDocumentId);
-    console.log('socket :: ', users);
     socket.to(roomDocumentID).emit('room:join', { userDocumentId, userData });
   };
 
   const handleRoomLeave = () => {
-    const { spaceID, userID } = users[socket.id];
+    const { roomDocumentID, userDocumentId } = users[socket.id];
     delete users[socket.id];
 
     // room service에서 나간 유저 제거 코드 추가하기
-    socket.to(spaceID).emit('space:leave', { userID });
+    socket.to(roomDocumentID).emit('space:leave', { userDocumentId });
   };
 
   socket.on('room:join', handleRoomJoin);

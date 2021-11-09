@@ -55,7 +55,7 @@ function RoomModal() {
         'Content-Type': 'application/json',
       },
     }).then((res) => res.json())
-      .then((roomId) => setUser({ roomId, userDocumentId: '유저 다큐멘트 아이디' }))
+      .then((roomId) => setUser({ roomId, userDocumentId: '618238ccd24b76444a6c592f' }))
       .catch((err) => console.error(err));
   };
 
