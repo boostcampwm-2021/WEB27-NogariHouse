@@ -92,7 +92,7 @@ function SignupInfoView() {
               <CustomInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
             </CustomInputBox>
             <DefaultButton buttonType="secondary" size="medium" onClick={() => { onClickInputViewNextButton(); }} isDisabled={isDisabled}>
-              NEXT2
+              NEXT
             </DefaultButton>
           </>
         ) : (

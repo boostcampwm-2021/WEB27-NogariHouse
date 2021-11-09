@@ -34,8 +34,11 @@ export default (app: Router) => {
 
   userRouter.post('/signup/userInfo', async (req: Request, res: Response) => {
     const info = req.body;
-    const result = await usersService.signup(info);
-    console.log(result)
-    res.json({ ok: true });
+    try {
+      await usersService.signup(info);
+      res.json({ok: true, msg: 'signup success' });
+    } catch(e) {
+      res.json({ ok: false, msg: 'signup error' })
+    }
   })
 };

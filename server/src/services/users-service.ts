@@ -31,7 +31,6 @@ export default {
 
     if (isMatch) {
       const accessToken = await jwt.sign(user.userId, user.userEmail);
-      console.log(accessToken);
       return { token: accessToken, result: true, msg: 'ok' };
     }
     return { token: null, result: false, msg: 'wrong password' };
@@ -58,7 +57,7 @@ export default {
       requireTLS: true,
       auth: {
         user: 'hyunee169@gmail.com',
-        pass: 'nogari159',
+        pass: process.env.GMAIL_PASS,
       },
     });
 
@@ -70,8 +69,6 @@ export default {
       subject: '인증번호입니다.',
       text: VerificationNumber,
     });
-
-    console.log(send);
 
     return VerificationNumber;
   },
