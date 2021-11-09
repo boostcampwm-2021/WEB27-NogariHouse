@@ -1,8 +1,6 @@
-import { IRefreshTokenTypesModel } from '@models/refresh-token';
-import usersService from '@src/services/users-service';
-
-// jwt-util.js
 import jwt from 'jsonwebtoken';
+
+import usersService from '@services/users-service';
 
 const secret = process.env.SECRET as string;
 
