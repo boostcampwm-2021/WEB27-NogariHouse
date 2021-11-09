@@ -15,7 +15,8 @@ export default (app: Router) => {
     console.log(result);
     if (result?.token) {
       res.status(200).json({ jwt: result.token, result: result.result, msg: result.msg });
-    }
-    res.status(400).json({ result: result?.result, msg: result?.msg });
+    } else
+      res.status(400).json({ result: result?.result, msg: result?.msg });
   });
+
 };
