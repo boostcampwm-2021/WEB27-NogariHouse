@@ -9,24 +9,27 @@ const userRouter = Router();
 export default (app: Router) => {
   app.use('/user', userRouter);
 
-  userRouter.get('/', (req: Request, res: Response) => {
+  userRouter.get('/', async (req: Request, res: Response) => {
     const { accessToken } = req.cookies;
-    res.json(usersService.verifyAccessToken(accessToken));
+    const result = await usersService.verifyAccessToken(accessToken);
+    console.log(result);
+    res.json(result);
   });
 
   userRouter.post('/signin', async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const result = await usersService.signIn(email, password);
-    console.log(result);
-    if (result?.accessToken) {
+    if (result?.ok) { // 네이밍 조정 필요
       res.status(200).json({
         accessToken: result.accessToken,
-        refreshToken: result.refreshToken,
-        result: result.result,
+        result: result.ok,
         msg: result.msg,
       });
     } else {
-      res.status(400);
+      res.status(400).json({
+        result: result.ok,
+        msg: result.msg,
+      });
     }
   });
 

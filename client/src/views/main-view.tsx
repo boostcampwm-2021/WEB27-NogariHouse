@@ -2,7 +2,7 @@ import React, {
   UIEvent, useCallback, useEffect, useRef, useState,
 } from 'react';
 import { useSetRecoilState } from 'recoil';
-// import { useCookies } from 'react-cookie';
+import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -76,6 +76,8 @@ function MainView() {
   const [loading, setLoading] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [cookies, setCookie] = useCookies(['accessToken']);
 
   const scrollBarChecker = useCallback((e : UIEvent<HTMLDivElement>) => {
     if (!nowFetchingRef.current) {
@@ -95,8 +97,12 @@ function MainView() {
     })
       .then((res) => res.json())
       .then((json) => {
-        if (json.ok) setIsLoggedIn(true);
-        else setIsLoggedIn(false);
+        if (json.ok) {
+          setIsLoggedIn(true);
+          setCookie('accessToken', json.accessToken);
+        } else {
+          setIsLoggedIn(false);
+        }
       })
       .then(() => { setLoading(false); });
   }, []);
