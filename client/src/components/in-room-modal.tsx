@@ -215,7 +215,7 @@ function InRoomModal() {
         {/* {roomInfo?.participants?.map((participant) => (
           <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
         ))} */}
-        <InRoomUserBox userDocumentId={user.userDocumentId} isMicOn={isMic} videoRef={myBox} />
+        <InRoomUserBox userDocumentId={user.userDocumentId} isMicOn={isMic} videoRef={myBox.current} />
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={leaveEvent}> Leave a Quietly </DefaultButton>

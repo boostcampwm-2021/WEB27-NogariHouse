@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { Ref, useEffect, useState } from 'react';
+import React, {
+  Ref, RefObject, useEffect, useState,
+} from 'react';
 import styled from 'styled-components';
 import {
   FiMic, FiMicOff,
@@ -11,7 +13,7 @@ import { getUserInfo } from '@api/index';
 export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
-    videoRef?: Ref<HTMLVideoElement>,
+    videoRef?: any,
 }
 
 const InRoomUserBoxStyle = styled.div`
