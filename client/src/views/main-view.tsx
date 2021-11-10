@@ -1,7 +1,8 @@
 import React, {
-  UIEvent, useCallback, useRef, useState,
+  UIEvent, useCallback, useEffect, useRef, useState,
 } from 'react';
 import { useSetRecoilState } from 'recoil';
+import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -14,6 +15,7 @@ import MainRouter from '@routes/main';
 import DefaultButton from '@styled-components/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
 import EventRegisterModal from '@components/event-register-modal';
+import LoadingSpinner from '@styled-components/loading-spinner';
 
 const MainLayout = styled.div`
   display: flex;
@@ -62,7 +64,7 @@ const RoomLayout = styled.div`
 
 const ButtonLayout = styled.div`
   margin-top: 150px;
-  height: 200px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -70,9 +72,12 @@ const ButtonLayout = styled.div`
 `;
 
 function MainView() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [cookies, setCookie] = useCookies(['accessToken']);
 
   const scrollBarChecker = useCallback((e : UIEvent<HTMLDivElement>) => {
     if (!nowFetchingRef.current) {
@@ -84,6 +89,27 @@ function MainView() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.ok) {
+          setIsLoggedIn(true);
+          setCookie('accessToken', json.accessToken);
+        } else {
+          setIsLoggedIn(false);
+        }
+      })
+      .then(() => { setLoading(false); });
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   if (isLoggedIn) {
     return (
@@ -112,12 +138,12 @@ function MainView() {
         <LargeLogo />
         <ButtonLayout>
           <Link to="/signup">
-            <DefaultButton buttonType="secondary" size="large">
+            <DefaultButton buttonType="secondary" size="medium">
               SIGN UP
             </DefaultButton>
           </Link>
-          <Link to="/">
-            <DefaultButton onClick={() => { setIsLoggedIn(true); }} buttonType="thirdly" size="large">
+          <Link to="/signin">
+            <DefaultButton onClick={() => { setIsLoggedIn(false); }} buttonType="thirdly" size="medium">
               SIGN IN
             </DefaultButton>
           </Link>

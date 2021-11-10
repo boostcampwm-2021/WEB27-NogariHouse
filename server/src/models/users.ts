@@ -1,4 +1,5 @@
 import { Schema, Document, model } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 export interface IUser {
     userName: string,
@@ -41,7 +42,9 @@ export interface IUsers {
     profileUrl: string
 }
 
-export interface IUserTypesModel extends IUser, Document { }
+export interface IUserTypesModel extends IUsers, Document {
+  checkPassword: (guess: string) => boolean
+}
 
 const usersSchema = new Schema({
   userName: {
@@ -99,5 +102,25 @@ const usersSchema = new Schema({
     default: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
   },
 });
+
+usersSchema.pre('save', function (next) {
+  const user = this;
+  if (user.isModified('password')) {
+    bcrypt.genSalt(10, (err, salt) => {
+      if (err) return next(err);
+      bcrypt.hash(user.password, salt, (err, hash) => {
+        if (err) return next(err);
+        user.password = hash;
+        next();
+      });
+    });
+  } else {
+    next();
+  }
+});
+
+usersSchema.methods.checkPassword = function (guess) {
+  return bcrypt.compareSync(guess, this.password);
+};
 
 export default model<IUserTypesModel>('users', usersSchema);
