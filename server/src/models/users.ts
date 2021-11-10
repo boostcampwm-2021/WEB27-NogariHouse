@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { Schema, Document, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 
@@ -103,19 +104,27 @@ const usersSchema = new Schema({
   },
 });
 
-usersSchema.pre('save', function (next) {
-  const user = this;
-  if (user.isModified('password')) {
-    bcrypt.genSalt(10, (err, salt) => {
-      if (err) return next(err);
-      bcrypt.hash(user.password, salt, (err, hash) => {
-        if (err) return next(err);
-        user.password = hash;
-        next();
+usersSchema.pre('insertMany', async (next: any, docs: any) => {
+  console.log(docs);
+  if (Array.isArray(docs) && docs.length) {
+    // eslint-disable-next-line no-return-await
+    const hashedUsers = docs.map(async (user) => await new Promise((resolve, reject) => {
+      bcrypt.genSalt(10).then((salt) => {
+        const password = user.password.toString();
+        bcrypt.hash(password, salt).then((hash) => {
+          user.password = hash;
+          resolve(user);
+        }).catch((e) => {
+          reject(e);
+        });
+      }).catch((e) => {
+        reject(e);
       });
-    });
-  } else {
+    }));
+    docs = await Promise.all(hashedUsers);
     next();
+  } else {
+    return next(new Error('User list should not be empty')); // lookup early return pattern
   }
 });
 
