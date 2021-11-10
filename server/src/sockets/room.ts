@@ -1,6 +1,7 @@
 import { Socket } from 'socket.io';
 
 import RoomService from '@services/rooms-service';
+import usersService from '@services/users-service';
 
 interface IUsers {
   [id: string]: any,
@@ -17,7 +18,8 @@ export default function registerRoomHandler(socket : Socket) {
 
     users[socket.id] = { roomDocumentID, userDocumentId };
 
-    const userData = await RoomService.addParticipant(roomDocumentID, userDocumentId);
+    await RoomService.addParticipant(roomDocumentID, userDocumentId);
+    const userData = await usersService.findUser(userDocumentId);
     socket.to(roomDocumentID).emit('room:join', { userDocumentId, userData });
   };
 

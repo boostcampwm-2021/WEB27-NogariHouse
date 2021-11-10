@@ -1,7 +1,7 @@
 /* eslint-disable object-shorthand */
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import roomTypeState from '@atoms/room-type';
 import userTypeState from '@atoms/user';
@@ -9,6 +9,12 @@ import { generateURLQuery } from '@utils/index';
 import DefaultButton from './styled-components/default-button';
 import RoomTypeCheckBox from './room-type-check-box';
 import AnonymousCheckBox from './anonymous-checkbox';
+
+type TView = 'createRoomView' | 'closedSelectorView' | 'inRoomView';
+
+interface RoomModalProps {
+  changeRoomViewHandler: (viewType: TView) => void,
+}
 
 const CustomTitleForm = styled.div`
   display: flex;
@@ -32,10 +38,9 @@ const TitleInputbarLabel = styled.label`
 `;
 
 // 룸 생성 모달
-function RoomModal() {
+function RoomModal({ changeRoomViewHandler } : RoomModalProps) {
   const [roomType] = useRecoilState(roomTypeState);
-  const [user, setUser] = useRecoilState(userTypeState);
-  console.log('user unused 방지용 :: ', user.roomId);
+  const setUser = useSetRecoilState(userTypeState);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -55,7 +60,11 @@ function RoomModal() {
         'Content-Type': 'application/json',
       },
     }).then((res) => res.json())
-      .then((roomId) => setUser({ roomId, userDocumentId: '618238ccd24b76444a6c592f' }))
+      .then((roomDocumentId) => {
+        setUser({ roomDocumentId, userDocumentId: '618238ccd24b76444a6c592f' });
+        if (roomType === 'closedSelectorView') changeRoomViewHandler('closedSelectorView');
+        else changeRoomViewHandler('inRoomView');
+      })
       .catch((err) => console.error(err));
   };
 

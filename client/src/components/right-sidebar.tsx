@@ -1,12 +1,11 @@
 /* eslint-disable object-shorthand */
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
 
 import RoomModal from '@components/room-modal';
 import InRoomModal from '@components/in-room-modal';
-import roomTypeState from '@atoms/room-type';
-import userTypeState from '@atoms/user';
+
+type TView = 'createRoomView' | 'closedSelectorView' | 'inRoomView';
 
 const RoomModalLayout = styled.div`
   display: flex;
@@ -26,16 +25,19 @@ const RoomModalLayout = styled.div`
 `;
 
 function RightSideBar() {
-  const [roomType] = useRecoilState(roomTypeState);
-  const [user] = useRecoilState(userTypeState);
+  const [roomView, setRoomView] = useState<TView>('createRoomView');
 
-  if (user.roomId === '') { // 방 생성 모달
+  const changeRoomViewHandler = (view: TView) => {
+    setRoomView(view);
+  };
+
+  if (roomView === 'createRoomView') { // 방 생성 모달
     return (
       <RoomModalLayout>
-        <RoomModal />
+        <RoomModal changeRoomViewHandler={changeRoomViewHandler} />
       </RoomModalLayout>
     );
-  } if (roomType === 'closed') { // closed인 경우 특정 인원을 지정하는 화면을 만들어야함
+  } if (roomView === 'closedSelectorView') { // closed인 경우 특정 인원을 지정하는 화면을 만들어야함
     return (
       <RoomModalLayout>
         <h1> closed!!! </h1>
@@ -43,11 +45,15 @@ function RightSideBar() {
     );
   }
   // 방에 들어가 있는 경우
-  return (
-    <RoomModalLayout>
-      <InRoomModal />
-    </RoomModalLayout>
-  );
+  if (roomView === 'inRoomView') {
+    return (
+      <RoomModalLayout>
+        <InRoomModal changeRoomViewHandler={changeRoomViewHandler} />
+      </RoomModalLayout>
+    );
+  }
+
+  return (<div>Error</div>);
 }
 
 export default RightSideBar;

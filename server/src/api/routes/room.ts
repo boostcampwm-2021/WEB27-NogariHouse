@@ -3,7 +3,7 @@ import {
 } from 'express';
 import RoomService from '@services/rooms-service';
 
-const route = Router();
+const roomRouter = Router();
 
 interface Query {
   title: string,
@@ -13,9 +13,9 @@ interface Query {
 }
 
 export default (app: Router) => {
-  app.use('/room', route);
+  app.use('/room', roomRouter);
 
-  route.get('/', async (req: Request, res: Response) => {
+  roomRouter.get('/', async (req: Request, res: Response) => {
     try {
       const {
         title, type, isAnonymous,
@@ -28,7 +28,7 @@ export default (app: Router) => {
     }
   });
 
-  route.get('/:roomDocumentId', async (req: Request, res: Response) => {
+  roomRouter.get('/:roomDocumentId', async (req: Request, res: Response) => {
     try {
       const { roomDocumentId } = req.params;
 

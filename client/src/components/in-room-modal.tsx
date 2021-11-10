@@ -15,6 +15,12 @@ import InRoomUserBox, { IParticipant } from '@components/in-room-user-box';
 import { getRoomInfo } from '@api/index';
 import ScrollBarStyle from '@styles/scrollbar-style';
 
+type TView = 'createRoomView' | 'closedSelectorView' | 'inRoomView';
+
+interface InRoomModalProps {
+  changeRoomViewHandler: (viewType: TView) => void,
+}
+
 export interface IRooms extends Document{
   title: string,
   type: string,
@@ -97,15 +103,15 @@ const FooterBtnDiv = styled.div`
 `;
 
 // 룸 생성 모달
-function InRoomModal() {
-  const [user, setUser] = useRecoilState(userTypeState);
+function InRoomModal({ changeRoomViewHandler } : InRoomModalProps) {
+  const [user] = useRecoilState(userTypeState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [socket, setSocket] = useState<any>(null);
   const [isMic, setMic] = useState(false);
 
   // roomId 기반으로 room 정보 불러오기
   useEffect(() => {
-    getRoomInfo(user.roomId)
+    getRoomInfo(user.roomDocumentId)
       .then((res: any) => setRoomInfo(res));
   }, []);
 
@@ -125,7 +131,7 @@ function InRoomModal() {
   // socket 이벤트
   useEffect(() => {
     socket?.emit('room:join', {
-      roomDocumentID: user.roomId, userDocumentId: user.userDocumentId,
+      roomDocumentID: user.roomDocumentId, userDocumentId: user.userDocumentId,
     });
 
     /*
@@ -151,8 +157,7 @@ function InRoomModal() {
   }, [socket]);
 
   const leaveEvent = () => {
-    const newUser = { ...user, roomId: '' };
-    setUser(newUser);
+    changeRoomViewHandler('createRoomView');
   };
 
   return (
