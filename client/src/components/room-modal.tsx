@@ -35,7 +35,7 @@ const TitleInputbarLabel = styled.label`
 function RoomModal() {
   const [roomType] = useRecoilState(roomTypeState);
   const [user, setUser] = useRecoilState(userTypeState);
-  console.log('user unused 방지용 :: ', user);
+  console.log('user unused 방지용 :: ', user.roomId);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -46,6 +46,7 @@ function RoomModal() {
       type: roomType,
       title: inputRef.current?.value as string,
       userId: 'dlatqdlatq',
+      userName: 'sungbin',
       isAnonymous: isAnonymous,
     };
     fetch(`${process.env.REACT_APP_API_URL}/api/room?${generateURLQuery(roomInfo)}`, {
@@ -54,7 +55,7 @@ function RoomModal() {
         'Content-Type': 'application/json',
       },
     }).then((res) => res.json())
-      .then((roomId) => setUser({ roomId }))
+      .then((roomId) => setUser({ roomId, userDocumentId: '618238ccd24b76444a6c592f' }))
       .catch((err) => console.error(err));
   };
 

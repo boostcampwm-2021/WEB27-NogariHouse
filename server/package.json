@@ -17,7 +17,6 @@
     "helmet": "^4.6.0",
     "module-alias": "^2.2.2",
     "mongoose": "^6.0.12",
-    "redis": "^3.1.2",
     "socket.io": "^4.3.2"
   },
   "devDependencies": {
