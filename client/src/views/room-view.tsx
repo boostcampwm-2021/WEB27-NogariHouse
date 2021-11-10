@@ -19,7 +19,11 @@ interface RoomCardProps {
   participantsInfo: Array<User>,
 }
 
-const RoomDiv = styled.div``;
+const RoomDiv = styled.div`
+ div + div {
+   margin-bottom: 10px;
+ }
+`;
 
 const makeRoomToCard = (room: RoomCardProps) => (
   <RoomCard

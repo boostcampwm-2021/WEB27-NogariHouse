@@ -62,10 +62,8 @@ const RoomCardUsers = styled.div`
   justify-content: center;
   align-items: flex-start;
 
-  font-family: "Bangers";
   font-size: 24px;
   line-height: 30px;
-
   margin-left: 30px;
 `;
 
@@ -76,9 +74,8 @@ const RoomCardTitle = styled.div`
   align-items: center;
   padding: 30px;
 
-  font-family: "Bangers";
   font-size: 32px;
-  font-style: bold;
+  font-weight: bold;
 `;
 
 const RoomCardInfo = styled.div`

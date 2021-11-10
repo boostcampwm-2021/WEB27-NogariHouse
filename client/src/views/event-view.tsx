@@ -25,7 +25,11 @@ interface EventCardProps {
   description: string,
 }
 
-const EventDiv = styled.div``;
+const EventDiv = styled.div`
+ div + div {
+   margin-bottom: 10px;
+ }
+`;
 
 const makeEventToCard = (event: EventCardProps) => (
   <EventCard
