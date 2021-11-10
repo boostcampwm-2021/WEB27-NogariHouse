@@ -3,11 +3,11 @@ import { deepCopy } from '@src/utils';
 export type Action = { type: 'UPDATE_USER', payload: any } | { type: 'SET_USERS', payload: any }
 
 export type TState = {
-    users: Object,
+    participants: Object,
 }
 
 export const initialState = {
-  users: {},
+  participants: {},
 };
 
 export const reducer = (state: TState, action: Action): TState => {
@@ -16,20 +16,20 @@ export const reducer = (state: TState, action: Action): TState => {
       const {
         userDocumentId, userData,
       } = action.payload;
-      const newUsers = deepCopy(state.users);
-      newUsers[userDocumentId] = userData;
+      const newParticipants = deepCopy(state.participants);
+      newParticipants[userDocumentId] = userData;
 
-      return { ...state, users: newUsers };
+      return { ...state, participants: newParticipants };
     }
 
     case 'SET_USERS': {
       const {
         userDocumentId, userData,
       } = action.payload;
-      const newUsers = deepCopy(state.users);
-      newUsers[userDocumentId] = userData;
+      const newParticipants = deepCopy(state.participants);
+      newParticipants[userDocumentId] = userData;
 
-      return { ...state, users: newUsers };
+      return { ...state, participants: newParticipants };
     }
 
     default:

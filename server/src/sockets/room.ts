@@ -45,8 +45,16 @@ export default function registerRoomHandler(socket : Socket) {
     socket.to(roomDocumentID).emit('room:answer', answer);
   };
 
+  // eslint-disable-next-line no-undef
+  const handleRoomIce = (ice: RTCIceCandidateInit) => {
+    const { roomDocumentID } = users[socket.id];
+
+    socket.to(roomDocumentID).emit('room:ice', ice);
+  };
+
   socket.on('room:join', handleRoomJoin);
   socket.on('room:offer', handleRoomOffer);
   socket.on('room:answer', handleRoomAnswer);
+  socket.on('room:ice', handleRoomIce);
   socket.on('disconnect', handleRoomLeave);
 }

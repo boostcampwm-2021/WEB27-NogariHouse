@@ -116,11 +116,10 @@ function InRoomModal({ changeRoomViewHandler } : InRoomModalProps) {
   const myBox = useRef<HTMLVideoElement>();
 
   const handleIce = (data: any) => {
-    console.log(data);
-    // socket.emit('ice', data.candidate, roomName);
+    socket.emit('room:ice', data.candidate);
   };
 
-  // 다른 유저 접속시 연결하기
+  // 다른 유저 접속시 연결하기 dispatch로 비디오 태그 추가
   const handleAddStream = (data: any) => {
     console.log(data);
   };
@@ -197,6 +196,10 @@ function InRoomModal({ changeRoomViewHandler } : InRoomModalProps) {
     socket?.on('room:answer', async (answer: RTCSessionDescriptionInit) => {
       myPeerConnection.current.setRemoteDescription(answer);
     });
+
+    socket?.on('room:ice', async (ice: RTCIceCandidateInit) => {
+      myPeerConnection.current.addIceCandidate(ice);
+    });
   }, [socket]);
 
   const leaveEvent = () => {
@@ -210,9 +213,12 @@ function InRoomModal({ changeRoomViewHandler } : InRoomModalProps) {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
-        {roomInfo?.participants?.map((participant) => (
-          <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
+        {Object.entries(state.participants).map((participant) => (
+          <InRoomUserBox userDocumentId={participant[0]} isMicOn={participant[1].isMicOn} />
         ))}
+        {/* {roomInfo?.participants?.map((participant) => (
+          <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
+        ))} */}
         <InRoomUserBox userDocumentId={user.userDocumentId} isMicOn={isMic} videoRef={myBox} />
       </InRoomUserList>
       <InRoomFooter>
