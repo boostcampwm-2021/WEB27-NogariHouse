@@ -5,16 +5,11 @@ import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import roomTypeState from '@atoms/room-type';
 import userTypeState from '@atoms/user';
+import roomViewType from '@src/recoil/atoms/room-view-type';
 import { generateURLQuery } from '@utils/index';
 import DefaultButton from './styled-components/default-button';
 import RoomTypeCheckBox from './room-type-check-box';
 import AnonymousCheckBox from './anonymous-checkbox';
-
-type TView = 'createRoomView' | 'closedSelectorView' | 'inRoomView';
-
-interface RoomModalProps {
-  changeRoomViewHandler: (viewType: TView) => void,
-}
 
 const CustomTitleForm = styled.div`
   display: flex;
@@ -38,7 +33,8 @@ const TitleInputbarLabel = styled.label`
 `;
 
 // 룸 생성 모달
-function RoomModal({ changeRoomViewHandler } : RoomModalProps) {
+function RoomModal() {
+  const setRoomView = useSetRecoilState(roomViewType);
   const [roomType] = useRecoilState(roomTypeState);
   const setUser = useSetRecoilState(userTypeState);
   const [isDisabled, setIsDisabled] = useState(true);
@@ -62,8 +58,8 @@ function RoomModal({ changeRoomViewHandler } : RoomModalProps) {
     }).then((res) => res.json())
       .then((roomDocumentId) => {
         setUser({ roomDocumentId, userDocumentId: '618238ccd24b76444a6c592f' });
-        if (roomType === 'closedSelectorView') changeRoomViewHandler('closedSelectorView');
-        else changeRoomViewHandler('inRoomView');
+        if (roomType === 'closedSelectorView') setRoomView('closedSelectorView');
+        else setRoomView('inRoomView');
       })
       .catch((err) => console.error(err));
   };

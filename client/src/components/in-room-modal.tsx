@@ -3,7 +3,7 @@
 import React, {
   useEffect, useState, useRef, useReducer,
 } from 'react';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
   FiMoreHorizontal, FiScissors, FiPlus, FiMic, FiMicOff,
@@ -11,17 +11,12 @@ import {
 import io from 'socket.io-client';
 
 import userTypeState from '@atoms/user';
+import roomViewType from '@src/recoil/atoms/room-view-type';
 import DefaultButton from '@styled-components/default-button';
 import InRoomUserBox, { IParticipant } from '@components/in-room-user-box';
 import { getRoomInfo } from '@api/index';
 import ScrollBarStyle from '@styles/scrollbar-style';
 import { reducer, initialState } from './in-room-reducer';
-
-type TView = 'createRoomView' | 'closedSelectorView' | 'inRoomView';
-
-interface InRoomModalProps {
-  changeRoomViewHandler: (viewType: TView) => void,
-}
 
 export interface IRooms extends Document{
   title: string,
@@ -105,7 +100,8 @@ const FooterBtnDiv = styled.div`
 `;
 
 // 룸 생성 모달
-function InRoomModal({ changeRoomViewHandler } : InRoomModalProps) {
+function InRoomModal() {
+  const setRoomView = useSetRecoilState(roomViewType);
   const [user] = useRecoilState(userTypeState);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
@@ -203,7 +199,7 @@ function InRoomModal({ changeRoomViewHandler } : InRoomModalProps) {
   }, [socket]);
 
   const leaveEvent = () => {
-    changeRoomViewHandler('createRoomView');
+    setRoomView('createRoomView');
   };
 
   return (
