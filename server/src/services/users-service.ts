@@ -34,18 +34,18 @@ class UserService {
     const isMatch = user.checkPassword(password);
 
     if (isMatch) {
-      const accessToken = jwtUtils.sign(user.userId, user.userEmail);
+      const accessToken = jwtUtils.sign(user._id, user.userEmail);
       const refreshToken = jwtUtils.refresh();
 
       // 로그인 로직에서 토큰을 디비에 저장하는게 맞는지?
       // tokenService를 따로 만들어줘야하는가?
       const existingRefreshToken = await RefreshTokens.findOneAndUpdate(
-        { userId: user.userId }, { token: refreshToken },
+        { user_id: user._id }, { token: refreshToken },
       );
 
       if (!existingRefreshToken) {
         const usersRefreshTokens = new RefreshTokens({
-          userId: user.userId,
+          user_id: user._id,
           token: refreshToken,
         });
         await usersRefreshTokens.save();

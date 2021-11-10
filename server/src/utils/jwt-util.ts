@@ -3,9 +3,9 @@ import jwt from 'jsonwebtoken';
 const secret = process.env.SECRET as string;
 
 export default {
-  sign: (userId : string, userEmail : string) => { // access token 발급
+  sign: (user_id : string, userEmail : string) => { // access token 발급
     const payload = { // access token에 들어갈 payload
-      id: userId,
+      id: user_id,
       email: userEmail,
     };
 
