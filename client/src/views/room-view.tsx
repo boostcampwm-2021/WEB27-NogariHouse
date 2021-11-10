@@ -1,9 +1,10 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import RoomCard from '@styled-components/room-card';
 import useFetchItems from '@src/hooks/useFetchItems';
+import LoadingSpinner from '@styled-components/loading-spinner';
 
 interface User{
   _id: string,
@@ -35,9 +36,18 @@ function RoomCardList({ roomList }: { roomList: RoomCardProps[] }) {
 }
 
 function RoomView() {
-  const [nowItemList] = useFetchItems<RoomCardProps>('/room');
+  const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room');
+  const [loading, setLoading] = useState(true);
 
-  // useEffect(() => () => resetItemList(), []);
+  useEffect(() => {
+    if (nowItemList && nowItemType === 'room') {
+      setLoading(false);
+    }
+  });
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return <RoomCardList roomList={nowItemList} />;
 }
