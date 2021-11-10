@@ -12,10 +12,9 @@ export default (app: Router) => {
   userRouter.get('/', async (req: Request, res: Response) => {
     const { accessToken } = req.cookies;
     const result = await usersService.verifyAccessToken(accessToken);
-    console.log(result);
     res.json(result);
   });
-  
+
   userRouter.get('/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;
@@ -59,5 +58,6 @@ export default (app: Router) => {
       res.json({ ok: true, msg: 'signup success' });
     } catch (e) {
       res.json({ ok: false, msg: 'signup error' });
-      
+    }
+  });
 };
