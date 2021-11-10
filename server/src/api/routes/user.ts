@@ -15,6 +15,17 @@ export default (app: Router) => {
     console.log(result);
     res.json(result);
   });
+  
+  userRouter.get('/:userDocumentId', async (req: Request, res: Response) => {
+    try {
+      const { userDocumentId } = req.params;
+
+      const userInfo = await usersService.findUser(userDocumentId);
+      res.status(200).json(userInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
   userRouter.post('/signin', async (req: Request, res: Response) => {
     const { email, password } = req.body;
@@ -48,6 +59,5 @@ export default (app: Router) => {
       res.json({ ok: true, msg: 'signup success' });
     } catch (e) {
       res.json({ ok: false, msg: 'signup error' });
-    }
-  });
+      
 };

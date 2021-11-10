@@ -39,6 +39,7 @@ export interface IUsers {
     activity: Array<IActivity>
     recentSearch: Array<IRecentSearch>,
     recentListenTo: Array<IRecentListenTo>
+    profileUrl: string
 }
 
 export interface IUserTypesModel extends IUsers, Document {
@@ -95,6 +96,10 @@ const usersSchema = new Schema({
   recentSearch: {
     type: [Object],
     default: [],
+  },
+  profileUrl: {
+    type: String,
+    default: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
   },
 });
 

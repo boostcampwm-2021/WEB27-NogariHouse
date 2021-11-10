@@ -7,8 +7,6 @@ import Users from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
-let instance:any = null;
-
 interface ISignupUserInfo {
   loginType: string,
   userId: string,
@@ -18,6 +16,8 @@ interface ISignupUserInfo {
   interesting: string[]
 }
 
+
+let instance:any = null;
 class UserService {
   constructor() {
     if (instance) return instance;
@@ -55,6 +55,11 @@ class UserService {
       };
     }
     return { ok: false, msg: 'wrong password' };
+  }
+
+  async findUser(userDocumentId: string) {
+    const result = await Users.findOne({ _id: userDocumentId });
+    return result;
   }
 
   signup(info: ISignupUserInfo) {

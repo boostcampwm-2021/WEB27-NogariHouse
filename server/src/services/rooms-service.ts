@@ -1,24 +1,34 @@
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable max-len */
 import Rooms from '@models/rooms';
-import Users from '@models/users';
-import redis from 'redis';
 
-export default {
-  setRoom: async (title: string, type: string, userId: string, isAnonymous: boolean) => {
-    const participants = [userId];
-    // userId 현재 아이디 가져와야 함
-    const profileUrlObject : any = await Users.findOne({ userId: 'dlatqdlatq' }).select('profileUrl');
-    const { profileUrl } = profileUrlObject.toObject();
+let instance: any = null;
+class RoomService {
+  constructor() {
+    if (instance) return instance;
+    instance = this;
+  }
 
+  // eslint-disable-next-line class-methods-use-this
+  async addParticipant(roomDocumentId: string, userDocumentId: string) {
+    await Rooms.findOneAndUpdate({ _id: roomDocumentId }, { $push: { participants: userDocumentId } });
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  async setRoom(title: string, type: string, isAnonymous: boolean) {
     const newRoom = new Rooms({
-      title, type, isAnonymous, participants,
+      title, type, isAnonymous,
     });
-    const redisClient = redis.createClient();
+    await newRoom.save();
 
-    redisClient.hset(userId, 'roomId', `${newRoom._id}`);
-    redisClient.hset(userId, 'profileUrl', `${profileUrl}`);
-    redisClient.hset(userId, 'mic', 'true');
+    return newRoom._id;
+  }
 
-    return newRoom.save();
-  },
-};
+  // eslint-disable-next-line class-methods-use-this
+  async findRoom(roomDocumentId: string) {
+    const result = await Rooms.findOne({ _id: roomDocumentId });
+    return result;
+  }
+}
+
+export = new RoomService();

@@ -1,10 +1,15 @@
 import { Schema, Document, model } from 'mongoose';
 
+interface IParticipant {
+  userDocumentId: string,
+  isMicOn: boolean,
+}
+
 export interface IRooms extends Document{
   title: string,
   type: string,
   isAnonymous: boolean,
-  userList: Array<String>,
+  participants: Array<IParticipant>,
 }
 
 const roomSchema = new Schema({
@@ -21,7 +26,7 @@ const roomSchema = new Schema({
     required: true,
   },
   participants: {
-    type: [String],
+    type: [Object],
     default: [],
   },
 });

@@ -14,7 +14,8 @@
       "@services/*": [ "src/services/*" ],
       "@subscribers/*": [ "src/subscribers/*" ],
       "@types/*": [ "src/types/*" ],
-      "@utils/*": [ "src/utils/*" ]
+      "@utils/*": [ "src/utils/*" ],
+      "@sockets/*": [ "src/sockets/*" ]
     },
     "target": "es6",
     // "allowJs": true,
