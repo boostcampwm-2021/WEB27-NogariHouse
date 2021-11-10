@@ -7,6 +7,8 @@ const useFetchItems = <T extends {}>(apiPath : string): [T[], Resetter] => {
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
   const resetItemList = useResetRecoilState(nowItemsListState);
 
+  useEffect(() => () => resetItemList(), []);
+
   useEffect(() => {
     if (nowFetching) {
       setNowFetching(false);

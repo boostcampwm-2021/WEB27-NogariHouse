@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import React, { MouseEvent, useCallback, useEffect } from 'react';
+import React, { MouseEvent, useCallback } from 'react';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -39,7 +39,7 @@ function EventCardList({ eventList, setEventModal }: { eventList: EventCardProps
 }
 
 function EventView() {
-  const [nowItemList, resetItemList] = useFetchItems<EventCardProps>('/event');
+  const [nowItemList] = useFetchItems<EventCardProps>('/event');
   const setIsOpenEventModal = useSetRecoilState(isOpenEventModalState);
 
   const setEventModal = useCallback((e: MouseEvent) => {
@@ -47,7 +47,7 @@ function EventView() {
     console.log(e.currentTarget);
   }, []);
 
-  useEffect(() => () => resetItemList(), []);
+  // useEffect(() => () => resetItemList(), []);
 
   return (
     <>
