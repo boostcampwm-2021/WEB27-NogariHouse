@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable object-shorthand */
 import React, {
@@ -99,6 +100,14 @@ const FooterBtnDiv = styled.div`
   };
 `;
 
+const pcConfig = {
+  iceServers: [
+    {
+      urls: 'stun:stun.l.google.com:19302',
+    },
+  ],
+};
+
 // 룸 생성 모달
 function InRoomModal() {
   const setRoomView = useSetRecoilState(roomViewType);
@@ -107,9 +116,9 @@ function InRoomModal() {
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [socket, setSocket] = useState<any>(null);
   const [isMic, setMic] = useState(false);
-  const myPeerConnection = useRef(new RTCPeerConnection());
+  const myPeerConnection = useRef<RTCPeerConnection>();
   const myStream = useRef<any>();
-  const myBox = useRef<HTMLVideoElement>();
+  const myBox = useRef<HTMLVideoElement>(null);
 
   const handleIce = (data: any) => {
     socket.emit('room:ice', data.candidate);
@@ -121,25 +130,37 @@ function InRoomModal() {
   };
 
   const makeConnection = () => {
-    myPeerConnection.current.addEventListener('icecandidate', handleIce);
-    myPeerConnection.current.addEventListener('addstream', handleAddStream);
-    myStream.current
-      .getTracks()
-      .forEach((track: any) => myPeerConnection.current.addTrack(track, myStream.current));
+    myPeerConnection.current?.addEventListener('icecandidate', handleIce);
+    myPeerConnection.current?.addEventListener('addstream', handleAddStream);
+    myStream.current?.getTracks()
+      .forEach((track: any) => myPeerConnection.current?.addTrack(track, myStream.current));
   };
 
   const getMedia = async () => {
     try {
       myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      myBox.current!.srcObject = myStream.current || null;
+      myBox.current!.srcObject = myStream.current;
     } catch (e) {
       console.error(e);
     }
   };
 
+  const initConnection = async () => {
+    try {
+      await getMedia();
+      await makeConnection();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    getMedia();
-    makeConnection();
+    myPeerConnection.current = new RTCPeerConnection(pcConfig);
+    initConnection();
+
+    return () => {
+      if (myPeerConnection.current) myPeerConnection.current.close();
+    };
   }, []);
 
   // roomId 기반으로 room 정보 불러오기
@@ -177,24 +198,24 @@ function InRoomModal() {
         payload: { userDocumentId, userData },
       });
 
-      const offer = await myPeerConnection.current.createOffer();
-      myPeerConnection.current.setLocalDescription(offer);
+      const offer = await myPeerConnection.current?.createOffer();
+      myPeerConnection.current?.setLocalDescription(offer);
       socket.emit('room:offer', offer);
     });
 
     socket?.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
-      myPeerConnection.current.setRemoteDescription(offer);
-      const answer = await myPeerConnection.current.createAnswer();
-      myPeerConnection.current.setLocalDescription(answer);
+      myPeerConnection.current?.setRemoteDescription(offer);
+      const answer = await myPeerConnection.current?.createAnswer();
+      myPeerConnection.current?.setLocalDescription(answer);
       socket.emit('room:answer', answer);
     });
 
     socket?.on('room:answer', async (answer: RTCSessionDescriptionInit) => {
-      myPeerConnection.current.setRemoteDescription(answer);
+      myPeerConnection.current?.setRemoteDescription(answer);
     });
 
     socket?.on('room:ice', async (ice: RTCIceCandidateInit) => {
-      myPeerConnection.current.addIceCandidate(ice);
+      myPeerConnection.current?.addIceCandidate(ice);
     });
   }, [socket]);
 
@@ -209,13 +230,13 @@ function InRoomModal() {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
-        {Object.entries(state.participants).map((participant) => (
-          <InRoomUserBox userDocumentId={participant[0]} isMicOn={participant[1].isMicOn} />
+        {state.participants.map((participant) => (
+          <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
         ))}
         {/* {roomInfo?.participants?.map((participant) => (
           <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
         ))} */}
-        <InRoomUserBox userDocumentId={user.userDocumentId} isMicOn={isMic} videoRef={myBox.current} />
+        <InRoomUserBox ref={myBox} userDocumentId={user.userDocumentId} isMicOn={isMic} />
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={leaveEvent}> Leave a Quietly </DefaultButton>

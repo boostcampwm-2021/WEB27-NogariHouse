@@ -7,13 +7,11 @@ import {
   FiMic, FiMicOff,
 } from 'react-icons/fi';
 
-import UserImage from '@styled-components/user-image';
 import { getUserInfo } from '@api/index';
 
 export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
-    videoRef?: any,
 }
 
 const InRoomUserBoxStyle = styled.div`
@@ -51,23 +49,25 @@ overflow: hidden;
 background-color: #6F8A87;
 `;
 
-function InRoomUserBox({ userDocumentId, isMicOn, videoRef } : IParticipant) {
-  const [userInfo, setUserInfo] = useState<any>();
+const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
+  (props, ref) => {
+    const [userInfo, setUserInfo] = useState<any>();
 
-  useEffect(() => {
-    getUserInfo(userDocumentId)
-      .then((res) => setUserInfo(res));
-  }, []);
+    useEffect(() => {
+      getUserInfo(props.userDocumentId)
+        .then((res) => setUserInfo(res));
+    }, []);
 
-  return (
-    <InRoomUserBoxStyle>
-      <UserBox ref={videoRef} src={userInfo?.profileUrl} />
-      <InRoomUserMicDiv>
-        { isMicOn ? <FiMic /> : <FiMicOff /> }
-      </InRoomUserMicDiv>
-      <p>{ userInfo?.userName }</p>
-    </InRoomUserBoxStyle>
-  );
-}
+    return (
+      <InRoomUserBoxStyle>
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay />
+        <InRoomUserMicDiv>
+          { props.isMicOn ? <FiMic /> : <FiMicOff /> }
+        </InRoomUserMicDiv>
+        <p>{ userInfo?.userName }</p>
+      </InRoomUserBoxStyle>
+    );
+  },
+);
 
 export default InRoomUserBox;
