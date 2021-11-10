@@ -4,7 +4,7 @@ export const CustomtHeader = styled.nav`
   position: relative;
   width: calc(100%-96px);
   height: 48px;
-  min-width: 650px;
+  min-width: 360px;
   padding: 24px 48px;
 
   display: flex;

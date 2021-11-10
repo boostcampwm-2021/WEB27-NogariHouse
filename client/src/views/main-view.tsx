@@ -35,7 +35,7 @@ const SectionLayout = styled.div`
 const ActiveFollowingLayout = styled.div`
   flex-grow: 1;
   margin: 10px;
-  @media (min-width: 768px) and (max-width: 1024px) {
+  @media (max-width: 1024px) {
     display: none;
   }
 `;
@@ -43,7 +43,7 @@ const MainSectionLayout = styled.div`
   position: relative;
   width: 100%;
   height: 80vh;
-  min-width: 500px;
+  min-width: 360px;
   flex-grow: 3;
   margin: 10px;
 
