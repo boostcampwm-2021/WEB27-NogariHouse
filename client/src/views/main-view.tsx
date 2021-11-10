@@ -14,7 +14,6 @@ import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
 import DefaultButton from '@styled-components/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
-import EventRegisterModal from '@components/event-register-modal';
 import LoadingSpinner from '@styled-components/loading-spinner';
 
 const MainLayout = styled.div`
@@ -30,7 +29,7 @@ const SectionLayout = styled.div`
   position: relative;
   display: flex;
   width: 100vw;
-  height: 500px;
+  height: 600px;
 `;
 
 const ActiveFollowingLayout = styled.div`
@@ -123,7 +122,6 @@ function MainView() {
             <MainScrollSection onScroll={scrollBarChecker}>
               <MainRouter />
             </MainScrollSection>
-            <EventRegisterModal />
           </MainSectionLayout>
           <RoomLayout>
             <RightSideBar />
