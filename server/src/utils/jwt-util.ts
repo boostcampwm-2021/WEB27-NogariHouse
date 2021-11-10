@@ -1,15 +1,13 @@
 import jwt from 'jsonwebtoken';
 
-const secret = process.env.SECRET as string;
-
 export default {
-  sign: (user_id : string, userEmail : string) => {
+  sign: (userDocumentId : string, userEmail : string) => {
     const payload = {
-      id: user_id,
+      id: userDocumentId,
       email: userEmail,
     };
 
-    return jwt.sign(payload, secret, {
+    return jwt.sign(payload, process.env.SECRET as string, {
       algorithm: 'HS256',
       expiresIn: '2h',
     });
@@ -17,7 +15,7 @@ export default {
   verify: (token : any) => {
     let decoded = null;
     try {
-      decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+      decoded = jwt.verify(token, process.env.SECRET as string) as jwt.JwtPayload;
       return {
         ok: true,
         accessToken: token,
@@ -30,13 +28,13 @@ export default {
       };
     }
   },
-  refresh: () => jwt.sign({}, secret, {
+  refresh: () => jwt.sign({}, process.env.SECRET as string, {
     algorithm: 'HS256',
     expiresIn: '14d',
   }),
   refreshVerify: async (token : string) => {
     try {
-      jwt.verify(token, secret);
+      jwt.verify(token, process.env.SECRET as string);
       return true;
     } catch (err) {
       return false;

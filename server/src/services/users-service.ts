@@ -16,7 +16,6 @@ interface ISignupUserInfo {
   interesting: string[]
 }
 
-
 let instance:any = null;
 class UserService {
   constructor() {
@@ -62,9 +61,12 @@ class UserService {
     return result;
   }
 
-  signup(info: ISignupUserInfo) {
-    const newResult = new Users(info);
-    return newResult.save();
+  async signup(info: ISignupUserInfo) {
+    try {
+      const result = await Users.insertMany(info);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   async verifyAccessToken(token: string) {
