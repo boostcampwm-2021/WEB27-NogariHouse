@@ -30,3 +30,8 @@ export const makeDateToHourMinute = (date : Date) => `${String(date.getHours()).
 const emailRule = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
 
 export const testEmailValidation = (string: string): boolean => emailRule.test(string);
+
+export const deepCopy = (object: Object) => {
+  const objectStr = JSON.stringify(object);
+  return JSON.parse(objectStr);
+};
