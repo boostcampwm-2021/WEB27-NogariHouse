@@ -17,7 +17,7 @@
     "helmet": "^4.6.0",
     "module-alias": "^2.2.2",
     "mongoose": "^6.0.12",
-    "redis": "^3.1.2"
+    "socket.io": "^4.3.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
@@ -26,6 +26,7 @@
     "@types/helmet": "^4.0.0",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^16.11.6",
+    "@types/socket.io": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
     "eslint": "^7.32.0",
