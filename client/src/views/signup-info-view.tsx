@@ -91,7 +91,7 @@ function SignupInfoView() {
               <SignTitle title="what’s your id?" />
               <CustomInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
             </CustomInputBox>
-            <DefaultButton buttonType="secondary" size="medium" onClick={() => { onClickInputViewNextButton(); }} isDisabled={isDisabled}>
+            <DefaultButton buttonType="secondary" size="medium" onClick={onClickInputViewNextButton} isDisabled={isDisabled}>
               NEXT
             </DefaultButton>
           </>
@@ -117,7 +117,7 @@ function SignupInfoView() {
                 <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
               </InterestItemWarapper>
             </CustomInputBox>
-            <DefaultButton buttonType="secondary" size="medium" onClick={() => { onClickInterestViewNextButton(); }} isDisabled={isDisabled}>
+            <DefaultButton buttonType="secondary" size="medium" onClick={onClickInterestViewNextButton} isDisabled={isDisabled}>
               NEXT
             </DefaultButton>
           </>

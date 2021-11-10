@@ -49,7 +49,7 @@ function EventHeader() {
           UPCOMING FOR YOU ▼
         </HeaderTitleNunito>
         <EventAddButton>
-          <HiOutlineCalendar onClick={() => changeModalState()} size={48} />
+          <HiOutlineCalendar onClick={changeModalState} size={48} />
           <PlusIconStyle />
         </EventAddButton>
       </CustomtHeader>

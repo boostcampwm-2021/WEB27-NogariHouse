@@ -91,7 +91,7 @@ function SignUpView() {
             ? <CustomInputBar key="text" ref={inputEmailRef} onChange={inputOnChange} type="text" placeholder="E-mail Address" />
             : <CustomInputBar key="verification" ref={inputVerificationRef} onChange={inputOnChange} type="verification" placeholder="Verification code" />}
         </CustomInputBox>
-        <DefaultButton buttonType="secondary" size="medium" onClick={() => { if (isEmailInputView) onClickEmailNextButton(); else onClickVerificationNextButton(); }} isDisabled={isDisabled}>
+        <DefaultButton buttonType="secondary" size="medium" onClick={isEmailInputView ? onClickEmailNextButton : onClickVerificationNextButton} isDisabled={isDisabled}>
           NEXT
         </DefaultButton>
       </SignBody>

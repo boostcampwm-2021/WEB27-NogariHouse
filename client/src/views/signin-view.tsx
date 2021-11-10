@@ -66,7 +66,7 @@ function SignInView() {
           <CustomInputBar ref={inputEmailRef} onChange={inputOnChange} type="text" placeholder="E-mail Address" />
           <CustomInputBar ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
         </CustomInputBox>
-        <DefaultButton buttonType="secondary" size="medium" onClick={() => { signIn(); }} isDisabled={isDisabled}>
+        <DefaultButton buttonType="secondary" size="medium" onClick={signIn} isDisabled={isDisabled}>
           NEXT
         </DefaultButton>
       </SignBody>
