@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, { Ref, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import {
   FiMic, FiMicOff,
@@ -11,6 +11,7 @@ import { getUserInfo } from '@api/index';
 export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
+    videoRef?: Ref<HTMLVideoElement>,
 }
 
 const InRoomUserBoxStyle = styled.div`
@@ -39,7 +40,16 @@ const InRoomUserMicDiv = styled.div`
   }
 `;
 
-function InRoomUserBox({ userDocumentId, isMicOn } : IParticipant) {
+const UserBox = styled.video`
+width: 60px;
+min-width: 48px;
+height: 60px;
+border-radius: 30%;
+overflow: hidden;
+background-color: #6F8A87;
+`;
+
+function InRoomUserBox({ userDocumentId, isMicOn, videoRef } : IParticipant) {
   const [userInfo, setUserInfo] = useState<any>();
 
   useEffect(() => {
@@ -49,7 +59,7 @@ function InRoomUserBox({ userDocumentId, isMicOn } : IParticipant) {
 
   return (
     <InRoomUserBoxStyle>
-      <UserImage profileUrl={userInfo?.profileUrl} />
+      <UserBox ref={videoRef} src={userInfo?.profileUrl} />
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
