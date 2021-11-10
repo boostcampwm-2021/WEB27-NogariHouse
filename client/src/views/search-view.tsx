@@ -1,4 +1,5 @@
 import React from 'react';
+import SearchBar from '@components/search-bar';
 
 function SearchView() {
   // const [ary, setAry] = useState([]);
@@ -9,7 +10,7 @@ function SearchView() {
   // }, []);
   return (
     <>
-      {/* {ary.map((val) => <h1>{val}</h1>)} */}
+      <SearchBar />
     </>
   );
 }
