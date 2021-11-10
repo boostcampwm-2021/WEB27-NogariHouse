@@ -100,7 +100,7 @@ const usersSchema = new Schema({
 
 usersSchema.pre('save', function (next) {
   const user = this;
-  if (user.isModified('password')) { // 패스워드가 변경될때만 해싱작업이 처리됨.
+  if (user.isModified('password')) {
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return next(err);
       bcrypt.hash(user.password, salt, (err, hash) => {

@@ -19,7 +19,7 @@ export default (app: Router) => {
   userRouter.post('/signin', async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const result = await usersService.signIn(email, password);
-    if (result?.ok) { // 네이밍 조정 필요
+    if (result?.ok) {
       res.status(200).json({
         accessToken: result.accessToken,
         result: result.ok,

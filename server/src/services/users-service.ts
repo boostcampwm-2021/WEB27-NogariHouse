@@ -37,7 +37,6 @@ class UserService {
       const accessToken = jwtUtils.sign(user._id, user.userEmail);
       const refreshToken = jwtUtils.refresh();
 
-      // 로그인 로직에서 토큰을 디비에 저장하는게 맞는지?
       // tokenService를 따로 만들어줘야하는가?
       const existingRefreshToken = await RefreshTokens.findOneAndUpdate(
         { user_id: user._id }, { token: refreshToken },
@@ -95,14 +94,12 @@ class UserService {
     const refreshResult = await jwtUtils.refreshVerify(refreshToken);
 
     if (accessResult.ok === false && accessResult.message === 'jwt expired') {
-      // 1. access token이 만료되고, refresh token도 만료 된 경우 => 새로 로그인해야함
       if (refreshResult === false) {
         return ({
           ok: false,
           msg: 'No authorized!',
         });
       }
-      // 2. access token이 만료되고, refresh token은 만료되지 않은 경우 => 새로운 access token을 발급
       const newAccessToken = jwtUtils.sign(decoded.id, decoded.email);
 
       return ({
@@ -110,7 +107,6 @@ class UserService {
         accessToken: newAccessToken,
       });
     }
-    // 3. access token이 만료되지 않은경우 => 문제 없음(여기서 쓰일 일은 없긴 함)
     return ({
       ok: true,
       msg: 'Acess token is not expired!',
@@ -143,4 +139,4 @@ class UserService {
   }
 }
 
-export = new UserService();
+export default new UserService();
