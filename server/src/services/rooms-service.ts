@@ -13,7 +13,7 @@ class RoomService {
 
   // eslint-disable-next-line class-methods-use-this
   async addParticipant(roomDocumentId: string, userDocumentId: string) {
-    await Rooms.findOneAndUpdate({ _id: roomDocumentId }, { $push: { participants: userDocumentId } });
+    await Rooms.findOneAndUpdate({ _id: roomDocumentId }, { $push: { participants: { userDocumentId, mic: false } } });
   }
 
   async setRoom(title: string, type: string, isAnonymous: boolean) {
