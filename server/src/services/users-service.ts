@@ -116,10 +116,12 @@ class UserService {
       return {
         ok: true,
         accessToken: newAccessToken,
+        userDocumentId: decoded.id,
       };
     }
     return {
       ok: true,
+      accessToken,
       msg: 'Acess token is not expired!',
     };
   }
