@@ -3,14 +3,15 @@ import React, { useCallback, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import SignHeader from '@components/sign-header';
-import { BackgroundWrapper } from '@styled-components/modal';
-import LoadingSpinner from '@styled-components/loading-spinner';
-import SignTitle from '@styled-components/sign-title';
-import SignBody from '@styled-components/sign-body';
-import DefaultButton from '@styled-components/default-button';
-import { CustomInputBox, CustomInputBar } from '@styled-components/custom-inputbar';
+import SignHeader from '@components/sign/sign-header';
+import { BackgroundWrapper } from '@common/modal';
+import LoadingSpinner from '@common/loading-spinner';
+import SignTitle from '@components/sign/sign-title';
+import SignBody from '@components/sign/sign-body';
+import DefaultButton from '@common/default-button';
+import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
 import { testEmailValidation } from '@utils/index';
+import { postCheckMail } from '@src/api';
 
 const CustomBackgroundWrapper = styled(BackgroundWrapper)`
   opacity: 0.4;
@@ -53,9 +54,8 @@ function SignUpView() {
         body: JSON.stringify({ email: inputEmailValue }),
       };
 
-      fetch(`${process.env.REACT_APP_API_URL}/api/user/signup/mail`, postSignupMailConfig)
-        .then((res) => res.json())
-        .then((json) => json.verificationNumber)
+      postCheckMail({ email: inputEmailValue })
+        .then((json: any) => json.verificationNumber)
         .then(setVerificationNumber)
         .then(() => {
           emailState.current = inputEmailValue;

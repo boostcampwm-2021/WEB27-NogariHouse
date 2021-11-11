@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState } from 'react';
-import styled from 'styled-components';
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
-import SignHeader from '@components/sign-header';
-import SignTitle from '@components/styled-components/sign-title';
-import SignBody from '@components/styled-components/sign-body';
-import DefaultButton from '@components/styled-components/default-button';
-import { CustomInputBox, CustomInputBar } from '@styled-components/custom-inputbar';
+import SignHeader from '@components/sign/sign-header';
+import SignTitle from '@components/sign/sign-title';
+import SignBody from '@components/sign/sign-body';
+import DefaultButton from '@common/default-button';
+import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
+import { postSignIn } from '@api/index';
 
 function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
@@ -45,14 +45,8 @@ function SignInView() {
       password: inputPasswordRef.current?.value,
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/api/user/signin`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(loginInfo),
-
-    }).then((res) => res.json())
+    postSignIn(loginInfo)
+      .then((res) => res!.json())
       .then(checkSigninResponse)
       .catch((err) => console.error(err));
   };

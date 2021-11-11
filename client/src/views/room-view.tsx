@@ -2,9 +2,9 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
-import RoomCard from '@styled-components/room-card';
+import RoomCard from '@common/room-card';
 import useFetchItems from '@src/hooks/useFetchItems';
-import LoadingSpinner from '@styled-components/loading-spinner';
+import LoadingSpinner from '@common/loading-spinner';
 
 interface Participants{
   _id: string,

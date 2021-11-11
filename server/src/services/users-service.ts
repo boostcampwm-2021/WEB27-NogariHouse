@@ -9,22 +9,22 @@ import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
 interface ISignupUserInfo {
-  loginType: string,
-  userId: string,
-  password: string,
-  userName: string,
-  userEmail: string,
-  interesting: string[]
+  loginType: string;
+  userId: string;
+  password: string;
+  userName: string;
+  userEmail: string;
+  interesting: string[];
 }
 
-let instance:any = null;
+let instance: any = null;
 class UserService {
   constructor() {
     if (instance) return instance;
     instance = this;
   }
 
-  async signIn(email: string, password:string) {
+  async signIn(email: string, password: string) {
     const user = await Users.findOne({ userEmail: email });
 
     if (!user) {
@@ -39,7 +39,8 @@ class UserService {
 
       // tokenService를 따로 만들어줘야하는가?
       const existingRefreshToken = await RefreshTokens.findOneAndUpdate(
-        { user_id: user._id }, { token: refreshToken },
+        { user_id: user._id },
+        { token: refreshToken },
       );
 
       if (!existingRefreshToken) {
@@ -51,7 +52,9 @@ class UserService {
       }
 
       return {
-        accessToken, ok: true, msg: 'ok',
+        accessToken,
+        ok: true,
+        msg: 'ok',
       };
     }
     return { ok: false, msg: 'wrong password' };
@@ -92,33 +95,33 @@ class UserService {
     const decoded = jwt.decode(accessToken) as jwt.JwtPayload;
 
     if (decoded === null) {
-      return ({
+      return {
         ok: false,
         msg: 'No authorized!',
-      });
+      };
     }
 
-    const refreshToken = await this.getRefreshTokens(decoded.id) as string;
+    const refreshToken = (await this.getRefreshTokens(decoded.id)) as string;
     const refreshResult = await jwtUtils.refreshVerify(refreshToken);
 
     if (accessResult.ok === false && accessResult.message === 'jwt expired') {
       if (refreshResult === false) {
-        return ({
+        return {
           ok: false,
           msg: 'No authorized!',
-        });
+        };
       }
       const newAccessToken = jwtUtils.sign(decoded.id, decoded.email);
 
-      return ({
+      return {
         ok: true,
         accessToken: newAccessToken,
-      });
+      };
     }
-    return ({
+    return {
       ok: true,
       msg: 'Acess token is not expired!',
-    });
+    };
   }
 
   async sendVerificationMail(email: string) {
@@ -134,7 +137,9 @@ class UserService {
       },
     });
 
-    const VerificationNumber = String(Math.floor(Math.random() * 999999)).padStart(6, '0');
+    const VerificationNumber = String(
+      Math.floor(Math.random() * 999999),
+    ).padStart(6, '0');
 
     await transporter.sendMail({
       from: 'hyunee169@gmail.com',

@@ -5,7 +5,7 @@ import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { BiCalendarPlus } from 'react-icons/bi';
 import { useRecoilState } from 'recoil';
 
-import { CustomtHeader, HeaderTitleNunito } from '@styled-components/header';
+import { CustomtHeader, HeaderTitleNunito } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 

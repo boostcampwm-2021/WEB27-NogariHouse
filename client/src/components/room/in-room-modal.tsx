@@ -4,20 +4,22 @@
 import React, {
   useEffect, useState, useRef, useReducer,
 } from 'react';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import styled from 'styled-components';
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
   FiMoreHorizontal, FiScissors, FiPlus, FiMic, FiMicOff,
 } from 'react-icons/fi';
 import io from 'socket.io-client';
 
 import userTypeState from '@atoms/user';
+import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewType from '@src/recoil/atoms/room-view-type';
-import DefaultButton from '@styled-components/default-button';
-import InRoomUserBox, { IParticipant } from '@components/in-room-user-box';
+import DefaultButton from '@common/default-button';
+import InRoomUserBox, { IParticipant } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
-import ScrollBarStyle from '@styles/scrollbar-style';
-import { reducer, initialState } from './in-room-reducer';
+import { reducer, initialState } from '@components/room/in-room-reducer';
+import {
+  InRoomHeader, TitleDiv, OptionBtn, InRoomFooter, InRoomUserList, FooterBtnDiv,
+} from './style';
 
 export interface IRooms extends Document{
   title: string,
@@ -25,80 +27,6 @@ export interface IRooms extends Document{
   isAnonymous: boolean,
   participants: Array<IParticipant>,
 }
-
-const InRoomHeader = styled.div`
-  position: absolute;
-  top: 10px;
-
-  display: flex;
-  flex-direction: row;
-
-  padding: 20px 10px 20px 10px;
-
-  width: 100%;
-  height: 25px;
-`;
-
-const TitleDiv = styled.div`
-  font-family: "Nunito";
-  font-style: normal;
-  font-size: 20px;
-
-  width: 70%;
-
-  margin-left: 30px;
-
-  overflow: hidden;
-  text-overflow: ellipsis;
-`;
-
-const OptionBtn = styled.div`
-  width: 30%;
-
-  text-align: center;
-  transform: translate(0px, 6px);
-`;
-
-const InRoomFooter = styled.div`
-  position: absolute;
-  bottom: 20px;
-
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-
-  width: 100%;
-`;
-
-const InRoomUserList = styled.div`
-  position: absolute;
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-
-  box-sizing: border-box;
-  padding: 0px 30px;
-
-  width: 100%;
-  height: 70%;
-
-  ${ScrollBarStyle}
-`;
-
-const FooterBtnDiv = styled.div`
-  width: 32px;
-  height: 32px;
-
-  border-radius: 30px;
-  margin-top: 5px;
-
-  background-color: #58964F;
-
-  svg {
-    transform: translate(8px, 8px);
-  };
-`;
 
 const pcConfig = {
   iceServers: [
@@ -112,6 +40,7 @@ const pcConfig = {
 function InRoomModal() {
   const setRoomView = useSetRecoilState(roomViewType);
   const [user] = useRecoilState(userTypeState);
+  const roomDocumentId = useRecoilValue(roomDocumentIdState);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [socket, setSocket] = useState<any>(null);
@@ -165,7 +94,7 @@ function InRoomModal() {
 
   // roomId 기반으로 room 정보 불러오기
   useEffect(() => {
-    getRoomInfo(user.roomDocumentId)
+    getRoomInfo(roomDocumentId)
       .then((res: any) => {
         setRoomInfo(res);
         dispatch({ type: 'SET_USERS', payload: { participants: res.participants } });
@@ -188,7 +117,7 @@ function InRoomModal() {
   // socket 이벤트
   useEffect(() => {
     socket?.emit('room:join', {
-      roomDocumentID: user.roomDocumentId, userDocumentId: user.userDocumentId,
+      roomDocumentId, userDocumentId: user.userDocumentId,
     });
 
     socket?.on('room:join', async (payload: any) => {

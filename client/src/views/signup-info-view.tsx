@@ -5,12 +5,13 @@ import React, {
 import styled from 'styled-components';
 import { useHistory, useLocation } from 'react-router-dom';
 
-import SignHeader from '@components/sign-header';
-import SignTitle from '@components/styled-components/sign-title';
-import SignBody from '@components/styled-components/sign-body';
-import DefaultButton from '@components/styled-components/default-button';
-import { CustomInputBox, CustomInputBar } from '@styled-components/custom-inputbar';
-import InterestItem from '@styled-components/interest-item';
+import SignHeader from '@components/sign/sign-header';
+import SignTitle from '@components/sign/sign-title';
+import SignBody from '@components/sign/sign-body';
+import DefaultButton from '@common/default-button';
+import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
+import InterestItem from '@common/interest-item';
+import { postSignUpUserInfo } from '@src/api';
 
 const InterestItemWarapper = styled.div`
   width: 50%;
@@ -57,23 +58,16 @@ function SignupInfoView() {
   };
 
   const onClickInterestViewNextButton = () => {
-    const postSignupUserInfoConfig = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        loginType: 'normal',
-        userId: userInput.current.id,
-        password: userInput.current.password,
-        userName: userInput.current.name,
-        userEmail: (location.state as {email: string}).email,
-        interesting: Array.from(selectedItems),
-      }),
+    const userInfo = {
+      loginType: 'normal',
+      userId: userInput.current.id,
+      password: userInput.current.password,
+      userName: userInput.current.name,
+      userEmail: (location.state as {email: string}).email,
+      interesting: Array.from(selectedItems),
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/api/user/signup/userInfo`, postSignupUserInfoConfig)
-      .then((res) => res.json())
+    postSignUpUserInfo(userInfo)
       .then(() => { history.replace('/'); });
   };
 

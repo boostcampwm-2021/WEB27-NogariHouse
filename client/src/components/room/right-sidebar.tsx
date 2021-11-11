@@ -3,9 +3,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 
-import RoomModal from '@components/room-modal';
-import InRoomModal from '@components/in-room-modal';
-import roomViewType from '@src/recoil/atoms/room-view-type';
+import RoomModal from '@components/room/room-modal';
+import InRoomModal from '@components/room/in-room-modal';
+import roomViewType from '@atoms/room-view-type';
 
 const RoomModalLayout = styled.div`
   display: flex;

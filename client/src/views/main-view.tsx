@@ -1,5 +1,9 @@
 import React, {
-  UIEvent, useCallback, useEffect, useRef, useState,
+  UIEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
 } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useCookies } from 'react-cookie';
@@ -7,14 +11,14 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { nowFetchingState } from '@atoms/main-section-scroll';
-import LargeLogo from '@components/large-logo';
+import LargeLogo from '@components/sign/large-logo';
 import LeftSideBar from '@components/left-sidebar';
-import RightSideBar from '@components/right-sidebar';
+import RightSideBar from '@components/room/right-sidebar';
 import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
-import DefaultButton from '@styled-components/default-button';
+import DefaultButton from '@common/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
-import LoadingSpinner from '@styled-components/loading-spinner';
+import LoadingSpinner from '@common/loading-spinner';
 
 const MainLayout = styled.div`
   display: flex;
@@ -78,13 +82,15 @@ function MainView() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(['accessToken']);
 
-  const scrollBarChecker = useCallback((e : UIEvent<HTMLDivElement>) => {
+  const scrollBarChecker = useCallback((e: UIEvent<HTMLDivElement>) => {
     if (!nowFetchingRef.current) {
-      const diff = (e.currentTarget).scrollHeight - (e.currentTarget).scrollTop;
+      const diff = e.currentTarget.scrollHeight - e.currentTarget.scrollTop;
       if (diff < 700) {
         setNowFetching(true);
         nowFetchingRef.current = true;
-        setTimeout(() => { nowFetchingRef.current = false; }, 200);
+        setTimeout(() => {
+          nowFetchingRef.current = false;
+        }, 200);
       }
     }
   }, []);
@@ -103,7 +109,9 @@ function MainView() {
           setIsLoggedIn(false);
         }
       })
-      .then(() => { setLoading(false); });
+      .then(() => {
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
@@ -141,7 +149,13 @@ function MainView() {
             </DefaultButton>
           </Link>
           <Link to="/signin">
-            <DefaultButton onClick={() => { setIsLoggedIn(false); }} buttonType="thirdly" size="medium">
+            <DefaultButton
+              onClick={() => {
+                setIsLoggedIn(false);
+              }}
+              buttonType="thirdly"
+              size="medium"
+            >
               SIGN IN
             </DefaultButton>
           </Link>

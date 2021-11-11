@@ -4,13 +4,12 @@ import styled from 'styled-components';
 import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import roomTypeState from '@atoms/room-type';
-import userTypeState from '@atoms/user';
+import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewType from '@src/recoil/atoms/room-view-type';
-import { generateURLQuery } from '@utils/index';
-
-import DefaultButton from './styled-components/default-button';
-import RoomTypeCheckBox from './room-type-check-box';
-import AnonymousCheckBox from './anonymous-checkbox';
+import { postRoomInfo } from '@api/index';
+import DefaultButton from '@common/default-button';
+import RoomTypeCheckBox from '@components/room/room-type-check-box';
+import AnonymousCheckBox from '@components/room/anonymous-checkbox';
 
 const CustomTitleForm = styled.div`
   display: flex;
@@ -37,7 +36,7 @@ const TitleInputbarLabel = styled.label`
 function RoomModal() {
   const setRoomView = useSetRecoilState(roomViewType);
   const [roomType] = useRecoilState(roomTypeState);
-  const setUser = useSetRecoilState(userTypeState);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -51,15 +50,9 @@ function RoomModal() {
       userName: 'sungbin',
       isAnonymous: isAnonymous,
     };
-    fetch(`${process.env.REACT_APP_API_URL}/api/room`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(roomInfo),
-    }).then((res) => res.json())
-      .then((roomDocumentId) => {
-        setUser({ roomDocumentId, userDocumentId: '618238ccd24b76444a6c592f' });
+    postRoomInfo(roomInfo)
+      .then((roomDocumentId: any) => {
+        setRoomDocumentId(roomDocumentId);
         if (roomType === 'closedSelectorView') setRoomView('closedSelectorView');
         else setRoomView('inRoomView');
       })

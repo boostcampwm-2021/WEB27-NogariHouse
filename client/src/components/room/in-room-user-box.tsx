@@ -41,12 +41,12 @@ const InRoomUserMicDiv = styled.div`
 `;
 
 const UserBox = styled.video`
-width: 60px;
-min-width: 48px;
-height: 60px;
-border-radius: 30%;
-overflow: hidden;
-background-color: #6F8A87;
+  width: 60px;
+  min-width: 48px;
+  height: 60px;
+  border-radius: 30%;
+  overflow: hidden;
+  background-color: #6F8A87;
 `;
 
 const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
