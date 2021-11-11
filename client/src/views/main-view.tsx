@@ -52,7 +52,6 @@ const MainSectionLayout = styled.div`
   flex-grow: 3;
   margin: 10px;
 
-  ${ScrollBarStyle}
 `;
 
 const MainScrollSection = styled.div`
