@@ -8,13 +8,14 @@ const authJWT = async (req:Request, res:Response, next:NextFunction) => {
   if (accessToken) {
     const result = jwtUtils.verify(accessToken); // token을 검증합니다.
     if (result.ok) {
+      req.body.accessToken = accessToken;
       req.body.userDocumentId = result.id;
       next();
     } else {
       const refreshResult = await usersService.tokenRefresh(accessToken);
       if (!refreshResult.ok) {
         res.status(401).json({
-          result: false,
+          ok: false,
           msg: refreshResult.msg,
         });
       } else {
@@ -24,6 +25,9 @@ const authJWT = async (req:Request, res:Response, next:NextFunction) => {
       }
     }
   }
+  else {
+    res.json({ ok: false })
+  }
 };
 
-module.exports = authJWT;
+export default authJWT;

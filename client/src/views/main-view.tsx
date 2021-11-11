@@ -5,12 +5,13 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { nowFetchingState } from '@atoms/main-section-scroll';
+import userState from '@atoms/user';
 import LargeLogo from '@components/sign/large-logo';
 import LeftSideBar from '@components/left-sidebar';
 import RightSideBar from '@components/room/right-sidebar';
@@ -75,7 +76,8 @@ const ButtonLayout = styled.div`
 `;
 
 function MainView() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useRecoilState(userState);
+  const resetUser = useResetRecoilState(userState);
   const [loading, setLoading] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
@@ -95,6 +97,18 @@ function MainView() {
     }
   }, []);
 
+  const updateUserState = useCallback((json) => {
+    const {
+      accessToken, userDocumentId, profileUrl, userName, userId,
+    } = json;
+
+    setUser({
+      isLoggedIn: true, userDocumentId, profileUrl, userName, userId,
+    });
+
+    setCookie('accessToken', accessToken);
+  }, []);
+
   useEffect(() => {
     fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
       method: 'GET',
@@ -103,10 +117,9 @@ function MainView() {
       .then((res) => res.json())
       .then((json) => {
         if (json.ok) {
-          setIsLoggedIn(true);
-          setCookie('accessToken', json.accessToken);
+          updateUserState(json);
         } else {
-          setIsLoggedIn(false);
+          resetUser();
         }
       })
       .then(() => {
@@ -118,7 +131,7 @@ function MainView() {
     return <LoadingSpinner />;
   }
 
-  if (isLoggedIn) {
+  if (user.isLoggedIn) {
     return (
       <>
         <HeaderRouter />
@@ -149,13 +162,7 @@ function MainView() {
             </DefaultButton>
           </Link>
           <Link to="/signin">
-            <DefaultButton
-              onClick={() => {
-                setIsLoggedIn(false);
-              }}
-              buttonType="thirdly"
-              size="medium"
-            >
+            <DefaultButton buttonType="thirdly" size="medium">
               SIGN IN
             </DefaultButton>
           </Link>
