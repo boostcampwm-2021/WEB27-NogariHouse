@@ -15,7 +15,7 @@ export const reducer = (state: TState, action: Action): TState => {
     case 'UPDATE_USER': {
       const { userDocumentId, userData } = action.payload;
       const newParticipants = deepCopy(state.participants);
-      newParticipants[userDocumentId] = userData;
+      newParticipants.push({ userDocumentId, userData });
 
       return { ...state, participants: newParticipants };
     }
