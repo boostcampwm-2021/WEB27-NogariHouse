@@ -123,13 +123,21 @@ function InRoomModal() {
     socket?.on('room:join', async (payload: any) => {
       const { userDocumentId, userData } = payload;
       dispatch({
-        type: 'UPDATE_USER',
+        type: 'JOIN_USER',
         payload: { userDocumentId, userData },
       });
 
       const offer = await myPeerConnection.current?.createOffer();
       myPeerConnection.current?.setLocalDescription(offer);
       socket.emit('room:offer', offer);
+    });
+
+    socket?.on('room:leave', async (payload: any) => {
+      const { userDocumentId } = payload;
+      dispatch({
+        type: 'LEAVE_USER',
+        payload: { userDocumentId },
+      });
     });
 
     socket?.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
