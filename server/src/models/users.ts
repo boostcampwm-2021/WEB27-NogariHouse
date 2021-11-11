@@ -37,9 +37,9 @@ export interface IUsers {
     following: IFollow,
     follower: IFollow,
     joinDate: Date,
-    activity: Array<IActivity>
+    activity: Array<IActivity>,
     recentSearch: Array<IRecentSearch>,
-    recentListenTo: Array<IRecentListenTo>
+    recentListenTo: Array<IRecentListenTo>,
     profileUrl: string
 }
 
@@ -105,7 +105,6 @@ const usersSchema = new Schema({
 });
 
 usersSchema.pre('insertMany', async (next: any, docs: any) => {
-  console.log(docs);
   if (Array.isArray(docs) && docs.length) {
     // eslint-disable-next-line no-return-await
     const hashedUsers = docs.map(async (user) => await new Promise((resolve, reject) => {

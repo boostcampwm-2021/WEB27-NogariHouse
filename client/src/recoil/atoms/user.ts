@@ -6,14 +6,20 @@
 import { atom } from 'recoil';
 
 interface IUser {
-  roomDocumentId: string,
+  isLoggedIn: boolean,
   userDocumentId: string,
+  profileUrl: string,
+  userName: string,
+  userId: string,
 }
 
 export default atom<IUser>({
   key: 'user', // 해당 atom의 고유 key
   default: {
-    roomDocumentId: '',
+    isLoggedIn: false,
     userDocumentId: '618238ccd24b76444a6c592f',
+    userName: '',
+    userId: '',
+    profileUrl: '',
   },
 });

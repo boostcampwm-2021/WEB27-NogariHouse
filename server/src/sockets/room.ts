@@ -17,7 +17,6 @@ export default function registerRoomHandler(socket : Socket) {
     socket.join(roomDocumentID);
 
     users[socket.id] = { roomDocumentID, userDocumentId };
-
     await RoomService.addParticipant(roomDocumentID, userDocumentId);
     const userData = await usersService.findUser(userDocumentId);
     socket.to(roomDocumentID).emit('room:join', { userDocumentId, userData });
@@ -34,7 +33,6 @@ export default function registerRoomHandler(socket : Socket) {
   // eslint-disable-next-line no-undef
   const handleRoomOffer = (offer: RTCSessionDescriptionInit) => {
     const { roomDocumentID } = users[socket.id];
-
     socket.to(roomDocumentID).emit('room:offer', offer);
   };
 

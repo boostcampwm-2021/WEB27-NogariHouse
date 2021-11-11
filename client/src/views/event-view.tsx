@@ -8,8 +8,8 @@ import styled from 'styled-components';
 import { isOpenEventModalState } from '@recoil/atoms/is-open-modal';
 import useFetchItems from '@src/hooks/useFetchItems';
 import { makeDateToHourMinute } from '@src/utils';
-import EventCard from '@styled-components/event-card';
-import LoadingSpinner from '@styled-components/loading-spinner';
+import EventCard from '@common/event-card';
+import LoadingSpinner from '@common/loading-spinner';
 
 interface EventUser {
   userId: string,

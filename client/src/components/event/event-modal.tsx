@@ -2,7 +2,7 @@ import React from 'react';
 import { useSetRecoilState } from 'recoil';
 
 import { isOpenEventModalState } from '@atoms/is-open-modal';
-import { ModalBox, BackgroundWrapper } from '@styled-components/modal';
+import { ModalBox, BackgroundWrapper } from '@common/modal';
 
 function EventModal() {
   const setIsOpenEventModal = useSetRecoilState(isOpenEventModalState);

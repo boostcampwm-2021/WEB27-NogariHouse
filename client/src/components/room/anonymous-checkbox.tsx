@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import SmallCheckbox, { CheckBoxProps } from '@styled-components/small-checkbox';
+import SmallCheckbox, { CheckBoxProps } from '@common/small-checkbox';
 
 const AnonymousCheckBoxLayout = styled.div`
   display: flex;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconType } from 'react-icons';
-import { CustomtHeader } from '@styled-components/header';
+import { CustomtHeader } from '@common/header';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
 import { makeIconToLink } from '@utils/index';

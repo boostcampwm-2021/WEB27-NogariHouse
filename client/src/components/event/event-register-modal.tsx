@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
-import { ModalBox, BackgroundWrapper } from '@styled-components/modal';
+import { ModalBox, BackgroundWrapper } from '@common/modal';
+import { postEvent } from '@api/index';
 
 const CustomEventRegisterModal = styled(ModalBox)`
   top: 50px;
@@ -123,14 +124,8 @@ function EventRegisterModal() {
       description: textDescRef.current?.value,
     };
 
-    fetch(`${process.env.REACT_APP_API_URL}/api/event`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(eventInfo),
-
-    }).then(() => alert('이벤트 등록이 완료되었습니다.'))
+    postEvent(eventInfo)
+      .then(() => alert('이벤트 등록이 완료되었습니다.'))
       .catch((err) => console.error(err));
 
     changeModalState();

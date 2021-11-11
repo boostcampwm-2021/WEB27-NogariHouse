@@ -2,7 +2,7 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos, MdPersonPin } from 'react-icons/md';
 
-import { CustomtHeader, HeaderTitleNunito } from '@styled-components/header';
+import { CustomtHeader, HeaderTitleNunito } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 
 interface IconAndLink {

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import ActiveFollowingCard from '@styled-components/active-following-card';
+import ActiveFollowingCard from '@common/active-following-card';
 
 const ActiveFollowingList = styled.div`
   width: 100%;
