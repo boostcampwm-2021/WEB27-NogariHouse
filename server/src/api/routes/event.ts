@@ -4,7 +4,7 @@ import eventsService from '@services/events-service';
 
 const eventRouter = Router();
 
-const get10EventItemsMiddleware = async (req:Request, res:Response) => {
+const get10EventItems = async (req:Request, res:Response) => {
   const { count } = req.query;
   const items = (await eventsService.get10EventItems(Number(count)))
     ?.map(eventsService.makeItemToEventInterface);
@@ -14,7 +14,7 @@ const get10EventItemsMiddleware = async (req:Request, res:Response) => {
 export default (app: Router) => {
   app.use('/event', eventRouter);
 
-  eventRouter.get('/', get10EventItemsMiddleware);
+  eventRouter.get('/', get10EventItems);
   eventRouter.post('/', async (req: Request, res: Response) => {
     try {
       const {
