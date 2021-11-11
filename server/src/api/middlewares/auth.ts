@@ -19,7 +19,7 @@ const authJWT = async (req:Request, res:Response, next:NextFunction) => {
         });
       } else {
         req.body.accessToken = refreshResult.accessToken;
-        req.body.userDocumentId = result.id;
+        req.body.userDocumentId = refreshResult.userDocumentId;
         next();
       }
     }
