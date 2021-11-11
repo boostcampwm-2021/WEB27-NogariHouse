@@ -4,53 +4,16 @@ import React, {
 import {
   useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
 } from 'recoil';
-import styled from 'styled-components';
 
 import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
+import { isOpenEventModalState } from '@atoms/is-open-modal';
 import searchTypeState from '@atoms/search-type';
 import OptionBar from '@components/search/option-bar';
 import {
   SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection,
 } from '@components/search/style';
-import { isOpenEventModalState } from '@src/recoil/atoms/is-open-modal';
 import LoadingSpinner from '@common/loading-spinner';
-import { makeDateToHourMinute } from '@src/utils';
-import EventCard from '@src/components/common/event-card';
-
-interface EventUser {
-  userId: string,
-  userName: string,
-  profileUrl: string,
-}
-
-interface EventCardProps {
-  key: string,
-  time: string,
-  title: string,
-  participants: EventUser[],
-  description: string,
-}
-
-const EventDiv = styled.div`
- div + div {
-   margin-bottom: 10px;
- }
-`;
-
-const makeEventToCard = (event: EventCardProps) => (
-  <EventCard
-    key={event.key}
-    time={makeDateToHourMinute(new Date(event.time))}
-    title={event.title}
-    participants={event.participants}
-    description={event.description}
-  />
-);
-
-function EventCardList({ eventList, setEventModal }
-  : { eventList: EventCardProps[], setEventModal: ((e: MouseEvent) => void) }) {
-  return <EventDiv onClick={setEventModal}>{eventList?.map(makeEventToCard)}</EventDiv>;
-}
+import { EventCardList } from '@views/event-view';
 
 function SearchView() {
   const searchType = useRecoilValue(searchTypeState);

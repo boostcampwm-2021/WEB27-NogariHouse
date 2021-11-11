@@ -41,7 +41,7 @@ const makeEventToCard = (event: EventCardProps) => (
   />
 );
 
-function EventCardList({ eventList, setEventModal }: { eventList: EventCardProps[], setEventModal: ((e: MouseEvent) => void) }) {
+export function EventCardList({ eventList, setEventModal }: { eventList: EventCardProps[], setEventModal: ((e: MouseEvent) => void) }) {
   return <EventDiv onClick={setEventModal}>{eventList?.map(makeEventToCard)}</EventDiv>;
 }
 
