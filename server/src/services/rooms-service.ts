@@ -16,6 +16,12 @@ class RoomService {
     await Rooms.findOneAndUpdate({ _id: roomDocumentId }, { $push: { participants: { userDocumentId, mic: false } } });
   }
 
+  async deleteParticipant(roomDocumentId: string, userDocumentId: string) {
+    const roomInfo = await Rooms.findById(roomDocumentId).select('participants');
+    const newParticipants = roomInfo!.participants.filter((participant) => (participant.userDocumentId !== userDocumentId));
+    await Rooms.updateOne({ _id: roomDocumentId }, { $set: { participants: newParticipants } });
+  }
+
   async setRoom(title: string, type: string, isAnonymous: boolean) {
     const newRoom = new Rooms({
       title, type, isAnonymous,

@@ -22,11 +22,11 @@ export default function registerRoomHandler(socket : Socket) {
     socket.to(roomDocumentId).emit('room:join', { userDocumentId, userData });
   };
 
-  const handleRoomLeave = () => {
+  const handleRoomLeave = async () => {
     const { roomDocumentId, userDocumentId } = users[socket.id];
     delete users[socket.id];
 
-    // room service에서 나간 유저 제거 코드 추가하기
+    await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
     socket.to(roomDocumentId).emit('room:leave', { userDocumentId });
   };
 

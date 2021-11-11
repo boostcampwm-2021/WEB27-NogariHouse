@@ -50,7 +50,7 @@ function InRoomModal() {
   const myBox = useRef<HTMLVideoElement>(null);
 
   const handleIce = (data: any) => {
-    socket.emit('room:ice', data.candidate);
+    socket?.emit('room:ice', data.candidate);
   };
 
   // 다른 유저 접속시 연결하기 dispatch로 비디오 태그 추가
