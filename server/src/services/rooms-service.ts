@@ -1,6 +1,8 @@
+/* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 import Rooms from '@models/rooms';
+import Users from '@models/users';
 
 let instance: any = null;
 class RoomService {
@@ -11,10 +13,9 @@ class RoomService {
 
   // eslint-disable-next-line class-methods-use-this
   async addParticipant(roomDocumentId: string, userDocumentId: string) {
-    await Rooms.findOneAndUpdate({ _id: roomDocumentId }, { $push: { participants: userDocumentId } });
+    await Rooms.findOneAndUpdate({ _id: roomDocumentId }, { $push: { participants: { userDocumentId, mic: false } } });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async setRoom(title: string, type: string, isAnonymous: boolean) {
     const newRoom = new Rooms({
       title, type, isAnonymous,
@@ -24,10 +25,31 @@ class RoomService {
     return newRoom._id;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async findRoom(roomDocumentId: string) {
     const result = await Rooms.findOne({ _id: roomDocumentId });
     return result;
+  }
+
+  // eslint-disable-next-line consistent-return
+  async get10Rooms(count: number) {
+    try {
+      const rooms = await Rooms.find({ type: 'public' }, ['title', 'isAnonymous', 'participants'], { skip: count, limit: 3 });
+
+      const roomsInfo = await Promise.all((rooms).map(async ({
+        _id, title, isAnonymous, participants,
+      }) => {
+        const userList = participants.map(({ userDocumentId }) => ({ _id: userDocumentId }));
+        const participantsInfo = await Users.find({ _id: { $in: userList } }, ['userName', 'profileUrl']);
+        const roomInfo = {
+          _id, title, isAnonymous, participantsInfo,
+        };
+        return roomInfo;
+      }));
+
+      return roomsInfo;
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 

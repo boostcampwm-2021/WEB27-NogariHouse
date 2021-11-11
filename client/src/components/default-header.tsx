@@ -24,7 +24,11 @@ const IconContainer = styled.div`
   justify-content: space-between;
 
   a:not(:last-child) {
-    margin-right: 3vw;
+    margin-right: 30px;
+  }
+  
+  svg:hover {
+    filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
   }
 `;
 

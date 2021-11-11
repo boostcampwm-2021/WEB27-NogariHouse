@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
-import React, { MouseEvent, useCallback, useEffect } from 'react';
+import React, {
+  MouseEvent, useCallback, useEffect, useState,
+} from 'react';
 import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -7,6 +9,7 @@ import { isOpenEventModalState } from '@recoil/atoms/is-open-modal';
 import useFetchItems from '@src/hooks/useFetchItems';
 import { makeDateToHourMinute } from '@src/utils';
 import EventCard from '@styled-components/event-card';
+import LoadingSpinner from '@styled-components/loading-spinner';
 
 interface EventUser {
   userId: string,
@@ -22,7 +25,11 @@ interface EventCardProps {
   description: string,
 }
 
-const EventDiv = styled.div``;
+const EventDiv = styled.div`
+ div + div {
+   margin-bottom: 10px;
+ }
+`;
 
 const makeEventToCard = (event: EventCardProps) => (
   <EventCard
@@ -39,7 +46,8 @@ function EventCardList({ eventList, setEventModal }: { eventList: EventCardProps
 }
 
 function EventView() {
-  const [nowItemList, resetItemList] = useFetchItems<EventCardProps>('/event');
+  const [nowItemList, nowItemType] = useFetchItems<EventCardProps>('/event');
+  const [loading, setLoading] = useState(true);
   const setIsOpenEventModal = useSetRecoilState(isOpenEventModalState);
 
   const setEventModal = useCallback((e: MouseEvent) => {
@@ -47,7 +55,15 @@ function EventView() {
     console.log(e.currentTarget);
   }, []);
 
-  useEffect(() => () => resetItemList(), []);
+  useEffect(() => {
+    if (nowItemList && nowItemType === 'event') {
+      setLoading(false);
+    }
+  });
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
