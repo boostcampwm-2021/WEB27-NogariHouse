@@ -1,6 +1,7 @@
 import { deepCopy } from '@src/utils';
 
-export type Action = { type: 'UPDATE_USER', payload: any } | { type: 'SET_USERS', payload: any } | { type: 'DELETE_USER', payload: any }
+export type Action = { type: 'UPDATE_USER', payload: any } | { type: 'SET_USERS', payload: any }
+| { type: 'DELETE_USER', payload: any } | { type: 'ADD_STREAM', payload: any }
 
 export type TState = {
     participants: Array<any>
@@ -33,6 +34,16 @@ export const reducer = (state: TState, action: Action): TState => {
         .filter((participant) => (participant.userDocumentId !== userDocumentId));
 
       return { ...state, participants: newParticipants };
+    }
+
+    case 'ADD_STREAM': {
+      const { data } = action.payload;
+      const { participants } = state;
+      const newParticipant = participants.pop();
+      newParticipant.stream = data.stream;
+      participants.push(newParticipant);
+
+      return { ...state, participants };
     }
 
     default:

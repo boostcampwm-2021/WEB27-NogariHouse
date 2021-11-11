@@ -14,7 +14,7 @@ import userTypeState from '@atoms/user';
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewType from '@src/recoil/atoms/room-view-type';
 import DefaultButton from '@common/default-button';
-import InRoomUserBox, { IParticipant } from '@components/room/in-room-user-box';
+import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
 import { reducer, initialState } from '@components/room/in-room-reducer';
 import {
@@ -55,7 +55,7 @@ function InRoomModal() {
 
   // 다른 유저 접속시 연결하기 dispatch로 비디오 태그 추가
   const handleAddStream = (data: any) => {
-    console.log(data);
+    dispatch({ type: 'ADD_STREAM', payload: { data } });
   };
 
   const makeConnection = () => {
@@ -167,7 +167,7 @@ function InRoomModal() {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
-        {state.participants.map(({ userDocumentId }: any) => <InRoomUserBox key={userDocumentId} userDocumentId={userDocumentId} isMicOn={false} />)}
+        {state.participants.map(({ userDocumentId, stream }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={false} />)}
         <InRoomUserBox ref={myBox} key={user.userDocumentId} userDocumentId={user.userDocumentId} isMicOn={isMic} />
       </InRoomUserList>
       <InRoomFooter>
