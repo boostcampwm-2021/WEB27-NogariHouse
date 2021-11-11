@@ -1,10 +1,13 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useSetRecoilState } from 'recoil';
 
 import RoomCard from '@common/room-card';
 import useFetchItems from '@src/hooks/useFetchItems';
 import LoadingSpinner from '@common/loading-spinner';
+import roomViewType from '@atoms/room-view-type';
+import roomDocumentIdState from '@atoms/room-document-id';
 
 interface Participants{
   _id: string,
@@ -20,28 +23,36 @@ interface RoomCardProps {
 }
 
 const RoomDiv = styled.div`
- div + div {
-   margin-bottom: 10px;
- }
+  margin-bottom: 20px;
 `;
-
-const makeRoomToCard = (room: RoomCardProps) => (
-  <RoomCard
-    key={room._id}
-    _id={room._id}
-    title={room.title}
-    isAnonymous={room.isAnonymous}
-    participantsInfo={room.participantsInfo}
-  />
-);
-
-function RoomCardList({ roomList }: { roomList: RoomCardProps[] }) {
-  return <RoomDiv>{roomList?.map(makeRoomToCard)}</RoomDiv>;
-}
 
 function RoomView() {
   const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room');
   const [loading, setLoading] = useState(true);
+  const setRoomView = useSetRecoilState(roomViewType);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+
+  function roomCardClickEvent(roomDocumentId: string) {
+    setRoomView('inRoomView');
+    setRoomDocumentId(roomDocumentId);
+    // roomView
+  }
+
+  const makeRoomToCard = (room: RoomCardProps) => (
+    <RoomDiv key={room._id} onClick={() => roomCardClickEvent(room._id)}>
+      <RoomCard
+        key={room._id}
+        _id={room._id}
+        title={room.title}
+        isAnonymous={room.isAnonymous}
+        participantsInfo={room.participantsInfo}
+      />
+    </RoomDiv>
+  );
+
+  function RoomCardList({ roomList }: { roomList: RoomCardProps[] }) {
+    return <>{roomList?.map(makeRoomToCard)}</>;
+  }
 
   useEffect(() => {
     if (nowItemList && nowItemType === 'room') {

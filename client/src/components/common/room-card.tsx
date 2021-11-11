@@ -29,27 +29,30 @@ const RoomCardProfileDiv = styled.div`
   position: relative;
 `;
 
-const RoomCardFirstProfile = styled.div`
+const RoomCardFirstProfile = styled.div.attrs((props: ProfileProps) => {
+  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } }
+})`
   position: absolute;
 
   width: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
   height: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
 
-  background: center / contain no-repeat url(${(props : ProfileProps) => props.profileUrl});
   border-radius: 25px;
 
   background-size: ${(props: ProfileProps) => (props.length === 1 ? 120 : 100)}px;
   z-index: 2;
 `;
 
-const RoomCardSecondProfile = styled.div`
+const RoomCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
+  if (props.length === 1) return ;
+  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } }
+})`
   position: absolute;
   top: 50px;
   left: 40px;
 
   width: 55px;
   height: 55px;
-  background: center / contain no-repeat url(${(props : ProfileProps) => props.profileUrl});
   background-size: 80px;
   border-radius: 25px;
 
