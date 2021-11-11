@@ -20,23 +20,23 @@ interface RoomCardProps {
 }
 
 const RoomDiv = styled.div`
- div + div {
-   margin-bottom: 10px;
- }
+  margin-bottom: 20px;
 `;
 
 const makeRoomToCard = (room: RoomCardProps) => (
-  <RoomCard
-    key={room._id}
-    _id={room._id}
-    title={room.title}
-    isAnonymous={room.isAnonymous}
-    participantsInfo={room.participantsInfo}
-  />
+  <RoomDiv>
+    <RoomCard
+      key={room._id}
+      _id={room._id}
+      title={room.title}
+      isAnonymous={room.isAnonymous}
+      participantsInfo={room.participantsInfo}
+    />
+  </RoomDiv>
 );
 
 function RoomCardList({ roomList }: { roomList: RoomCardProps[] }) {
-  return <RoomDiv>{roomList?.map(makeRoomToCard)}</RoomDiv>;
+  return <>{roomList?.map(makeRoomToCard)}</>;
 }
 
 function RoomView() {
