@@ -46,7 +46,7 @@ function EventCardList({ eventList, setEventModal }: { eventList: EventCardProps
 }
 
 function EventView() {
-  const [nowItemList, nowItemType] = useFetchItems<EventCardProps>('/event');
+  const [nowItemList, nowItemType] = useFetchItems<EventCardProps>('/event', 'event');
   const [loading, setLoading] = useState(true);
   const setIsOpenEventModal = useSetRecoilState(isOpenEventModalState);
 

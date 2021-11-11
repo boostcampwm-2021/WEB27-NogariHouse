@@ -27,7 +27,7 @@ const RoomDiv = styled.div`
 `;
 
 function RoomView() {
-  const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room');
+  const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room', 'room');
   const [loading, setLoading] = useState(true);
   const setRoomView = useSetRecoilState(roomViewType);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
