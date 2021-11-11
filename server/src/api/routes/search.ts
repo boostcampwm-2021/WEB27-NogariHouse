@@ -7,7 +7,7 @@ const searchRouter = Router();
 export default (app: Router) => {
   app.use('/search', searchRouter);
 
-  app.get('/events', async (req: Request, res: Response) => {
+  searchRouter.get('/events', async (req: Request, res: Response) => {
     const { keyword, count } = req.query;
     if (typeof keyword !== 'string' || typeof count !== 'string') {
         res.json({ ok: false });
