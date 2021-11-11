@@ -3,16 +3,23 @@ import {
 } from 'express';
 
 import usersService from '@services/users-service';
+import authJWT from '@middlewares/auth'
 
 const userRouter = Router();
 
 export default (app: Router) => {
   app.use('/user', userRouter);
 
-  userRouter.get('/', async (req: Request, res: Response) => {
-    const { accessToken } = req.cookies;
-    const result = await usersService.verifyAccessToken(accessToken);
-    res.json(result);
+  userRouter.get('/', authJWT, async (req: Request, res: Response) => {
+    const { accessToken, userDocumentId } = req.body;
+    const user = await usersService.findUser(userDocumentId);
+    if (user) {
+      const { _id, profileUrl, userName, userId } = user;
+      res.json({ ok: true, accessToken, userDocumentId : _id, profileUrl, userName, userId });
+    }
+    else {
+      res.json({ ok: false })
+    }
   });
 
   userRouter.get('/:userDocumentId', async (req: Request, res: Response) => {

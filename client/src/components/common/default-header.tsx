@@ -5,8 +5,10 @@ import { IconType } from 'react-icons';
 import {
   HiOutlinePaperAirplane, HiSearch, HiOutlineMail, HiOutlineCalendar, HiOutlineBell,
 } from 'react-icons/hi';
+import { useRecoilValue } from 'recoil';
 
 import { makeIconToLink } from '@utils/index';
+import userState from '@atoms/user';
 
 const CustomDefaultHeader = styled.nav`
   position: relative;
@@ -60,6 +62,7 @@ interface IconAndLink {
 }
 
 function DefaultHeader() {
+  const user = useRecoilValue(userState);
   const leftSideIcons: IconAndLink[] = [
     { Component: HiSearch, link: '/search', key: 'search' },
     { Component: HiOutlinePaperAirplane, link: '/chat', key: 'chat' },
@@ -77,7 +80,7 @@ function DefaultHeader() {
       <LogoTitle to="/"> NogariHouse </LogoTitle>
       <IconContainer>
         {rightSideIcons.map(makeIconToLink)}
-        <Link to="/profile"><ImageLayout src="https://avatars.githubusercontent.com/u/59464537?v=4" alt="사용자" /></Link>
+        <Link to="/profile"><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
       </IconContainer>
     </CustomDefaultHeader>
   );
