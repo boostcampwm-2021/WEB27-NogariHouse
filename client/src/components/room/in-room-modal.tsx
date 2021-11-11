@@ -121,10 +121,10 @@ function InRoomModal() {
     });
 
     socket?.on('room:join', async (payload: any) => {
-      const { userDocumentId, userData } = payload;
+      const { userData } = payload;
       dispatch({
         type: 'UPDATE_USER',
-        payload: { userDocumentId, userData },
+        payload: { userData },
       });
 
       const offer = await myPeerConnection.current?.createOffer();
@@ -146,6 +146,14 @@ function InRoomModal() {
     socket?.on('room:ice', async (ice: RTCIceCandidateInit) => {
       myPeerConnection.current?.addIceCandidate(ice);
     });
+
+    socket?.on('room:leave', async (payload: any) => {
+      const { userDocumentId } = payload;
+      dispatch({
+        type: 'DELETE_USER',
+        payload: { userDocumentId },
+      });
+    });
   }, [socket]);
 
   const leaveEvent = () => {
@@ -159,13 +167,8 @@ function InRoomModal() {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
-        {state.participants.map((participant) => (
-          <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
-        ))}
-        {/* {roomInfo?.participants?.map((participant) => (
-          <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
-        ))} */}
-        <InRoomUserBox ref={myBox} userDocumentId={user.userDocumentId} isMicOn={isMic} />
+        {state.participants.map(({ userDocumentId }: any) => <InRoomUserBox key={userDocumentId} userDocumentId={userDocumentId} isMicOn={false} />)}
+        <InRoomUserBox ref={myBox} key={user.userDocumentId} userDocumentId={user.userDocumentId} isMicOn={isMic} />
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={leaveEvent}> Leave a Quietly </DefaultButton>

@@ -1,9 +1,9 @@
 import { deepCopy } from '@src/utils';
 
-export type Action = { type: 'UPDATE_USER', payload: any } | { type: 'SET_USERS', payload: any }
+export type Action = { type: 'UPDATE_USER', payload: any } | { type: 'SET_USERS', payload: any } | { type: 'DELETE_USER', payload: any }
 
 export type TState = {
-    participants: Array<any>,
+    participants: Array<any>
 }
 
 export const initialState = {
@@ -13,9 +13,9 @@ export const initialState = {
 export const reducer = (state: TState, action: Action): TState => {
   switch (action.type) {
     case 'UPDATE_USER': {
-      const { userDocumentId, userData } = action.payload;
+      const { userData } = action.payload;
       const newParticipants = deepCopy(state.participants);
-      newParticipants[userDocumentId] = userData;
+      newParticipants.push(userData);
 
       return { ...state, participants: newParticipants };
     }
@@ -23,6 +23,14 @@ export const reducer = (state: TState, action: Action): TState => {
     case 'SET_USERS': {
       const { participants } = action.payload;
       const newParticipants = deepCopy(participants);
+
+      return { ...state, participants: newParticipants };
+    }
+
+    case 'DELETE_USER': {
+      const { userDocumentId } = action.payload;
+      const newParticipants = state.participants
+        .filter((participant) => (participant.userDocumentId !== userDocumentId));
 
       return { ...state, participants: newParticipants };
     }

@@ -19,7 +19,9 @@ export default function registerRoomHandler(socket : Socket) {
     users[socket.id] = { roomDocumentId, userDocumentId };
     await RoomService.addParticipant(roomDocumentId, userDocumentId);
     const userData = await usersService.findUser(userDocumentId);
-    socket.to(roomDocumentId).emit('room:join', { userDocumentId, userData });
+    // eslint-disable-next-line no-underscore-dangle
+    const obj = { userDocumentId: userData!._id, mic: false };
+    socket.to(roomDocumentId).emit('room:join', { userData: obj });
   };
 
   const handleRoomLeave = async () => {
