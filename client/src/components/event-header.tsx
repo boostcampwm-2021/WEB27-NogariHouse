@@ -11,10 +11,11 @@ import { makeIconToLink } from '@utils/index';
 import isOpenModalState from '@atoms/is-open-modal';
 
 interface IconAndLink {
-  Component: IconType;
-  link: string;
-  size?: number;
-  color?: string;
+  Component:IconType,
+  key: string | number,
+  link: string,
+  size?: number,
+  color?: string,
 }
 
 const EventAddButton = styled.div`
@@ -33,7 +34,7 @@ const PlusIconStyle = styled(FaPlusCircle)`
 `;
 
 function EventHeader() {
-  const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/' };
+  const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/', key: 'main' };
   const [isOpenModal, setIsOpenModal] = useRecoilState(isOpenModalState);
 
   const changeModalState = () => {
@@ -48,7 +49,7 @@ function EventHeader() {
           UPCOMING FOR YOU ▼
         </HeaderTitleNunito>
         <EventAddButton>
-          <HiOutlineCalendar onClick={() => changeModalState()} size={48} />
+          <HiOutlineCalendar onClick={changeModalState} size={48} />
           <PlusIconStyle />
         </EventAddButton>
       </CustomtHeader>

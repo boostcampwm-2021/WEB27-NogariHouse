@@ -4,16 +4,34 @@ import { IconType } from 'react-icons';
 
 interface IconAndLink {
     Component:IconType,
+    key: string | number,
     link: string,
     size?: number,
     color?: string,
   }
 
-// eslint-disable-next-line import/prefer-default-export
+interface Params {
+  [key: string]: any
+}
+
 export const makeIconToLink = ({
-  Component, link, size = 48, color = 'black',
+  Component, link, key, size = 48, color = 'black',
 }: IconAndLink) => (
-  <Link to={link}>
+  <Link to={link} key={key}>
     <Component size={size} color={color} />
   </Link>
 );
+
+export const generateURLQuery = (params: Params) => Object.keys(params).map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`).join('&');
+
+// Date객체 -> 시간 : 분 string 으로 변환
+export const makeDateToHourMinute = (date : Date) => `${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+
+const emailRule = /^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i;
+
+export const testEmailValidation = (string: string): boolean => emailRule.test(string);
+
+export const deepCopy = (object: Object) => {
+  const objectStr = JSON.stringify(object);
+  return JSON.parse(objectStr);
+};

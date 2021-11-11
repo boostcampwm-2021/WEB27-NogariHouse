@@ -1,4 +1,6 @@
+/* eslint-disable no-param-reassign */
 import { Schema, Document, model } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 export interface IUser {
     userName: string,
@@ -38,9 +40,12 @@ export interface IUsers {
     activity: Array<IActivity>
     recentSearch: Array<IRecentSearch>,
     recentListenTo: Array<IRecentListenTo>
+    profileUrl: string
 }
 
-export interface IUserTypesModel extends IUser, Document { }
+export interface IUserTypesModel extends IUsers, Document {
+  checkPassword: (guess: string) => boolean
+}
 
 const usersSchema = new Schema({
   userName: {
@@ -93,6 +98,38 @@ const usersSchema = new Schema({
     type: [Object],
     default: [],
   },
+  profileUrl: {
+    type: String,
+    default: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
+  },
 });
+
+usersSchema.pre('insertMany', async (next: any, docs: any) => {
+  console.log(docs);
+  if (Array.isArray(docs) && docs.length) {
+    // eslint-disable-next-line no-return-await
+    const hashedUsers = docs.map(async (user) => await new Promise((resolve, reject) => {
+      bcrypt.genSalt(10).then((salt) => {
+        const password = user.password.toString();
+        bcrypt.hash(password, salt).then((hash) => {
+          user.password = hash;
+          resolve(user);
+        }).catch((e) => {
+          reject(e);
+        });
+      }).catch((e) => {
+        reject(e);
+      });
+    }));
+    docs = await Promise.all(hashedUsers);
+    next();
+  } else {
+    return next(new Error('User list should not be empty')); // lookup early return pattern
+  }
+});
+
+usersSchema.methods.checkPassword = function (guess) {
+  return bcrypt.compareSync(guess, this.password);
+};
 
 export default model<IUserTypesModel>('users', usersSchema);

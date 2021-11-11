@@ -1,11 +1,12 @@
-/* eslint-disable*/
-
-import React, { useRef, useState } from 'react';
+import React, {
+  UIEvent, useCallback, useEffect, useRef, useState,
+} from 'react';
 import { useSetRecoilState } from 'recoil';
+import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { nowFetchingState } from '@atoms/main-section-scroll'
+import { nowFetchingState } from '@atoms/main-section-scroll';
 import LargeLogo from '@components/large-logo';
 import LeftSideBar from '@components/left-sidebar';
 import RightSideBar from '@components/right-sidebar';
@@ -13,7 +14,8 @@ import HeaderRouter from '@routes/header';
 import MainRouter from '@routes/main';
 import DefaultButton from '@styled-components/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
-
+import EventRegisterModal from '@components/event-register-modal';
+import LoadingSpinner from '@styled-components/loading-spinner';
 
 const MainLayout = styled.div`
   display: flex;
@@ -41,15 +43,18 @@ const ActiveFollowingLayout = styled.div`
 const MainSectionLayout = styled.div`
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 80vh;
   min-width: 500px;
   flex-grow: 3;
   margin: 10px;
 
-  > div + div {
-    margin-top: 20px;
-  }
   ${ScrollBarStyle}
+`;
+
+const MainScrollSection = styled.div`
+  width: 100%;
+  height: 100%;
+  ${ScrollBarStyle};
 `;
 
 const RoomLayout = styled.div`
@@ -59,18 +64,52 @@ const RoomLayout = styled.div`
 
 const ButtonLayout = styled.div`
   margin-top: 150px;
-  height: 200px;
+  height: 150px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
 `;
 
-
 function MainView() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const nowFetchingRef = useRef<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [cookies, setCookie] = useCookies(['accessToken']);
+
+  const scrollBarChecker = useCallback((e : UIEvent<HTMLDivElement>) => {
+    if (!nowFetchingRef.current) {
+      const diff = (e.currentTarget).scrollHeight - (e.currentTarget).scrollTop;
+      if (diff < 700) {
+        setNowFetching(true);
+        nowFetchingRef.current = true;
+        setTimeout(() => { nowFetchingRef.current = false; }, 200);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
+      method: 'GET',
+      credentials: 'include',
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.ok) {
+          setIsLoggedIn(true);
+          setCookie('accessToken', json.accessToken);
+        } else {
+          setIsLoggedIn(false);
+        }
+      })
+      .then(() => { setLoading(false); });
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   if (isLoggedIn) {
     return (
@@ -80,20 +119,11 @@ function MainView() {
           <ActiveFollowingLayout>
             <LeftSideBar />
           </ActiveFollowingLayout>
-          <MainSectionLayout onScroll={(e) => {
-            if(nowFetchingRef.current){
-              return 0;
-            }
-            else{
-              const diff = (e.currentTarget as HTMLDivElement).scrollHeight - (e.currentTarget as HTMLDivElement).scrollTop;
-              if(diff < 700) {
-                setNowFetching(true);
-                nowFetchingRef.current = true;
-                setTimeout(() => {nowFetchingRef.current = false;}, 200);
-                }
-              }
-            }}>
-            <MainRouter />
+          <MainSectionLayout>
+            <MainScrollSection onScroll={scrollBarChecker}>
+              <MainRouter />
+            </MainScrollSection>
+            <EventRegisterModal />
           </MainSectionLayout>
           <RoomLayout>
             <RightSideBar />
@@ -108,12 +138,12 @@ function MainView() {
         <LargeLogo />
         <ButtonLayout>
           <Link to="/signup">
-            <DefaultButton buttonType="secondary" size="large">
+            <DefaultButton buttonType="secondary" size="medium">
               SIGN UP
             </DefaultButton>
           </Link>
-          <Link to="/">
-            <DefaultButton onClick={() => {setIsLoggedIn(true)}} buttonType="thirdly" size="large">
+          <Link to="/signin">
+            <DefaultButton onClick={() => { setIsLoggedIn(false); }} buttonType="thirdly" size="medium">
               SIGN IN
             </DefaultButton>
           </Link>
