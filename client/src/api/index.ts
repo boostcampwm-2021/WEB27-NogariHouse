@@ -105,7 +105,7 @@ export const postSignUpUserInfo = async (postSignupUserInfoConfig: Object) => {
 
 export const postCheckMail = async (email: Object) => {
   try {
-    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signup/userInfo`, {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signup/mail`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
