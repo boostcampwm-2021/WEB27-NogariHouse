@@ -96,7 +96,7 @@ const RoomCardLayout = styled.div`
 
 export default function RoomCard({ title, participantsInfo } : RoomCardProps) {
   const userNames = [];
-  for (let i = 0; i < 3 && i < participantsInfo.length; i += 1) userNames.push(participantsInfo[i].userName);
+  for (let i = 0; i < 3 && i < participantsInfo.length; i += 1) userNames.push({userDocumentId: participantsInfo[i]._id, userName: participantsInfo[i].userName});
   return (
     <RoomCardLayout>
       <RoomCardTitle>
@@ -108,7 +108,7 @@ export default function RoomCard({ title, participantsInfo } : RoomCardProps) {
           {participantsInfo.length > 1 && <RoomCardSecondProfile profileUrl={participantsInfo[1].profileUrl} length={participantsInfo.length} /> }
         </RoomCardProfileDiv>
         <RoomCardUsers>
-          {userNames.map((v) => <div key={v}>{v}</div>)}
+          {userNames.map((user) => <div key={user.userDocumentId}>{user.userName}</div>)}
           <div><span>{participantsInfo.length}</span></div>
         </RoomCardUsers>
       </RoomCardInfo>
