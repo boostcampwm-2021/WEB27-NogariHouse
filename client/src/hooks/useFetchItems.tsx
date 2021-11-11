@@ -8,11 +8,11 @@ const useFetchItems = <T extends {}>(apiPath : string, nowItemType: string): [T[
   const resetItemList = useResetRecoilState(nowItemsListState);
   const nowItemTypeRef = useRef<string>('');
 
-  useEffect(() => () => resetItemList(), []);
-
   useEffect(() => {
     resetItemList();
     setNowFetching(true);
+
+    return () => resetItemList();
   }, []);
 
   useEffect(() => {
