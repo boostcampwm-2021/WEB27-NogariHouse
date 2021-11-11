@@ -160,7 +160,7 @@ function InRoomModal() {
       </InRoomHeader>
       <InRoomUserList>
         {state.participants.map((participant) => (
-          <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
+          <InRoomUserBox key={participant.userDocumentId} userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
         ))}
         {/* {roomInfo?.participants?.map((participant) => (
           <InRoomUserBox userDocumentId={participant.userDocumentId} isMicOn={participant.isMicOn} />
