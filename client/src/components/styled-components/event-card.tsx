@@ -24,7 +24,8 @@ const EventCardLayout = styled.div`
 `;
 
 const TimeDiv = styled.div`
-  font-size: 18px;
+  font-size: 14px;
+  color: gray;
 `;
 
 const TitleDiv = styled.div`
@@ -48,6 +49,7 @@ const ImageLayout = styled.img`
 
 const DiscriptionDiv = styled.div`
   font-size: 14px;
+  font-weight: 600;
 `;
 
 interface EventUser {

@@ -1,26 +1,37 @@
-import React from 'react';
+/* eslint-disable no-underscore-dangle */
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import RoomCard from '@styled-components/room-card';
+import useFetchItems from '@src/hooks/useFetchItems';
+import LoadingSpinner from '@styled-components/loading-spinner';
 
-interface User{
+interface Participants{
+  _id: string,
   userName: string,
-  profileURL: string
+  profileUrl: string
 }
 
 interface RoomCardProps {
+  _id: string,
   title: string,
-  users: Array<User>,
-  key: string | number,
+  isAnonymous: boolean,
+  participantsInfo: Array<Participants>,
 }
 
-const RoomDiv = styled.div``;
+const RoomDiv = styled.div`
+ div + div {
+   margin-bottom: 10px;
+ }
+`;
 
 const makeRoomToCard = (room: RoomCardProps) => (
   <RoomCard
-    key={room.key}
+    key={room._id}
+    _id={room._id}
     title={room.title}
-    users={room.users}
+    isAnonymous={room.isAnonymous}
+    participantsInfo={room.participantsInfo}
   />
 );
 
@@ -29,7 +40,20 @@ function RoomCardList({ roomList }: { roomList: RoomCardProps[] }) {
 }
 
 function RoomView() {
-  return <RoomCardList roomList={[{ key: 1, title: 'test', users: [{ userName: 'test', profileURL: 'test' }] }]} />;
+  const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (nowItemList && nowItemType === 'room') {
+      setLoading(false);
+    }
+  });
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  return <RoomCardList roomList={nowItemList} />;
 }
 
 export default RoomView;

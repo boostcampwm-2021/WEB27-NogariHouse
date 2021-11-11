@@ -9,6 +9,10 @@ export const CustomtHeader = styled.nav`
 
   display: flex;
   justify-content: space-between;
+
+  svg:hover {
+    filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
+  }
 `;
 
 export const HeaderTitleNunito = styled.div`

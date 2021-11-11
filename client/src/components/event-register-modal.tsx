@@ -2,17 +2,15 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 
-import isOpenModalState from '@atoms/is-open-modal';
+import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
+import { ModalBox, BackgroundWrapper } from '@styled-components/modal';
 
-const CustomEventRegisterModal = styled.div`
-  position: absolute;
-  top: 0;
-  z-index: 10;
+const CustomEventRegisterModal = styled(ModalBox)`
+  top: 50px;
   flex-grow: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width : 100%;
   min-width: 500px;
   min-height: 500px;
   background-color:white;
@@ -96,7 +94,7 @@ const InputDescSpan = styled.span`
 `;
 
 function EventRegisterModal() {
-  const [isOpenModal, setIsOpenModal] = useRecoilState(isOpenModalState);
+  const [isOpenModal, setIsOpenModal] = useRecoilState(isOpenEventRegisterModalState);
   const [isDisabled, setIsDisabled] = useState(true);
   const inputTitleRef = useRef<HTMLInputElement>(null);
   const inputDateRef = useRef<HTMLInputElement>(null);
@@ -141,6 +139,7 @@ function EventRegisterModal() {
   if (isOpenModal) {
     return (
       <>
+        <BackgroundWrapper />
         <CustomEventRegisterModal>
           <ModalHeader>
             <CancelButton type="button" onClick={changeModalState}>Cancel</CancelButton>

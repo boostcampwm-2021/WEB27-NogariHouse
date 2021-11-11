@@ -7,6 +7,7 @@ import roomTypeState from '@atoms/room-type';
 import userTypeState from '@atoms/user';
 import roomViewType from '@src/recoil/atoms/room-view-type';
 import { generateURLQuery } from '@utils/index';
+
 import DefaultButton from './styled-components/default-button';
 import RoomTypeCheckBox from './room-type-check-box';
 import AnonymousCheckBox from './anonymous-checkbox';
@@ -50,11 +51,12 @@ function RoomModal() {
       userName: 'sungbin',
       isAnonymous: isAnonymous,
     };
-    fetch(`${process.env.REACT_APP_API_URL}/api/room?${generateURLQuery(roomInfo)}`, {
-      method: 'get',
+    fetch(`${process.env.REACT_APP_API_URL}/api/room`, {
+      method: 'post',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(roomInfo),
     }).then((res) => res.json())
       .then((roomDocumentId) => {
         setUser({ roomDocumentId, userDocumentId: '618238ccd24b76444a6c592f' });

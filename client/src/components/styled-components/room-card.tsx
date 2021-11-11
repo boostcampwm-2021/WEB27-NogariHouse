@@ -1,19 +1,23 @@
+/* eslint-disable  */
 /* eslint-disable max-len */
 import React from 'react';
 import styled from 'styled-components';
 
-interface User{
+interface Participants{
+  _id: string,
   userName: string,
-  profileURL: string
+  profileUrl: string
 }
 
 interface RoomCardProps {
+  _id: string,
   title: string,
-  users: Array<User>
+  isAnonymous: boolean,
+  participantsInfo: Array<Participants>,
 }
 
 interface ProfileProps {
-  user: User,
+  profileUrl: string,
   length: number
 }
 
@@ -31,7 +35,7 @@ const RoomCardFirstProfile = styled.div`
   width: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
   height: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
 
-  background: center / contain no-repeat url(${(props : ProfileProps) => props.user.profileURL});
+  background: center / contain no-repeat url(${(props : ProfileProps) => props.profileUrl});
   border-radius: 25px;
 
   background-size: ${(props: ProfileProps) => (props.length === 1 ? 120 : 100)}px;
@@ -45,7 +49,7 @@ const RoomCardSecondProfile = styled.div`
 
   width: 55px;
   height: 55px;
-  background: center / contain no-repeat url(${(props : ProfileProps) => props.user.profileURL});
+  background: center / contain no-repeat url(${(props : ProfileProps) => props.profileUrl});
   background-size: 80px;
   border-radius: 25px;
 
@@ -58,10 +62,8 @@ const RoomCardUsers = styled.div`
   justify-content: center;
   align-items: flex-start;
 
-  font-family: "Bangers";
   font-size: 24px;
   line-height: 30px;
-
   margin-left: 30px;
 `;
 
@@ -72,9 +74,8 @@ const RoomCardTitle = styled.div`
   align-items: center;
   padding: 30px;
 
-  font-family: "Bangers";
   font-size: 32px;
-  font-style: bold;
+  font-weight: bold;
 `;
 
 const RoomCardInfo = styled.div`
@@ -90,9 +91,9 @@ const RoomCardLayout = styled.div`
   width: 100%;
 `;
 
-export default function RoomCard({ title, users } : RoomCardProps) {
+export default function RoomCard({ title, participantsInfo } : RoomCardProps) {
   const userNames = [];
-  for (let i = 0; i < 3 && i < users.length; i += 1) userNames.push(users[i]);
+  for (let i = 0; i < 3 && i < participantsInfo.length; i += 1) userNames.push(participantsInfo[i].userName);
   return (
     <RoomCardLayout>
       <RoomCardTitle>
@@ -100,12 +101,12 @@ export default function RoomCard({ title, users } : RoomCardProps) {
       </RoomCardTitle>
       <RoomCardInfo>
         <RoomCardProfileDiv>
-          <RoomCardFirstProfile user={users[0]} length={users.length} />
-          {users.length > 1 && <RoomCardSecondProfile user={users[1]} length={users.length} /> }
+          <RoomCardFirstProfile profileUrl={participantsInfo[0].profileUrl} length={participantsInfo.length} />
+          {participantsInfo.length > 1 && <RoomCardSecondProfile profileUrl={participantsInfo[1].profileUrl} length={participantsInfo.length} /> }
         </RoomCardProfileDiv>
         <RoomCardUsers>
-          {userNames.map((v) => <div key={v.userName}>{v.userName}</div>)}
-          <div><span>{users.length}</span></div>
+          {userNames.map((v) => <div key={v}>{v}</div>)}
+          <div><span>{participantsInfo.length}</span></div>
         </RoomCardUsers>
       </RoomCardInfo>
     </RoomCardLayout>

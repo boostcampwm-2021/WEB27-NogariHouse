@@ -2,13 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
-import { HiOutlineCalendar } from 'react-icons/hi';
-import { FaPlusCircle } from 'react-icons/fa';
+import { BiCalendarPlus } from 'react-icons/bi';
 import { useRecoilState } from 'recoil';
 
 import { CustomtHeader, HeaderTitleNunito } from '@styled-components/header';
 import { makeIconToLink } from '@utils/index';
-import isOpenModalState from '@atoms/is-open-modal';
+import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 
 interface IconAndLink {
   Component:IconType,
@@ -22,20 +21,14 @@ const EventAddButton = styled.div`
   position: relative;
   width: 48px;
   height: 48px;
-`;
-
-const PlusIconStyle = styled(FaPlusCircle)`
-  position: absolute;
-  left: -6px;
-  bottom: -6px;
-  width: 24px;
-  height: 24px;
-  background: #f1f0e4;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 function EventHeader() {
   const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/', key: 'main' };
-  const [isOpenModal, setIsOpenModal] = useRecoilState(isOpenModalState);
+  const [isOpenModal, setIsOpenModal] = useRecoilState(isOpenEventRegisterModalState);
 
   const changeModalState = () => {
     setIsOpenModal(!isOpenModal);
@@ -49,8 +42,7 @@ function EventHeader() {
           UPCOMING FOR YOU ▼
         </HeaderTitleNunito>
         <EventAddButton>
-          <HiOutlineCalendar onClick={changeModalState} size={48} />
-          <PlusIconStyle />
+          <BiCalendarPlus onClick={changeModalState} size={48} />
         </EventAddButton>
       </CustomtHeader>
     </>
