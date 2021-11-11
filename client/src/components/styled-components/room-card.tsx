@@ -3,7 +3,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface User{
+interface Participants{
   _id: string,
   userName: string,
   profileUrl: string
@@ -13,7 +13,7 @@ interface RoomCardProps {
   _id: string,
   title: string,
   isAnonymous: boolean,
-  participantsInfo: Array<User>,
+  participantsInfo: Array<Participants>,
 }
 
 interface ProfileProps {

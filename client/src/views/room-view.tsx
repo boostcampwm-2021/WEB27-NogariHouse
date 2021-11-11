@@ -6,7 +6,7 @@ import RoomCard from '@styled-components/room-card';
 import useFetchItems from '@src/hooks/useFetchItems';
 import LoadingSpinner from '@styled-components/loading-spinner';
 
-interface User{
+interface Participants{
   _id: string,
   userName: string,
   profileUrl: string
@@ -16,7 +16,7 @@ interface RoomCardProps {
   _id: string,
   title: string,
   isAnonymous: boolean,
-  participantsInfo: Array<User>,
+  participantsInfo: Array<Participants>,
 }
 
 const RoomDiv = styled.div`
