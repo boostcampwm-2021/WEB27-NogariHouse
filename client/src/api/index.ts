@@ -119,3 +119,22 @@ export const postCheckMail = async (email: Object) => {
     console.error(error);
   }
 };
+
+export const getSearchResult = async (searchInfo: {keyword:string, option:string}) => {
+  const { keyword, option } = searchInfo;
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/search/${option}?keyword=${keyword}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
