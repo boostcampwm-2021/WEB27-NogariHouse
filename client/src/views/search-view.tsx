@@ -13,8 +13,8 @@ function SearchView() {
 
   const searchRequestHandler = () => {
     const searchInfo = {
-      keyword: (inputKeywordRef.current?.value as string).toLocaleLowerCase(),
-      option: searchType,
+      keyword: inputKeywordRef.current?.value as string,
+      option: searchType.toLocaleLowerCase(),
     };
 
     getSearchResult(searchInfo)
