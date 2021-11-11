@@ -83,7 +83,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     return (
       <InRoomUserBoxStyle>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay />
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay muted />
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>
