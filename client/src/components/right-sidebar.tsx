@@ -1,11 +1,11 @@
 /* eslint-disable object-shorthand */
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
+import { useRecoilValue } from 'recoil';
 
 import RoomModal from '@components/room-modal';
 import InRoomModal from '@components/in-room-modal';
-
-type TView = 'createRoomView' | 'closedSelectorView' | 'inRoomView';
+import roomViewType from '@src/recoil/atoms/room-view-type';
 
 const RoomModalLayout = styled.div`
   display: flex;
@@ -25,16 +25,12 @@ const RoomModalLayout = styled.div`
 `;
 
 function RightSideBar() {
-  const [roomView, setRoomView] = useState<TView>('createRoomView');
-
-  const changeRoomViewHandler = (view: TView) => {
-    setRoomView(view);
-  };
+  const roomView = useRecoilValue(roomViewType);
 
   if (roomView === 'createRoomView') { // 방 생성 모달
     return (
       <RoomModalLayout>
-        <RoomModal changeRoomViewHandler={changeRoomViewHandler} />
+        <RoomModal />
       </RoomModalLayout>
     );
   } if (roomView === 'closedSelectorView') { // closed인 경우 특정 인원을 지정하는 화면을 만들어야함
@@ -48,7 +44,7 @@ function RightSideBar() {
   if (roomView === 'inRoomView') {
     return (
       <RoomModalLayout>
-        <InRoomModal changeRoomViewHandler={changeRoomViewHandler} />
+        <InRoomModal />
       </RoomModalLayout>
     );
   }

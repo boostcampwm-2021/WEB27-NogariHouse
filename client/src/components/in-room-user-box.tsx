@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React, {
+  Ref, RefObject, useEffect, useState,
+} from 'react';
 import styled from 'styled-components';
 import {
   FiMic, FiMicOff,
 } from 'react-icons/fi';
 
-import UserImage from '@styled-components/user-image';
 import { getUserInfo } from '@api/index';
 
 export interface IParticipant {
@@ -39,23 +40,34 @@ const InRoomUserMicDiv = styled.div`
   }
 `;
 
-function InRoomUserBox({ userDocumentId, isMicOn } : IParticipant) {
-  const [userInfo, setUserInfo] = useState<any>();
+const UserBox = styled.video`
+width: 60px;
+min-width: 48px;
+height: 60px;
+border-radius: 30%;
+overflow: hidden;
+background-color: #6F8A87;
+`;
 
-  useEffect(() => {
-    getUserInfo(userDocumentId)
-      .then((res) => setUserInfo(res));
-  }, []);
+const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
+  (props, ref) => {
+    const [userInfo, setUserInfo] = useState<any>();
 
-  return (
-    <InRoomUserBoxStyle>
-      <UserImage profileUrl={userInfo?.profileUrl} />
-      <InRoomUserMicDiv>
-        { isMicOn ? <FiMic /> : <FiMicOff /> }
-      </InRoomUserMicDiv>
-      <p>{ userInfo?.userName }</p>
-    </InRoomUserBoxStyle>
-  );
-}
+    useEffect(() => {
+      getUserInfo(props.userDocumentId)
+        .then((res) => setUserInfo(res));
+    }, []);
+
+    return (
+      <InRoomUserBoxStyle>
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay />
+        <InRoomUserMicDiv>
+          { props.isMicOn ? <FiMic /> : <FiMicOff /> }
+        </InRoomUserMicDiv>
+        <p>{ userInfo?.userName }</p>
+      </InRoomUserBoxStyle>
+    );
+  },
+);
 
 export default InRoomUserBox;

@@ -28,9 +28,33 @@ export default function registerRoomHandler(socket : Socket) {
     delete users[socket.id];
 
     // room service에서 나간 유저 제거 코드 추가하기
-    socket.to(roomDocumentID).emit('space:leave', { userDocumentId });
+    socket.to(roomDocumentID).emit('room:leave', { userDocumentId });
+  };
+
+  // eslint-disable-next-line no-undef
+  const handleRoomOffer = (offer: RTCSessionDescriptionInit) => {
+    const { roomDocumentID } = users[socket.id];
+
+    socket.to(roomDocumentID).emit('room:offer', offer);
+  };
+
+  // eslint-disable-next-line no-undef
+  const handleRoomAnswer = (answer: RTCSessionDescriptionInit) => {
+    const { roomDocumentID } = users[socket.id];
+
+    socket.to(roomDocumentID).emit('room:answer', answer);
+  };
+
+  // eslint-disable-next-line no-undef
+  const handleRoomIce = (ice: RTCIceCandidateInit) => {
+    const { roomDocumentID } = users[socket.id];
+
+    socket.to(roomDocumentID).emit('room:ice', ice);
   };
 
   socket.on('room:join', handleRoomJoin);
+  socket.on('room:offer', handleRoomOffer);
+  socket.on('room:answer', handleRoomAnswer);
+  socket.on('room:ice', handleRoomIce);
   socket.on('disconnect', handleRoomLeave);
 }
