@@ -28,8 +28,7 @@ const useFetchItems = <T extends {}>(apiPath : string, nowItemType: string): [T[
           console.log(e);
         }
       };
-      fetchItems();
-      setTimeout(() => setNowFetching(false), 100);
+      fetchItems().then(() => setNowFetching(false));
     }
   }, [nowFetching]);
 
