@@ -2,6 +2,7 @@ import { Router } from 'express';
 import room from '@routes/room';
 import event from '@routes/event';
 import user from '@routes/user';
+import search from '@routes/search';
 
 // guaranteed to get dependencies
 export default () => {
@@ -9,5 +10,6 @@ export default () => {
   room(app);
   event(app);
   user(app);
+  search(app);
   return app;
 };
