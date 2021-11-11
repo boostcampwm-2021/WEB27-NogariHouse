@@ -2,7 +2,7 @@
 /* eslint-disable max-len */
 /* eslint-disable object-shorthand */
 import React, {
-  useEffect, useState, useRef, useReducer,
+  useEffect, useState, useRef, useReducer, useCallback,
 } from 'react';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -28,14 +28,6 @@ export interface IRooms extends Document{
   participants: Array<IParticipant>,
 }
 
-const pcConfig = {
-  iceServers: [
-    {
-      urls: 'stun:stun.l.google.com:19302',
-    },
-  ],
-};
-
 // 룸 생성 모달
 function InRoomModal() {
   const setRoomView = useSetRecoilState(roomViewType);
@@ -49,25 +41,46 @@ function InRoomModal() {
   const myStream = useRef<any>();
   const myBox = useRef<HTMLVideoElement>(null);
 
-  const handleIce = (data: any) => {
-    socket?.emit('room:ice', data.candidate);
-  };
+  const handleIce = useCallback((data: any) => {
+    console.log('sent candidate');
+    dispatch({ type: 'SENT_CANDIDATE', payload: { data: data.candidate, socket } });
+  }, [socket]);
 
   // 다른 유저 접속시 연결하기 dispatch로 비디오 태그 추가
   const handleAddStream = (data: any) => {
+    console.log('ADDSTream');
     dispatch({ type: 'ADD_STREAM', payload: { data } });
   };
 
   const makeConnection = () => {
+    if (socket === null) return;
+
+    myPeerConnection.current = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: [
+            'stun:stun.l.google.com:19302',
+            'stun:stun1.l.google.com:19302',
+            'stun:stun2.l.google.com:19302',
+            'stun:stun3.l.google.com:19302',
+            'stun:stun4.l.google.com:19302',
+          ],
+        },
+      ],
+    });
     myPeerConnection.current?.addEventListener('icecandidate', handleIce);
     myPeerConnection.current?.addEventListener('addstream', handleAddStream);
     myStream.current?.getTracks()
-      .forEach((track: any) => myPeerConnection.current?.addTrack(track, myStream.current));
+      .forEach((track: any) => {
+        console.log(track);
+        myPeerConnection.current?.addTrack(track, myStream.current);
+        console.log(myPeerConnection.current);
+      });
   };
 
   const getMedia = async () => {
     try {
-      myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
       myBox.current!.srcObject = myStream.current;
     } catch (e) {
       console.error(e);
@@ -84,13 +97,12 @@ function InRoomModal() {
   };
 
   useEffect(() => {
-    myPeerConnection.current = new RTCPeerConnection(pcConfig);
     initConnection();
 
     return () => {
       if (myPeerConnection.current) myPeerConnection.current.close();
     };
-  }, []);
+  }, [socket]);
 
   // roomId 기반으로 room 정보 불러오기
   useEffect(() => {
@@ -129,21 +141,26 @@ function InRoomModal() {
 
       const offer = await myPeerConnection.current?.createOffer();
       myPeerConnection.current?.setLocalDescription(offer);
+      console.log('sent the offer');
       socket.emit('room:offer', offer);
     });
 
     socket?.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
+      console.log('received the offer');
       myPeerConnection.current?.setRemoteDescription(offer);
       const answer = await myPeerConnection.current?.createAnswer();
       myPeerConnection.current?.setLocalDescription(answer);
       socket.emit('room:answer', answer);
+      console.log('sent the answer');
     });
 
     socket?.on('room:answer', async (answer: RTCSessionDescriptionInit) => {
+      console.log('received the answer');
       myPeerConnection.current?.setRemoteDescription(answer);
     });
 
     socket?.on('room:ice', async (ice: RTCIceCandidateInit) => {
+      console.log('received candidate');
       myPeerConnection.current?.addIceCandidate(ice);
     });
 

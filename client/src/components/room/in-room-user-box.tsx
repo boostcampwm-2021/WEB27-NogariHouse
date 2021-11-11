@@ -56,10 +56,13 @@ export function InRoomOtherUserBox({ userDocumentId, isMicOn, stream }: IPartici
 
   useEffect(() => {
     getUserInfo(userDocumentId)
-      .then((res) => setUserInfo(res))
-      // eslint-disable-next-line no-return-assign
-      .then(() => ref.current!.srcObject = stream);
+      .then((res) => setUserInfo(res));
   }, []);
+
+  useEffect(() => {
+    ref.current!.srcObject = stream;
+    console.log(ref.current?.srcObject);
+  }, [stream]);
 
   return (
     <InRoomUserBoxStyle>

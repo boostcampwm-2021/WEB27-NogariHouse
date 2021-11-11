@@ -27,7 +27,7 @@ export default function registerRoomHandler(socket : Socket) {
   const handleRoomLeave = async () => {
     const { roomDocumentId, userDocumentId } = users[socket.id];
     delete users[socket.id];
-
+    console.log('disconnet!!!!!!');
     await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
     socket.to(roomDocumentId).emit('room:leave', { userDocumentId });
   };
@@ -48,7 +48,6 @@ export default function registerRoomHandler(socket : Socket) {
   // eslint-disable-next-line no-undef
   const handleRoomIce = (ice: RTCIceCandidateInit) => {
     const { roomDocumentId } = users[socket.id];
-
     socket.to(roomDocumentId).emit('room:ice', ice);
   };
 
