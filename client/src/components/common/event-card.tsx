@@ -9,21 +9,27 @@ const EventCardLayout = styled.div`
   align-items: flex-start;
   position: relative;
 
-  width: 100%;
+  padding: 24px;
   height: max-content;
   max-height: 200px;
+  border-radius: 25px;
 
   div:not(:last-child) {
     margin-bottom: 10px;
   }
+
+  :hover{
+    background-color: #DDD9C7;
+  }
 `;
 
 const TimeDiv = styled.div`
-  font-size: 24px;
+  font-size: 14px;
+  color: gray;
 `;
 
 const TitleDiv = styled.div`
-  font-size: 24px;
+  font-size: 18px;
   font-weight: bold;
 `;
 const ImageDiv = styled.div`
@@ -42,35 +48,36 @@ const ImageLayout = styled.img`
 `;
 
 const DiscriptionDiv = styled.div`
-  font-size: 18px;
+  font-size: 14px;
+  font-weight: 600;
 `;
 
 interface EventUser {
-  userId: string;
-  userName: string;
-  profileUrl: string;
+  userId: string,
+  userName: string,
+  profileUrl: string,
 }
 
 interface EventCardProps {
-  time: string;
-  title: string;
-  users: EventUser[];
-  description: string;
+  time: string,
+  title: string,
+  participants: EventUser[],
+  description: string,
 }
 
-const makeUserToImg = (user: EventUser, idx: number) => <ImageLayout key={idx} src={user.profileUrl} />;
+const makeUserToImg = (participant: EventUser, idx: number) => <ImageLayout key={idx} src={participant.profileUrl} />;
 
-function UserImageList({ users }: { users: EventUser[] }) {
-  return <>{users?.map(makeUserToImg)}</>;
+function UserImageList({ participants }: { participants: EventUser[] }) {
+  return <>{participants?.map(makeUserToImg)}</>;
 }
 
-function EventCard({ time, title, users, description }: EventCardProps) {
+function EventCard({ time, title, participants, description }: EventCardProps) {
   return (
     <EventCardLayout>
       <TimeDiv>{time}</TimeDiv>
       <TitleDiv>{title}</TitleDiv>
       <ImageDiv>
-        <UserImageList users={users} />
+        <UserImageList participants={participants} />
       </ImageDiv>
       <DiscriptionDiv>{description}</DiscriptionDiv>
     </EventCardLayout>

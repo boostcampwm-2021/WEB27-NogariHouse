@@ -1,26 +1,24 @@
 import { Schema, Document, model } from 'mongoose';
-import { IEventChatUser } from '@interfaces/index';
 
-interface IChattingLog extends IEventChatUser{
+interface IChattingLog {
     message: string,
     date: Date,
 }
 
 interface IChatTypesModel extends Document {
-  users: Array<IEventChatUser>,
+  participants: Array<string>,
   chattingLog: Array<IChattingLog>
 }
 
 const chatSchema = new Schema({
-  users: {
-    type: [Object],
+  participants: {
+    type: [String],
     required: true,
   },
   chattingLog: {
     type: [Object],
     required: true,
   },
-
 });
 
 export default model<IChatTypesModel>('chats', chatSchema);

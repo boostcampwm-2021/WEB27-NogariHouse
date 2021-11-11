@@ -1,26 +1,15 @@
+/* eslint-disable object-shorthand */
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
 import roomTypeState from '@atoms/room-type';
-import DefaultButton from './styled-components/default-button';
-import RoomTypeCheckBox from './room-type-check-box';
-import AnonymousCheckBox from './anonymous-checkbox';
-
-const RoomModal = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #ffffff;
-  border-radius: 30px;
-  width: 100%;
-  height: 100%;
-  min-width: 350px;
-  max-width: 400px;
-  margin-bottom: 10%;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-`;
+import roomDocumentIdState from '@atoms/room-document-id';
+import roomViewType from '@src/recoil/atoms/room-view-type';
+import { postRoomInfo } from '@api/index';
+import DefaultButton from '@common/default-button';
+import RoomTypeCheckBox from '@components/room/room-type-check-box';
+import AnonymousCheckBox from '@components/room/anonymous-checkbox';
 
 const CustomTitleForm = styled.div`
   display: flex;
@@ -43,27 +32,30 @@ const TitleInputbarLabel = styled.label`
   color: #B6B6B6;
 `;
 
-function RightSideBar() {
+// 룸 생성 모달
+function RoomModal() {
+  const setRoomView = useSetRecoilState(roomViewType);
   const [roomType] = useRecoilState(roomTypeState);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
   const submitButtonHandler = () => {
+    // userId 현재 아이디 가져와야함
     const roomInfo = {
       type: roomType,
-      title: inputRef.current?.value,
-      participants: ['test'],
-      isAnonymous,
+      title: inputRef.current?.value as string,
+      userId: 'dlatqdlatq',
+      userName: 'sungbin',
+      isAnonymous: isAnonymous,
     };
-
-    fetch(`${process.env.REACT_APP_API_URL}/api/room`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(roomInfo),
-
-    }).then((res) => console.log(res))
+    postRoomInfo(roomInfo)
+      .then((roomDocumentId: any) => {
+        setRoomDocumentId(roomDocumentId);
+        if (roomType === 'closedSelectorView') setRoomView('closedSelectorView');
+        else setRoomView('inRoomView');
+      })
       .catch((err) => console.error(err));
   };
 
@@ -76,7 +68,7 @@ function RightSideBar() {
   };
 
   return (
-    <RoomModal>
+    <>
       <RoomTypeCheckBox checkBoxName="public" />
       <RoomTypeCheckBox checkBoxName="social" />
       <RoomTypeCheckBox checkBoxName="closed" />
@@ -88,8 +80,8 @@ function RightSideBar() {
       <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
         Lets Go
       </DefaultButton>
-    </RoomModal>
+    </>
   );
 }
 
-export default RightSideBar;
+export default RoomModal;

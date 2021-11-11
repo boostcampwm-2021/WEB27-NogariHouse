@@ -2,18 +2,19 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
-import { CustomtHeader, HeaderTitleNunito } from '@styled-components/header';
+import { CustomtHeader, HeaderTitleNunito } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 
 interface IconAndLink {
-  Component: IconType;
-  link: string;
-  size?: number;
-  color?: string;
+  Component:IconType,
+  key: string | number,
+  link: string,
+  size?: number,
+  color?: string,
 }
 
 function InviteHeader() {
-  const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/' };
+  const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/', key: 'main' };
 
   return (
     <CustomtHeader>

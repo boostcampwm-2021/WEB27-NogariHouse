@@ -7,7 +7,7 @@
           "@images/*": [ "src/assets/images" ], 
           "@theme/*": [ "src/assets/theme/*" ], 
           "@components/*": [ "src/components/*" ], 
-          "@styled-components/*": [ "src/components/styled-components/*" ], 
+          "@common/*": [ "src/components/common/*" ], 
           "@styles/*": ["src/assets/styles/*"],
 		      "@hooks/*": [ "src/hooks/*" ],
 		      "@recoil/*": [ "src/recoil/*" ],  

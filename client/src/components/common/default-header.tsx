@@ -5,8 +5,10 @@ import { IconType } from 'react-icons';
 import {
   HiOutlinePaperAirplane, HiSearch, HiOutlineMail, HiOutlineCalendar, HiOutlineBell,
 } from 'react-icons/hi';
+import { useRecoilValue } from 'recoil';
 
 import { makeIconToLink } from '@utils/index';
+import userState from '@atoms/user';
 
 const CustomDefaultHeader = styled.nav`
   position: relative;
@@ -24,7 +26,11 @@ const IconContainer = styled.div`
   justify-content: space-between;
 
   a:not(:last-child) {
-    margin-right: 3vw;
+    margin-right: 30px;
+  }
+  
+  svg:hover {
+    filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
   }
 `;
 
@@ -48,21 +54,23 @@ const ImageLayout = styled.img`
 `;
 
 interface IconAndLink {
-  Component: IconType,
+  Component:IconType,
+  key: string | number,
   link: string,
   size?: number,
   color?: string,
 }
 
 function DefaultHeader() {
+  const user = useRecoilValue(userState);
   const leftSideIcons: IconAndLink[] = [
-    { Component: HiSearch, link: '/search' },
-    { Component: HiOutlinePaperAirplane, link: '/chat' },
+    { Component: HiSearch, link: '/search', key: 'search' },
+    { Component: HiOutlinePaperAirplane, link: '/chat', key: 'chat' },
   ];
   const rightSideIcons: IconAndLink[] = [
-    { Component: HiOutlineMail, link: '/invite' },
-    { Component: HiOutlineCalendar, link: '/event' },
-    { Component: HiOutlineBell, link: '/activity' },
+    { Component: HiOutlineMail, link: '/invite', key: 'invite' },
+    { Component: HiOutlineCalendar, link: '/event', key: 'event' },
+    { Component: HiOutlineBell, link: '/activity', key: 'activity' },
   ];
   return (
     <CustomDefaultHeader>
@@ -72,7 +80,7 @@ function DefaultHeader() {
       <LogoTitle to="/"> NogariHouse </LogoTitle>
       <IconContainer>
         {rightSideIcons.map(makeIconToLink)}
-        <Link to="/profile"><ImageLayout src="https://avatars.githubusercontent.com/u/59464537?v=4" alt="사용자" /></Link>
+        <Link to="/profile"><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
       </IconContainer>
     </CustomDefaultHeader>
   );
