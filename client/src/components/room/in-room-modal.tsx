@@ -103,7 +103,7 @@ function InRoomModal() {
 
   useEffect(() => {
     if (socket === null) {
-      const url = process.env.REACT_APP_SERVER_URL as string;
+      const url = process.env.REACT_APP_API_URL as string;
       setSocket(io(url));
     }
     return () => {
@@ -117,7 +117,7 @@ function InRoomModal() {
   // socket 이벤트
   useEffect(() => {
     socket?.emit('room:join', {
-      roomDocumentId, userDocumentId: user.userDocumentId,
+      roomDocumentId: roomDocumentId, userDocumentId: user.userDocumentId,
     });
 
     socket?.on('room:join', async (payload: any) => {
