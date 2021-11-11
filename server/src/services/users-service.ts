@@ -7,7 +7,6 @@ import jwt from 'jsonwebtoken';
 import Users from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
-import { decode } from 'punycode';
 
 interface ISignupUserInfo {
   loginType: string;

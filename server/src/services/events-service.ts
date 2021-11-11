@@ -45,4 +45,9 @@ export default {
     });
     return newEvent.save();
   },
+
+  searchEvent: async (keyword: string, count: number) => {
+    const res = await Events.find({ $or: [{title: { $regex : keyword, $options: 'i' }}, {discription: { $regex : keyword, $options: 'i' }}]}).skip(count).limit(10);
+    return res;
+  }
 };
