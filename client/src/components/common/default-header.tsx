@@ -5,10 +5,11 @@ import { IconType } from 'react-icons';
 import {
   HiOutlinePaperAirplane, HiSearch, HiOutlineMail, HiOutlineCalendar, HiOutlineBell,
 } from 'react-icons/hi';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { makeIconToLink } from '@utils/index';
 import userState from '@atoms/user';
+import { nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
 
 const CustomDefaultHeader = styled.nav`
   position: relative;
@@ -42,6 +43,7 @@ const LogoTitle = styled(Link)`
   font-size: 48px;
   text-decoration: none;
   color: black;
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 const ImageLayout = styled.img`
@@ -63,6 +65,8 @@ interface IconAndLink {
 
 function DefaultHeader() {
   const user = useRecoilValue(userState);
+  const setNowFetching = useSetRecoilState(nowFetchingState);
+  const resetNowItemsList = useResetRecoilState(nowItemsListState);
   const leftSideIcons: IconAndLink[] = [
     { Component: HiSearch, link: '/search', key: 'search' },
     { Component: HiOutlinePaperAirplane, link: '/chat', key: 'chat' },
@@ -77,7 +81,7 @@ function DefaultHeader() {
       <IconContainer>
         {leftSideIcons.map(makeIconToLink)}
       </IconContainer>
-      <LogoTitle to="/"> NogariHouse </LogoTitle>
+      <LogoTitle to="/" onClick={() => { resetNowItemsList(); setNowFetching(true); }}> NogariHouse </LogoTitle>
       <IconContainer>
         {rightSideIcons.map(makeIconToLink)}
         <Link to="/profile"><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
