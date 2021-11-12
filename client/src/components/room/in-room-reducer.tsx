@@ -1,9 +1,10 @@
 import { deepCopy } from '@src/utils';
 
 export type Action = { type: 'UPDATE_USER', payload: any } | { type: 'SET_USERS', payload: any }
+| { type: 'DELETE_USER', payload: any } | { type: 'ADD_STREAM', payload: any } | { type: 'SENT_CANDIDATE', payload: any }
 
 export type TState = {
-    participants: Array<any>,
+    participants: Array<any>
 }
 
 export const initialState = {
@@ -13,9 +14,9 @@ export const initialState = {
 export const reducer = (state: TState, action: Action): TState => {
   switch (action.type) {
     case 'UPDATE_USER': {
-      const { userDocumentId, userData } = action.payload;
+      const { userData } = action.payload;
       const newParticipants = deepCopy(state.participants);
-      newParticipants[userDocumentId] = userData;
+      newParticipants.push(userData);
 
       return { ...state, participants: newParticipants };
     }
@@ -25,6 +26,31 @@ export const reducer = (state: TState, action: Action): TState => {
       const newParticipants = deepCopy(participants);
 
       return { ...state, participants: newParticipants };
+    }
+
+    case 'DELETE_USER': {
+      const { userDocumentId } = action.payload;
+      const newParticipants = state.participants
+        .filter((participant) => (participant.userDocumentId !== userDocumentId));
+
+      return { ...state, participants: newParticipants };
+    }
+
+    case 'ADD_STREAM': {
+      const { data } = action.payload;
+      const { participants } = state;
+      const newParticipant = participants.pop();
+      newParticipant.stream = data.stream;
+      participants.push(newParticipant);
+
+      return { ...state, participants };
+    }
+
+    case 'SENT_CANDIDATE': {
+      const { data, socket } = action.payload;
+      socket?.emit('room:ice', { ice: data });
+
+      return { ...state };
     }
 
     default:
