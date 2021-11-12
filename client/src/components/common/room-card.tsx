@@ -90,8 +90,10 @@ const RoomCardInfo = styled.div`
 
 const RoomCardLayout = styled.div`
   background-color: #FFFFFF;
-  border-radius: 25px;
-  width: 100%;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 30px;
+  margin-left: 0.8%;
+  width: 99%;
 `;
 
 export default function RoomCard({ title, participantsInfo } : RoomCardProps) {

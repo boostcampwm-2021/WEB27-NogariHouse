@@ -135,7 +135,7 @@ function InRoomModal() {
     socket?.on('room:join', async (payload: any) => {
       const { userData } = payload;
       dispatch({
-        type: 'UPDATE_USER',
+        type: 'JOIN_USER',
         payload: { userData },
       });
 
@@ -143,6 +143,14 @@ function InRoomModal() {
       myPeerConnection.current?.setLocalDescription(offer);
       console.log('sent the offer');
       socket.emit('room:offer', offer);
+    });
+
+    socket?.on('room:leave', async (payload: any) => {
+      const { userDocumentId } = payload;
+      dispatch({
+        type: 'LEAVE_USER',
+        payload: { userDocumentId },
+      });
     });
 
     socket?.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
@@ -164,13 +172,6 @@ function InRoomModal() {
       myPeerConnection.current?.addIceCandidate(ice);
     });
 
-    socket?.on('room:leave', async (payload: any) => {
-      const { userDocumentId } = payload;
-      dispatch({
-        type: 'DELETE_USER',
-        payload: { userDocumentId },
-      });
-    });
   }, [socket]);
 
   const leaveEvent = () => {

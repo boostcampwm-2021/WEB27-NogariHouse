@@ -58,7 +58,8 @@ export const InRoomUserList = styled.div`
   width: 100%;
   height: 70%;
 
-  ${ScrollBarStyle}
+  ${ScrollBarStyle};
+    overflow: overlay;
 `;
 
 export const FooterBtnDiv = styled.div`

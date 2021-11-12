@@ -20,6 +20,7 @@ class RoomService {
     const roomInfo = await Rooms.findById(roomDocumentId).select('participants');
     const newParticipants = roomInfo!.participants.filter((participant) => (participant.userDocumentId !== userDocumentId));
     await Rooms.updateOne({ _id: roomDocumentId }, { $set: { participants: newParticipants } });
+    if (!newParticipants.length) await Rooms.deleteOne({ _id: roomDocumentId });
   }
 
   async setRoom(title: string, type: string, isAnonymous: boolean) {

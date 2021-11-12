@@ -12,14 +12,9 @@ const EventCardLayout = styled.div`
   padding: 24px;
   height: max-content;
   max-height: 200px;
-  border-radius: 25px;
 
   div:not(:last-child) {
     margin-bottom: 10px;
-  }
-
-  :hover{
-    background-color: #DDD9C7;
   }
 `;
 
