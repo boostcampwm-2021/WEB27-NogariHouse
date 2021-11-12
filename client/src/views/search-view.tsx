@@ -1,18 +1,18 @@
 import React, {
-  useRef, useCallback, UIEvent, useEffect, useState, MouseEvent,
+  useRef, useCallback, UIEvent, useEffect, useState,
 } from 'react';
 import {
-  useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
+  useRecoilState, useRecoilValue, useResetRecoilState,
 } from 'recoil';
 
 import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
-import { isOpenEventModalState } from '@atoms/is-open-modal';
 import searchTypeState from '@atoms/search-type';
 import OptionBar from '@components/search/option-bar';
 import {
   SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection,
 } from '@components/search/style';
 import LoadingSpinner from '@common/loading-spinner';
+import useSetEventModal from '@hooks/useSetEventModal';
 import { EventCardList } from '@views/event-view';
 
 function SearchView() {
@@ -26,6 +26,8 @@ function SearchView() {
   const resetItemList = useResetRecoilState(nowItemsListState);
   const nowItemTypeRef = useRef<string>('');
   const searchInfo = useRef({ keyword: 'recent', option: 'top' });
+
+  const setEventModal = useSetEventModal();
 
   const fetchItems = async () => {
     try {
@@ -66,13 +68,6 @@ function SearchView() {
       setLoading(true);
     }
   });
-
-  const setIsOpenEventModal = useSetRecoilState(isOpenEventModalState);
-
-  const setEventModal = useCallback((e: MouseEvent) => {
-    setIsOpenEventModal(true);
-    console.log(e.currentTarget);
-  }, []);
 
   const scrollBarChecker = useCallback((e: UIEvent<HTMLDivElement>) => {
     if (!nowFetchingRef.current) {
