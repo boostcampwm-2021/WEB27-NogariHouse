@@ -1,6 +1,7 @@
+/* eslint-disable max-len */
 import { deepCopy } from '@src/utils';
 
-export type Action = { type: 'UPDATE_USER', payload: any } | { type: 'SET_USERS', payload: any }
+export type Action = { type: 'JOIN_USER', payload: any } | { type: 'SET_USERS', payload: any } | { type: 'LEAVE_USER', payload: any };
 
 export type TState = {
     participants: Array<any>,
@@ -12,10 +13,17 @@ export const initialState = {
 
 export const reducer = (state: TState, action: Action): TState => {
   switch (action.type) {
-    case 'UPDATE_USER': {
+    case 'JOIN_USER': {
       const { userDocumentId, userData } = action.payload;
       const newParticipants = deepCopy(state.participants);
-      newParticipants[userDocumentId] = userData;
+      newParticipants.push({ userDocumentId, userData });
+
+      return { ...state, participants: newParticipants };
+    }
+
+    case 'LEAVE_USER': {
+      const { userDocumentId } = action.payload;
+      const newParticipants = state.participants.filter((user) => user.userDocumentId !== userDocumentId);
 
       return { ...state, participants: newParticipants };
     }
