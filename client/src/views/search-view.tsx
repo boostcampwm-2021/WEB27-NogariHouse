@@ -48,7 +48,6 @@ function SearchView() {
 
   useEffect(() => {
     if (nowFetching) {
-      console.log(searchInfo.current.keyword);
       fetchItems().then(() => setNowFetching(false));
     }
   }, [nowFetching]);
