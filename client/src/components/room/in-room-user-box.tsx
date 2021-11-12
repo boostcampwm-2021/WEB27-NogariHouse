@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {
-  Ref, RefObject, useEffect, useState,
+  Ref, RefObject, useEffect, useRef, useState,
 } from 'react';
 import styled from 'styled-components';
 import {
@@ -12,6 +12,7 @@ import { getUserInfo } from '@api/index';
 export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
+    stream?: any,
 }
 
 const InRoomUserBoxStyle = styled.div`
@@ -49,7 +50,32 @@ const UserBox = styled.video`
   background-color: #6F8A87;
 `;
 
-const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
+export function InRoomOtherUserBox({ userDocumentId, isMicOn, stream }: IParticipant) {
+  const [userInfo, setUserInfo] = useState<any>();
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    getUserInfo(userDocumentId)
+      .then((res) => setUserInfo(res));
+  }, []);
+
+  useEffect(() => {
+    ref.current!.srcObject = stream;
+    console.log(ref.current?.srcObject);
+  }, [stream]);
+
+  return (
+    <InRoomUserBoxStyle>
+      <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline />
+      <InRoomUserMicDiv>
+        { isMicOn ? <FiMic /> : <FiMicOff /> }
+      </InRoomUserMicDiv>
+      <p>{ userInfo?.userName }</p>
+    </InRoomUserBoxStyle>
+  );
+}
+
+export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
   (props, ref) => {
     const [userInfo, setUserInfo] = useState<any>();
 
@@ -60,7 +86,7 @@ const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     return (
       <InRoomUserBoxStyle>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay />
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay muted playsInline />
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>
@@ -69,5 +95,3 @@ const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
     );
   },
 );
-
-export default InRoomUserBox;

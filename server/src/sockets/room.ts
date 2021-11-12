@@ -19,13 +19,15 @@ export default function registerRoomHandler(socket : Socket) {
     users[socket.id] = { roomDocumentId, userDocumentId };
     await RoomService.addParticipant(roomDocumentId, userDocumentId);
     const userData = await usersService.findUser(userDocumentId);
-    socket.to(roomDocumentId).emit('room:join', { userDocumentId, userData });
+    // eslint-disable-next-line no-underscore-dangle
+    const obj = { userDocumentId: userData!._id, mic: false };
+    socket.to(roomDocumentId).emit('room:join', { userData: obj });
   };
 
   const handleRoomLeave = async () => {
     const { roomDocumentId, userDocumentId } = users[socket.id];
     delete users[socket.id];
-
+    console.log('disconnet!!!!!!');
     await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
     socket.to(roomDocumentId).emit('room:leave', { userDocumentId });
   };
@@ -46,7 +48,6 @@ export default function registerRoomHandler(socket : Socket) {
   // eslint-disable-next-line no-undef
   const handleRoomIce = (ice: RTCIceCandidateInit) => {
     const { roomDocumentId } = users[socket.id];
-
     socket.to(roomDocumentId).emit('room:ice', ice);
   };
 
