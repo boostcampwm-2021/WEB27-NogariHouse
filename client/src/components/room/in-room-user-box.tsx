@@ -66,7 +66,7 @@ export function InRoomOtherUserBox({ userDocumentId, isMicOn, stream }: IPartici
 
   return (
     <InRoomUserBoxStyle>
-      <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay />
+      <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline />
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
@@ -86,7 +86,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     return (
       <InRoomUserBoxStyle>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay muted />
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay muted playsInline />
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>
