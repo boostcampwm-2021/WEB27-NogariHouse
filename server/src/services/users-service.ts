@@ -67,7 +67,7 @@ class UserService {
 
   async signup(info: ISignupUserInfo) {
     try {
-      const result = await Users.insertMany([info]);
+      await Users.insertMany([info]);
     } catch (error) {
       console.error(error);
     }
