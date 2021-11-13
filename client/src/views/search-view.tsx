@@ -1,8 +1,8 @@
 import React, {
-  useRef, useCallback, UIEvent, useEffect, useState,
+  useRef, useCallback, UIEvent, useEffect, useState, MouseEvent,
 } from 'react';
 import {
-  useRecoilState, useRecoilValue, useResetRecoilState,
+  useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
 } from 'recoil';
 
 import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
@@ -14,6 +14,9 @@ import {
 import LoadingSpinner from '@common/loading-spinner';
 import useSetEventModal from '@hooks/useSetEventModal';
 import { EventCardList } from '@views/event-view';
+import { RoomCardList } from '@views/room-view';
+import roomViewType from '@atoms/room-view-type';
+import roomDocumentIdState from '@atoms/room-document-id';
 
 function SearchView() {
   const searchType = useRecoilValue(searchTypeState);
@@ -82,6 +85,28 @@ function SearchView() {
     }
   }, []);
 
+  const setRoomView = useSetRecoilState(roomViewType);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+
+  const roomCardClickHandler = (e: MouseEvent) => {
+    const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
+    const roomDocumentId = RoomCardDiv?.getAttribute('data-id');
+    setRoomView('inRoomView');
+    if (roomDocumentId) setRoomDocumentId(roomDocumentId);
+    else console.error('no room-id');
+  };
+
+  // eslint-disable-next-line consistent-return
+  const itemList = () => {
+    if (searchType === 'Events') {
+      return <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />;
+    }
+
+    if (searchType === 'Rooms') {
+      return <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemsList} />;
+    }
+  };
+
   return (
     <SearchViewLayout>
       <SearchBarLayout>
@@ -92,7 +117,7 @@ function SearchView() {
       <SearchScrollSection onScroll={scrollBarChecker}>
         {loading
           ? <LoadingSpinner />
-          : <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />}
+          : itemList()}
       </SearchScrollSection>
     </SearchViewLayout>
   );

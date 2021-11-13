@@ -59,10 +59,11 @@ class RoomService {
     }
   }
 
+  // eslint-disable-next-line consistent-return
   async searchRooms(keyword: string, count: number) {
     try {
       const query = new RegExp(keyword, 'i');
-      const res = await Rooms.find({ $or: [{ title: query }, { description: query }] }).sort({ date: 1 }).skip(count).limit(10);
+      const res = await Rooms.find({ title: query }).sort({ date: 1 }).skip(count).limit(10);
 
       const roomsInfo = await Promise.all((res).map(async ({
         _id, title, isAnonymous, participants,
