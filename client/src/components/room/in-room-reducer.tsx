@@ -41,7 +41,8 @@ export const reducer = (state: TState, action: Action): TState => {
       const { data } = action.payload;
       const { participants } = state;
       const newParticipant = participants.pop();
-      newParticipant.stream = data.stream;
+      // eslint-disable-next-line prefer-destructuring
+      newParticipant.stream = data.streams[0];
       participants.push(newParticipant);
 
       return { ...state, participants };

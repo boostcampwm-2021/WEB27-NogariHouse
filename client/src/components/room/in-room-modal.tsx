@@ -42,13 +42,11 @@ function InRoomModal() {
   const myBox = useRef<HTMLVideoElement>(null);
 
   const handleIce = useCallback((data: any) => {
-    console.log('sent candidate');
     dispatch({ type: 'SENT_CANDIDATE', payload: { data: data.candidate, socket } });
   }, [socket]);
 
   // 다른 유저 접속시 연결하기 dispatch로 비디오 태그 추가
   const handleAddStream = (data: any) => {
-    console.log('ADDSTream');
     dispatch({ type: 'ADD_STREAM', payload: { data } });
   };
 
@@ -69,12 +67,11 @@ function InRoomModal() {
       ],
     });
     myPeerConnection.current?.addEventListener('icecandidate', handleIce);
-    myPeerConnection.current?.addEventListener('addstream', handleAddStream);
+    myPeerConnection.current?.addEventListener('track', handleAddStream);
+
     myStream.current?.getTracks()
       .forEach((track: any) => {
-        console.log(track);
         myPeerConnection.current?.addTrack(track, myStream.current);
-        console.log(myPeerConnection.current);
       });
   };
 
@@ -141,7 +138,7 @@ function InRoomModal() {
 
       const offer = await myPeerConnection.current?.createOffer();
       myPeerConnection.current?.setLocalDescription(offer);
-      console.log('sent the offer');
+
       socket.emit('room:offer', offer);
     });
 
@@ -154,21 +151,17 @@ function InRoomModal() {
     });
 
     socket?.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
-      console.log('received the offer');
       myPeerConnection.current?.setRemoteDescription(offer);
       const answer = await myPeerConnection.current?.createAnswer();
       myPeerConnection.current?.setLocalDescription(answer);
       socket.emit('room:answer', answer);
-      console.log('sent the answer');
     });
 
     socket?.on('room:answer', async (answer: RTCSessionDescriptionInit) => {
-      console.log('received the answer');
       myPeerConnection.current?.setRemoteDescription(answer);
     });
 
     socket?.on('room:ice', async (ice: RTCIceCandidateInit) => {
-      console.log('received candidate');
       myPeerConnection.current?.addIceCandidate(ice);
     });
   }, [socket]);
