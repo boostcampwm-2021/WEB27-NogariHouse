@@ -11,10 +11,11 @@ export default (app: Router) => {
     const { keyword } = req.params;
     const { count } = req.query;
     if (typeof keyword !== 'string' || typeof count !== 'string') {
-        res.json({ ok: false });
+      res.json({ ok: false });
     } else {
-        const items = (await eventsService.searchEvent(keyword, Number(count)))?.map(eventsService.makeItemToEventInterface);
-        res.json({ ok: true, items, keyword })
+      const items = (await eventsService.searchEvent(keyword,
+        Number(count)))?.map(eventsService.makeItemToEventInterface);
+      res.json({ ok: true, items, keyword });
     }
   });
 };
