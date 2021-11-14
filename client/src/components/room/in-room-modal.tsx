@@ -41,6 +41,11 @@ function InRoomModal() {
   const myStream = useRef<any>();
   const myBox = useRef<HTMLVideoElement>(null);
 
+  const micToggle = (isMicOn : boolean) => {
+    socket?.emit('room:mic', { roomDocumentId, userDocumentId: user.userDocumentId, isMicOn });
+    setMic(isMicOn);
+  };
+
   const handleIce = useCallback((data: any) => {
     console.log('sent candidate');
     dispatch({ type: 'SENT_CANDIDATE', payload: { data: data.candidate, socket } });
@@ -145,6 +150,14 @@ function InRoomModal() {
       socket.emit('room:offer', offer);
     });
 
+    socket?.on('room:mic', async (payload: any) => {
+      const { userData } = payload;
+      dispatch({
+        type: 'UPDATE_USER',
+        payload: { userData },
+      });
+    });
+
     socket?.on('room:leave', async (payload: any) => {
       const { userDocumentId } = payload;
       dispatch({
@@ -171,7 +184,6 @@ function InRoomModal() {
       console.log('received candidate');
       myPeerConnection.current?.addIceCandidate(ice);
     });
-
   }, [socket]);
 
   const leaveEvent = () => {
@@ -185,14 +197,14 @@ function InRoomModal() {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
-        {state.participants.map(({ userDocumentId, stream }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={false} />)}
+        {state.participants.map(({ userDocumentId, stream, mic }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} />)}
         <InRoomUserBox ref={myBox} key={user.userDocumentId} userDocumentId={user.userDocumentId} isMicOn={isMic} />
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={leaveEvent}> Leave a Quietly </DefaultButton>
         <FooterBtnDiv><FiScissors /></FooterBtnDiv>
         <FooterBtnDiv><FiPlus /></FooterBtnDiv>
-        <FooterBtnDiv>{isMic ? <FiMic onClick={() => setMic(false)} /> : <FiMicOff onClick={() => setMic(true)} />}</FooterBtnDiv>
+        <FooterBtnDiv>{isMic ? <FiMic onClick={() => micToggle(false)} /> : <FiMicOff onClick={() => micToggle(true)} />}</FooterBtnDiv>
       </InRoomFooter>
     </>
   );
