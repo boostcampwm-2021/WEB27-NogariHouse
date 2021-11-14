@@ -56,6 +56,8 @@ export default function registerRoomHandler(socket : Socket) {
       roomDocumentId, userDocumentId, isMicOn,
     } = payload;
 
+    await RoomService.setMic(roomDocumentId, userDocumentId, isMicOn);
+
     const userData = { userDocumentId, isMicOn };
     socket.to(roomDocumentId).emit('room:mic', { userData });
   };
