@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
-/* eslint-disable object-shorthand */
 import React, {
-  useEffect, useState, useRef, useReducer, useCallback,
+  useEffect, useState, useRef, useReducer,
 } from 'react';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -13,7 +11,7 @@ import userTypeState from '@atoms/user';
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewType from '@src/recoil/atoms/room-view-type';
 import DefaultButton from '@common/default-button';
-import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-room-user-box';
+import { IParticipant, InRoomUserBox } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
 import { reducer, initialState } from '@components/room/in-room-reducer';
 import useSocket from '@src/hooks/useSocket';
@@ -39,7 +37,6 @@ function InRoomModal() {
   const [isMic, setMic] = useState(false);
   const myPeerConnection = useRef<RTCPeerConnection>();
   const myStream = useRef<any>();
-  const myBox = useRef<HTMLVideoElement>(null);
 
   const handleIce = (data: any) => {
     dispatch({ type: 'SENT_CANDIDATE', payload: { data: data.candidate, socket } });
@@ -74,24 +71,15 @@ function InRoomModal() {
   };
 
   const getMedia = async () => {
-    try {
-      myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-      myBox.current!.srcObject = myStream.current;
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const initConnection = async () => {
-    try {
-      await getMedia();
-      await makeConnection();
-    } catch (error) {
-      console.error(error);
-    }
+    myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
   };
 
   useEffect(() => {
+    const initConnection = async () => {
+      await getMedia();
+      await makeConnection();
+    };
+
     initConnection();
 
     return () => {
@@ -117,7 +105,7 @@ function InRoomModal() {
     if (!socket) return;
 
     socket.emit('room:join', {
-      roomDocumentId: roomDocumentId, userDocumentId: user.userDocumentId,
+      roomDocumentId, userDocumentId: user.userDocumentId,
     });
 
     socket.on('room:join', async (payload: any) => {
@@ -157,10 +145,6 @@ function InRoomModal() {
     });
   }, [socket]);
 
-  const leaveEvent = () => {
-    setRoomView('createRoomView');
-  };
-
   return (
     <>
       <InRoomHeader>
@@ -168,11 +152,11 @@ function InRoomModal() {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
-        {state.participants.map(({ userDocumentId, stream }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={false} />)}
-        <InRoomUserBox ref={myBox} key={user.userDocumentId} userDocumentId={user.userDocumentId} isMicOn={isMic} />
+        {state.participants.map(({ userDocumentId, stream }: any) => <InRoomUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={false} />)}
+        <InRoomUserBox stream={myStream.current} key={user.userDocumentId} userDocumentId={user.userDocumentId} isMicOn={isMic} />
       </InRoomUserList>
       <InRoomFooter>
-        <DefaultButton buttonType="active" size="small" onClick={leaveEvent}> Leave a Quietly </DefaultButton>
+        <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
         <FooterBtnDiv><FiScissors /></FooterBtnDiv>
         <FooterBtnDiv><FiPlus /></FooterBtnDiv>
         <FooterBtnDiv>{isMic ? <FiMic onClick={() => setMic(false)} /> : <FiMicOff onClick={() => setMic(true)} />}</FooterBtnDiv>
