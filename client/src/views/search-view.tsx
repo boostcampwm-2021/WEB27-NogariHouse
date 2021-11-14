@@ -44,19 +44,6 @@ function SearchView() {
     }
   };
 
-  useEffect(() => {
-    resetItemList();
-    setNowFetching(true);
-
-    return () => resetItemList();
-  }, []);
-
-  useEffect(() => {
-    if (nowFetching) {
-      fetchItems().then(() => setNowFetching(false));
-    }
-  }, [nowFetching]);
-
   const searchRequestHandler = () => {
     searchInfo.current.keyword = inputKeywordRef.current?.value as string;
     searchInfo.current.option = searchType.toLocaleLowerCase();
@@ -65,12 +52,22 @@ function SearchView() {
   };
 
   useEffect(() => {
+    searchRequestHandler();
+  }, [searchType]);
+
+  useEffect(() => {
+    if (nowFetching) {
+      fetchItems().then(() => setNowFetching(false));
+    }
+  }, [nowFetching]);
+
+  useEffect(() => {
     if (nowItemsList && (nowItemTypeRef.current === 'recent' || nowItemTypeRef.current === inputKeywordRef.current?.value)) {
       setLoading(false);
     } else {
       setLoading(true);
     }
-  });
+  }, []);
 
   const scrollBarChecker = useCallback((e: UIEvent<HTMLDivElement>) => {
     if (!nowFetchingRef.current) {
@@ -98,6 +95,10 @@ function SearchView() {
 
   // eslint-disable-next-line consistent-return
   const itemList = () => {
+    if (searchInfo.current.option !== searchType.toLocaleLowerCase()) {
+      return <LoadingSpinner />;
+    }
+
     if (searchType === 'Events') {
       return <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />;
     }
