@@ -8,7 +8,7 @@ import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
   FiMoreHorizontal, FiScissors, FiPlus, FiMic, FiMicOff,
 } from 'react-icons/fi';
-import io from 'socket.io-client';
+import io, { Socket } from 'socket.io-client';
 
 import userTypeState from '@atoms/user';
 import roomDocumentIdState from '@atoms/room-document-id';
@@ -35,15 +35,15 @@ function InRoomModal() {
   const roomDocumentId = useRecoilValue(roomDocumentIdState);
   const [state, dispatch] = useReducer(reducer, initialState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
-  const [socket, setSocket] = useState<any>(null);
+  const socket = useRef<Socket>();
   const [isMic, setMic] = useState(false);
   const myPeerConnection = useRef<RTCPeerConnection>();
   const myStream = useRef<any>();
   const myBox = useRef<HTMLVideoElement>(null);
 
-  const handleIce = useCallback((data: any) => {
-    dispatch({ type: 'SENT_CANDIDATE', payload: { data: data.candidate, socket } });
-  }, [socket]);
+  const handleIce = (data: any) => {
+    dispatch({ type: 'SENT_CANDIDATE', payload: { data: data.candidate, socket: socket.current } });
+  };
 
   // 다른 유저 접속시 연결하기 dispatch로 비디오 태그 추가
   const handleAddStream = (data: any) => {
@@ -51,8 +51,6 @@ function InRoomModal() {
   };
 
   const makeConnection = () => {
-    if (socket === null) return;
-
     myPeerConnection.current = new RTCPeerConnection({
       iceServers: [
         {
@@ -66,12 +64,12 @@ function InRoomModal() {
         },
       ],
     });
-    myPeerConnection.current?.addEventListener('icecandidate', handleIce);
-    myPeerConnection.current?.addEventListener('track', handleAddStream);
+    myPeerConnection.current.addEventListener('icecandidate', handleIce);
+    myPeerConnection.current.addEventListener('track', handleAddStream);
 
-    myStream.current?.getTracks()
+    myStream.current.getTracks()
       .forEach((track: any) => {
-        myPeerConnection.current?.addTrack(track, myStream.current);
+        myPeerConnection.current!.addTrack(track, myStream.current);
       });
   };
 
@@ -97,9 +95,13 @@ function InRoomModal() {
     initConnection();
 
     return () => {
-      if (myPeerConnection.current) myPeerConnection.current.close();
+      if (myPeerConnection.current) {
+        myPeerConnection.current.close();
+        myPeerConnection.current.removeEventListener('icecandidate', handleIce);
+        myPeerConnection.current.removeEventListener('track', handleAddStream);
+      }
     };
-  }, [socket]);
+  }, []);
 
   // roomId 기반으로 room 정보 불러오기
   useEffect(() => {
@@ -111,38 +113,39 @@ function InRoomModal() {
   }, []);
 
   useEffect(() => {
-    if (socket === null) {
-      const url = process.env.REACT_APP_API_URL as string;
-      setSocket(io(url));
-    }
+    const url = process.env.REACT_APP_API_URL as string;
+    socket.current = io(url);
+
     return () => {
-      if (socket !== null) {
-        socket.disconnect();
-        setSocket(null);
+      if (socket.current) {
+        socket.current.disconnect();
+        socket.current = undefined;
       }
     };
-  }, [socket]);
+  }, []);
 
   // socket 이벤트
   useEffect(() => {
-    socket?.emit('room:join', {
+    if (!socket.current) return;
+
+    socket.current.emit('room:join', {
       roomDocumentId: roomDocumentId, userDocumentId: user.userDocumentId,
     });
 
-    socket?.on('room:join', async (payload: any) => {
+    socket.current.on('room:join', async (payload: any) => {
       const { userData } = payload;
       dispatch({
         type: 'JOIN_USER',
         payload: { userData },
       });
 
-      const offer = await myPeerConnection.current?.createOffer();
-      myPeerConnection.current?.setLocalDescription(offer);
+      const offer = await myPeerConnection.current!.createOffer();
+      myPeerConnection.current!.setLocalDescription(offer);
 
-      socket.emit('room:offer', offer);
+      socket.current!.emit('room:offer', offer);
     });
 
-    socket?.on('room:leave', async (payload: any) => {
+    socket.current.on('room:leave', async (payload: any) => {
       const { userDocumentId } = payload;
       dispatch({
         type: 'LEAVE_USER',
@@ -150,21 +153,21 @@ function InRoomModal() {
       });
     });
 
-    socket?.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
-      myPeerConnection.current?.setRemoteDescription(offer);
-      const answer = await myPeerConnection.current?.createAnswer();
-      myPeerConnection.current?.setLocalDescription(answer);
-      socket.emit('room:answer', answer);
+    socket.current.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
+      myPeerConnection.current!.setRemoteDescription(offer);
+      const answer = await myPeerConnection.current!.createAnswer();
+      myPeerConnection.current!.setLocalDescription(answer);
+      socket.current!.emit('room:answer', answer);
     });
 
-    socket?.on('room:answer', async (answer: RTCSessionDescriptionInit) => {
-      myPeerConnection.current?.setRemoteDescription(answer);
+    socket.current.on('room:answer', async (answer: RTCSessionDescriptionInit) => {
+      myPeerConnection.current!.setRemoteDescription(answer);
     });
 
-    socket?.on('room:ice', async (ice: RTCIceCandidateInit) => {
-      myPeerConnection.current?.addIceCandidate(ice);
+    socket.current.on('room:ice', async (ice: RTCIceCandidateInit) => {
+      myPeerConnection.current!.addIceCandidate(ice);
     });
-  }, [socket]);
+  }, []);
 
   const leaveEvent = () => {
     setRoomView('createRoomView');
