@@ -80,37 +80,36 @@ function InRoomModal() {
     try {
       const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
-      peerConnection.onicecandidate = (data) => {
+      peerConnection.addEventListener('icecandidate', (data) => {
         if (!(socket.current && data.candidate)) return;
         console.log('onicecandidate', data.candidate);
         socket.current.emit('room:ice', { candidate: data.candidate });
-      };
-
-      // peerConnection.addEventListener('icecandidate', (data) => {
-      //   if (!(socket.current && data.candidate)) return;
-      //   console.log('onicecandidate', data.candidate);
-      //   socket.current.emit('room:ice', { candidate: data.candidate });
-      // });
-
-      peerConnection.ontrack = (data) => {
-        console.log('ontrack success');
-        setParticipants((oldParticipants) => oldParticipants!.filter((participant) => participant.userDocumentId !== user.userDocumentId)
-          .concat({
-            userDocumentId: user.userDocumentId,
-            stream: data.streams[0],
-            mic,
-          }));
-      };
+      });
 
       // peerConnection.addEventListener('track', (data) => {
       //   console.log('ontrack success');
-      //   setParticipants((oldParticipants) => oldParticipants!.filter((participant) => participant.userDocumentId !== user.userDocumentId)
-      //     .concat({
-      //       userDocumentId: user.userDocumentId,
+      //   setParticipants((oldParticipants) => oldParticipants!.map((participant): any => {
+      //     if (participant.userDocumentId === user.userDocumentId) return null;
+      //     console.log('aaaaa');
+      //     return {
+      //       userDocumentId: participant.userDocumentId,
       //       stream: data.streams[0],
       //       mic,
-      //     }));
+      //     };
+      //   }));
       // });
+
+      peerConnection.addEventListener('track', (data) => {
+        console.log('ontrack success');
+        setParticipants((oldParticipants) => oldParticipants!.filter((participant) => {
+          console.log(participant);
+          return (participant.userDocumentId !== user.userDocumentId);
+        }).concat({
+          userDocumentId: user.userDocumentId,
+          stream: data.streams[0],
+          mic,
+        }));
+      });
 
       peerConnection.oniceconnectionstatechange = (e) => {
         console.log('oniceconnectionstatechange', e);
@@ -146,12 +145,9 @@ function InRoomModal() {
         console.log('local', peerConnection);
         if (!(peerConnection && socket.current)) return;
         peerConnections.current = { ...peerConnections.current, [participant.userDocumentId]: peerConnection };
-        const offer = await peerConnection.createOffer({
-          offerToReceiveAudio: true,
-          offerToReceiveVideo: true,
-        });
+        const offer = await peerConnection.createOffer();
         console.log('create offer success', offer);
-        peerConnection.setLocalDescription(new RTCSessionDescription(offer));
+        peerConnection.setLocalDescription(offer);
 
         socket.current.emit('room:offer', offer);
       });
@@ -166,13 +162,10 @@ function InRoomModal() {
       if (!(peerConnection && socket.current)) return;
       peerConnections.current = { ...peerConnections.current, [offerSendId]: peerConnection };
       console.log(peerConnections.current);
-      await peerConnection.setRemoteDescription(new RTCSessionDescription(offer));
+      await peerConnection.setRemoteDescription(offer);
       console.log('answer set remote description success');
-      const answer = await peerConnection.createAnswer({
-        offerToReceiveVideo: true,
-        offerToReceiveAudio: true,
-      });
-      await peerConnection.setLocalDescription(new RTCSessionDescription(answer));
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
       socket.current.emit('room:answer', answer);
     });
 
@@ -180,7 +173,7 @@ function InRoomModal() {
       console.log('get answer', answer);
       const peerConnection = peerConnections.current[answerSendId];
       if (!peerConnection) return;
-      peerConnection.setRemoteDescription(new RTCSessionDescription(answer));
+      peerConnection.setRemoteDescription(answer);
     });
 
     socket.current.on('room:ice', async (data: any) => {
@@ -188,7 +181,7 @@ function InRoomModal() {
       const peerConnection = peerConnections.current[data.candidateSendId];
       console.log('peerConnection candidate', peerConnection);
       if (!peerConnection) return;
-      await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+      await peerConnection.addIceCandidate(data.candidate);
       console.log('candidate add success');
     });
 
