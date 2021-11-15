@@ -22,13 +22,13 @@ const ChatRoomsLayout = styled.div`
 `;
 
 interface IChatUserType {
-  _id: string,
+  userDocumentId: string,
   userName: string,
   profileUrl: string,
 }
 
 interface IChatRoom {
-  _id: string,
+  chatDocumentId: string,
   participants: Array<IChatUserType>
 }
 
@@ -49,7 +49,7 @@ function ChatRoomsViews() {
   return (
     <ChatRoomsLayout>
       <ChatHeader />
-      {chatRooms.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom._id} participantsInfo={chatRoom.participants} />)}
+      {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} participantsInfo={chatRoom.participants} />)}
     </ChatRoomsLayout>
   );
 }

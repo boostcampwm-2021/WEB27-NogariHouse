@@ -3,7 +3,7 @@
 import styled from 'styled-components';
 
 interface Participants{
-  _id: string,
+  userDocumentId: string,
   userName: string,
   profileUrl: string
 }
