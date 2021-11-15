@@ -2,8 +2,7 @@
 import { deepCopy } from '@src/utils';
 
 export type Action = { type: 'JOIN_USER', payload: any } | { type: 'SET_USERS', payload: any }
-| { type: 'LEAVE_USER', payload: any } | { type: 'ADD_STREAM', payload: any } | { type: 'SENT_CANDIDATE', payload: any }
-| { type: 'UPDATE_USER', payload: any};
+| { type: 'LEAVE_USER', payload: any } | { type: 'ADD_STREAM', payload: any } | { type: 'UPDATE_USER', payload: any};
 
 export type TParticipant = {
   userDocumentId: string,
@@ -64,13 +63,6 @@ export const reducer = (state: TState, action: Action): TState => {
       participants.push(newParticipant);
 
       return { ...state, participants };
-    }
-
-    case 'SENT_CANDIDATE': {
-      const { data, socket } = action.payload;
-      socket?.emit('room:ice', { ice: data });
-
-      return { ...state };
     }
 
     default:

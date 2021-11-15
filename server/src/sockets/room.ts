@@ -27,7 +27,7 @@ export default function registerRoomHandler(socket : Socket) {
   const handleRoomLeave = async () => {
     const { roomDocumentId, userDocumentId } = users[socket.id];
     delete users[socket.id];
-    console.log('disconnet!!!!!!');
+
     await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
     socket.to(roomDocumentId).emit('room:leave', { userDocumentId });
   };
