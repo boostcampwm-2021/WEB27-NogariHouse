@@ -15,6 +15,7 @@ import LoadingSpinner from '@common/loading-spinner';
 import useSetEventModal from '@hooks/useSetEventModal';
 import { EventCardList } from '@views/event-view';
 import { RoomCardList } from '@views/room-view';
+import UserCardList from '@common/user-card-list';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 
@@ -105,6 +106,10 @@ function SearchView() {
 
     if (searchType === 'Rooms') {
       return <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemsList} />;
+    }
+
+    if (searchType === 'People') {
+      return <UserCardList userList={nowItemsList} cardType="follow" />;
     }
   };
 

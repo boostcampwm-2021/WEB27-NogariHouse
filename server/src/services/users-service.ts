@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable consistent-return */
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users from '@models/users';
+import Users, { IUsers } from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
@@ -150,6 +151,32 @@ class UserService {
     });
 
     return VerificationNumber;
+  }
+
+  makeItemToUserInterface(item : IUsers & {_id: number}): {
+    key: number;
+    userName: string;
+    userDesc: string;
+    profileUrl: string;
+  } {
+    return ({
+      key: item._id,
+      userName: item.userName,
+      userDesc: item.description,
+      profileUrl: item.profileUrl,
+    });
+  }
+
+  async searchUsers(keyword: string, count: number) {
+    try {
+      const query = new RegExp(keyword, 'i');
+      const res = await Users.find({
+        $or: [{ userId: query }, { userName: query }, { description: query }],
+      }).sort({ date: 1 }).skip(count).limit(10);
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 
