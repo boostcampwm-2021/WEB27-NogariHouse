@@ -65,6 +65,11 @@ class UserService {
     return result;
   }
 
+  async findUsers(userDocumentId: string) {
+    const result = await Users.findOne({ _id: userDocumentId });
+    return result;
+  }
+
   async signup(info: ISignupUserInfo) {
     try {
       await Users.insertMany([info]);

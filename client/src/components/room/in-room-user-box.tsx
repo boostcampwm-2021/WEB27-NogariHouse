@@ -29,6 +29,7 @@ export function InRoomUserBox({
 
   useEffect(() => {
     if (!ref.current) return;
+    console.log(stream);
     ref.current!.srcObject = stream as MediaStream;
   }, [stream]);
 

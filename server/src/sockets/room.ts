@@ -17,11 +17,10 @@ export default function registerRoomHandler(socket : Socket) {
     socket.join(roomDocumentId);
 
     users[socket.id] = { roomDocumentId, userDocumentId };
+    const room = await RoomService.findRoom(roomDocumentId);
+    const participantsInfo = room?.participants;
     await RoomService.addParticipant(roomDocumentId, userDocumentId);
-    const userData = await usersService.findUser(userDocumentId);
-    // eslint-disable-next-line no-underscore-dangle
-    const obj = { userDocumentId: userData!._id, mic: false };
-    socket.to(roomDocumentId).emit('room:join', { userData: obj });
+    socket.to(roomDocumentId).emit('room:join', participantsInfo);
   };
 
   const handleRoomLeave = async () => {
@@ -34,21 +33,23 @@ export default function registerRoomHandler(socket : Socket) {
 
   // eslint-disable-next-line no-undef
   const handleRoomOffer = (offer: RTCSessionDescriptionInit) => {
-    const { roomDocumentId } = users[socket.id];
-    socket.to(roomDocumentId).emit('room:offer', offer);
+    const { roomDocumentId, userDocumentId } = users[socket.id];
+    const offerSendId = userDocumentId;
+    socket.to(roomDocumentId).emit('room:offer', offer, offerSendId);
   };
 
   // eslint-disable-next-line no-undef
   const handleRoomAnswer = (answer: RTCSessionDescriptionInit) => {
-    const { roomDocumentId } = users[socket.id];
-
-    socket.to(roomDocumentId).emit('room:answer', answer);
+    const { roomDocumentId, userDocumentId } = users[socket.id];
+    const answerSendId = userDocumentId;
+    socket.to(roomDocumentId).emit('room:answer', answer, answerSendId);
   };
 
   // eslint-disable-next-line no-undef
-  const handleRoomIce = (ice: RTCIceCandidateInit) => {
-    const { roomDocumentId } = users[socket.id];
-    socket.to(roomDocumentId).emit('room:ice', ice);
+  const handleRoomIce = (candidate: RTCIceCandidateInit) => {
+    const { roomDocumentId, userDocumentId } = users[socket.id];
+    const candidateSendId = userDocumentId;
+    socket.to(roomDocumentId).emit('room:ice', candidate, candidateSendId);
   };
 
   const handleMic = async (payload: any) => {

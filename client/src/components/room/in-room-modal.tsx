@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import React, {
-  useEffect, useState, useRef, useReducer,
+  useEffect, useState, useRef, useReducer, useCallback,
 } from 'react';
 import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 import {
@@ -13,9 +13,8 @@ import roomViewType from '@src/recoil/atoms/room-view-type';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
-import { reducer, initialState } from '@components/room/in-room-reducer';
+import { reducer, initialState, TParticipant } from '@components/room/in-room-reducer';
 import useSocket from '@src/hooks/useSocket';
-import LoadingSpinner from '@common/loading-spinner';
 import {
   InRoomHeader, TitleDiv, OptionBtn, InRoomFooter, InRoomUserList, FooterBtnDiv,
 } from './style';
@@ -27,6 +26,16 @@ export interface IRooms extends Document{
   participants: Array<IParticipant>,
 }
 
+const peerConnectionConfig = {
+  iceServers: [
+    {
+      urls: [
+        'stun:stun.l.google.com:19302',
+      ],
+    },
+  ],
+};
+
 // 룸 생성 모달
 function InRoomModal() {
   const setRoomView = useSetRecoilState(roomViewType);
@@ -35,67 +44,16 @@ function InRoomModal() {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const socket = useSocket();
+  const [participants, setParticipants] = useState<Array<TParticipant>>([]);
   const [isMic, setMic] = useState(true);
-  const myPeerConnection = useRef<RTCPeerConnection>(new RTCPeerConnection({
-    iceServers: [
-      {
-        urls: [
-          'stun:stun.l.google.com:19302',
-        ],
-      },
-    ],
-  }));
+  const peerConnections = useRef<{ [userDocumentId: string]: RTCPeerConnection }>({});
   const myStream = useRef<MediaStream>();
-  const [loading, setLoading] = useState(true);
 
   const micToggle = (isMicOn : boolean) => {
+    console.log(state);
     socket?.emit('room:mic', { roomDocumentId, userDocumentId: user.userDocumentId, isMicOn });
     setMic(isMicOn);
   };
-
-  const handleIce = (data: any) => {
-    socket?.emit('room:ice', { ice: data.candidate });
-  };
-
-  // 다른 유저 접속시 연결하기 dispatch로 비디오 태그 추가
-  const handleAddStream = (data: any) => {
-    dispatch({ type: 'ADD_STREAM', payload: { data } });
-  };
-
-  const makeConnection = () => {
-    myPeerConnection.current.addEventListener('track', handleAddStream);
-
-    myStream.current!.getTracks()
-      .forEach((track: MediaStreamTrack) => {
-        myPeerConnection.current!.addTrack(track, myStream.current as MediaStream);
-      });
-  };
-
-  const getMedia = async () => {
-    myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    const initConnection = async () => {
-      await getMedia();
-      makeConnection();
-    };
-
-    initConnection();
-
-    return () => {
-      if (myPeerConnection.current && myStream.current) {
-        myPeerConnection.current.close();
-        myPeerConnection.current.removeEventListener('icecandidate', handleIce);
-        myPeerConnection.current.removeEventListener('track', handleAddStream);
-        myStream.current.getTracks()
-          .forEach((track: MediaStreamTrack) => {
-            track.stop();
-          });
-      }
-    };
-  }, []);
 
   // roomId 기반으로 room 정보 불러오기
   useEffect(() => {
@@ -106,25 +64,96 @@ function InRoomModal() {
       });
   }, []);
 
+  const getLocalStream = useCallback(async () => {
+    try {
+      myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      console.log(myStream.current);
+    } catch (e) {
+      console.log(`getUserMedia error: ${e}`);
+    }
+  }, []);
+
+  const createPeerConnection = useCallback((mic: boolean) => {
+    try {
+      const peerConnection = new RTCPeerConnection(peerConnectionConfig);
+
+      peerConnection.addEventListener('icecandidate', (data) => {
+        if (!(socket && data.candidate)) return;
+        socket.emit('room:ice', { candidate: data.candidate });
+      });
+
+      peerConnection.addEventListener('track', (data) => {
+        setParticipants((oldParticipants) => oldParticipants!.filter((participant) => participant.userDocumentId !== user.userDocumentId)
+          .concat({
+            userDocumentId: user.userDocumentId,
+            stream: data.streams[0],
+            mic,
+          }));
+      });
+
+      if (myStream.current) {
+        myStream.current.getTracks().forEach((track) => {
+          if (!myStream.current) return;
+          peerConnection.addTrack(track, myStream.current);
+        });
+      } else {
+        console.error('no local stream');
+      }
+
+      return peerConnection;
+    } catch (e) {
+      console.error(e);
+      return undefined;
+    }
+  }, []);
+
   // socket 이벤트
   useEffect(() => {
+    console.log(socket);
     if (!socket) return;
+    getLocalStream();
 
     socket.emit('room:join', {
       roomDocumentId, userDocumentId: user.userDocumentId,
     });
 
-    socket.on('room:join', async (payload: any) => {
-      const { userData } = payload;
-      dispatch({
-        type: 'JOIN_USER',
-        payload: { userData },
+    socket.on('room:join', async (participantsInfo: Array<TParticipant>) => {
+      // 접속 중인 모든 유저들
+      participantsInfo.forEach(async (participant: TParticipant) => {
+        if (!myStream.current) return;
+        const peerConnection = createPeerConnection(participant.mic);
+        if (!(peerConnection && socket)) return;
+        peerConnections.current = { ...peerConnections.current, [participant.userDocumentId]: peerConnection };
+
+        const offer = await peerConnection.createOffer();
+        peerConnection.setLocalDescription(offer);
+
+        socket!.emit('room:offer', offer);
       });
+    });
 
-      const offer = await myPeerConnection.current!.createOffer();
-      myPeerConnection.current!.setLocalDescription(offer);
+    socket.on('room:offer', async (offer: RTCSessionDescriptionInit, offerSendId: string) => {
+      if (!myStream.current) return;
 
-      socket!.emit('room:offer', offer);
+      const peerConnection = createPeerConnection(true);
+      if (!(peerConnection && socket)) return;
+      peerConnections.current = { ...peerConnections.current, [offerSendId]: peerConnection };
+      peerConnection.setRemoteDescription(offer);
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+      socket.emit('room:answer', answer);
+    });
+
+    socket.on('room:answer', async (answer: RTCSessionDescriptionInit, answerSendId: string) => {
+      const peerConnection = peerConnections.current[answerSendId];
+      if (!peerConnection) return;
+      peerConnection.setRemoteDescription(answer);
+    });
+
+    socket.on('room:ice', async (candidate: RTCIceCandidateInit, candidateSendId: string) => {
+      const peerConnection = peerConnections.current[candidateSendId];
+      if (!peerConnection) return;
+      peerConnection.addIceCandidate(candidate);
     });
 
     socket.on('room:mic', async (payload: any) => {
@@ -136,33 +165,11 @@ function InRoomModal() {
     });
     socket.on('room:leave', async (payload: any) => {
       const { userDocumentId } = payload;
-      dispatch({
-        type: 'LEAVE_USER',
-        payload: { userDocumentId },
-      });
+      peerConnections.current[userDocumentId].close();
+      delete peerConnections.current[userDocumentId];
+      setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.userDocumentId !== userDocumentId));
     });
-
-    socket.on('room:offer', async (offer: RTCSessionDescriptionInit) => {
-      myPeerConnection.current!.setRemoteDescription(offer);
-      const answer = await myPeerConnection.current!.createAnswer();
-      myPeerConnection.current!.setLocalDescription(answer);
-      socket!.emit('room:answer', answer);
-    });
-
-    socket.on('room:answer', async (answer: RTCSessionDescriptionInit) => {
-      myPeerConnection.current!.setRemoteDescription(answer);
-    });
-
-    socket.on('room:ice', async (ice: RTCIceCandidateInit) => {
-      myPeerConnection.current!.addIceCandidate(ice);
-    });
-
-    myPeerConnection.current.addEventListener('icecandidate', handleIce);
-  }, [socket]);
-
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  }, [socket, getLocalStream, createPeerConnection]);
 
   return (
     <>
@@ -171,7 +178,7 @@ function InRoomModal() {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
-        {state.participants.map(({ userDocumentId, stream, mic }: any) => <InRoomUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isMine={false} />)}
+        {participants.map(({ userDocumentId, stream, mic }: any) => <InRoomUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isMine={false} />)}
         <InRoomUserBox stream={myStream.current} key={user.userDocumentId} userDocumentId={user.userDocumentId} isMicOn={isMic} isMine />
       </InRoomUserList>
       <InRoomFooter>

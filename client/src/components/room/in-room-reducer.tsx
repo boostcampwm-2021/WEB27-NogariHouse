@@ -8,6 +8,7 @@ export type TParticipant = {
   userDocumentId: string,
   mic: boolean,
   stream?: MediaStream,
+  peerConnection?: RTCPeerConnection,
 }
 
 export type TState = {
@@ -21,11 +22,7 @@ export const initialState = {
 export const reducer = (state: TState, action: Action): TState => {
   switch (action.type) {
     case 'JOIN_USER': {
-      const { userData } = action.payload;
-      const newParticipants = deepCopy(state.participants);
-      newParticipants.push(userData);
-
-      return { ...state, participants: newParticipants };
+      return { ...state };
     }
 
     case 'SET_USERS': {
