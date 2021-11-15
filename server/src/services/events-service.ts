@@ -47,8 +47,8 @@ export default {
   },
 
   searchEvent: async (keyword: string, count: number) => {
-    const query = new RegExp(keyword,'i');
-    const res = await Events.find({ $or : [{ title: query }, { description: query }] }).sort({ date: 1 }).skip(count).limit(10);
+    const query = new RegExp(keyword, 'i');
+    const res = await Events.find({ $or: [{ title: query }, { description: query }] }).sort({ date: 1 }).skip(count).limit(10);
     return res;
-  }
+  },
 };

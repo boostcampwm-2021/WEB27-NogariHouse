@@ -3,6 +3,7 @@ import { deepCopy } from '@src/utils';
 
 export type Action = { type: 'JOIN_USER', payload: any } | { type: 'SET_USERS', payload: any }
 | { type: 'LEAVE_USER', payload: any } | { type: 'ADD_STREAM', payload: any } | { type: 'SENT_CANDIDATE', payload: any }
+| { type: 'UPDATE_USER', payload: any};
 
 export type TParticipant = {
   userDocumentId: string,
@@ -31,6 +32,17 @@ export const reducer = (state: TState, action: Action): TState => {
     case 'SET_USERS': {
       const { participants } = action.payload;
       const newParticipants = deepCopy(participants);
+
+      return { ...state, participants: newParticipants };
+    }
+
+    case 'UPDATE_USER': {
+      const { userData } = action.payload;
+      const newParticipants = state.participants.reduce((acc, cur) => {
+        if (userData.userDocumentId === cur.userDocumentId) acc.push({ userDocumentId: userData.userDocumentId, mic: userData.isMicOn });
+        else acc.push(cur);
+        return acc;
+      }, []);
 
       return { ...state, participants: newParticipants };
     }
