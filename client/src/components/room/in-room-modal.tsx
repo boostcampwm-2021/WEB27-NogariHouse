@@ -125,7 +125,7 @@ function InRoomModal() {
 
       socket!.emit('room:offer', offer);
     });
-    
+
     socket?.on('room:mic', async (payload: any) => {
       const { userData } = payload;
       dispatch({

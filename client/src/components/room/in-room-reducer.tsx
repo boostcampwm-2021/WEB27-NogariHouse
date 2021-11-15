@@ -38,8 +38,8 @@ export const reducer = (state: TState, action: Action): TState => {
 
     case 'UPDATE_USER': {
       const { userData } = action.payload;
-      const newParticipants = state.participants.reduce((acc, cur) => {
-        if (userData.userDocumentId === cur.userDocumentId) acc.push({ userDocumentId: userData.userDocumentId, mic: userData.isMicOn });
+      const newParticipants = state.participants.reduce((acc: Array<TParticipant>, cur: TParticipant) => {
+        if (userData.userDocumentId === cur.userDocumentId) acc.push({ userDocumentId: userData.userDocumentId, mic: userData.isMicOn, stream: cur.stream });
         else acc.push(cur);
         return acc;
       }, []);
