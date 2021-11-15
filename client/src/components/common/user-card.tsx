@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import UserImage from '@common/user-image';
+import DefaultButton from '@common/default-button';
 
 interface userCardProps {
   cardType: 'follow' | 'others';
@@ -11,7 +12,6 @@ interface userCardProps {
     userName: string,
     userDesc: string,
     profileUrl: string,
-    checkFollow: boolean,
     isFollow?: boolean,
   }
 }
@@ -21,16 +21,22 @@ interface sizeProps {
 }
 
 const sizes = {
-  follow: { userNameSize: 24, userDescSize: 20 },
-  others: { userNameSize: 16, userDescSize: 12 },
+  follow: { cardLayoutSize: 80, userNameSize: 24, userDescSize: 20 },
+  others: { cardLayoutSize: 60, userNameSize: 16, userDescSize: 12 },
 };
 
 const UserCardLayout = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   border-radius: 30px;
   width: 100%;
-  height: 80px;
+  height: ${(props: sizeProps) => sizes[props.sizeType].cardLayoutSize}px;
+`;
+
+const UserInfoLayout = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 const UserImageLayout = styled.div`
@@ -39,7 +45,7 @@ const UserImageLayout = styled.div`
   margin: 0 20px;
 `;
 
-const UserInfoLayout = styled.div`
+const UserDescLayout = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,29 +56,41 @@ const UserName = styled.div`
   font-weight: bold;
   font-size: ${(props: sizeProps) => sizes[props.sizeType].userNameSize}px;
   margin-bottom:3px;
+  user-select: none;
 `;
 
 const UserDescription = styled.div`
   font-size: ${(props: sizeProps) => sizes[props.sizeType].userDescSize}px;
+  user-select: none;
 `;
-
-const FollowButton = styled.button``;
 
 export default function UserCard(props:userCardProps) {
   return (
-    <UserCardLayout>
-      <UserImageLayout>
-        <UserImage profileUrl={props.userData.profileUrl} />
-      </UserImageLayout>
+    <UserCardLayout sizeType={props.cardType}>
       <UserInfoLayout>
-        <UserName sizeType={props.cardType}>
-          {props.userData.userName}
-        </UserName>
-        <UserDescription sizeType={props.cardType}>
-          {props.userData.userDesc}
-        </UserDescription>
+        <UserImageLayout>
+          <UserImage src={props.userData.profileUrl} size={props.cardType === 'follow' ? 'default' : 'others'} />
+        </UserImageLayout>
+        <UserDescLayout>
+          <UserName sizeType={props.cardType}>
+            {props.userData.userName}
+          </UserName>
+          <UserDescription sizeType={props.cardType}>
+            {props.userData.userDesc}
+          </UserDescription>
+        </UserDescLayout>
       </UserInfoLayout>
-      {props.userData.checkFollow ? <FollowButton type="button" /> : ''}
+      {props.cardType === 'follow'
+        ? (
+          <DefaultButton
+            buttonType="primary"
+            size="small"
+            font="Nunito"
+            isDisabled={!props.userData.isFollow}
+          >
+            {props.userData.isFollow ? 'following' : 'follow'}
+          </DefaultButton>
+        ) : ''}
     </UserCardLayout>
   );
 }
