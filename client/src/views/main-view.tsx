@@ -98,11 +98,11 @@ function MainView() {
 
   const updateUserState = useCallback((json) => {
     const {
-      accessToken, userDocumentId, profileUrl, userName, userId,
+      accessToken, userDocumentId, profileUrl, userName, userId, followings, followers,
     } = json;
 
     setUser({
-      isLoggedIn: true, userDocumentId, profileUrl, userName, userId,
+      isLoggedIn: true, userDocumentId, profileUrl, userName, userId, followings, followers,
     });
 
     setCookie('accessToken', accessToken);

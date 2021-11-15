@@ -158,12 +158,14 @@ class UserService {
     userName: string;
     userDesc: string;
     profileUrl: string;
+    isFollow: boolean;
   } {
     return ({
       key: item._id,
       userName: item.userName,
       userDesc: item.description,
       profileUrl: item.profileUrl,
+      isFollow: false,
     });
   }
 
