@@ -4,8 +4,14 @@ import { deepCopy } from '@src/utils';
 export type Action = { type: 'JOIN_USER', payload: any } | { type: 'SET_USERS', payload: any }
 | { type: 'LEAVE_USER', payload: any } | { type: 'ADD_STREAM', payload: any } | { type: 'SENT_CANDIDATE', payload: any }
 
+export type TParticipant = {
+  userDocumentId: string,
+  mic: boolean,
+  stream?: MediaStream,
+}
+
 export type TState = {
-    participants: Array<any>
+    participants: Array<TParticipant>
 }
 
 export const initialState = {
@@ -40,9 +46,9 @@ export const reducer = (state: TState, action: Action): TState => {
     case 'ADD_STREAM': {
       const { data } = action.payload;
       const { participants } = state;
-      const newParticipant = participants.pop();
+      const newParticipant = participants.pop() as TParticipant;
       // eslint-disable-next-line prefer-destructuring
-      newParticipant.stream = data.streams[0];
+      newParticipant!.stream = data.streams[0];
       participants.push(newParticipant);
 
       return { ...state, participants };
