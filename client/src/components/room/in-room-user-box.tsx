@@ -12,11 +12,11 @@ import { InRoomUserBoxStyle, InRoomUserMicDiv, UserBox } from './style';
 export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
-    stream: MediaStream | undefined,
+    stream?: MediaStream | undefined,
     isMine: boolean
 }
 
-export function InRoomUserBox({
+export function InRoomOtherUserBox({
   userDocumentId, isMicOn, stream, isMine,
 }: IParticipant) {
   const [userInfo, setUserInfo] = useState<any>();
@@ -29,7 +29,6 @@ export function InRoomUserBox({
 
   useEffect(() => {
     if (!ref.current) return;
-    console.log(stream);
     ref.current!.srcObject = stream as MediaStream;
   }, [stream]);
 
@@ -43,3 +42,24 @@ export function InRoomUserBox({
     </InRoomUserBoxStyle>
   );
 }
+
+export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
+  (props, ref) => {
+    const [userInfo, setUserInfo] = useState<any>();
+
+    useEffect(() => {
+      getUserInfo(props.userDocumentId)
+        .then((res) => setUserInfo(res));
+    }, []);
+
+    return (
+      <InRoomUserBoxStyle>
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+        <InRoomUserMicDiv>
+          { props.isMicOn ? <FiMic /> : <FiMicOff /> }
+        </InRoomUserMicDiv>
+        <p>{ userInfo?.userName }</p>
+      </InRoomUserBoxStyle>
+    );
+  },
+);

@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 import RoomService from '@services/rooms-service';
 import usersService from '@services/users-service';
@@ -9,7 +9,7 @@ interface IUsers {
 
 const users: IUsers = {};
 
-export default function registerRoomHandler(socket : Socket) {
+export default function registerRoomHandler(socket : Socket, server : Server) {
   const handleRoomJoin = async (payload : any) => {
     const {
       roomDocumentId, userDocumentId,
@@ -17,10 +17,11 @@ export default function registerRoomHandler(socket : Socket) {
     socket.join(roomDocumentId);
 
     users[socket.id] = { roomDocumentId, userDocumentId };
-    const room = await RoomService.findRoom(roomDocumentId);
-    const participantsInfo = room?.participants;
     await RoomService.addParticipant(roomDocumentId, userDocumentId);
-    socket.to(roomDocumentId).emit('room:join', participantsInfo);
+    const room = await RoomService.findRoom(roomDocumentId);
+    const participantsInfo = room?.participants
+      .filter((participant) => participant.userDocumentId !== userDocumentId);
+    server.to(socket.id).emit('room:join', participantsInfo);
   };
 
   const handleRoomLeave = async () => {
@@ -49,7 +50,8 @@ export default function registerRoomHandler(socket : Socket) {
   const handleRoomIce = (candidate: RTCIceCandidateInit) => {
     const { roomDocumentId, userDocumentId } = users[socket.id];
     const candidateSendId = userDocumentId;
-    socket.to(roomDocumentId).emit('room:ice', candidate, candidateSendId);
+    console.log('candidate', candidate.candidate);
+    socket.to(roomDocumentId).emit('room:ice', { candidate: candidate.candidate, candidateSendId });
   };
 
   const handleMic = async (payload: any) => {
