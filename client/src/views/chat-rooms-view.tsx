@@ -8,6 +8,7 @@ import userType from '@atoms/user';
 import ChatHeader from '@components/chat/chat-header';
 import ChatUserCard from '@components/chat/chat-user-card';
 import LoadingSpinner from '@common/loading-spinner';
+import ScrollBarStyle from '@styles/scrollbar-style';
 import { getChatRooms } from '@api/index';
 
 const ChatRoomsLayout = styled.div`
@@ -19,6 +20,8 @@ const ChatRoomsLayout = styled.div`
 
   overflow: hidden;
   position: relative;
+
+  ${ScrollBarStyle};
 `;
 
 interface IChatUserType {
