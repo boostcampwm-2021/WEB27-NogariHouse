@@ -14,7 +14,6 @@ export const initialState = {
 
 export const reducer = (state: TState, action: Action): TState => {
   switch (action.type) {
-
     case 'JOIN_USER': {
       const { userData } = action.payload;
       const newParticipants = deepCopy(state.participants);

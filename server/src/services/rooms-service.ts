@@ -58,6 +58,29 @@ class RoomService {
       console.error(e);
     }
   }
+
+  // eslint-disable-next-line consistent-return
+  async searchRooms(keyword: string, count: number) {
+    try {
+      const query = new RegExp(keyword, 'i');
+      const res = await Rooms.find({ title: query }).sort({ date: 1 }).skip(count).limit(10);
+
+      const roomsInfo = await Promise.all((res).map(async ({
+        _id, title, isAnonymous, participants,
+      }) => {
+        const userList = participants.map(({ userDocumentId }) => ({ _id: userDocumentId }));
+        const participantsInfo = await Users.find({ _id: { $in: userList } }, ['userName', 'profileUrl']);
+        const roomInfo = {
+          _id, title, isAnonymous, participantsInfo,
+        };
+        return roomInfo;
+      }));
+
+      return roomsInfo;
+    } catch (e) {
+      console.error(e);
+    }
+  }
 }
 
 export = new RoomService();

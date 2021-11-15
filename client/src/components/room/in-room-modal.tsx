@@ -171,7 +171,6 @@ function InRoomModal() {
       console.log('received candidate');
       myPeerConnection.current?.addIceCandidate(ice);
     });
-
   }, [socket]);
 
   const leaveEvent = () => {
