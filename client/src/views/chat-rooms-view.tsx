@@ -21,15 +21,20 @@ const ChatRoomsLayout = styled.div`
   position: relative;
 `;
 
-interface IChatRoomType {
+interface IChatUserType {
   _id: string,
   userName: string,
   profileUrl: string,
 }
 
+interface IChatRoom {
+  _id: string,
+  participants: Array<IChatUserType>
+}
+
 function ChatRoomsViews() {
   const [loading, setLoading] = useState(true);
-  const [chatRooms, setChatRooms] = useState<Array<Array<IChatRoomType>>>([]);
+  const [chatRooms, setChatRooms] = useState<Array<IChatRoom>>([]);
   const { userDocumentId } = useRecoilValue(userType);
 
   useEffect(() => {
@@ -44,7 +49,7 @@ function ChatRoomsViews() {
   return (
     <ChatRoomsLayout>
       <ChatHeader />
-      {chatRooms.map((chatRoom:Array<IChatRoomType>) => <ChatUserCard key={chatRoom._id} participantsInfo={chatRoom} />)}
+      {chatRooms.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom._id} participantsInfo={chatRoom.participants} />)}
     </ChatRoomsLayout>
   );
 }
