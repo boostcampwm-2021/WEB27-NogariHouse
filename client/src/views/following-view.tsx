@@ -13,7 +13,7 @@ function FollowingView() {
 
   return (
     <>
-      <UserCard userData={testUser} CardType="follow" />
+      <UserCard userData={testUser} cardType="follow" />
     </>
   );
 }

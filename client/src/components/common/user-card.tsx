@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import UserImage from '@common/user-image';
 
 interface userCardProps {
+  cardType: 'follow' | 'others';
   userData: {
     userName: string,
     userDesc: string,
@@ -14,6 +15,15 @@ interface userCardProps {
     isFollow?: boolean,
   }
 }
+
+interface sizeProps {
+  sizeType : 'follow' | 'others'
+}
+
+const sizes = {
+  follow: { userNameSize: 24, userDescSize: 20 },
+  others: { userNameSize: 16, userDescSize: 12 },
+};
 
 const UserCardLayout = styled.div`
   display: flex;
@@ -38,12 +48,12 @@ const UserInfoLayout = styled.div`
 
 const UserName = styled.div`
   font-weight: bold;
-  font-size: 24px;
+  font-size: ${(props: sizeProps) => sizes[props.sizeType].userNameSize}px;
   margin-bottom:3px;
 `;
 
 const UserDescription = styled.div`
-  font-size : 20px;
+  font-size: ${(props: sizeProps) => sizes[props.sizeType].userDescSize}px;
 `;
 
 const FollowButton = styled.button``;
@@ -55,10 +65,10 @@ export default function UserCard(props:userCardProps) {
         <UserImage profileUrl={props.userData.profileUrl} />
       </UserImageLayout>
       <UserInfoLayout>
-        <UserName>
+        <UserName sizeType={props.cardType}>
           {props.userData.userName}
         </UserName>
-        <UserDescription>
+        <UserDescription sizeType={props.cardType}>
           {props.userData.userDesc}
         </UserDescription>
       </UserInfoLayout>
