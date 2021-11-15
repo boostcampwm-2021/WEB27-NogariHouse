@@ -37,6 +37,10 @@ class RoomService {
     return result;
   }
 
+  async setMic(roomDocumentId: string, userDocumentId: string, isMicOn: boolean) {
+    await Rooms.updateOne({ _id: roomDocumentId, 'participants.userDocumentId': userDocumentId }, { $set: { 'participants.$.mic': isMicOn } });
+  }
+
   // eslint-disable-next-line consistent-return
   async get10Rooms(count: number) {
     try {

@@ -51,9 +51,21 @@ export default function registerRoomHandler(socket : Socket) {
     socket.to(roomDocumentId).emit('room:ice', ice);
   };
 
+  const handleMic = async (payload: any) => {
+    const {
+      roomDocumentId, userDocumentId, isMicOn,
+    } = payload;
+
+    await RoomService.setMic(roomDocumentId, userDocumentId, isMicOn);
+
+    const userData = { userDocumentId, isMicOn };
+    socket.to(roomDocumentId).emit('room:mic', { userData });
+  };
+
   socket.on('room:join', handleRoomJoin);
   socket.on('room:offer', handleRoomOffer);
   socket.on('room:answer', handleRoomAnswer);
   socket.on('room:ice', handleRoomIce);
   socket.on('disconnect', handleRoomLeave);
+  socket.on('room:mic', handleMic);
 }
