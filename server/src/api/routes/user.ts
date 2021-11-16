@@ -25,13 +25,11 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.get('/followings/:userDocumentID', async (req: Request, res: Response) => {
+  userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;
       const followingList = await usersService.getFollowingsList(userDocumentId);
-      res.status(200).json({
-        followingList,
-      });
+      res.status(200).json(followingList);
     } catch (error) {
       console.error(error);
     }

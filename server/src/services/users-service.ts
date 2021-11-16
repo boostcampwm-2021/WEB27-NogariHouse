@@ -183,8 +183,8 @@ class UserService {
 
   async getFollowingsList(userDocumentId: string) {
     try {
-      const res = await Users.findOne({ _id: userDocumentId }, ['followings']);
-      return res;
+      const result = await Users.findOne({ _id: userDocumentId }, ['followings']);
+      return result;
     } catch (e) {
       console.error(e);
     }
