@@ -7,7 +7,8 @@
     "start": "ts-node src/app.ts",
     "start:dev": "nodemon -x ts-node -r tsconfig-paths/register ./src/app.ts",
     "test": "nodemon src/app.ts",
-    "ts-node": "ts-node -r tsconfig-paths/register ./src/app.ts"
+    "ts-node": "ts-node -r tsconfig-paths/register ./src/app.ts",
+    "deploy": "pm2 start ts-node --name project -- -r tsconfig-paths/register -r src/app.ts"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.0",

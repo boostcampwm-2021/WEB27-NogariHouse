@@ -116,7 +116,7 @@ function InRoomModal() {
 
   // socket 이벤트
   useEffect(() => {
-    const url = process.env.REACT_APP_API_URL as string;
+    const url = process.env.REACT_APP_SOCKET_URL as string;
     socket.current = io(url);
     getLocalStream();
 
