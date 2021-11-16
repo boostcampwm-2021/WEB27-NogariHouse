@@ -35,3 +35,5 @@ export const deepCopy = (object: Object) => {
   const objectStr = JSON.stringify(object);
   return JSON.parse(objectStr);
 };
+
+export const isEmptyArray = (array: any[]) => !array.length;
