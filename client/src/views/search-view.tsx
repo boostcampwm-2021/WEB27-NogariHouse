@@ -113,15 +113,17 @@ function SearchView() {
     if (searchType === 'People') {
       const filteredItemList = nowItemsList.map((item) => {
         const {
-          key, userName, userDesc, profileUrl, isFollow,
+          _id, userName, description, profileUrl,
         } = item;
 
+        console.log(followingList.includes(_id));
+
         const newItem = {
-          key,
+          _id,
           userName,
-          userDesc,
+          description,
           profileUrl,
-          isFollow: followingList.includes(key) ? true : isFollow,
+          isFollow: !!followingList.includes(_id),
         };
 
         return newItem;

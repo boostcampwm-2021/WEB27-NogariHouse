@@ -29,8 +29,7 @@ export default (app: Router) => {
     if (typeof keyword !== 'string' || typeof count !== 'string') {
       res.json({ ok: false });
     } else {
-      const items = (await usersService.searchUsers(keyword, Number(count)))
-        ?.map(usersService.makeItemToUserInterface);
+      const items = await usersService.searchUsers(keyword, Number(count));
       res.json({ ok: true, items, keyword });
     }
   });

@@ -5,32 +5,32 @@ import UserCardList from '@src/components/common/user-card-list';
 
 function FollowingView() {
   const testUser1 = {
-    key: '1',
+    _id: '1',
     userName: 'Mulgyeol1',
-    userDesc: 'test for1',
+    description: 'test for1',
     profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
     isFollow: false,
   };
 
   const testUser2 = {
-    key: '2',
+    _id: '2',
     userName: 'Mulgyeol2',
-    userDesc: 'test for2',
+    description: 'test for2',
     profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
     isFollow: true,
   };
 
   const testUser3 = {
-    key: '3',
+    _id: '3',
     userName: 'Mulgyeol1',
-    userDesc: 'test for1',
+    description: 'test for1',
     profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
   };
 
   const testUser4 = {
-    key: '4',
+    _id: '4',
     userName: 'Mulgyeol2',
-    userDesc: 'test for2',
+    description: 'test for2',
     profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
   };
 

@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import UserCard from '@common/user-card';
 
 interface IUserForCard{
-  key: string,
+  _id: string,
   userName: string,
-  userDesc: string,
+  description: string,
   profileUrl: string,
   isFollow?: boolean,
 }
