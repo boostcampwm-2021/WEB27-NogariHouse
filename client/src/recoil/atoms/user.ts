@@ -11,6 +11,8 @@ interface IUser {
   profileUrl: string,
   userName: string,
   userId: string,
+  followings: string[],
+  followers: string[],
 }
 
 export default atom<IUser>({
@@ -21,5 +23,7 @@ export default atom<IUser>({
     userName: '',
     userId: '',
     profileUrl: '',
+    followings: [],
+    followers: [],
   },
 });
