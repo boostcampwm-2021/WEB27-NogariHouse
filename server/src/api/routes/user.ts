@@ -15,17 +15,10 @@ export default (app: Router) => {
     const user = await usersService.findUser(userDocumentId);
     if (user) {
       const {
-        _id, profileUrl, userName, userId, followings, followers,
+        _id, profileUrl, userName, userId,
       } = user;
       res.json({
-        ok: true,
-        accessToken,
-        userDocumentId: _id,
-        profileUrl,
-        userName,
-        userId,
-        followings,
-        followers,
+        ok: true, accessToken, userDocumentId: _id, profileUrl, userName, userId,
       });
     } else {
       res.json({ ok: false });
