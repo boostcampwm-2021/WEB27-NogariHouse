@@ -73,14 +73,10 @@ export const useRtc = (): any => {
       peerConnection.addEventListener('icecandidate', handleIce);
       peerConnection.addEventListener('track', handleTrack);
 
-      if (myStream.current) {
-        myStream.current.getTracks().forEach((track) => {
-          if (!myStream.current) return;
-          peerConnection.addTrack(track, myStream.current);
-        });
-      } else {
-        console.error('no local stream');
-      }
+      myStream.current!.getTracks().forEach((track) => {
+        if (!myStream.current) return;
+        peerConnection.addTrack(track, myStream.current);
+      });
 
       return peerConnection;
     } catch (e) {
@@ -89,7 +85,6 @@ export const useRtc = (): any => {
     }
   }, [socket]);
 
-  // socket 이벤트
   useEffect(() => {
     if (!socket) return;
 
@@ -102,7 +97,6 @@ export const useRtc = (): any => {
 
     init();
 
-    // 신규 유저
     socket.on('room:join', async (participantsInfo: Array<TParticipant>) => {
       participantsInfo.forEach(async (participant: TParticipant) => {
         if (!myStream.current) return;
@@ -116,7 +110,6 @@ export const useRtc = (): any => {
       });
     });
 
-    // 기존 유저
     socket.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string) => {
       if (!myStream.current) return;
       const peerConnection = createPeerConnection(userDocumentId, socketId, true);
@@ -128,7 +121,6 @@ export const useRtc = (): any => {
       socket.emit('room:answer', answer, socketId);
     });
 
-    // 신규 유저
     socket.on('room:answer', async (answer: RTCSessionDescriptionInit, socketId: string) => {
       const peerConnection = peerConnections.current[socketId];
       if (!peerConnection) return;
@@ -141,10 +133,6 @@ export const useRtc = (): any => {
       await peerConnection.addIceCandidate(data.candidate);
     });
 
-    socket.on('room:mic', async (payload: any) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { userData } = payload;
-    });
     socket.on('room:leave', async (socketId: string) => {
       peerConnections.current[socketId].close();
       delete peerConnections.current[socketId];
