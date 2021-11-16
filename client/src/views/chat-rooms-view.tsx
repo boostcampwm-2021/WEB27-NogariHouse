@@ -2,27 +2,13 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
-import styled from 'styled-components';
 
 import userType from '@atoms/user';
-import ChatHeader from '@components/chat/chat-header';
+import { ChatRoomHeader } from '@components/chat/chat-header';
 import ChatUserCard from '@components/chat/chat-user-card';
+import ChatRoomsLayout from '@components/chat/chat-room-layout';
 import LoadingSpinner from '@common/loading-spinner';
-import ScrollBarStyle from '@styles/scrollbar-style';
 import { getChatRooms } from '@api/index';
-
-const ChatRoomsLayout = styled.div`
-  background-color: #FFFFFF;
-  border-radius: 30px;
-
-  width: 100%;
-  height: 100%;
-
-  overflow: hidden;
-  position: relative;
-
-  ${ScrollBarStyle};
-`;
 
 interface IChatUserType {
   userDocumentId: string,
@@ -51,7 +37,7 @@ function ChatRoomsViews() {
   if (loading) return (<LoadingSpinner />);
   return (
     <ChatRoomsLayout>
-      <ChatHeader />
+      <ChatRoomHeader />
       {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} participantsInfo={chatRoom.participants} />)}
     </ChatRoomsLayout>
   );
