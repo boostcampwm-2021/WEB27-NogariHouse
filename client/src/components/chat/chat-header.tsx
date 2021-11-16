@@ -9,18 +9,18 @@ const ChatHeaderStyle = styled.div`
   background-color: #B6B6B6;
 
   width: 100%;
-  height: 110px;
+  height: 80px;
 
   position: relative;
 
   p {
     position: absolute;
-    top: 35px;
-    left:50%;
+    top: 25px;
+    left: 50%;
     transform: translateX(-50%);
 
     font-family: 'Nunito';
-    font-style: Bold;
+    font-weight: Bold;
     font-size: 32px;
 
     margin: 0px;
@@ -29,7 +29,7 @@ const ChatHeaderStyle = styled.div`
 
 const ChatHeaderBtnDiv = styled.div`
   position: absolute;
-  top: 35px;
+  top: 25px;
   right: 5%;
 
   svg{
@@ -40,24 +40,49 @@ const ChatHeaderBtnDiv = styled.div`
   }
 `;
 
-const chatHeaderBtn = [
+const chatRoomHeaderBtns = [
   {
     Component: FiMessageSquare, link: '/chat-rooms/new', key: 'newChat', size: 32,
   },
   {
-    Component: FiMoreHorizontal, link: '//chat-rooms/new', key: 'selector', size: 32,
+    Component: FiMoreHorizontal, link: '/chat-rooms/new', key: 'selector', size: 32,
   },
 ];
 
-function ChatHeader() {
+type btnDivProps = {dir: 'left' | 'right'};
+
+const BtnDiv = styled.button`
+  ${(props : btnDivProps) => {
+    if (props.dir === 'left') return 'left: 5%; color: #58964F;';
+    return 'right: 5%; color: #D7D7D7;';
+  }}
+
+  position: absolute;
+  transform: translateY(30px);
+
+  font-size: 20px;
+
+  background-color: transparent;
+  border: none;
+`;
+
+export function ChatRoomHeader() {
   return (
     <ChatHeaderStyle>
-      <p>BackChannel</p>
+      <p>BACK CHANNEL</p>
       <ChatHeaderBtnDiv>
-        {chatHeaderBtn.map(makeIconToLink)}
+        {chatRoomHeaderBtns.map(makeIconToLink)}
       </ChatHeaderBtnDiv>
     </ChatHeaderStyle>
   );
 }
 
-export default ChatHeader;
+export function NewChatRoomHeader() {
+  return (
+    <ChatHeaderStyle>
+      <BtnDiv dir="left">Cancel</BtnDiv>
+      <p>NEW MESSAGE</p>
+      <BtnDiv dir="right">Done</BtnDiv>
+    </ChatHeaderStyle>
+  );
+}
