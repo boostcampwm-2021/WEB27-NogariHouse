@@ -66,6 +66,10 @@ const BtnDiv = styled.button`
 
   background-color: transparent;
   border: none;
+
+  &:hover {
+    filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
+  }
 `;
 
 export function ChatRoomHeader() {
