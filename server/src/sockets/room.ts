@@ -12,15 +12,16 @@ const users: IUsers = {};
 export default function registerRoomHandler(socket : Socket, server : Server) {
   const handleRoomJoin = async (payload : any) => {
     const {
-      roomDocumentId, userDocumentId,
+      roomDocumentId, userDocumentId, socketId,
     } = payload;
     socket.join(roomDocumentId);
 
     users[socket.id] = { roomDocumentId, userDocumentId };
-    await RoomService.addParticipant(roomDocumentId, userDocumentId);
+    await RoomService.addParticipant(roomDocumentId, userDocumentId, socketId);
     const room = await RoomService.findRoom(roomDocumentId);
     const participantsInfo = room?.participants
       .filter((participant) => participant.userDocumentId !== userDocumentId);
+
     server.to(socket.id).emit('room:join', participantsInfo);
   };
 
@@ -29,29 +30,23 @@ export default function registerRoomHandler(socket : Socket, server : Server) {
     delete users[socket.id];
 
     await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
-    socket.to(roomDocumentId).emit('room:leave', { userDocumentId });
+    socket.to(roomDocumentId).emit('room:leave', { socketId: socket.id });
   };
 
   // eslint-disable-next-line no-undef
-  const handleRoomOffer = (offer: RTCSessionDescriptionInit) => {
-    const { roomDocumentId, userDocumentId } = users[socket.id];
-    const offerSendId = userDocumentId;
-    socket.to(roomDocumentId).emit('room:offer', offer, offerSendId);
+  const handleRoomOffer = (offer: RTCSessionDescriptionInit, receiveId: string) => {
+    const { userDocumentId } = users[socket.id];
+    socket.to(receiveId).emit('room:offer', offer, userDocumentId, socket.id);
   };
 
   // eslint-disable-next-line no-undef
-  const handleRoomAnswer = (answer: RTCSessionDescriptionInit) => {
-    const { roomDocumentId, userDocumentId } = users[socket.id];
-    const answerSendId = userDocumentId;
-    socket.to(roomDocumentId).emit('room:answer', answer, answerSendId);
+  const handleRoomAnswer = (answer: RTCSessionDescriptionInit, receiveId: string) => {
+    socket.to(receiveId).emit('room:answer', answer, socket.id);
   };
 
   // eslint-disable-next-line no-undef
-  const handleRoomIce = (candidate: RTCIceCandidateInit) => {
-    const { roomDocumentId, userDocumentId } = users[socket.id];
-    const candidateSendId = userDocumentId;
-    console.log('candidate', candidate.candidate);
-    socket.to(roomDocumentId).emit('room:ice', { candidate: candidate.candidate, candidateSendId });
+  const handleRoomIce = (candidate: RTCIceCandidateInit, receiveId: string) => {
+    socket.to(receiveId).emit('room:ice', { candidate, candidateSendId: socket.id });
   };
 
   const handleMic = async (payload: any) => {

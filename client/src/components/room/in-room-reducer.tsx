@@ -9,6 +9,7 @@ export type TParticipant = {
   mic: boolean,
   stream?: MediaStream,
   peerConnection?: RTCPeerConnection,
+  socketId: string,
 }
 
 export type TState = {
@@ -33,14 +34,15 @@ export const reducer = (state: TState, action: Action): TState => {
     }
 
     case 'UPDATE_USER': {
-      const { userData } = action.payload;
-      const newParticipants = state.participants.reduce((acc: Array<TParticipant>, cur: TParticipant) => {
-        if (userData.userDocumentId === cur.userDocumentId) acc.push({ userDocumentId: userData.userDocumentId, mic: userData.isMicOn, stream: cur.stream });
-        else acc.push(cur);
-        return acc;
-      }, []);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      // const newParticipants = state.participants.reduce((acc: Array<TParticipant>, cur: TParticipant) => {
+      //   if (userData.userDocumentId === cur.userDocumentId) acc.push({ userDocumentId: userData.userDocumentId, mic: userData.isMicOn, stream: cur.stream });
+      //   else acc.push(cur);
+      //   return acc;
+      // }, []);
 
-      return { ...state, participants: newParticipants };
+      // return { ...state, participants: newParticipants };
+      return { ...state };
     }
 
     case 'LEAVE_USER': {

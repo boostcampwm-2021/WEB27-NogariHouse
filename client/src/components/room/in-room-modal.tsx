@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import React, {
   useEffect, useState, useRef, useReducer, useCallback,
@@ -49,7 +50,6 @@ function InRoomModal() {
   const myVideo = useRef<HTMLVideoElement>(null);
 
   const micToggle = (isMicOn : boolean) => {
-    console.log(state);
     socket.current?.emit('room:mic', { roomDocumentId, userDocumentId: user.userDocumentId, isMicOn });
     setMic(isMicOn);
   };
@@ -69,21 +69,20 @@ function InRoomModal() {
       if (myVideo.current) myVideo.current.srcObject = myStream.current;
       if (!socket.current) return;
       socket.current.emit('room:join', {
-        roomDocumentId, userDocumentId: user.userDocumentId,
+        roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket.current.id,
       });
     } catch (e) {
-      console.log(`getUserMedia error: ${e}`);
+      console.error(e);
     }
   }, []);
 
-  const createPeerConnection = useCallback((userDocumentId:string, mic: boolean) => {
+  const createPeerConnection = useCallback((userDocumentId:string, socketId: string, mic: boolean) => {
     try {
       const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
-      peerConnection.addEventListener('icecandidate', (data) => {
-        if (!(socket.current && data.candidate)) return;
-        console.log('onicecandidate', data.candidate);
-        socket.current.emit('room:ice', { candidate: data.candidate });
+      peerConnection.addEventListener('icecandidate', ({ candidate }) => {
+        if (!(socket.current && candidate)) return;
+        socket.current.emit('room:ice', candidate, socketId);
       });
 
       peerConnection.addEventListener('track', (data) => {
@@ -91,6 +90,7 @@ function InRoomModal() {
           stream: data.streams[0],
           userDocumentId,
           mic,
+          socketId,
         }));
       });
 
@@ -99,7 +99,6 @@ function InRoomModal() {
       };
 
       if (myStream.current) {
-        console.log('localstream add');
         myStream.current.getTracks().forEach((track) => {
           if (!myStream.current) return;
           peerConnection.addTrack(track, myStream.current);
@@ -121,51 +120,44 @@ function InRoomModal() {
     socket.current = io(url);
     getLocalStream();
 
+    // 신규 유저
     socket.current.on('room:join', async (participantsInfo: Array<TParticipant>) => {
       participantsInfo.forEach(async (participant: TParticipant) => {
         if (!myStream.current) return;
-        const peerConnection = createPeerConnection(participant.userDocumentId, participant.mic);
-        console.log('local', peerConnection);
+        const peerConnection = createPeerConnection(participant.userDocumentId, participant.socketId, participant.mic);
         if (!(peerConnection && socket.current)) return;
-        peerConnections.current = { ...peerConnections.current, [participant.userDocumentId]: peerConnection };
+        peerConnections.current = { ...peerConnections.current, [participant.socketId]: peerConnection };
         const offer = await peerConnection.createOffer();
-        console.log('create offer success', offer);
         peerConnection.setLocalDescription(offer);
 
-        socket.current.emit('room:offer', offer);
+        socket.current.emit('room:offer', offer, participant.socketId);
       });
     });
 
-    socket.current.on('room:offer', async (offer: RTCSessionDescriptionInit, offerSendId: string) => {
-      console.log('get offer');
+    // 기존 유저
+    socket.current.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string) => {
       if (!myStream.current) return;
 
-      const peerConnection = createPeerConnection(offerSendId, true);
-      console.log(peerConnection);
+      const peerConnection = createPeerConnection(userDocumentId, socketId, true);
       if (!(peerConnection && socket.current)) return;
-      peerConnections.current = { ...peerConnections.current, [offerSendId]: peerConnection };
-      console.log(peerConnections.current);
+      peerConnections.current = { ...peerConnections.current, [socketId]: peerConnection };
       await peerConnection.setRemoteDescription(offer);
-      console.log('answer set remote description success');
       const answer = await peerConnection.createAnswer();
       await peerConnection.setLocalDescription(answer);
-      socket.current.emit('room:answer', answer);
+      socket.current.emit('room:answer', answer, socketId);
     });
 
-    socket.current.on('room:answer', async (answer: RTCSessionDescriptionInit, answerSendId: string) => {
-      console.log('get answer', answer);
-      const peerConnection = peerConnections.current[answerSendId];
+    // 신규 유저
+    socket.current.on('room:answer', async (answer: RTCSessionDescriptionInit, socketId: string) => {
+      const peerConnection = peerConnections.current[socketId];
       if (!peerConnection) return;
       peerConnection.setRemoteDescription(answer);
     });
 
     socket.current.on('room:ice', async (data: any) => {
-      console.log('get candidate', data.candidate);
       const peerConnection = peerConnections.current[data.candidateSendId];
-      console.log('peerConnection candidate', peerConnection);
       if (!peerConnection) return;
       await peerConnection.addIceCandidate(data.candidate);
-      console.log('candidate add success');
     });
 
     socket.current.on('room:mic', async (payload: any) => {
@@ -175,11 +167,11 @@ function InRoomModal() {
         payload: { userData },
       });
     });
-    socket.current.on('room:leave', async (payload: any) => {
-      const { userDocumentId } = payload;
-      peerConnections.current[userDocumentId].close();
-      delete peerConnections.current[userDocumentId];
-      setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.userDocumentId !== userDocumentId));
+    socket.current.on('room:leave', async (payload: {socketId: string}) => {
+      const { socketId } = payload;
+      peerConnections.current[socketId].close();
+      delete peerConnections.current[socketId];
+      setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.socketId !== socketId));
     });
 
     return () => {
