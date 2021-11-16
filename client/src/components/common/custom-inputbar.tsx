@@ -3,7 +3,7 @@ import styled from 'styled-components';
 export const CustomInputBar = styled.input`
   border: none;
   background-color: #ffffff;
-  width: 60%;
+  width: 100%;
   min-width: max-content;
   height: 60px;
   &:focus {

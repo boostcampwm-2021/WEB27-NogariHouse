@@ -25,6 +25,10 @@ const InterestItemWarapper = styled.div`
   margin-right: -5%;
 `;
 
+const CustomInfoInputBar = styled(CustomInputBar)`
+  width: 70%;
+`;
+
 const Padding = styled.div`
   padding: 20px;
 `;
@@ -79,12 +83,12 @@ function SignupInfoView() {
       <SignBody>
         <CustomInputBox>
           <SignTitle title="what’s your password?" />
-          <CustomInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
-          <CustomInputBar key="password" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
+          <CustomInfoInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
+          <CustomInfoInputBar key="password" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
           <SignTitle title="what’s your full name?" />
-          <CustomInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
+          <CustomInfoInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
           <SignTitle title="what’s your id?" />
-          <CustomInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
+          <CustomInfoInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
           <SignTitle title="what’s your interests?" />
           <InterestItemWarapper>
             <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
