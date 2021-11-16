@@ -13,13 +13,14 @@ import {
 } from '@components/search/style';
 import LoadingSpinner from '@common/loading-spinner';
 import useSetEventModal from '@hooks/useSetEventModal';
-import { EventCardList } from '@views/event-view';
-import { RoomCardList } from '@views/room-view';
+import { EventCardList, makeEventToCard } from '@views/event-view';
+import { RoomCardList, makeRoomToCard } from '@views/room-view';
 import UserCardList from '@common/user-card-list';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import followingListState from '@atoms/following-list';
-import userState from '@src/recoil/atoms/user';
+import userState from '@atoms/user';
+import UserCard from '@common/user-card';
 
 function SearchView() {
   const searchType = useRecoilValue(searchTypeState);
@@ -32,7 +33,7 @@ function SearchView() {
   const followingList = useRecoilValue(followingListState);
   const resetItemList = useResetRecoilState(nowItemsListState);
   const nowItemTypeRef = useRef<string>('');
-  const searchInfo = useRef({ keyword: 'recent', option: 'top' });
+  const searchInfo = useRef({ keyword: 'recent', option: 'all' });
 
   const setEventModal = useSetEventModal();
 
@@ -98,10 +99,36 @@ function SearchView() {
   };
 
   // eslint-disable-next-line consistent-return
-  const itemList = () => {
+  const showList = () => {
     if (searchInfo.current.option !== searchType.toLocaleLowerCase()) {
       return <LoadingSpinner />;
     }
+
+    // if (searchType === 'All') {
+    //   const newList = nowItemsList.map((result, item) => {
+    //     if (item.type === 'event') {
+    //       return result + makeEventToCard(item);
+    //     }
+
+    //     if (item.type === 'user') {
+    //       return (
+    //         <UserCard
+    //           // eslint-disable-next-line no-underscore-dangle
+    //           key={item._id}
+    //           cardType="follow"
+    //           userData={item}
+    //         />
+    //       );
+    //     }
+
+    //     if (item.type === 'room') {
+    //       return makeRoomToCard(item);
+    //     }
+
+    //     return <div />;
+    //   });
+    //   return newList;
+    // }
 
     if (searchType === 'Events') {
       return <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />;
@@ -143,7 +170,7 @@ function SearchView() {
       <SearchScrollSection onScroll={scrollBarChecker}>
         {loading
           ? <LoadingSpinner />
-          : itemList()}
+          : showList()}
       </SearchScrollSection>
     </SearchViewLayout>
   );
