@@ -111,7 +111,7 @@ const RoomCardLayout = styled.div`
   width: 99%;
 
   &:hover {
-    background-color: #f0eee2;
+    background-color: #eeebe4e4;
   }
 `;
 
