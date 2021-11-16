@@ -19,13 +19,14 @@ import UserCardList from '@common/user-card-list';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import followingListState from '@atoms/following-list';
+import userState from '@src/recoil/atoms/user';
 
 function SearchView() {
   const searchType = useRecoilValue(searchTypeState);
   const inputKeywordRef = useRef<HTMLInputElement>(null);
   const nowFetchingRef = useRef<boolean>(false);
   const [loading, setLoading] = useState(true);
-
+  const user = useRecoilValue(userState);
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
   const followingList = useRecoilValue(followingListState);
@@ -116,8 +117,6 @@ function SearchView() {
           _id, userName, description, profileUrl,
         } = item;
 
-        console.log(followingList.includes(_id));
-
         const newItem = {
           _id,
           userName,
@@ -127,7 +126,9 @@ function SearchView() {
         };
 
         return newItem;
-      });
+      // eslint-disable-next-line no-underscore-dangle
+      }).filter((item) => item._id !== user.userDocumentId);
+
       return <UserCardList userList={filteredItemList} cardType="follow" />;
     }
   };
