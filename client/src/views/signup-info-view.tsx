@@ -25,12 +25,16 @@ const InterestItemWarapper = styled.div`
   margin-right: -5%;
 `;
 
+const Padding = styled.div`
+  padding: 20px;
+`;
+
 function SignupInfoView() {
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const inputFullNameRef = useRef<HTMLInputElement>(null);
   const inputIdRef = useRef<HTMLInputElement>(null);
   const [isDisabled, setIsDisabled] = useState(true);
-  const [isInputBarView, setIsInputBarView] = useState(true);
+  // const [isInputBarView, setIsInputBarView] = useState(true);
   const history = useHistory();
   const location = useLocation();
 
@@ -50,12 +54,12 @@ function SignupInfoView() {
     if (typeof interestName === 'string') selectedItems.add(interestName);
   };
 
-  const onClickInputViewNextButton = () => {
-    userInput.current.id = inputIdRef.current?.value as string;
-    userInput.current.password = inputPasswordRef.current?.value as string;
-    userInput.current.name = inputFullNameRef.current?.value as string;
-    setIsInputBarView(false);
-  };
+  // const onClickInputViewNextButton = () => {
+  //   userInput.current.id = inputIdRef.current?.value as string;
+  //   userInput.current.password = inputPasswordRef.current?.value as string;
+  //   userInput.current.name = inputFullNameRef.current?.value as string;
+  //   setIsInputBarView(false);
+  // };
 
   const onClickInterestViewNextButton = () => {
     const userInfo = {
@@ -75,47 +79,34 @@ function SignupInfoView() {
     <>
       <SignHeader />
       <SignBody>
-        {isInputBarView ? (
-          <>
-            <CustomInputBox>
-              <SignTitle title="what’s your password?" />
-              <CustomInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="text" placeholder="Password" />
-              <SignTitle title="what’s your full name?" />
-              <CustomInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
-              <SignTitle title="what’s your id?" />
-              <CustomInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
-            </CustomInputBox>
-            <DefaultButton buttonType="secondary" size="medium" onClick={onClickInputViewNextButton} isDisabled={isDisabled}>
-              NEXT
-            </DefaultButton>
-          </>
-        ) : (
-          <>
-            <CustomInputBox>
-              <SignTitle title="what’s your interests?" />
-              <InterestItemWarapper>
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-                <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-              </InterestItemWarapper>
-            </CustomInputBox>
-            <DefaultButton buttonType="secondary" size="medium" onClick={onClickInterestViewNextButton} isDisabled={isDisabled}>
-              NEXT
-            </DefaultButton>
-          </>
-        )}
+        <CustomInputBox>
+          <SignTitle title="what’s your password?" />
+          <CustomInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="text" placeholder="Password" />
+          <SignTitle title="what’s your full name?" />
+          <CustomInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
+          <SignTitle title="what’s your id?" />
+          <CustomInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
+          <SignTitle title="what’s your interests?" />
+          <InterestItemWarapper>
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
+          </InterestItemWarapper>
+          <DefaultButton buttonType="secondary" size="medium" onClick={onClickInterestViewNextButton} isDisabled={isDisabled}>NEXT</DefaultButton>
+          <Padding />
+        </CustomInputBox>
       </SignBody>
     </>
   );
