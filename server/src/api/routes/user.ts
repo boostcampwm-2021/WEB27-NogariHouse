@@ -53,7 +53,7 @@ export default (app: Router) => {
   userRouter.post('/signup/mail', async (req: Request, res: Response) => {
     const { email } = req.body;
 
-    const isUnique: boolean = usersService.isUniqueEmail(email);
+    const isUnique: boolean = await usersService.isUniqueEmail(email);
 
     if (isUnique) {
       const verificationNumber = await usersService.sendVerificationMail(email);
