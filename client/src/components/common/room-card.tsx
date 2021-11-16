@@ -156,7 +156,7 @@ export default function RoomCard({
   const thumbnailUrl = participantsInfo
   .filter((val, idx) => idx < 2)
   .map((participant, idx) => ({ profileUrl: participant.profileUrl, Style: ProfileStyleArray[idx] }));
-  
+
 
   return (
     <RoomCardLayout>

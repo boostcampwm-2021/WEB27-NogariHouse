@@ -23,9 +23,6 @@ interface RoomCardProps {
 }
 
 const RoomDiv = styled.div`
-  div + div {
-  margin-bottom: 10px;
-}
 `;
 
 export const makeRoomToCard = (room: RoomCardProps) => (
