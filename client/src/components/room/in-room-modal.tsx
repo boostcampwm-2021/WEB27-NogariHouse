@@ -76,7 +76,7 @@ function InRoomModal() {
     }
   }, []);
 
-  const createPeerConnection = useCallback((mic: boolean) => {
+  const createPeerConnection = useCallback((userDocumentId:string, mic: boolean) => {
     try {
       const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
@@ -86,27 +86,10 @@ function InRoomModal() {
         socket.current.emit('room:ice', { candidate: data.candidate });
       });
 
-      // peerConnection.addEventListener('track', (data) => {
-      //   console.log('ontrack success');
-      //   setParticipants((oldParticipants) => oldParticipants!.map((participant): any => {
-      //     if (participant.userDocumentId === user.userDocumentId) return null;
-      //     console.log('aaaaa');
-      //     return {
-      //       userDocumentId: participant.userDocumentId,
-      //       stream: data.streams[0],
-      //       mic,
-      //     };
-      //   }));
-      // });
-
       peerConnection.addEventListener('track', (data) => {
-        console.log('ontrack success');
-        setParticipants((oldParticipants) => oldParticipants!.filter((participant) => {
-          console.log(participant);
-          return (participant.userDocumentId !== user.userDocumentId);
-        }).concat({
-          userDocumentId: user.userDocumentId,
+        setParticipants((oldParticipants) => oldParticipants!.filter((participant) => (participant.userDocumentId !== userDocumentId)).concat({
           stream: data.streams[0],
+          userDocumentId,
           mic,
         }));
       });
@@ -141,7 +124,7 @@ function InRoomModal() {
     socket.current.on('room:join', async (participantsInfo: Array<TParticipant>) => {
       participantsInfo.forEach(async (participant: TParticipant) => {
         if (!myStream.current) return;
-        const peerConnection = createPeerConnection(participant.mic);
+        const peerConnection = createPeerConnection(participant.userDocumentId, participant.mic);
         console.log('local', peerConnection);
         if (!(peerConnection && socket.current)) return;
         peerConnections.current = { ...peerConnections.current, [participant.userDocumentId]: peerConnection };
@@ -157,7 +140,7 @@ function InRoomModal() {
       console.log('get offer');
       if (!myStream.current) return;
 
-      const peerConnection = createPeerConnection(true);
+      const peerConnection = createPeerConnection(offerSendId, true);
       console.log(peerConnection);
       if (!(peerConnection && socket.current)) return;
       peerConnections.current = { ...peerConnections.current, [offerSendId]: peerConnection };
