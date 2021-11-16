@@ -37,6 +37,11 @@ class RoomService {
     return result;
   }
 
+  async deleteRoom(roomDocumentId: string) {
+    const result = await Rooms.findOneAndDelete({ _id: roomDocumentId });
+    return result;
+  }
+
   async setMic(roomDocumentId: string, userDocumentId: string, isMicOn: boolean) {
     await Rooms.updateOne({ _id: roomDocumentId, 'participants.userDocumentId': userDocumentId }, { $set: { 'participants.$.mic': isMicOn } });
   }
