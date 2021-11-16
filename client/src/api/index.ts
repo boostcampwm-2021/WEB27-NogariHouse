@@ -156,3 +156,21 @@ export const getChatRooms = async (userDocumentId: string) => {
     console.error(error);
   }
 };
+
+export const getFollowingsList = async (userDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/user/followings/${userDocumentId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
