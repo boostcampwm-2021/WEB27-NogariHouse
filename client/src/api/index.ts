@@ -138,3 +138,21 @@ export const getSearchResult = async (searchInfo: {keyword:string, option:string
     console.error(error);
   }
 };
+
+export const getChatRooms = async (userDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/chat-rooms/${userDocumentId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
