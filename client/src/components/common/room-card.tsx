@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { deleteRoom } from '@src/api';
 import { isEmptyArray } from '@src/utils';
 import React from 'react';
 import styled from 'styled-components';
@@ -142,9 +143,7 @@ export default function RoomCard({
   const userNames = participantsInfo.reduce(makeParticipantsInfoToUserNames, []);
 
   if (isEmptyArray(participantsInfo)) {
-    fetch(`${process.env.REACT_APP_API_URL}/api/room/${_id}`, {
-      method: 'DELETE',
-    });
+    deleteRoom(_id);
     return <></>;
   }
 
