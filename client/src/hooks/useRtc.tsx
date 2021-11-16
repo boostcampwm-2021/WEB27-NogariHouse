@@ -1,13 +1,14 @@
 /* eslint-disable max-len */
 import {
-  MutableRefObject, RefObject, useCallback, useRef, useEffect, useState,
+  MutableRefObject, RefObject, useCallback, useRef, useEffect, useState, Dispatch,
 } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 
 import useSocket from '@src/hooks/useSocket';
 import { bindTrailingArgs } from '@src/utils';
 import roomDocumentIdState from '@atoms/room-document-id';
-import userTypeState from '@atoms/user';
+import userTypeState, { IUser } from '@atoms/user';
+import { Socket } from 'socket.io-client';
 
 export type TParticipant = {
     userDocumentId: string,
@@ -33,14 +34,7 @@ export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObje
   return [myStream, myVideo, getLocalStream];
 };
 
-export const useRtc = (): any => {
-  const peerConnections = useRef<{ [socketId: string]: RTCPeerConnection }>({});
-  const [participants, setParticipants] = useState<Array<TParticipant>>([]);
-  const roomDocumentId = useRecoilValue(roomDocumentIdState);
-  const [user] = useRecoilState(userTypeState);
-  const socket = useSocket();
-  const [myStream, myVideo, getLocalStream] = useLocalStream();
-
+export const useSetPeerConnection = (setParticipants: Dispatch<React.SetStateAction<Array<TParticipant>>>, myStream: MutableRefObject<MediaStream | null>) => {
   const peerConnectionConfig = {
     iceServers: [
       {
@@ -49,31 +43,33 @@ export const useRtc = (): any => {
     ],
   };
 
-  const handleIceEvent = ({ candidate }: RTCPeerConnectionIceEvent, socketId: string) => {
-    if (!(socket && candidate)) return;
-    socket.emit('room:ice', candidate, socketId);
+  const handleIceEvent = ({ candidate }: RTCPeerConnectionIceEvent, payload: { socketId: string, socket: Socket }) => {
+    if (!(payload.socket && candidate)) return;
+    payload.socket.emit('room:ice', candidate, payload.socketId);
   };
 
-  const handleTrackEvent = (data:RTCTrackEvent, myInfo: { userDocumentId: string, mic: boolean, socketId: string }) => {
-    setParticipants((oldParticipants) => oldParticipants!.filter((participant) => (participant.userDocumentId !== myInfo.userDocumentId)).concat({
+  const handleTrackEvent = (data:RTCTrackEvent, payload: { userDocumentId: string, mic: boolean, socketId: string }) => {
+    setParticipants((oldParticipants: Array<TParticipant>) => oldParticipants!.filter((participant: TParticipant) => (participant.userDocumentId !== payload.userDocumentId)).concat({
       stream: data.streams[0],
-      userDocumentId: myInfo.userDocumentId,
-      mic: myInfo.mic,
-      socketId: myInfo.socketId,
+      userDocumentId: payload.userDocumentId,
+      mic: payload.mic,
+      socketId: payload.socketId,
     }));
   };
 
-  const createPeerConnection = useCallback((userDocumentId:string, socketId: string, mic: boolean) => {
+  const setPeerConnection = useCallback((userDocumentId:string, socketId: string, mic: boolean, socket: Socket) => {
     try {
       const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
-      const handleIce = bindTrailingArgs(handleIceEvent, socketId);
-      const handleTrack = bindTrailingArgs(handleTrackEvent, { userDocumentId, mic, socketId });
+      const handleIce = bindTrailingArgs(handleIceEvent, { socketId, socket });
+      const handleTrack = bindTrailingArgs(handleTrackEvent, {
+        userDocumentId, mic, socketId, socket,
+      });
 
       peerConnection.addEventListener('icecandidate', handleIce);
       peerConnection.addEventListener('track', handleTrack);
 
-      myStream.current!.getTracks().forEach((track) => {
+      myStream.current!.getTracks().forEach((track: MediaStreamTrack) => {
         if (!myStream.current) return;
         peerConnection.addTrack(track, myStream.current);
       });
@@ -83,8 +79,19 @@ export const useRtc = (): any => {
       console.error(e);
       return undefined;
     }
-  }, [socket]);
+  }, []);
 
+  return setPeerConnection;
+};
+
+export const useRtc = (): [TParticipant[], RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined] => {
+  const peerConnections = useRef<{ [socketId: string]: RTCPeerConnection }>({});
+  const [participants, setParticipants] = useState<Array<TParticipant>>([]);
+  const roomDocumentId = useRecoilValue(roomDocumentIdState);
+  const [user] = useRecoilState(userTypeState);
+  const socket = useSocket();
+  const [myStream, myVideo, getLocalStream] = useLocalStream();
+  const setPeerConnection = useSetPeerConnection(setParticipants, myStream);
   useEffect(() => {
     if (!socket) return;
 
@@ -100,7 +107,7 @@ export const useRtc = (): any => {
     socket.on('room:join', async (participantsInfo: Array<TParticipant>) => {
       participantsInfo.forEach(async (participant: TParticipant) => {
         if (!myStream.current) return;
-        const peerConnection = createPeerConnection(participant.userDocumentId, participant.socketId, participant.mic);
+        const peerConnection = setPeerConnection(participant.userDocumentId, participant.socketId, participant.mic, socket);
         if (!(peerConnection && socket)) return;
         peerConnections.current = { ...peerConnections.current, [participant.socketId]: peerConnection };
         const offer = await peerConnection.createOffer();
@@ -112,7 +119,7 @@ export const useRtc = (): any => {
 
     socket.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string) => {
       if (!myStream.current) return;
-      const peerConnection = createPeerConnection(userDocumentId, socketId, true);
+      const peerConnection = setPeerConnection(userDocumentId, socketId, true, socket);
       if (!(peerConnection && socket)) return;
       peerConnections.current = { ...peerConnections.current, [socketId]: peerConnection };
       await peerConnection.setRemoteDescription(offer);
@@ -152,7 +159,7 @@ export const useRtc = (): any => {
               track.stop();
             });
     };
-  }, [socket, createPeerConnection]);
+  }, [socket, setPeerConnection]);
 
   return [participants, myVideo, roomDocumentId, user, socket];
 };

@@ -5,7 +5,7 @@
 
 import { atom } from 'recoil';
 
-interface IUser {
+export interface IUser {
   isLoggedIn: boolean,
   userDocumentId: string,
   profileUrl: string,
