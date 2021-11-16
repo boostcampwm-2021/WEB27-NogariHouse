@@ -18,6 +18,7 @@ import { RoomCardList } from '@views/room-view';
 import UserCardList from '@common/user-card-list';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
+import followingListState from '@atoms/following-list';
 
 function SearchView() {
   const searchType = useRecoilValue(searchTypeState);
@@ -27,6 +28,7 @@ function SearchView() {
 
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
+  const followingList = useRecoilValue(followingListState);
   const resetItemList = useResetRecoilState(nowItemsListState);
   const nowItemTypeRef = useRef<string>('');
   const searchInfo = useRef({ keyword: 'recent', option: 'top' });
@@ -109,7 +111,22 @@ function SearchView() {
     }
 
     if (searchType === 'People') {
-      return <UserCardList userList={nowItemsList} cardType="follow" />;
+      const filteredItemList = nowItemsList.map((item) => {
+        const {
+          key, userName, userDesc, profileUrl, isFollow,
+        } = item;
+
+        const newItem = {
+          key,
+          userName,
+          userDesc,
+          profileUrl,
+          isFollow: followingList.includes(key) ? true : isFollow,
+        };
+
+        return newItem;
+      });
+      return <UserCardList userList={filteredItemList} cardType="follow" />;
     }
   };
 
