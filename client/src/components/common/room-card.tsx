@@ -1,5 +1,5 @@
-/* eslint-disable  */
-/* eslint-disable max-len */
+/* eslint-disable */
+import { isEmptyArray } from '@src/utils';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -30,7 +30,7 @@ const RoomCardProfileDiv = styled.div`
 `;
 
 const RoomCardFirstProfile = styled.div.attrs((props: ProfileProps) => {
-  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } }
+  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
 })`
   position: absolute;
 
@@ -45,7 +45,7 @@ const RoomCardFirstProfile = styled.div.attrs((props: ProfileProps) => {
 
 const RoomCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
   if (props.length === 1) return ;
-  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } }
+  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
 })`
   position: absolute;
   top: 50px;
@@ -58,6 +58,8 @@ const RoomCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
 
   z-index: 1;
 `;
+
+type RoomCardProfileComponent = typeof RoomCardFirstProfile | typeof RoomCardSecondProfile;
 
 const RoomCardUsers = styled.div`
   display: flex;
@@ -81,6 +83,17 @@ const RoomCardTitle = styled.div`
   font-weight: bold;
 `;
 
+const AnonymousSpan = styled.span`
+  color: gray;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)) drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+`
+
+const ParticipantsNumberSpan = styled.span`
+  color: #C3C0B6;
+  font-size: 18px;
+  font-weight: bold;
+`
+
 const RoomCardInfo = styled.div`
   display: flex;
   flex-direction: row;
@@ -96,32 +109,60 @@ const RoomCardLayout = styled.div`
   width: 99%;
 `;
 
-const makeParticipantsInfoToHeadUsers = (acc: {name: string, key: string}[], participant: Participants, idx: number) => {
+interface IUserName {
+  name: string,
+  key: string,
+}
+
+interface IProfileList {
+  profileUrl: string,
+  Style: RoomCardProfileComponent
+}
+
+const makeParticipantsInfoToUserNames = (acc: IUserName[], participant: Participants, idx: number) => {
   if (idx > 3) return acc;
-  acc.push({name: participant.userName, key: participant._id});
+  acc.push({ name: participant.userName, key: participant._id });
   return acc;
 };
 
-export default function RoomCard({ title, participantsInfo } : RoomCardProps) {
-  const headUsers = participantsInfo.reduce(makeParticipantsInfoToHeadUsers, [])
-  
-  if (!participantsInfo.length) {
-    return <></>
+const userNameList = (userNames: IUserName[]) => userNames.map((user) => <span key={user.key}>{user.name}</span>);
+
+const ProfileStyleArray = [RoomCardFirstProfile, RoomCardSecondProfile];
+
+const profileList = (thumbnailUrl: IProfileList[]) => thumbnailUrl.map(({ profileUrl, Style }, idx) => <Style key={idx} profileUrl={profileUrl} length={thumbnailUrl.length} />);
+
+function AnonymousText () {
+  return <AnonymousSpan>Anonymous</AnonymousSpan>;
+}
+
+export default function RoomCard({
+  _id, isAnonymous, title, participantsInfo,
+} : RoomCardProps) {
+
+  const userNames = participantsInfo.reduce(makeParticipantsInfoToUserNames, []);
+
+  if (isEmptyArray(participantsInfo)) {
+    fetch(`/api/room/${_id}`, {
+      method: 'DELETE',
+    });
+    return <></>;
   }
+
+  const thumbnailUrl = participantsInfo
+  .filter((val, idx) => idx < 2)
+  .map((participant, idx) => ({ profileUrl: participant.profileUrl, Style: ProfileStyleArray[idx] }));
+  
 
   return (
     <RoomCardLayout>
-      <RoomCardTitle>
-        <span>{title}</span>
-      </RoomCardTitle>
+      <RoomCardTitle>{title}{isAnonymous && <AnonymousText />}</RoomCardTitle>
       <RoomCardInfo>
         <RoomCardProfileDiv>
-          <RoomCardFirstProfile profileUrl={participantsInfo[0].profileUrl} length={participantsInfo.length} />
-          {participantsInfo.length > 1 && <RoomCardSecondProfile profileUrl={participantsInfo[1].profileUrl} length={participantsInfo.length} /> }
+          {profileList(thumbnailUrl)}
         </RoomCardProfileDiv>
         <RoomCardUsers>
-          {headUsers.map((user) => <span key={user.key}>{user.name}</span>)}
-          <span>{participantsInfo.length} people</span>
+          {userNameList(userNames)}
+          <ParticipantsNumberSpan>{`${participantsInfo.length} people`}</ParticipantsNumberSpan>
         </RoomCardUsers>
       </RoomCardInfo>
     </RoomCardLayout>
