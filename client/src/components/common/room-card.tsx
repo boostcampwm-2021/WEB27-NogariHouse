@@ -96,9 +96,19 @@ const RoomCardLayout = styled.div`
   width: 99%;
 `;
 
+const makeParticipantsInfoToHeadUsers = (acc: {name: string, key: string}[], participant: Participants, idx: number) => {
+  if (idx > 3) return acc;
+  acc.push({name: participant.userName, key: participant._id});
+  return acc;
+};
+
 export default function RoomCard({ title, participantsInfo } : RoomCardProps) {
-  const userNames = [];
-  for (let i = 0; i < 3 && i < participantsInfo.length; i += 1) userNames.push({userDocumentId: participantsInfo[i]._id, userName: participantsInfo[i].userName});
+  const headUsers = participantsInfo.reduce(makeParticipantsInfoToHeadUsers, [])
+  
+  if (!participantsInfo.length) {
+    return <></>
+  }
+
   return (
     <RoomCardLayout>
       <RoomCardTitle>
@@ -110,18 +120,10 @@ export default function RoomCard({ title, participantsInfo } : RoomCardProps) {
           {participantsInfo.length > 1 && <RoomCardSecondProfile profileUrl={participantsInfo[1].profileUrl} length={participantsInfo.length} /> }
         </RoomCardProfileDiv>
         <RoomCardUsers>
-          {userNames.map((user) => <div key={user.userDocumentId}>{user.userName}</div>)}
-          <div><span>{participantsInfo.length}</span></div>
+          {headUsers.map((user) => <span key={user.key}>{user.name}</span>)}
+          <span>{participantsInfo.length} people</span>
         </RoomCardUsers>
       </RoomCardInfo>
     </RoomCardLayout>
   );
 }
-
-/*
- 104번째 줄: max len 100 넘어가서 첫번째 줄에 예외처리 해줌
- 95번째 줄: for문을 이용하지 않고 구현하는 방법...
- 폰트설정, 인원수 부분에 이미지 설정 못해줌
- Title 부분에 있던 점 3개 ... 구현할 버튼 이벤트가 없어서 삭제함
- background-size값이 width, height 보다 커지면 테두리가 잘리는 것 같다 >> 이미지의 비율이 정사각형이 아닌경우... 어떻게 처리를 해야할지
-*/
