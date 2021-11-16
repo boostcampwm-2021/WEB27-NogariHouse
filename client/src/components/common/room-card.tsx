@@ -1,8 +1,9 @@
 /* eslint-disable */
-import { deleteRoom } from '@src/api';
-import { isEmptyArray } from '@src/utils';
 import React from 'react';
 import styled from 'styled-components';
+
+import { deleteRoom } from '@api/index';
+import { isEmptyArray } from '@utils/index';
 
 interface Participants{
   _id: string,
