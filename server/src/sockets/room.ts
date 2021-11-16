@@ -10,7 +10,8 @@ interface IUsers {
 const users: IUsers = {};
 
 export default function registerRoomHandler(socket : Socket, server : Server) {
-  const handleRoomJoin = async (payload : any) => {
+  const handleRoomJoin = async (payload:
+    {roomDocumentId: string, userDocumentId: string, socketId: string}) => {
     const {
       roomDocumentId, userDocumentId, socketId,
     } = payload;
@@ -30,7 +31,7 @@ export default function registerRoomHandler(socket : Socket, server : Server) {
     delete users[socket.id];
 
     await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
-    socket.to(roomDocumentId).emit('room:leave', { socketId: socket.id });
+    socket.to(roomDocumentId).emit('room:leave', socket.id);
   };
 
   // eslint-disable-next-line no-undef
