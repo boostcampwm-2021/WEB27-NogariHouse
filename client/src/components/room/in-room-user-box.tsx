@@ -23,7 +23,6 @@ export function InRoomOtherUserBox({
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    console.log(userDocumentId);
     getUserInfo(userDocumentId)
       .then((res) => setUserInfo(res));
   }, []);

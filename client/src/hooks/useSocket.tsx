@@ -5,7 +5,7 @@ const useSocket = (): Socket | undefined => {
   const socket = useRef<Socket>();
 
   useEffect(() => {
-    const url = process.env.REACT_APP_API_URL as string;
+    const url = process.env.REACT_APP_SOCKET_URL as string;
     socket.current = io(url);
 
     return () => {
