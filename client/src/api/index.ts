@@ -113,8 +113,8 @@ export const postCheckMail = async (email: { email: string }) => {
       body: JSON.stringify(email),
     });
 
-    const json: { verificationNumber: string } = await response.json();
-    return json;
+    const json = await response.json();
+    return json as { isUnique: boolean, verificationNumber: string };
   } catch (error) {
     console.error(error);
   }
