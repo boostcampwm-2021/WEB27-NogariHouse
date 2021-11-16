@@ -109,6 +109,10 @@ const RoomCardLayout = styled.div`
   border-radius: 30px;
   margin-left: 0.8%;
   width: 99%;
+
+  &:hover {
+    background-color: #f0eee2;
+  }
 `;
 
 interface IUserName {
