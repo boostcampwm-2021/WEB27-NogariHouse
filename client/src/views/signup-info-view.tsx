@@ -31,18 +31,17 @@ const Padding = styled.div`
 
 function SignupInfoView() {
   const inputPasswordRef = useRef<HTMLInputElement>(null);
+  const inputPasswordCheckRef = useRef<HTMLInputElement>(null);
   const inputFullNameRef = useRef<HTMLInputElement>(null);
   const inputIdRef = useRef<HTMLInputElement>(null);
   const [isDisabled, setIsDisabled] = useState(true);
-  // const [isInputBarView, setIsInputBarView] = useState(true);
   const history = useHistory();
   const location = useLocation();
 
   const selectedItems = new Set();
-  const userInput = useRef<{ id: string, password: string, name: string}>({ id: '', password: '', name: '' });
 
   const inputOnChange = useCallback(() => {
-    if (inputPasswordRef.current?.value && inputFullNameRef.current?.value && inputIdRef.current?.value) {
+    if (inputPasswordRef.current?.value && inputPasswordCheckRef.current?.value && inputFullNameRef.current?.value && inputIdRef.current?.value) {
       setIsDisabled(false);
     } else {
       setIsDisabled(true);
@@ -54,25 +53,24 @@ function SignupInfoView() {
     if (typeof interestName === 'string') selectedItems.add(interestName);
   };
 
-  // const onClickInputViewNextButton = () => {
-  //   userInput.current.id = inputIdRef.current?.value as string;
-  //   userInput.current.password = inputPasswordRef.current?.value as string;
-  //   userInput.current.name = inputFullNameRef.current?.value as string;
-  //   setIsInputBarView(false);
-  // };
+  const checkPassword = () => inputPasswordRef.current?.value === inputPasswordCheckRef.current?.value;
 
-  const onClickInterestViewNextButton = () => {
-    const userInfo = {
-      loginType: 'normal',
-      userId: userInput.current.id,
-      password: userInput.current.password,
-      userName: userInput.current.name,
-      userEmail: (location.state as {email: string}).email,
-      interesting: Array.from(selectedItems),
-    };
+  const onClickNextButton = () => {
+    if (checkPassword()) {
+      const userInfo = {
+        loginType: 'normal',
+        userId: inputIdRef.current?.value as string,
+        password: inputPasswordRef.current?.value as string,
+        userName: inputFullNameRef.current?.value as string,
+        userEmail: (location.state as {email: string}).email,
+        interesting: Array.from(selectedItems),
+      };
 
-    postSignUpUserInfo(userInfo)
-      .then(() => { history.replace('/'); });
+      postSignUpUserInfo(userInfo)
+        .then(() => { history.replace('/'); });
+    } else {
+      alert('비밀번호를 확인해주세요');
+    }
   };
 
   return (
@@ -81,7 +79,8 @@ function SignupInfoView() {
       <SignBody>
         <CustomInputBox>
           <SignTitle title="what’s your password?" />
-          <CustomInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="text" placeholder="Password" />
+          <CustomInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
+          <CustomInputBar key="password" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
           <SignTitle title="what’s your full name?" />
           <CustomInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
           <SignTitle title="what’s your id?" />
@@ -104,7 +103,7 @@ function SignupInfoView() {
             <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
             <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
           </InterestItemWarapper>
-          <DefaultButton buttonType="secondary" size="medium" onClick={onClickInterestViewNextButton} isDisabled={isDisabled}>NEXT</DefaultButton>
+          <DefaultButton buttonType="secondary" size="medium" onClick={onClickNextButton} isDisabled={isDisabled}>NEXT</DefaultButton>
           <Padding />
         </CustomInputBox>
       </SignBody>
