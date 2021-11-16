@@ -87,11 +87,11 @@ const usersSchema = new Schema({
     default: [],
   },
   followings: {
-    type: [Object],
+    type: [String],
     default: [],
   },
   followers: {
-    type: [Object],
+    type: [String],
     default: [],
   },
   recentSearch: {
