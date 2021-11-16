@@ -198,6 +198,16 @@ class UserService {
       console.error(e);
     }
   }
+
+  async findUsersById(documentIdList: Array<string>) {
+    try {
+      const participantsInfo = Users.find({ _id: { $in: documentIdList } }, ['userName', 'profileUrl', 'description']);
+      console.log(participantsInfo);
+      return participantsInfo;
+    } catch (e) {
+      console.log(e);
+    }
+  }
 }
 
 export default new UserService();
