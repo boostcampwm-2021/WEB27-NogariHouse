@@ -86,6 +86,7 @@ const RoomCardTitle = styled.div`
 
 const AnonymousSpan = styled.span`
   color: gray;
+  font-size: 24px;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)) drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
 `
 
