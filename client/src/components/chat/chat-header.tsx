@@ -1,3 +1,5 @@
+/* eslint-disable no-return-assign */
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   FiMoreHorizontal, FiMessageSquare,
@@ -80,7 +82,7 @@ export function ChatRoomHeader() {
 export function NewChatRoomHeader() {
   return (
     <ChatHeaderStyle>
-      <BtnDiv dir="left">Cancel</BtnDiv>
+      <Link to="/chat-rooms"><BtnDiv dir="left">Cancel</BtnDiv></Link>
       <p>NEW MESSAGE</p>
       <BtnDiv dir="right">Done</BtnDiv>
     </ChatHeaderStyle>
