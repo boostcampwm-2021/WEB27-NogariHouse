@@ -142,7 +142,7 @@ export default function RoomCard({
   const userNames = participantsInfo.reduce(makeParticipantsInfoToUserNames, []);
 
   if (isEmptyArray(participantsInfo)) {
-    fetch(`/api/room/${_id}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/room/${_id}`, {
       method: 'DELETE',
     });
     return <></>;
