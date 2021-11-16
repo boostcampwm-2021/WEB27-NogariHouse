@@ -20,15 +20,15 @@ const CustomBackgroundWrapper = styled(BackgroundWrapper)`
 function SignUpView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputVerificationRef = useRef<HTMLInputElement>(null);
-  const verificationNumber = useRef<number>();
+  const verificationNumber = useRef<string>();
   const [isEmailInputView, setIsEmailInputView] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const emailState = useRef<string>();
   const history = useHistory();
 
-  const setVerificationNumber = useCallback((number: number) => {
-    verificationNumber.current = number;
+  const setVerificationNumber = useCallback((inputVerificationNumber: string) => {
+    verificationNumber.current = inputVerificationNumber;
   }, []);
 
   const inputOnChange = useCallback(() => {
@@ -46,16 +46,8 @@ function SignUpView() {
     if (testEmailValidation(inputEmailValue)) {
       setLoading(true);
 
-      const postSignupMailConfig = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: inputEmailValue }),
-      };
-
       postCheckMail({ email: inputEmailValue })
-        .then((json: any) => json.verificationNumber)
+        .then((json) => json!.verificationNumber)
         .then(setVerificationNumber)
         .then(() => {
           emailState.current = inputEmailValue;
