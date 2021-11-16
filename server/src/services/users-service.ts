@@ -174,7 +174,16 @@ class UserService {
       const query = new RegExp(keyword, 'i');
       const res = await Users.find({
         $or: [{ userId: query }, { userName: query }, { description: query }],
-      }).sort({ date: 1 }).skip(count).limit(10);
+      }, ['userName', 'description,', 'profileUrl']).sort({ date: 1 }).skip(count).limit(10);
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getFollowingsList(userDocumentId: string) {
+    try {
+      const res = await Users.findOne({ _id: userDocumentId }, ['followings']);
       return res;
     } catch (e) {
       console.error(e);
