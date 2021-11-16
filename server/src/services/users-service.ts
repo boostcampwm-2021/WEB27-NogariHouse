@@ -153,6 +153,21 @@ class UserService {
     return VerificationNumber;
   }
 
+  makeItemToUserInterface(
+    item: { _id: string, userName: string, description: string, profileUrl: string },
+  ) {
+    const {
+      _id, userName, description, profileUrl,
+    } = item;
+    return ({
+      _id,
+      userName,
+      description,
+      profileUrl,
+      type: 'user',
+    });
+  }
+
   async searchUsers(keyword: string, count: number) {
     try {
       const query = new RegExp(keyword, 'i');
