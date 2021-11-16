@@ -5,7 +5,7 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users, { IUsers } from '@models/users';
+import Users from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
