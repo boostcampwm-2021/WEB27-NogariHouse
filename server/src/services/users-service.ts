@@ -192,8 +192,9 @@ class UserService {
   makeUserDetailInterface(user: IUserTypesModel & {
     _id: any;
   }) {
-    const {userName, userId, userEmail, description, followings, followers, joinDate, profileUrl} = user;
+    const {_id, userName, userId, userEmail, description, followings, followers, joinDate, profileUrl} = user;
     return {
+      _id,
       userName,
       userId,
       userEmail,
