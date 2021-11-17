@@ -27,6 +27,21 @@ const SelectDiv = styled.div`
     font-size: 20px;
     font-weight: bold;
   }
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 8px;
+    background: #ffffff;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 8px;
+    background-color: #DCD9CD;
+
+    &:hover {
+      background-color: #CECABB;
+    }
+  }
 `;
 
 const SelectInputBar = styled.input`
@@ -34,7 +49,7 @@ const SelectInputBar = styled.input`
   top: 11px;
   left: 90px;
 
-  width: 400px;
+  width: 100px;
   height: 30px;
 
   border: none;
