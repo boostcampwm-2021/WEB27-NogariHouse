@@ -16,6 +16,8 @@ const ChatHeaderStyle = styled.div`
   position: relative;
 
   p {
+    width: 250px;
+
     position: absolute;
     top: 25px;
     left: 50%;
