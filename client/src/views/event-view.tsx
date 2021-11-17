@@ -30,7 +30,7 @@ const EventDiv = styled.div`
  }
 `;
 
-const makeEventToCard = (event: EventCardProps) => (
+export const makeEventToCard = (event: EventCardProps) => (
   <EventCard
     key={event.key}
     time={makeDateToHourMinute(new Date(event.time))}

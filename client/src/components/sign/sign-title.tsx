@@ -10,6 +10,7 @@ const TitleDiv = styled.div`
   width: calc(740px*100vw/1440px);
   font-size: 4rem;
   min-width: 650px;
+  text-align: center;
 `;
 
 function SignTitle({

@@ -29,7 +29,7 @@ const IconContainer = styled.div`
   a:not(:last-child) {
     margin-right: 30px;
   }
-  
+
   svg:hover {
     filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
   }
@@ -69,7 +69,7 @@ function DefaultHeader() {
   const resetNowItemsList = useResetRecoilState(nowItemsListState);
   const leftSideIcons: IconAndLink[] = [
     { Component: HiSearch, link: '/search', key: 'search' },
-    { Component: HiOutlinePaperAirplane, link: '/chat', key: 'chat' },
+    { Component: HiOutlinePaperAirplane, link: '/chat-rooms', key: 'chat' },
   ];
   const rightSideIcons: IconAndLink[] = [
     { Component: HiOutlineMail, link: '/invite', key: 'invite' },

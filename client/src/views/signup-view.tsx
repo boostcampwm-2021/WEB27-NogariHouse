@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable max-len */
 import React, { useCallback, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -20,15 +20,15 @@ const CustomBackgroundWrapper = styled(BackgroundWrapper)`
 function SignUpView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputVerificationRef = useRef<HTMLInputElement>(null);
-  const verificationNumber = useRef<number>();
+  const verificationNumberRef = useRef<string>();
   const [isEmailInputView, setIsEmailInputView] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
   const emailState = useRef<string>();
   const history = useHistory();
 
-  const setVerificationNumber = useCallback((number: number) => {
-    verificationNumber.current = number;
+  const setVerificationNumber = useCallback((inputVerificationNumber: string) => {
+    verificationNumberRef.current = inputVerificationNumber;
   }, []);
 
   const inputOnChange = useCallback(() => {
@@ -40,29 +40,26 @@ function SignUpView() {
     }
   }, []);
 
+  const fetchPostMail = async (inputEmailValue: string) => {
+    const { isUnique, verificationNumber } = await postCheckMail({ email: inputEmailValue }) as { isUnique: boolean, verificationNumber: string };
+    if (isUnique) {
+      setVerificationNumber(verificationNumber);
+      emailState.current = inputEmailValue;
+      setLoading(false);
+      setIsDisabled(true);
+      setIsEmailInputView(false);
+    } else {
+      setLoading(false);
+      alert('이미 존재하는 이메일입니다');
+    }
+  };
+
   const onClickEmailNextButton = () => {
     const inputEmailValue = inputEmailRef.current?.value as string;
 
     if (testEmailValidation(inputEmailValue)) {
       setLoading(true);
-
-      const postSignupMailConfig = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: inputEmailValue }),
-      };
-
-      postCheckMail({ email: inputEmailValue })
-        .then((json: any) => json.verificationNumber)
-        .then(setVerificationNumber)
-        .then(() => {
-          emailState.current = inputEmailValue;
-          setLoading(false);
-          setIsDisabled(true);
-          setIsEmailInputView(false);
-        });
+      fetchPostMail(inputEmailValue);
     } else {
       alert('올바른 이메일을 입력해주세요');
     }
@@ -71,7 +68,7 @@ function SignUpView() {
   const onClickVerificationNextButton = () => {
     const inputVerificationValue = inputVerificationRef.current?.value as string;
 
-    if (inputVerificationValue === (verificationNumber.current?.toString())) {
+    if (inputVerificationValue === (verificationNumberRef.current?.toString())) {
       history.replace('/signup/info', { email: emailState.current });
     } else {
       alert('인증번호를 확인하세요.');

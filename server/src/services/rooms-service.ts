@@ -37,6 +37,11 @@ class RoomService {
     return result;
   }
 
+  async deleteRoom(roomDocumentId: string) {
+    const result = await Rooms.findOneAndDelete({ _id: roomDocumentId });
+    return result;
+  }
+
   async setMic(roomDocumentId: string, userDocumentId: string, isMicOn: boolean) {
     await Rooms.updateOne({ _id: roomDocumentId, 'participants.userDocumentId': userDocumentId }, { $set: { 'participants.$.mic': isMicOn } });
   }
@@ -61,6 +66,13 @@ class RoomService {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  makeItemToRoomInterface(item: {_id:string, title:string, isAnonymous:boolean, participantsInfo:Array<object>}) {
+    return ({
+      ...item,
+      type: 'event',
+    });
   }
 
   // eslint-disable-next-line consistent-return

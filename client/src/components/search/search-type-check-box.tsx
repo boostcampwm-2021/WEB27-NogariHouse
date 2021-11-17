@@ -22,7 +22,7 @@ const BoxText = styled.div`
 `;
 
 interface SearchTypeCheckBoxProps{
-    searchBoxName : 'Top' | 'People' | 'Clubs' | 'Rooms' | 'Events'
+    searchBoxName : 'All' | 'People' | 'Clubs' | 'Rooms' | 'Events'
 }
 
 function SearchTypeCheckBox({ searchBoxName } : SearchTypeCheckBoxProps) {

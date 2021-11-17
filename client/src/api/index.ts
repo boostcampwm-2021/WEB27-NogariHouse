@@ -53,6 +53,10 @@ export const postRoomInfo = async (roomInfo: Object) => {
   }
 };
 
+export const deleteRoom = (roomDocumentId: string) => fetch(`${process.env.REACT_APP_API_URL}/api/room/${roomDocumentId}`, {
+  method: 'DELETE',
+});
+
 export const postEvent = async (eventInfo: Object) => {
   try {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/event`, {
@@ -103,9 +107,9 @@ export const postSignUpUserInfo = async (postSignupUserInfoConfig: Object) => {
   }
 };
 
-export const postCheckMail = async (email: Object) => {
+export const postCheckMail = async (email: { email: string }) => {
   try {
-    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signup/mail`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signup/mail`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -113,8 +117,8 @@ export const postCheckMail = async (email: Object) => {
       body: JSON.stringify(email),
     });
 
-    response = await response.json();
-    return response;
+    const json = await response.json();
+    return json as { isUnique: boolean, verificationNumber: string };
   } catch (error) {
     console.error(error);
   }
@@ -125,6 +129,42 @@ export const getSearchResult = async (searchInfo: {keyword:string, option:string
   try {
     let response = await fetch(
       `${process.env.REACT_APP_API_URL}/api/search/${option}?keyword=${keyword}&count=0`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getChatRooms = async (userDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/chat-rooms/${userDocumentId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getFollowingsList = async (userDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/user/followings/${userDocumentId}`,
       {
         method: 'get',
         headers: {

@@ -42,3 +42,5 @@ export function bindTrailingArgs(fn: any, ...boundArgs: any[]) {
     return fn(...args, ...boundArgs);
   };
 }
+
+export const isEmptyArray = (array: any[]) => !array.length;

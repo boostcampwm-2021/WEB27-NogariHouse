@@ -12,6 +12,7 @@ import styled from 'styled-components';
 
 import { nowFetchingState } from '@atoms/main-section-scroll';
 import userState from '@atoms/user';
+import followingListState from '@atoms/following-list';
 import LargeLogo from '@components/sign/large-logo';
 import LeftSideBar from '@components/left-sidebar';
 import RightSideBar from '@components/room/right-sidebar';
@@ -20,6 +21,7 @@ import MainRouter from '@routes/main';
 import DefaultButton from '@common/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
 import LoadingSpinner from '@common/loading-spinner';
+import { getFollowingsList } from '@src/api';
 
 const MainLayout = styled.div`
   display: flex;
@@ -76,6 +78,7 @@ const ButtonLayout = styled.div`
 
 function MainView() {
   const [user, setUser] = useRecoilState(userState);
+  const setFollowingList = useSetRecoilState(followingListState);
   const resetUser = useResetRecoilState(userState);
   const [loading, setLoading] = useState(true);
   const setNowFetching = useSetRecoilState(nowFetchingState);
@@ -96,10 +99,12 @@ function MainView() {
     }
   }, []);
 
-  const updateUserState = useCallback((json) => {
+  const updateUserState = useCallback(async (json) => {
     const {
       accessToken, userDocumentId, profileUrl, userName, userId,
     } = json;
+
+    getFollowingsList(userDocumentId).then((response:any) => setFollowingList(response.followings));
 
     setUser({
       isLoggedIn: true, userDocumentId, profileUrl, userName, userId,
