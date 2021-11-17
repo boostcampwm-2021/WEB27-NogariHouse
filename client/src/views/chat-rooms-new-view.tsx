@@ -81,15 +81,20 @@ function ChatRoomsNewView() {
     const userCardDiv = e.target.closest('.userCard');
     if (!userCardDiv) return;
     const userName = userCardDiv?.getAttribute('data-username');
+    (inputBar!.current as any).value = '';
     setSelectedUsers([...selectedUsers, { userDocumentId: userCardDiv?.getAttribute('data-id'), userName }]);
   };
 
   const deleteUser = (e: any) => {
     setSelectedUsers(selectedUsers.filter((user: any) => user.userDocumentId !== e.target.getAttribute('data-id')));
+    (inputBar!.current as any).value = '';
   };
 
   const searchUser = () => {
-    console.log((inputBar!.current as any).value);
+    const searchWord = (inputBar.current as any).value;
+    const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
+    setUserList(allUserList
+      .filter((user: any) => (user.userId.indexOf(searchWord) > -1 || user.userName.indexOf(searchWord) > -1) && selectedUserIds.indexOf(user._id) === -1));
   };
 
   useEffect(() => {
