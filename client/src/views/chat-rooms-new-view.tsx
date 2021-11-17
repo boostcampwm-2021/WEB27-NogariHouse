@@ -1,14 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useRecoilState } from 'recoil';
 
 import { NewChatRoomHeader } from '@components/chat/chat-header';
 import ChatRoomsLayout from '@components/chat/chat-room-layout';
 import UserCardList from '@components/common/user-card-list';
 import { findUsersById } from '@api/index';
 import followType from '@atoms/following-list';
+import selectedUserType from '@atoms/chat-selected-users';
 
 const SelectDiv = styled.div`
   width: 90%;
@@ -18,10 +19,6 @@ const SelectDiv = styled.div`
 
   overflow-x: scroll;
   overflow-y: hidden;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
 
   p {
     position: absolute;
@@ -49,48 +46,81 @@ const SelectInputBar = styled.input`
   }
 `;
 
-const SelectUserDiv = styled.div`
+const SelectedUserDiv = styled.div`
   position: absolute;
   height: 32px;
   left: 90px;
   top: 11px;
 
+  display: flex;
+  flex-direction: row;
+
 `;
 
 const SelectUserComponent = styled.div`
+  margin-right: 10px;
+  background-color: #F1F0E4;
+  border-radius: 30px;
 
+  line-height: 30px;
+  font-family: 'Nunito';
+  color: #819C88;
+
+  cursor: default;
 `;
 
 function ChatRoomsNewView() {
   const followingList = useRecoilValue(followType);
-  const [userList, setUserList] = useState([]);
-  const [selectedUsers, setSelectedUsers] = useState<any>([]);
+  const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserType);
+  const [allUserList, setAllUserList] = useState([]);
+  const [filteredUserList, setUserList] = useState([]);
+  const inputBar = useRef(null);
+  const selectedUserDiv = useRef(null);
 
   const addSelectedUser = (e: any) => {
     const userCardDiv = e.target.closest('.userCard');
-    alert(userCardDiv.getAttribute('data-userName'));
-    setSelectedUsers([{ key: '123', userName: 'test' }]);
+    if (!userCardDiv) return;
+    const userName = userCardDiv?.getAttribute('data-username');
+    setSelectedUsers([...selectedUsers, { userDocumentId: userCardDiv?.getAttribute('data-id'), userName }]);
+  };
+
+  const deleteUser = (e: any) => {
+    setSelectedUsers(selectedUsers.filter((user: any) => user.userDocumentId !== e.target.getAttribute('data-id')));
+  };
+
+  const searchUser = () => {
+    console.log((inputBar!.current as any).value);
   };
 
   useEffect(() => {
+    findUsersById(followingList).then((res: any) => {
+      setAllUserList(res.userList);
+      setUserList(res.userList);
+    });
+  }, [followingList]);
 
-  }, []);
+  useEffect(() => {
+    const SelectedUserDivWidth = (selectedUserDiv.current as any).offsetWidth;
+    (inputBar!.current as any).style.transform = `translatex(${SelectedUserDivWidth + 10}px)`;
+    const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
+    setUserList(allUserList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
+  }, [selectedUsers]);
 
   return (
     <ChatRoomsLayout>
       <NewChatRoomHeader />
       <SelectDiv>
         <p>TO : </p>
-        <SelectUserDiv>
+        <SelectedUserDiv ref={selectedUserDiv}>
           {selectedUsers.map((user: any) => (
-            <SelectUserComponent key={user.key}>
+            <SelectUserComponent key={user.userDocumentId} data-id={user.userDocumentId} onClick={deleteUser}>
               {user.userName}
             </SelectUserComponent>
           ))}
-        </SelectUserDiv>
-        <SelectInputBar />
+        </SelectedUserDiv>
+        <SelectInputBar ref={inputBar} onChange={searchUser} />
       </SelectDiv>
-      <UserCardList cardType="others" userList={userList} clickEvent={addSelectedUser} />
+      <UserCardList cardType="others" userList={filteredUserList} clickEvent={addSelectedUser} />
     </ChatRoomsLayout>
   );
 }
