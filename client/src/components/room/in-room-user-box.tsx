@@ -12,10 +12,13 @@ import { InRoomUserBoxStyle, InRoomUserMicDiv, UserBox } from './style';
 export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
-    stream?: any,
+    stream?: MediaStream | undefined,
+    isMine: boolean
 }
 
-export function InRoomUserBox({ userDocumentId, isMicOn, stream }: IParticipant) {
+export function InRoomOtherUserBox({
+  userDocumentId, isMicOn, stream, isMine,
+}: IParticipant) {
   const [userInfo, setUserInfo] = useState<any>();
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -26,12 +29,12 @@ export function InRoomUserBox({ userDocumentId, isMicOn, stream }: IParticipant)
 
   useEffect(() => {
     if (!ref.current) return;
-    ref.current!.srcObject = stream;
+    ref.current!.srcObject = stream as MediaStream;
   }, [stream]);
 
   return (
     <InRoomUserBoxStyle>
-      <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline />
+      <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted={isMine} />
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
@@ -39,3 +42,24 @@ export function InRoomUserBox({ userDocumentId, isMicOn, stream }: IParticipant)
     </InRoomUserBoxStyle>
   );
 }
+
+export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
+  (props, ref) => {
+    const [userInfo, setUserInfo] = useState<any>();
+
+    useEffect(() => {
+      getUserInfo(props.userDocumentId)
+        .then((res) => setUserInfo(res));
+    }, []);
+
+    return (
+      <InRoomUserBoxStyle>
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+        <InRoomUserMicDiv>
+          { props.isMicOn ? <FiMic /> : <FiMicOff /> }
+        </InRoomUserMicDiv>
+        <p>{ userInfo?.userName }</p>
+      </InRoomUserBoxStyle>
+    );
+  },
+);

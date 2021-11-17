@@ -36,4 +36,11 @@ export const deepCopy = (object: Object) => {
   return JSON.parse(objectStr);
 };
 
+export function bindTrailingArgs(fn: any, ...boundArgs: any[]) {
+  // eslint-disable-next-line func-names
+  return function (...args: any[]) {
+    return fn(...args, ...boundArgs);
+  };
+}
+
 export const isEmptyArray = (array: any[]) => !array.length;
