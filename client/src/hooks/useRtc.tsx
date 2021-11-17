@@ -91,7 +91,7 @@ export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<R
   return setPeerConnection;
 };
 
-export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined] => {
+export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined, MutableRefObject<MediaStream | null>] => {
   const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const [participants, setParticipants] = useState<Array<T>>([]);
   const roomDocumentId = useRecoilValue(roomDocumentIdState);
@@ -169,5 +169,5 @@ export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement 
     };
   }, [socket, setPeerConnection]);
 
-  return [participants, myVideoRef, roomDocumentId, user, socket];
+  return [participants, myVideoRef, roomDocumentId, user, socket, myStreamRef];
 };
