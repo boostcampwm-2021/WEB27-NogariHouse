@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import React, {
   useRef, useCallback, UIEvent, useEffect, useState, MouseEvent,
 } from 'react';
