@@ -53,13 +53,10 @@ function ProfileHeader() {
         <HeaderTitleNunito>
           Profile
         </HeaderTitleNunito>
-        {(paths && (paths[1] === user.userId))
-        && (
         <IconContainer>
           <HiShare onClick={changeModalState} size={48} />
-          {makeIconToLink(SettingIcon)}
+          {(paths && (paths[1] === user.userId)) && makeIconToLink(SettingIcon)}
         </IconContainer>
-        )}
       </CustomtHeader>
     </>
   );
