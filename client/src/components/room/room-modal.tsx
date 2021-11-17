@@ -1,11 +1,12 @@
 /* eslint-disable object-shorthand */
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
 
 import roomTypeState from '@atoms/room-type';
 import roomDocumentIdState from '@atoms/room-document-id';
-import roomViewType from '@src/recoil/atoms/room-view-type';
+import userTypeState from '@atoms/user';
+import roomViewType from '@atoms/room-view-type';
 import { postRoomInfo } from '@api/index';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
@@ -18,10 +19,14 @@ const CustomTitleForm = styled.div`
 `;
 
 const TitleInputbar = styled.input`
-  border: 1px solid #58964F;
-  border-radius: 8px;
-  padding: 0;
-
+  background: none;
+  color: #58964F;
+  font-size: 18px;
+  padding: 10px 10px 10px 5px;
+  display: block;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1px solid #58964F;
   &:focus {
     outline: none;
   }
@@ -34,6 +39,7 @@ const TitleInputbarLabel = styled.label`
 
 // 룸 생성 모달
 function RoomModal() {
+  const user = useRecoilValue(userTypeState);
   const setRoomView = useSetRecoilState(roomViewType);
   const [roomType] = useRecoilState(roomTypeState);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
@@ -42,12 +48,11 @@ function RoomModal() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const submitButtonHandler = () => {
-    // userId 현재 아이디 가져와야함
     const roomInfo = {
       type: roomType,
       title: inputRef.current?.value as string,
-      userId: 'dlatqdlatq',
-      userName: 'sungbin',
+      userId: user.userId,
+      userName: user.userName,
       isAnonymous: isAnonymous,
     };
     postRoomInfo(roomInfo)
