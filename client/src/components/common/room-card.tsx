@@ -1,7 +1,9 @@
-/* eslint-disable  */
-/* eslint-disable max-len */
+/* eslint-disable */
 import React from 'react';
 import styled from 'styled-components';
+
+import { deleteRoom } from '@api/index';
+import { isEmptyArray } from '@utils/index';
 
 interface Participants{
   _id: string,
@@ -30,7 +32,7 @@ const RoomCardProfileDiv = styled.div`
 `;
 
 const RoomCardFirstProfile = styled.div.attrs((props: ProfileProps) => {
-  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } }
+  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
 })`
   position: absolute;
 
@@ -45,7 +47,7 @@ const RoomCardFirstProfile = styled.div.attrs((props: ProfileProps) => {
 
 const RoomCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
   if (props.length === 1) return ;
-  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } }
+  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
 })`
   position: absolute;
   top: 50px;
@@ -58,6 +60,8 @@ const RoomCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
 
   z-index: 1;
 `;
+
+type RoomCardProfileComponent = typeof RoomCardFirstProfile | typeof RoomCardSecondProfile;
 
 const RoomCardUsers = styled.div`
   display: flex;
@@ -81,6 +85,18 @@ const RoomCardTitle = styled.div`
   font-weight: bold;
 `;
 
+const AnonymousSpan = styled.span`
+  color: gray;
+  font-size: 24px;
+  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25)) drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+`
+
+const ParticipantsNumberSpan = styled.span`
+  color: #C3C0B6;
+  font-size: 18px;
+  font-weight: bold;
+`
+
 const RoomCardInfo = styled.div`
   display: flex;
   flex-direction: row;
@@ -94,34 +110,66 @@ const RoomCardLayout = styled.div`
   border-radius: 30px;
   margin-left: 0.8%;
   width: 99%;
+
+  &:hover {
+    background-color: #eeebe4e4;
+  }
 `;
 
-export default function RoomCard({ title, participantsInfo } : RoomCardProps) {
-  const userNames = [];
-  for (let i = 0; i < 3 && i < participantsInfo.length; i += 1) userNames.push({userDocumentId: participantsInfo[i]._id, userName: participantsInfo[i].userName});
+interface IUserName {
+  name: string,
+  key: string,
+}
+
+interface IProfileList {
+  profileUrl: string,
+  Style: RoomCardProfileComponent
+}
+
+const makeParticipantsInfoToUserNames = (acc: IUserName[], participant: Participants, idx: number) => {
+  if (idx > 3) return acc;
+  acc.push({ name: participant.userName, key: participant._id });
+  return acc;
+};
+
+const userNameList = (userNames: IUserName[]) => userNames.map((user) => <span key={user.key}>{user.name}</span>);
+
+const ProfileStyleArray = [RoomCardFirstProfile, RoomCardSecondProfile];
+
+const profileList = (thumbnailUrl: IProfileList[]) => thumbnailUrl.map(({ profileUrl, Style }, idx) => <Style key={idx} profileUrl={profileUrl} length={thumbnailUrl.length} />);
+
+function AnonymousText () {
+  return <AnonymousSpan>Anonymous</AnonymousSpan>;
+}
+
+export default function RoomCard({
+  _id, isAnonymous, title, participantsInfo,
+} : RoomCardProps) {
+
+  const userNames = participantsInfo.reduce(makeParticipantsInfoToUserNames, []);
+
+  if (isEmptyArray(participantsInfo)) {
+    deleteRoom(_id);
+    return <></>;
+  }
+
+  const thumbnailUrl = participantsInfo
+  .filter((val, idx) => idx < 2)
+  .map((participant, idx) => ({ profileUrl: participant.profileUrl, Style: ProfileStyleArray[idx] }));
+  
+
   return (
     <RoomCardLayout>
-      <RoomCardTitle>
-        <span>{title}</span>
-      </RoomCardTitle>
+      <RoomCardTitle>{title}{isAnonymous && <AnonymousText />}</RoomCardTitle>
       <RoomCardInfo>
         <RoomCardProfileDiv>
-          <RoomCardFirstProfile profileUrl={participantsInfo[0].profileUrl} length={participantsInfo.length} />
-          {participantsInfo.length > 1 && <RoomCardSecondProfile profileUrl={participantsInfo[1].profileUrl} length={participantsInfo.length} /> }
+          {profileList(thumbnailUrl)}
         </RoomCardProfileDiv>
         <RoomCardUsers>
-          {userNames.map((user) => <div key={user.userDocumentId}>{user.userName}</div>)}
-          <div><span>{participantsInfo.length}</span></div>
+          {userNameList(userNames)}
+          <ParticipantsNumberSpan>{`${participantsInfo.length} people`}</ParticipantsNumberSpan>
         </RoomCardUsers>
       </RoomCardInfo>
     </RoomCardLayout>
   );
 }
-
-/*
- 104번째 줄: max len 100 넘어가서 첫번째 줄에 예외처리 해줌
- 95번째 줄: for문을 이용하지 않고 구현하는 방법...
- 폰트설정, 인원수 부분에 이미지 설정 못해줌
- Title 부분에 있던 점 3개 ... 구현할 버튼 이벤트가 없어서 삭제함
- background-size값이 width, height 보다 커지면 테두리가 잘리는 것 같다 >> 이미지의 비율이 정사각형이 아닌경우... 어떻게 처리를 해야할지
-*/

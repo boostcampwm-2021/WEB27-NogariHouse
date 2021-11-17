@@ -53,6 +53,10 @@ export const postRoomInfo = async (roomInfo: Object) => {
   }
 };
 
+export const deleteRoom = (roomDocumentId: string) => fetch(`${process.env.REACT_APP_API_URL}/api/room/${roomDocumentId}`, {
+  method: 'DELETE',
+});
+
 export const postEvent = async (eventInfo: Object) => {
   try {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/event`, {

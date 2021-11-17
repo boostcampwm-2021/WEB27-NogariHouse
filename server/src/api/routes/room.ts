@@ -44,4 +44,16 @@ export default (app: Router) => {
       console.error(error);
     }
   });
+
+  roomRouter.delete('/:roomDocumentId', async (req: Request, res: Response) => {
+    try {
+      const { roomDocumentId } = req.params;
+
+      await RoomService.deleteRoom(roomDocumentId);
+      res.status(200).json({ ok: true });
+    } catch (error) {
+      console.error(error);
+      res.json({ ok: false });
+    }
+  });
 };
