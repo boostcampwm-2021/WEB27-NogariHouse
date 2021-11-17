@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
@@ -7,13 +8,20 @@ import { NewChatRoomHeader } from '@components/chat/chat-header';
 import ChatRoomsLayout from '@components/chat/chat-room-layout';
 import UserCardList from '@components/common/user-card-list';
 import { findUsersById } from '@api/index';
-import userType from '@atoms/user';
+import followType from '@atoms/following-list';
 
 const SelectDiv = styled.div`
   width: 90%;
   height: 50px;
 
   position: relative;
+
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   p {
     position: absolute;
@@ -54,7 +62,7 @@ const SelectUserComponent = styled.div`
 `;
 
 function ChatRoomsNewView() {
-  const { followers, followings } = useRecoilValue(userType);
+  const followingList = useRecoilValue(followType);
   const [userList, setUserList] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState<any>([]);
 
@@ -65,8 +73,7 @@ function ChatRoomsNewView() {
   };
 
   useEffect(() => {
-    const findUserList = followers.concat(followings).filter((item, index) => followers.indexOf(item) !== index);
-    findUsersById(findUserList).then((res: any) => setUserList(res.userList));
+
   }, []);
 
   return (
