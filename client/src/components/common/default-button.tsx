@@ -46,6 +46,9 @@ const CustomDefaultButton = styled.button`
   font-family: ${(props) => (props.font ? props.font : 'Bangers')};;
   font-size: ${(props: DefaultButtonProps) => sizes[props.size].fontSize}px;
   opacity: ${(props) => (props.disabled ? 0.5 : 1)};
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 function DefaultButton({
