@@ -5,7 +5,7 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users, { IUsers } from '@models/users';
+import Users from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
@@ -153,19 +153,18 @@ class UserService {
     return VerificationNumber;
   }
 
-  makeItemToUserInterface(item : IUsers & {_id: number}): {
-    key: number;
-    userName: string;
-    userDesc: string;
-    profileUrl: string;
-    isFollow: boolean;
-  } {
+  makeItemToUserInterface(
+    item: { _id: string, userName: string, description: string, profileUrl: string },
+  ) {
+    const {
+      _id, userName, description, profileUrl,
+    } = item;
     return ({
-      key: item._id,
-      userName: item.userName,
-      userDesc: item.description,
-      profileUrl: item.profileUrl,
-      isFollow: false,
+      _id,
+      userName,
+      description,
+      profileUrl,
+      type: 'user',
     });
   }
 
@@ -174,8 +173,17 @@ class UserService {
       const query = new RegExp(keyword, 'i');
       const res = await Users.find({
         $or: [{ userId: query }, { userName: query }, { description: query }],
-      }).sort({ date: 1 }).skip(count).limit(10);
+      }, ['userName', 'description,', 'profileUrl']).sort({ date: 1 }).skip(count).limit(10);
       return res;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getFollowingsList(userDocumentId: string) {
+    try {
+      const result = await Users.findOne({ _id: userDocumentId }, ['followings']);
+      return result;
     } catch (e) {
       console.error(e);
     }

@@ -28,7 +28,7 @@ const RoomDiv = styled.div`
 }
 `;
 
-const makeRoomToCard = (room: RoomCardProps) => (
+export const makeRoomToCard = (room: RoomCardProps) => (
   <div className="RoomCard" key={room._id} data-id={room._id}>
     <RoomCard
       key={room._id}

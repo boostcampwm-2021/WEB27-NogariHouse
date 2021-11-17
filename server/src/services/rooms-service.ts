@@ -68,6 +68,13 @@ class RoomService {
     }
   }
 
+  makeItemToRoomInterface(item: {_id:string, title:string, isAnonymous:boolean, participantsInfo:Array<object>}) {
+    return ({
+      ...item,
+      type: 'event',
+    });
+  }
+
   // eslint-disable-next-line consistent-return
   async searchRooms(keyword: string, count: number) {
     try {

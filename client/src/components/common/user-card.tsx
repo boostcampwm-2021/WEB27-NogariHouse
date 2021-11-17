@@ -10,7 +10,7 @@ interface userCardProps {
   cardType: 'follow' | 'others';
   userData: {
     userName: string,
-    userDesc: string,
+    description: string,
     profileUrl: string,
     isFollow?: boolean,
   }
@@ -21,8 +21,8 @@ interface sizeProps {
 }
 
 const sizes = {
-  follow: { cardLayoutSize: 80, userNameSize: 24, userDescSize: 20 },
-  others: { cardLayoutSize: 60, userNameSize: 16, userDescSize: 12 },
+  follow: { cardLayoutSize: 80, userNameSize: 24, descriptionSize: 20 },
+  others: { cardLayoutSize: 60, userNameSize: 16, descriptionSize: 12 },
 };
 
 const UserCardLayout = styled.div`
@@ -60,7 +60,7 @@ const UserName = styled.div`
 `;
 
 const UserDescription = styled.div`
-  font-size: ${(props: sizeProps) => sizes[props.sizeType].userDescSize}px;
+  font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
   user-select: none;
 `;
 
@@ -76,7 +76,7 @@ export default function UserCard(props:userCardProps) {
             {props.userData.userName}
           </UserName>
           <UserDescription sizeType={props.cardType}>
-            {props.userData.userDesc}
+            {props.userData.description}
           </UserDescription>
         </UserDescLayout>
       </UserInfoLayout>

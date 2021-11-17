@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import UserCard from '@common/user-card';
 
 interface IUserForCard{
-  key: string,
+  _id: string,
   userName: string,
-  userDesc: string,
+  description: string,
   profileUrl: string,
   isFollow?: boolean,
 }
@@ -19,6 +19,8 @@ interface UserCardProps {
 const makeUserToCard = ({ cardType, userList }: UserCardProps) => (
   userList.map((user) => (
     <UserCard
+      // eslint-disable-next-line no-underscore-dangle
+      key={user._id}
       cardType={cardType}
       userData={user}
     />
