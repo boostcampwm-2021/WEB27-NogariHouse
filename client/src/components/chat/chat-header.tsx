@@ -3,9 +3,8 @@
 /* eslint-disable no-return-assign */
 import { Link, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
-import {
-  FiMoreHorizontal, FiMessageSquare,
-} from 'react-icons/fi';
+import { FiMoreHorizontal } from 'react-icons/fi';
+import { BiMessageSquareAdd } from 'react-icons/bi';
 import { useRecoilValue } from 'recoil';
 
 import { makeIconToLink } from '@utils/index';
@@ -52,7 +51,7 @@ const ChatHeaderBtnDiv = styled.div`
 
 const chatRoomHeaderBtns = [
   {
-    Component: FiMessageSquare, link: '/chat-rooms/new', key: 'newChat', size: 32,
+    Component: BiMessageSquareAdd, link: '/chat-rooms/new', key: 'newChat', size: 32,
   },
   {
     Component: FiMoreHorizontal, link: '/chat-rooms/new', key: 'selector', size: 32,
