@@ -153,7 +153,7 @@ function SearchView() {
     }
 
     if (searchType === 'All') {
-      return <div>{nowItemsList.map(makeItemToCardForm)}</div>;
+      return <>{nowItemsList.map(makeItemToCardForm)}</>;
     }
 
     if (searchType === 'Events') {
