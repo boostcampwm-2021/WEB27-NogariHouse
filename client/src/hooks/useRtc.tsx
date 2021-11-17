@@ -11,7 +11,7 @@ import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState, { IUser } from '@atoms/user';
 
 export interface IRTC {
-  socketId: string,
+  socketId?: string,
   userDocumentId: string,
   stream?: MediaStream,
   peerConnection?: RTCPeerConnection,
@@ -19,7 +19,7 @@ export interface IRTC {
 }
 
 export interface IParticipant extends IRTC {
-    mic: boolean,
+    mic?: boolean,
   }
 
 export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObject<HTMLVideoElement | null>, () => Promise<void>] => {
@@ -30,6 +30,10 @@ export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObje
     try {
       myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
       if (myVideoRef.current) myVideoRef.current.srcObject = myStreamRef.current;
+      myStreamRef.current!
+        .getAudioTracks()
+        // eslint-disable-next-line
+        .forEach((track: MediaStreamTrack) => (track.enabled = !track.enabled));
     } catch (e) {
       console.error(e);
     }
@@ -91,7 +95,7 @@ export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<R
   return setPeerConnection;
 };
 
-export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined, MutableRefObject<MediaStream | null>] => {
+export const useRtc = <T extends IRTC>(): [Array<T>, Dispatch<React.SetStateAction<T[]>>, RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined, MutableRefObject<MediaStream | null>] => {
   const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const [participants, setParticipants] = useState<Array<T>>([]);
   const roomDocumentId = useRecoilValue(roomDocumentIdState);
@@ -116,7 +120,7 @@ export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement 
         if (!myStreamRef.current) return;
         const peerConnection = setPeerConnection(participant, socket);
         if (!(peerConnection && socket)) return;
-        peerConnectionsRef.current = { ...peerConnectionsRef.current, [participant.socketId]: peerConnection };
+        peerConnectionsRef.current = { ...peerConnectionsRef.current, [participant.socketId as string]: peerConnection };
         const offer = await peerConnection.createOffer();
         peerConnection.setLocalDescription(offer);
 
@@ -126,7 +130,7 @@ export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement 
 
     socket.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string) => {
       if (!myStreamRef.current) return;
-      const participant: any = { userDocumentId, socketId, mic: true };
+      const participant: any = { userDocumentId, socketId, mic: false };
       const peerConnection = setPeerConnection(participant, socket);
       if (!(peerConnection && socket)) return;
       peerConnectionsRef.current = { ...peerConnectionsRef.current, [socketId]: peerConnection };
@@ -169,5 +173,5 @@ export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement 
     };
   }, [socket, setPeerConnection]);
 
-  return [participants, myVideoRef, roomDocumentId, user, socket, myStreamRef];
+  return [participants, setParticipants, myVideoRef, roomDocumentId, user, socket, myStreamRef];
 };
