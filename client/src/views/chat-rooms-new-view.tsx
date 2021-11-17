@@ -49,7 +49,7 @@ const SelectInputBar = styled.input`
   top: 11px;
   left: 90px;
 
-  width: 100px;
+  width: 200px;
   height: 30px;
 
   border: none;
@@ -114,8 +114,9 @@ function ChatRoomsNewView() {
 
   useEffect(() => {
     findUsersById(followingList).then((res: any) => {
+      const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
       setAllUserList(res.userList);
-      setUserList(res.userList);
+      setUserList(res.userList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
     });
   }, [followingList]);
 

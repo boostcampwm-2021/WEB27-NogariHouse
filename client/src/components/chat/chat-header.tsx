@@ -1,11 +1,13 @@
 /* eslint-disable no-return-assign */
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
+import { Link, useHistory } from 'react-router-dom';
+import styled, { css } from 'styled-components';
 import {
   FiMoreHorizontal, FiMessageSquare,
 } from 'react-icons/fi';
+import { useRecoilValue } from 'recoil';
 
 import { makeIconToLink } from '@utils/index';
+import selectedUserType from '@atoms/chat-selected-users';
 
 const ChatHeaderStyle = styled.div`
   background-color: #B6B6B6;
@@ -39,7 +41,7 @@ const ChatHeaderBtnDiv = styled.div`
   svg{
     margin: 0px 10px 0px 10px;
     &:hover {
-      filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
+      filter: invert(88%) sepia(1%) saturate(121%) hue-rotate(12deg) brightness(62%) contrast(79%);
     }
   }
 `;
@@ -53,14 +55,7 @@ const chatRoomHeaderBtns = [
   },
 ];
 
-type btnDivProps = {dir: 'left' | 'right'};
-
-const BtnDiv = styled.button`
-  ${(props : btnDivProps) => {
-    if (props.dir === 'left') return 'left: 5%; color: #58964F;';
-    return 'right: 5%; color: #D7D7D7;';
-  }}
-
+const BtnStyle = css`
   position: absolute;
   transform: translateY(30px);
 
@@ -73,6 +68,32 @@ const BtnDiv = styled.button`
     filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
   }
 `;
+
+const CanCelBtn = styled.button`
+  left: 5%;
+  color: #58964F;
+  ${BtnStyle};
+`;
+
+const DoneBtnStyle = styled.button`
+  right: 5%;
+  color: #58964F;
+  ${BtnStyle};
+`;
+
+const DoneBtn = () => {
+  const selectedUserList = useRecoilValue(selectedUserType);
+  const history = useHistory();
+
+  const makeChatRoom = () => {
+    if (selectedUserList.length === 0) return;
+    history.push({ pathname: '/chat-rooms/userDocumentId' });
+  };
+
+  return (
+    <DoneBtnStyle onClick={makeChatRoom}>Done</DoneBtnStyle>
+  );
+};
 
 export function ChatRoomHeader() {
   return (
@@ -88,9 +109,9 @@ export function ChatRoomHeader() {
 export function NewChatRoomHeader() {
   return (
     <ChatHeaderStyle>
-      <Link to="/chat-rooms"><BtnDiv dir="left">Cancel</BtnDiv></Link>
+      <Link to="/chat-rooms"><CanCelBtn>Cancel</CanCelBtn></Link>
       <p>NEW MESSAGE</p>
-      <BtnDiv dir="right">Done</BtnDiv>
+      <DoneBtn />
     </ChatHeaderStyle>
   );
 }
