@@ -66,9 +66,15 @@ export default (app: Router) => {
   userRouter.post('/signup/mail', async (req: Request, res: Response) => {
     const { email } = req.body;
 
-    const verificationNumber = await usersService.sendVerificationMail(email);
+    const isUnique: boolean = await usersService.isUniqueEmail(email);
 
-    res.json({ verificationNumber });
+    if (isUnique) {
+      const verificationNumber = await usersService.sendVerificationMail(email);
+      res.json({ isUnique, verificationNumber });
+    } else {
+      res.json({ isUnique, verificationNumber: '-1' });
+    }
+
   });
 
   userRouter.post('/signup/userInfo', async (req: Request, res: Response) => {

@@ -126,6 +126,11 @@ class UserService {
     };
   }
 
+  async isUniqueEmail(email: string) {
+    const user = await Users.findOne({ userEmail: email });
+    return !user;
+  }
+
   async sendVerificationMail(email: string) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
