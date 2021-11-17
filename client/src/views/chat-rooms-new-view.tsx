@@ -17,9 +17,6 @@ const SelectDiv = styled.div`
 
   position: relative;
 
-  overflow-x: scroll;
-  overflow-y: hidden;
-
   p {
     position: absolute;
     margin: 15px 20px 0px 30px;
@@ -49,7 +46,7 @@ const SelectInputBar = styled.input`
   top: 11px;
   left: 90px;
 
-  width: 200px;
+  width: 300px;
   height: 30px;
 
   border: none;
@@ -62,18 +59,16 @@ const SelectInputBar = styled.input`
 `;
 
 const SelectedUserDiv = styled.div`
-  position: absolute;
-  height: 32px;
-  left: 90px;
-  top: 11px;
+  margin: 0% 15% 0% 15%;
+
 
   display: flex;
   flex-direction: row;
-
+  flex-wrap: wrap;
 `;
 
 const SelectUserComponent = styled.div`
-  margin-right: 10px;
+  margin 0px 10px 5px 0px;
   background-color: #F1F0E4;
   border-radius: 30px;
 
@@ -121,8 +116,6 @@ function ChatRoomsNewView() {
   }, [followingList]);
 
   useEffect(() => {
-    const SelectedUserDivWidth = (selectedUserDiv.current as any).offsetWidth;
-    (inputBar!.current as any).style.transform = `translatex(${SelectedUserDivWidth + 10}px)`;
     const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
     setUserList(allUserList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
   }, [selectedUsers]);
@@ -132,15 +125,15 @@ function ChatRoomsNewView() {
       <NewChatRoomHeader />
       <SelectDiv>
         <p>TO : </p>
-        <SelectedUserDiv ref={selectedUserDiv}>
-          {selectedUsers.map((user: any) => (
-            <SelectUserComponent key={user.userDocumentId} data-id={user.userDocumentId} onClick={deleteUser}>
-              {user.userName}
-            </SelectUserComponent>
-          ))}
-        </SelectedUserDiv>
         <SelectInputBar ref={inputBar} onChange={searchUser} />
       </SelectDiv>
+      <SelectedUserDiv ref={selectedUserDiv}>
+        {selectedUsers.map((user: any) => (
+          <SelectUserComponent key={user.userDocumentId} data-id={user.userDocumentId} onClick={deleteUser}>
+            {user.userName}
+          </SelectUserComponent>
+        ))}
+      </SelectedUserDiv>
       <UserCardList cardType="others" userList={filteredUserList} clickEvent={addSelectedUser} />
     </ChatRoomsLayout>
   );
