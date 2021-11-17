@@ -8,7 +8,7 @@ on:
 jobs:
   deploy_1:
     runs-on: ubuntu-latest
-		if: github.event.pull_request.merged
+    if: github.event.pull_request.merged
 
     steps:
       - uses: actions/checkout@v2
@@ -25,12 +25,12 @@ jobs:
             git fetch origin main && git reset --hard origin/main
             yarn install
             pm2 kill
-						pm2 deploy
+	    pm2 deploy
 
 jobs:
-  deploy_1:
+  deploy_2:
     runs-on: ubuntu-latest
-		if: github.event.pull_request.merged
+    if: github.event.pull_request.merged
 
     steps:
       - uses: actions/checkout@v2
@@ -45,6 +45,5 @@ jobs:
           script: |
             cd ${{ secrets.SSH_REPOSITORY_CLIENT }}
             git fetch origin main && git reset --hard origin/main
-						yarn install
-						yarn build
-						systemctl restart nginx
+	    yarn install
+	    yarn build
