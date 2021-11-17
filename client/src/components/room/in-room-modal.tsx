@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 import React, { useEffect, useState, RefObject } from 'react';
 import { useSetRecoilState } from 'recoil';
 import {
@@ -49,14 +47,20 @@ function InRoomModal() {
         <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
+        {/* eslint-disable-next-line max-len */}
         {participants.map(({ userDocumentId, stream, mic }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isMine={false} />)}
+        {/* eslint-disable-next-line max-len */}
         <InRoomUserBox ref={myVideo as RefObject<HTMLVideoElement>} key={user.userDocumentId} userDocumentId={user.userDocumentId} isMicOn={isMic} isMine />
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
         <FooterBtnDiv><FiScissors /></FooterBtnDiv>
         <FooterBtnDiv><FiPlus /></FooterBtnDiv>
-        <FooterBtnDiv>{isMic ? <FiMic onClick={() => micToggle(false)} /> : <FiMicOff onClick={() => micToggle(true)} />}</FooterBtnDiv>
+        <FooterBtnDiv>
+          {isMic
+            ? <FiMic onClick={() => micToggle(false)} />
+            : <FiMicOff onClick={() => micToggle(true)} />}
+        </FooterBtnDiv>
       </InRoomFooter>
     </>
   );

@@ -7,10 +7,10 @@ import roomTypeState from '@atoms/room-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState from '@atoms/user';
 import roomViewType from '@atoms/room-view-type';
-import { postRoomInfo } from '@api/index';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
+import { postRoomInfo } from '@api/index';
 
 const CustomTitleForm = styled.div`
   display: flex;

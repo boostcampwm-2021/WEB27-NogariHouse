@@ -3,38 +3,42 @@ import {
   MutableRefObject, RefObject, useCallback, useRef, useEffect, useState, Dispatch,
 } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
+import { Socket } from 'socket.io-client';
 
 import useSocket from '@src/hooks/useSocket';
 import { bindTrailingArgs } from '@src/utils';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState, { IUser } from '@atoms/user';
-import { Socket } from 'socket.io-client';
 
-export type TParticipant = {
-    userDocumentId: string,
+export interface IRTC {
+  socketId: string,
+  userDocumentId: string,
+  stream?: MediaStream,
+  peerConnection?: RTCPeerConnection,
+  mic?: boolean,
+}
+
+export interface IParticipant extends IRTC {
     mic: boolean,
-    stream?: MediaStream,
-    peerConnection?: RTCPeerConnection,
-    socketId: string,
   }
 
 export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObject<HTMLVideoElement | null>, () => Promise<void>] => {
-  const myStream = useRef<MediaStream | null>(null);
-  const myVideo = useRef<HTMLVideoElement | null>(null);
+  const myStreamRef = useRef<MediaStream | null>(null);
+  const myVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const getLocalStream = useCallback(async () => {
     try {
-      myStream.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
-      if (myVideo.current) myVideo.current.srcObject = myStream.current;
+      myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      if (myVideoRef.current) myVideoRef.current.srcObject = myStreamRef.current;
     } catch (e) {
       console.error(e);
     }
   }, []);
 
-  return [myStream, myVideo, getLocalStream];
+  return [myStreamRef, myVideoRef, getLocalStream];
 };
 
-export const useSetPeerConnection = (setParticipants: Dispatch<React.SetStateAction<Array<TParticipant>>>, myStream: MutableRefObject<MediaStream | null>) => {
+export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<React.SetStateAction<Array<T>>>, myStreamRef: MutableRefObject<MediaStream | null>) => {
   const peerConnectionConfig = {
     iceServers: [
       {
@@ -49,29 +53,32 @@ export const useSetPeerConnection = (setParticipants: Dispatch<React.SetStateAct
   };
 
   const handleTrackEvent = (data:RTCTrackEvent, payload: { userDocumentId: string, mic: boolean, socketId: string }) => {
-    setParticipants((oldParticipants: Array<TParticipant>) => oldParticipants!.filter((participant: TParticipant) => (participant.userDocumentId !== payload.userDocumentId)).concat({
+    setParticipants((oldParticipants: Array<T>) => oldParticipants!.filter((participant: T) => (participant.userDocumentId !== payload.userDocumentId)).concat({
       stream: data.streams[0],
       userDocumentId: payload.userDocumentId,
       mic: payload.mic,
       socketId: payload.socketId,
-    }));
+    } as unknown as T));
   };
 
-  const setPeerConnection = useCallback((userDocumentId:string, socketId: string, mic: boolean, socket: Socket) => {
+  const setPeerConnection = useCallback((participant: T, socket: Socket) => {
     try {
       const peerConnection = new RTCPeerConnection(peerConnectionConfig);
 
-      const handleIce = bindTrailingArgs(handleIceEvent, { socketId, socket });
+      const handleIce = bindTrailingArgs(handleIceEvent, { socketId: participant.socketId, socket });
       const handleTrack = bindTrailingArgs(handleTrackEvent, {
-        userDocumentId, mic, socketId, socket,
+        userDocumentId: participant.userDocumentId,
+        mic: participant.mic as unknown,
+        socketId: participant.socketId,
+        socket,
       });
 
       peerConnection.addEventListener('icecandidate', handleIce);
       peerConnection.addEventListener('track', handleTrack);
 
-      myStream.current!.getTracks().forEach((track: MediaStreamTrack) => {
-        if (!myStream.current) return;
-        peerConnection.addTrack(track, myStream.current);
+      myStreamRef.current!.getTracks().forEach((track: MediaStreamTrack) => {
+        if (!myStreamRef.current) return;
+        peerConnection.addTrack(track, myStreamRef.current);
       });
 
       return peerConnection;
@@ -84,14 +91,14 @@ export const useSetPeerConnection = (setParticipants: Dispatch<React.SetStateAct
   return setPeerConnection;
 };
 
-export const useRtc = (): [TParticipant[], RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined] => {
-  const peerConnections = useRef<{ [socketId: string]: RTCPeerConnection }>({});
-  const [participants, setParticipants] = useState<Array<TParticipant>>([]);
+export const useRtc = <T extends IRTC>(): [Array<T>, RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined] => {
+  const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
+  const [participants, setParticipants] = useState<Array<T>>([]);
   const roomDocumentId = useRecoilValue(roomDocumentIdState);
   const [user] = useRecoilState(userTypeState);
   const socket = useSocket();
-  const [myStream, myVideo, getLocalStream] = useLocalStream();
-  const setPeerConnection = useSetPeerConnection(setParticipants, myStream);
+  const [myStreamRef, myVideoRef, getLocalStream] = useLocalStream();
+  const setPeerConnection = useSetPeerConnection(setParticipants, myStreamRef);
   useEffect(() => {
     if (!socket) return;
 
@@ -104,12 +111,12 @@ export const useRtc = (): [TParticipant[], RefObject<HTMLVideoElement | null>, s
 
     init();
 
-    socket.on('room:join', async (participantsInfo: Array<TParticipant>) => {
-      participantsInfo.forEach(async (participant: TParticipant) => {
-        if (!myStream.current) return;
-        const peerConnection = setPeerConnection(participant.userDocumentId, participant.socketId, participant.mic, socket);
+    socket.on('room:join', async (participantsInfo: Array<T>) => {
+      participantsInfo.forEach(async (participant: T) => {
+        if (!myStreamRef.current) return;
+        const peerConnection = setPeerConnection(participant, socket);
         if (!(peerConnection && socket)) return;
-        peerConnections.current = { ...peerConnections.current, [participant.socketId]: peerConnection };
+        peerConnectionsRef.current = { ...peerConnectionsRef.current, [participant.socketId]: peerConnection };
         const offer = await peerConnection.createOffer();
         peerConnection.setLocalDescription(offer);
 
@@ -118,10 +125,11 @@ export const useRtc = (): [TParticipant[], RefObject<HTMLVideoElement | null>, s
     });
 
     socket.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string) => {
-      if (!myStream.current) return;
-      const peerConnection = setPeerConnection(userDocumentId, socketId, true, socket);
+      if (!myStreamRef.current) return;
+      const participant: any = { userDocumentId, socketId, mic: true };
+      const peerConnection = setPeerConnection(participant, socket);
       if (!(peerConnection && socket)) return;
-      peerConnections.current = { ...peerConnections.current, [socketId]: peerConnection };
+      peerConnectionsRef.current = { ...peerConnectionsRef.current, [socketId]: peerConnection };
       await peerConnection.setRemoteDescription(offer);
       const answer = await peerConnection.createAnswer();
       await peerConnection.setLocalDescription(answer);
@@ -129,37 +137,37 @@ export const useRtc = (): [TParticipant[], RefObject<HTMLVideoElement | null>, s
     });
 
     socket.on('room:answer', async (answer: RTCSessionDescriptionInit, socketId: string) => {
-      const peerConnection = peerConnections.current[socketId];
+      const peerConnection = peerConnectionsRef.current[socketId];
       if (!peerConnection) return;
       peerConnection.setRemoteDescription(answer);
     });
 
     socket.on('room:ice', async (data: { candidate: RTCIceCandidateInit, candidateSendId: string }) => {
-      const peerConnection = peerConnections.current[data.candidateSendId];
+      const peerConnection = peerConnectionsRef.current[data.candidateSendId];
       if (!peerConnection) return;
       await peerConnection.addIceCandidate(data.candidate);
     });
 
     socket.on('room:leave', async (socketId: string) => {
-      peerConnections.current[socketId].close();
-      delete peerConnections.current[socketId];
+      peerConnectionsRef.current[socketId].close();
+      delete peerConnectionsRef.current[socketId];
       setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.socketId !== socketId));
     });
 
     // eslint-disable-next-line consistent-return
     return () => {
       participants.forEach((participant) => {
-        if (!peerConnections.current[participant.userDocumentId]) return;
-        peerConnections.current[participant.userDocumentId].close();
-        delete peerConnections.current[participant.userDocumentId];
+        if (!peerConnectionsRef.current[participant.userDocumentId]) return;
+        peerConnectionsRef.current[participant.userDocumentId].close();
+        delete peerConnectionsRef.current[participant.userDocumentId];
       });
 
-          myStream.current!.getTracks()
+          myStreamRef.current!.getTracks()
             .forEach((track: MediaStreamTrack) => {
               track.stop();
             });
     };
   }, [socket, setPeerConnection]);
 
-  return [participants, myVideo, roomDocumentId, user, socket];
+  return [participants, myVideoRef, roomDocumentId, user, socket];
 };
