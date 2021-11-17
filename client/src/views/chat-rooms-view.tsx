@@ -18,7 +18,8 @@ interface IChatUserType {
 
 interface IChatRoom {
   chatDocumentId: string,
-  participants: Array<IChatUserType>
+  participants: Array<IChatUserType>,
+  lastMsg: string,
 }
 
 function ChatRoomsViews() {
@@ -38,7 +39,7 @@ function ChatRoomsViews() {
   return (
     <ChatRoomsLayout>
       <ChatRoomHeader />
-      {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} participantsInfo={chatRoom.participants} />)}
+      {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} participantsInfo={chatRoom.participants} lastMsg={chatRoom.lastMsg} />)}
     </ChatRoomsLayout>
   );
 }
