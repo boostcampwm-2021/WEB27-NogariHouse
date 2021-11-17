@@ -18,7 +18,7 @@ function HeaderRouter() {
       <Route exact path="/activity" component={ActivityHeader} />
       <Route exact path="/event" component={EventHeader} />
       <Route exact path="/invite" component={InviteHeader} />
-      <Route exact path="/profile" component={ProfileHeader} />
+      <Route exact path="/profile/:id" component={ProfileHeader} />
       <Route path="/" component={DefaultHeader} />
     </Switch>
   );

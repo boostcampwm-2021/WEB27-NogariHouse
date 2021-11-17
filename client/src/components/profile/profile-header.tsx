@@ -1,15 +1,15 @@
-/* eslint-disable */
 import React from 'react';
 import styled from 'styled-components';
 import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos, MdSettings } from 'react-icons/md';
 import { HiShare } from 'react-icons/hi';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useLocation } from 'react-router-dom';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { isOpenShareModalState } from '@atoms/is-open-modal';
+import userState from '@atoms/user';
 import { CustomtHeader, HeaderTitleNunito } from '@common/header';
 import { makeIconToLink } from '@utils/index';
-import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 
 interface IconAndLink {
   Component:IconType,
@@ -32,10 +32,15 @@ const IconContainer = styled.div`
   }
 `;
 
+const idRegex = /\/profile\/(.*)/;
+
 function ProfileHeader() {
   const BackIcon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/', key: 'main' };
   const SettingIcon: IconAndLink = { Component: MdSettings, link: '/settings', key: 'setting' };
+  const user = useRecoilValue(userState);
   const setIsOpenModal = useSetRecoilState(isOpenShareModalState);
+  const location = useLocation();
+  const paths = location.pathname.match(idRegex);
 
   const changeModalState = () => {
     setIsOpenModal(true);
@@ -46,12 +51,15 @@ function ProfileHeader() {
       <CustomtHeader>
         {makeIconToLink(BackIcon)}
         <HeaderTitleNunito>
-          MyPage
+          Profile
         </HeaderTitleNunito>
+        {(paths && (paths[1] === user.userId))
+        && (
         <IconContainer>
           <HiShare onClick={changeModalState} size={48} />
           {makeIconToLink(SettingIcon)}
         </IconContainer>
+        )}
       </CustomtHeader>
     </>
   );
