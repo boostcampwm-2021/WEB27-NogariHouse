@@ -11,8 +11,6 @@ jobs:
     if: github.event.pull_request.merged
 
     steps:
-      - uses: actions/checkout@v2
-
       - name: server deploy
         uses: appleboy/ssh-action@master
         with:
@@ -25,16 +23,13 @@ jobs:
             git fetch origin main && git reset --hard origin/main
             yarn install
             pm2 kill
-	    pm2 deploy
+            pm2 deploy
 
-jobs:
   deploy_2:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged
 
     steps:
-      - uses: actions/checkout@v2
-
       - name: client deploy
         uses: appleboy/ssh-action@master
         with:
@@ -45,5 +40,5 @@ jobs:
           script: |
             cd ${{ secrets.SSH_REPOSITORY_CLIENT }}
             git fetch origin main && git reset --hard origin/main
-	    yarn install
-	    yarn build
+            yarn install
+            yarn build
