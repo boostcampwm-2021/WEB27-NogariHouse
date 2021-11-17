@@ -41,14 +41,32 @@ const SelectInputBar = styled.input`
   }
 `;
 
+const SelectUserDiv = styled.div`
+  position: absolute;
+  height: 32px;
+  left: 90px;
+  top: 11px;
+
+`;
+
+const SelectUserComponent = styled.div`
+
+`;
+
 function ChatRoomsNewView() {
   const { followers, followings } = useRecoilValue(userType);
   const [userList, setUserList] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState<any>([]);
+
+  const addSelectedUser = (e: any) => {
+    const userCardDiv = e.target.closest('.userCard');
+    alert(userCardDiv.getAttribute('data-userName'));
+    setSelectedUsers([{ key: '123', userName: 'test' }]);
+  };
 
   useEffect(() => {
     const findUserList = followers.concat(followings).filter((item, index) => followers.indexOf(item) !== index);
-    findUsersById(findUserList)
-      .then((res: any) => setUserList(res.userList));
+    findUsersById(findUserList).then((res: any) => setUserList(res.userList));
   }, []);
 
   return (
@@ -56,9 +74,16 @@ function ChatRoomsNewView() {
       <NewChatRoomHeader />
       <SelectDiv>
         <p>TO : </p>
+        <SelectUserDiv>
+          {selectedUsers.map((user: any) => (
+            <SelectUserComponent key={user.key}>
+              {user.userName}
+            </SelectUserComponent>
+          ))}
+        </SelectUserDiv>
         <SelectInputBar />
       </SelectDiv>
-      <UserCardList cardType="others" userList={userList} />
+      <UserCardList cardType="others" userList={userList} clickEvent={addSelectedUser} />
     </ChatRoomsLayout>
   );
 }
