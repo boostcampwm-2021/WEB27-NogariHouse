@@ -150,7 +150,6 @@ function SearchView() {
     }
 
     if (searchType === 'All') {
-      console.log(nowItemsList);
       return <div>{nowItemsList.map(makeItemToCardForm)}</div>;
     }
 
