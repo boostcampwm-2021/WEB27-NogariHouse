@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React, {
@@ -100,18 +101,37 @@ function SearchView() {
     else console.error('no room-id');
   };
 
+  const makeUserObjectIncludedIsFollow = (
+    userItem: {
+      _id: string,
+      userName:
+      string,
+      description: string,
+      profileUrl: string
+    },
+  ) => ({
+    _id: userItem._id,
+    userName: userItem.userName,
+    description: userItem.description,
+    profileUrl: userItem.profileUrl,
+    isFollow: !!followingList.includes(userItem._id),
+  });
+
   const makeItemToCardForm = (item:any) => {
     if (item.type === 'event') {
       return <ItemDiv onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
     }
 
     if (item.type === 'user') {
+      if (item._id === user.userDocumentId) return '';
+      const newUserItemForm = makeUserObjectIncludedIsFollow(item);
+
       return (
         <UserCard
           // eslint-disable-next-line no-underscore-dangle
-          key={item._id}
+          key={newUserItemForm._id}
           cardType="follow"
-          userData={item}
+          userData={newUserItemForm}
         />
       );
     }
@@ -143,22 +163,8 @@ function SearchView() {
     }
 
     if (searchType === 'People') {
-      const filteredItemList = nowItemsList.map((item) => {
-        const {
-          _id, userName, description, profileUrl,
-        } = item;
-
-        const newItem = {
-          _id,
-          userName,
-          description,
-          profileUrl,
-          isFollow: !!followingList.includes(_id),
-        };
-
-        return newItem;
-      // eslint-disable-next-line no-underscore-dangle
-      }).filter((item) => item._id !== user.userDocumentId);
+      const filteredItemList = nowItemsList
+        .map(makeUserObjectIncludedIsFollow).filter((item) => item._id !== user.userDocumentId);
 
       return <UserCardList userList={filteredItemList} cardType="follow" />;
     }
