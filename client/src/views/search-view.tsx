@@ -11,7 +11,7 @@ import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll'
 import searchTypeState from '@atoms/search-type';
 import OptionBar from '@components/search/option-bar';
 import {
-  SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection,
+  SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection, ItemDiv,
 } from '@components/search/style';
 import LoadingSpinner from '@common/loading-spinner';
 import useSetEventModal from '@hooks/useSetEventModal';
@@ -100,37 +100,39 @@ function SearchView() {
     else console.error('no room-id');
   };
 
+  const makeItemToCardForm = (item:any) => {
+    if (item.type === 'event') {
+      return <ItemDiv onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
+    }
+
+    if (item.type === 'user') {
+      return (
+        <UserCard
+          // eslint-disable-next-line no-underscore-dangle
+          key={item._id}
+          cardType="follow"
+          userData={item}
+        />
+      );
+    }
+
+    if (item.type === 'room') {
+      return <ItemDiv onClick={roomCardClickHandler}>{makeRoomToCard(item)}</ItemDiv>;
+    }
+
+    return <div />;
+  };
+
   // eslint-disable-next-line consistent-return
   const showList = () => {
     if (searchInfo.current.option !== searchType.toLocaleLowerCase()) {
       return <LoadingSpinner />;
     }
 
-    // if (searchType === 'All') {
-    //   const newList = nowItemsList.map((result, item) => {
-    //     if (item.type === 'event') {
-    //       return result + makeEventToCard(item);
-    //     }
-
-    //     if (item.type === 'user') {
-    //       return (
-    //         <UserCard
-    //           // eslint-disable-next-line no-underscore-dangle
-    //           key={item._id}
-    //           cardType="follow"
-    //           userData={item}
-    //         />
-    //       );
-    //     }
-
-    //     if (item.type === 'room') {
-    //       return makeRoomToCard(item);
-    //     }
-
-    //     return <div />;
-    //   });
-    //   return newList;
-    // }
+    if (searchType === 'All') {
+      console.log(nowItemsList);
+      return <div>{nowItemsList.map(makeItemToCardForm)}</div>;
+    }
 
     if (searchType === 'Events') {
       return <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />;
