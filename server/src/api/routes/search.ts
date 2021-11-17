@@ -54,16 +54,16 @@ export default (app: Router) => {
     if (typeof keyword !== 'string' || typeof count !== 'string') {
       res.json({ ok: false });
     } else {
-      const roomItems = (await roomsService.searchRooms(keyword, Number(count)))
-        ?.map(roomsService.makeItemToRoomInterface);
+      const roomItems = (
+        await roomsService
+          .searchRooms(keyword, Number(count)))!.map(roomsService.makeItemToRoomInterface);
       const userItems = (
-        await usersService.searchUsers(keyword, Number(count)))
-        ?.map(usersService.makeItemToUserInterface);
+        await usersService
+          .searchUsers(keyword, Number(count)))!.map(usersService.makeItemToUserInterface);
       const eventItems = (
         await eventsService
-          .searchEvent(keyword, Number(count)))
-        ?.map(eventsService.makeItemToEventInterface);
-      const items = Object.values({ ...roomItems, ...userItems, ...eventItems });
+          .searchEvent(keyword, Number(count)))!.map(eventsService.makeItemToEventInterface);
+      const items = [...userItems, ...roomItems, ...eventItems];
       res.json({ ok: true, items, keyword });
     }
   });
