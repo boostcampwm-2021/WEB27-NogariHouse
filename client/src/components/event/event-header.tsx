@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { BiCalendarPlus } from 'react-icons/bi';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { CustomtHeader, HeaderTitleNunito } from '@common/header';
 import { makeIconToLink } from '@utils/index';
@@ -28,10 +28,10 @@ const EventAddButton = styled.div`
 
 function EventHeader() {
   const Icon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/', key: 'main' };
-  const [isOpenModal, setIsOpenModal] = useRecoilState(isOpenEventRegisterModalState);
+  const setIsOpenModal = useSetRecoilState(isOpenEventRegisterModalState);
 
   const changeModalState = () => {
-    setIsOpenModal(!isOpenModal);
+    setIsOpenModal(true);
   };
 
   return (

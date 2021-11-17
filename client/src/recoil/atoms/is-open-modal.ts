@@ -9,3 +9,8 @@ export const isOpenEventModalState = atom<boolean>({
   key: 'isOpenEventModalState',
   default: false,
 });
+
+export const isOpenShareModalState = atom<boolean>({
+  key: 'isOpenShareModalState',
+  default: false,
+});
