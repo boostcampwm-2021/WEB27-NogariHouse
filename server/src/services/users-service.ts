@@ -5,17 +5,28 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users from '@models/users';
+import Users, { IUserTypesModel } from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
 interface ISignupUserInfo {
-  loginType: string;
-  userId: string;
-  password: string;
-  userName: string;
-  userEmail: string;
-  interesting: string[];
+  loginType: string,
+  userId: string,
+  password: string,
+  userName: string,
+  userEmail: string,
+  interesting: string[]
+}
+
+interface IUserDetail {
+  userName: string,
+  userId: string,
+  userEmail: string,
+  description: string,
+  followings: string[],
+  followers: string[],
+  joinDate: Date,
+  profileUrl: string
 }
 
 let instance: any = null;
@@ -61,8 +72,13 @@ class UserService {
     return { ok: false, msg: 'wrong password' };
   }
 
-  async findUser(userDocumentId: string) {
+  async findUserByDocumentId(userDocumentId: string) {
     const result = await Users.findOne({ _id: userDocumentId });
+    return result;
+  }
+
+  async findUserByUserId(userId: string) {
+    const result = await Users.findOne({ userId });
     return result;
   }
 
@@ -171,6 +187,22 @@ class UserService {
       profileUrl,
       type: 'user',
     });
+  }
+
+  makeUserDetailInterface(user: IUserTypesModel & {
+    _id: any;
+  }) {
+    const {userName, userId, userEmail, description, followings, followers, joinDate, profileUrl} = user;
+    return {
+      userName,
+      userId,
+      userEmail,
+      description,
+      followings,
+      followers,
+      joinDate,
+      profileUrl,
+    }
   }
 
   async searchUsers(keyword: string, count: number) {
