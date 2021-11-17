@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable no-return-assign */
 import { Link, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
@@ -7,7 +9,9 @@ import {
 import { useRecoilValue } from 'recoil';
 
 import { makeIconToLink } from '@utils/index';
+import { postChatRoom } from '@api/index';
 import selectedUserType from '@atoms/chat-selected-users';
+import userType from '@atoms/user';
 
 const ChatHeaderStyle = styled.div`
   background-color: #B6B6B6;
@@ -83,11 +87,15 @@ const DoneBtnStyle = styled.button`
 
 const DoneBtn = () => {
   const selectedUserList = useRecoilValue(selectedUserType);
+  const user = useRecoilValue(userType);
   const history = useHistory();
 
   const makeChatRoom = () => {
     if (selectedUserList.length === 0) return;
-    history.push({ pathname: '/chat-rooms/userDocumentId' });
+    postChatRoom([...selectedUserList.map((selectedUser: any) => selectedUser.userDocumentId), user.userDocumentId])
+      .then((res: any) => {
+        history.push({ pathname: `/chat-rooms/${res.chatRoomId}` });
+      });
   };
 
   return (

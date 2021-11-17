@@ -8,6 +8,17 @@ const chatRouter = Router();
 export default (app: Router) => {
   app.use('/chat-rooms', chatRouter);
 
+  chatRouter.post('/', async (req: Request, res: Response) => {
+    try {
+      const { participants } = req.body;
+      const chatRoomId = await chatService.makeChatRoom(participants);
+
+      res.status(200).json({ chatRoomId });
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
   chatRouter.get('/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;

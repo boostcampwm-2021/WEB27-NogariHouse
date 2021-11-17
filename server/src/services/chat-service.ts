@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
 /* eslint-disable max-len */
@@ -29,6 +30,18 @@ class ChatService {
       return ({ chatDocumentId, participants: UserInfo });
     }));
     return chatRoomInfo;
+  }
+
+  async makeChatRoom(participants: Array<string>) {
+    const chatRoom = await Chats.findOne({ participants }, ['participants']);
+    if (chatRoom) return chatRoom._id;
+
+    const newChatRoom = new Chats({ participants });
+    await newChatRoom.save();
+
+    participants.forEach(async (userDocumentId) => await Users.findOneAndUpdate({ _id: userDocumentId }, { $push: { chatRooms: newChatRoom._id } }));
+
+    return newChatRoom._id;
   }
 }
 
