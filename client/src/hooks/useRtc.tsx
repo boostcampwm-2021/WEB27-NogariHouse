@@ -28,7 +28,7 @@ export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObje
 
   const getLocalStream = useCallback(async () => {
     try {
-      myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: true });
+      myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
       if (myVideoRef.current) myVideoRef.current.srcObject = myStreamRef.current;
       myStreamRef.current!
         .getAudioTracks()
