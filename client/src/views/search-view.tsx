@@ -30,6 +30,7 @@ function SearchView() {
   const inputKeywordRef = useRef<HTMLInputElement>(null);
   const nowFetchingRef = useRef<boolean>(false);
   const [loading, setLoading] = useState(true);
+  const [searchDataCount, setSearchDataCount] = useState(0);
   const user = useRecoilValue(userState);
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
@@ -42,7 +43,7 @@ function SearchView() {
 
   const fetchItems = async () => {
     try {
-      const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}?count=${nowItemsList.length}`)
+      const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}?count=${searchDataCount}`)
         .then((res) => res.json())
         .then((json) => json.items);
       setNowItemsList([...nowItemsList, ...newItemsList]);
@@ -56,6 +57,7 @@ function SearchView() {
     searchInfo.current.keyword = inputKeywordRef.current?.value as string;
     searchInfo.current.option = searchType.toLocaleLowerCase();
     resetItemList();
+    setSearchDataCount(0);
     setNowFetching(true);
   };
 
@@ -81,6 +83,7 @@ function SearchView() {
     if (!nowFetchingRef.current) {
       const diff = e.currentTarget.scrollHeight - e.currentTarget.scrollTop;
       if (diff < 700) {
+        setSearchDataCount(searchDataCount + 10);
         setNowFetching(true);
         nowFetchingRef.current = true;
         setTimeout(() => {
