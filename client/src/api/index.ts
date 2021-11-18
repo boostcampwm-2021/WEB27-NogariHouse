@@ -143,6 +143,22 @@ export const getSearchResult = async (searchInfo: {keyword:string, option:string
   }
 };
 
+export const findUsersById = async (findUserList: Array<string>) => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/info`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userList: findUserList }),
+    });
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const getChatRooms = async (userDocumentId: string) => {
   try {
     let response = await fetch(
@@ -172,6 +188,22 @@ export const getFollowingsList = async (userDocumentId: string) => {
         },
       },
     );
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const postChatRoom = async (participants: Array<string>) => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-rooms`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ participants }),
+    });
     response = await response.json();
     return response;
   } catch (error) {

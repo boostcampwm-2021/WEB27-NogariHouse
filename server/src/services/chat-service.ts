@@ -1,3 +1,4 @@
+/* eslint-disable no-return-await */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
 /* eslint-disable max-len */
@@ -18,17 +19,35 @@ class ChatService {
   async getChatRooms(userDocumentId : string) {
     const chatRoomList = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
 
-    const chatRoomInfo = await Promise.all((chatRoomList!.chatRooms).map(async (chatDocumentId: string) => {
-      const userDocumentIds = await Chats.findOne({ _id: chatDocumentId }, ['participants']);
+    const chatRoomInfoArray = await Promise.all((chatRoomList!.chatRooms).map(async (chatDocumentId: string) => {
+      const chatRoomInfo = await Chats.findOne({ _id: chatDocumentId }, ['participants', 'lastMsg', 'recentActive']);
       const UserInfo : any = [];
-      await Promise.all((userDocumentIds)!.participants.map(async (_id) => {
+      await Promise.all((chatRoomInfo)!.participants.map(async (_id) => {
         if (_id === userDocumentId) return;
         const info = await Users.findOne({ _id }, ['userName', 'profileUrl']);
         UserInfo.push({ userDocumentId: info!._id, userName: info!.userName, profileUrl: info!.profileUrl });
       }));
-      return ({ chatDocumentId, participants: UserInfo });
+      return ({
+        chatDocumentId, participants: UserInfo, lastMsg: chatRoomInfo?.lastMsg, recentActive: chatRoomInfo?.recentActive,
+      });
     }));
-    return chatRoomInfo;
+    return chatRoomInfoArray.sort((a: any, b: any) => {
+      if (a.recentActive < b.recentActive) return 1;
+      if (a.recentActive > b.recentActive) return -1;
+      return 0;
+    });
+  }
+
+  async makeChatRoom(participants: Array<string>) {
+    const chatRoom = await Chats.findOne({ participants }, ['participants']);
+    if (chatRoom) return chatRoom._id;
+
+    const newChatRoom = new Chats({ participants });
+    await newChatRoom.save();
+
+    participants.forEach(async (userDocumentId) => await Users.findOneAndUpdate({ _id: userDocumentId }, { $push: { chatRooms: newChatRoom._id } }));
+
+    return newChatRoom._id;
   }
 }
 

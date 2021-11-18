@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
@@ -164,16 +165,17 @@ class UserService {
   }
 
   makeItemToUserInterface(
-    item: { _id: string, userName: string, description: string, profileUrl: string },
+    item: { _id: string, userName: string, description: string, profileUrl: string, userId: string },
   ) {
     const {
-      _id, userName, description, profileUrl,
+      _id, userName, description, profileUrl, userId,
     } = item;
     return ({
       _id,
       userName,
       description,
       profileUrl,
+      userId,
       type: 'user',
     });
   }
@@ -196,6 +198,15 @@ class UserService {
       return result;
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  async findUsersById(documentIdList: Array<string>) {
+    try {
+      const participantsInfo = Users.find({ _id: { $in: documentIdList } }, ['userId', 'userName', 'profileUrl', 'description']);
+      return participantsInfo;
+    } catch (e) {
+      console.log(e);
     }
   }
 }

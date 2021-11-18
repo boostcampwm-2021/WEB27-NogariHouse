@@ -7,7 +7,9 @@ interface IChattingLog {
 
 interface IChatTypesModel extends Document {
   participants: Array<string>,
-  chattingLog: Array<IChattingLog>
+  chattingLog: Array<IChattingLog>,
+  lastMsg: string,
+  recentActive: Date,
 }
 
 const chatSchema = new Schema({
@@ -17,7 +19,15 @@ const chatSchema = new Schema({
   },
   chattingLog: {
     type: [Object],
-    required: true,
+    default: [],
+  },
+  lastMsg: {
+    type: String,
+    default: '',
+  },
+  recentActive: {
+    type: Date,
+    default: new Date(),
   },
 });
 

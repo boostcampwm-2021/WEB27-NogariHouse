@@ -86,4 +86,15 @@ export default (app: Router) => {
       res.json({ ok: false, msg: 'signup error' });
     }
   });
+
+  userRouter.post('/info', async (req: Request, res: Response) => {
+    const userDocumentIdList = req.body;
+    try {
+      const userList = (await usersService.findUsersById(userDocumentIdList.userList))
+        ?.map(usersService.makeItemToUserInterface);
+      res.json({ ok: true, userList });
+    } catch (e) {
+      res.json({ ok: false });
+    }
+  });
 };

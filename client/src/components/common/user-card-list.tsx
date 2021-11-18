@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { MouseEvent } from 'react';
 import styled from 'styled-components';
 
@@ -18,12 +19,14 @@ interface UserCardProps {
 
 const makeUserToCard = ({ cardType, userList }: UserCardProps) => (
   userList.map((user) => (
-    <UserCard
+    <div key={user._id} className="userCard" data-id={user._id} data-username={user.userName}>
+      <UserCard
       // eslint-disable-next-line no-underscore-dangle
-      key={user._id}
-      cardType={cardType}
-      userData={user}
-    />
+        key={user._id}
+        cardType={cardType}
+        userData={user}
+      />
+    </div>
   ))
 );
 
