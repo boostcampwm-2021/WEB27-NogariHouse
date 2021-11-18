@@ -41,17 +41,6 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.get('/:userDocumentId', async (req: Request, res: Response) => {
-    try {
-      const { userDocumentId } = req.params;
-
-      const userInfo = await usersService.findUserByDocumentId(userDocumentId);
-      res.status(200).json(userInfo);
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
   userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;
