@@ -41,6 +41,22 @@ export default (app: Router) => {
     }
   });
 
+  userRouter.post('/follow', authJWT, async (req: Request, res: Response) => {
+    const { type, userDocumentId, targetUserDocumentId } = req.body;
+    let result: boolean;
+
+    if (type === 'follow') {
+      result = await usersService.followUser(userDocumentId, targetUserDocumentId);
+      res.json({ ok: result })
+    } 
+    if (type === 'unfollow') {
+      result = await usersService.unfollowUser(userDocumentId, targetUserDocumentId);
+      res.json({ ok: result })
+    }
+
+    res.status(400).json({ ok: false, msg: '유효하지 않은 요청입니다.' });
+  });
+
   userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;
