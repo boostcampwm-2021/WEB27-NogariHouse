@@ -135,7 +135,7 @@ function ProfileView() {
     <ProfileViewLayout>
       <ImageAndFollowButtonDiv>
         <LargeProfileImageBox src={userDetailInfo.current.profileUrl} />
-        {user.userId !== paths[1]
+        {user.userId !== profileId
         &&
         <DefaultButton
         buttonType="primary"
