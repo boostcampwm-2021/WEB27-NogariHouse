@@ -147,7 +147,7 @@ function ProfileView() {
       </DefaultButton>}
       </ImageAndFollowButtonDiv>
       <UserNameDiv>{userDetailInfo.current.userName}</UserNameDiv>
-      <UserIdDiv>{`@${userDetailInfo.current.userName}`}</UserIdDiv>
+      <UserIdDiv>{`@${userDetailInfo.current.userId}`}</UserIdDiv>
       <FollowBox>
         <FollowBoxDiv>
           <FollowNumberDiv>{userDetailInfo.current.followers.length}</FollowNumberDiv>
