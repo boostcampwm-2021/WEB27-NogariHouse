@@ -1,7 +1,6 @@
 import { Server, Socket } from 'socket.io';
 
 import RoomService from '@services/rooms-service';
-import usersService from '@services/users-service';
 
 interface IUsers {
   [id: string]: any,
@@ -51,13 +50,10 @@ export default function registerRoomHandler(socket : Socket, server : Server) {
   };
 
   const handleMic = async (payload: any) => {
-    const {
-      roomDocumentId, userDocumentId, isMicOn,
-    } = payload;
-
+    const { roomDocumentId, userDocumentId, isMicOn } = payload;
     await RoomService.setMic(roomDocumentId, userDocumentId, isMicOn);
 
-    const userData = { userDocumentId, isMicOn };
+    const userData = { userDocumentId, isMicOn, socketId: socket.id };
     socket.to(roomDocumentId).emit('room:mic', { userData });
   };
 

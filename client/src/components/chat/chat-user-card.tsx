@@ -8,7 +8,11 @@ interface Participants{
   profileUrl: string
 }
 
-type chatUserCardProps = { participantsInfo: Array<Participants> };
+interface chatUserCardProps {
+  participantsInfo: Array<Participants>,
+  lastMsg: string,
+}
+
 type ProfileProps = { profileUrl: string, length: number };
 
 const ChatUserCardLayout = styled.div`
@@ -84,7 +88,7 @@ const LastChatMsg = styled.p`
   font-size: 20px;
 `;
 
-const ChatUserCard = ({ participantsInfo } : chatUserCardProps) => {
+const ChatUserCard = ({ participantsInfo, lastMsg } : chatUserCardProps) => {
   const userNames = participantsInfo.map((participant) => participant.userName).join(', ');
   return (
     <ChatUserCardLayout>
@@ -94,7 +98,7 @@ const ChatUserCard = ({ participantsInfo } : chatUserCardProps) => {
       </ChatUserCardProfileDiv>
       <ChatUserCardInfo>
         <UserNameInfo>{userNames}</UserNameInfo>
-        <LastChatMsg>최근에 보내거나 받은 메세지</LastChatMsg>
+        <LastChatMsg>{lastMsg}</LastChatMsg>
       </ChatUserCardInfo>
     </ChatUserCardLayout>
   );

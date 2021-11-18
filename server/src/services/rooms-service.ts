@@ -71,7 +71,7 @@ class RoomService {
   makeItemToRoomInterface(item: {_id:string, title:string, isAnonymous:boolean, participantsInfo:Array<object>}) {
     return ({
       ...item,
-      type: 'event',
+      type: 'room',
     });
   }
 

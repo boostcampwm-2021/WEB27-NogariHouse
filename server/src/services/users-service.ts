@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
@@ -5,17 +6,28 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users from '@models/users';
+import Users, { IUserTypesModel } from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
 interface ISignupUserInfo {
-  loginType: string;
-  userId: string;
-  password: string;
-  userName: string;
-  userEmail: string;
-  interesting: string[];
+  loginType: string,
+  userId: string,
+  password: string,
+  userName: string,
+  userEmail: string,
+  interesting: string[]
+}
+
+interface IUserDetail {
+  userName: string,
+  userId: string,
+  userEmail: string,
+  description: string,
+  followings: string[],
+  followers: string[],
+  joinDate: Date,
+  profileUrl: string
 }
 
 let instance: any = null;
@@ -61,13 +73,13 @@ class UserService {
     return { ok: false, msg: 'wrong password' };
   }
 
-  async findUser(userDocumentId: string) {
+  async findUserByDocumentId(userDocumentId: string) {
     const result = await Users.findOne({ _id: userDocumentId });
     return result;
   }
 
-  async findUsers(userDocumentId: string) {
-    const result = await Users.findOne({ _id: userDocumentId });
+  async findUserByUserId(userId: string) {
+    const result = await Users.findOne({ userId });
     return result;
   }
 
@@ -164,18 +176,36 @@ class UserService {
   }
 
   makeItemToUserInterface(
-    item: { _id: string, userName: string, description: string, profileUrl: string },
+    item: { _id: string, userName: string, description: string, profileUrl: string, userId: string },
   ) {
     const {
-      _id, userName, description, profileUrl,
+      _id, userName, description, profileUrl, userId,
     } = item;
     return ({
       _id,
       userName,
       description,
       profileUrl,
+      userId,
       type: 'user',
     });
+  }
+
+  makeUserDetailInterface(user: IUserTypesModel & {
+    _id: any;
+  }) {
+    const {_id, userName, userId, userEmail, description, followings, followers, joinDate, profileUrl} = user;
+    return {
+      _id,
+      userName,
+      userId,
+      userEmail,
+      description,
+      followings,
+      followers,
+      joinDate,
+      profileUrl,
+    }
   }
 
   async searchUsers(keyword: string, count: number) {
@@ -183,7 +213,7 @@ class UserService {
       const query = new RegExp(keyword, 'i');
       const res = await Users.find({
         $or: [{ userId: query }, { userName: query }, { description: query }],
-      }, ['userName', 'description,', 'profileUrl']).sort({ date: 1 }).skip(count).limit(10);
+      }, ['userName', 'description', 'profileUrl']).sort({ date: 1 }).skip(count).limit(10);
       return res;
     } catch (e) {
       console.error(e);
@@ -196,6 +226,15 @@ class UserService {
       return result;
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  async findUsersById(documentIdList: Array<string>) {
+    try {
+      const participantsInfo = Users.find({ _id: { $in: documentIdList } }, ['userId', 'userName', 'profileUrl', 'description']);
+      return participantsInfo;
+    } catch (e) {
+      console.log(e);
     }
   }
 }
