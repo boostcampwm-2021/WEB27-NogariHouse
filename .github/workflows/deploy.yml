@@ -27,7 +27,7 @@ jobs:
             git fetch origin main && git reset --hard origin/main
             yarn install
             pm2 kill
-            pm2 deploy
+            yarn run deploy
 
   deploy_2:
     runs-on: ubuntu-latest
