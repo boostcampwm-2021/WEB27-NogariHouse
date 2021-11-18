@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
@@ -57,8 +57,10 @@ const FollowBox = styled.div`
   margin-top: 10px;
 `;
 
-const FollowBoxDiv = styled.div`
+const FollowBoxDiv = styled(Link)`
   display: flex;
+  color: black;
+  text-decoration: none;
 `;
 
 const FollowNumberDiv = styled.div`
@@ -69,6 +71,7 @@ const FollowNumberDiv = styled.div`
 
 const FollowTextDiv = styled.div`
   font-size: 24px;
+  transform: translateY(3px);
 `
 
 const DescriptionDiv = styled.div`
@@ -114,7 +117,7 @@ function ProfileView() {
 
   useEffect(() => {
     const getUserDetail = async () => {
-      const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}`).then((res) => res.json());
+      const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`).then((res) => res.json());
       if (result.ok) {
         userDetailInfo.current = result.userDetailInfo;
       }
@@ -131,6 +134,8 @@ function ProfileView() {
     return <div>존재하지 않는 사용자입니다.</div>;
   }
 
+  const isFollowing = followingList.includes(userDetailInfo.current._id) ? 'following' : 'follow';
+
   return (
     <ProfileViewLayout>
       <ImageAndFollowButtonDiv>
@@ -138,22 +143,22 @@ function ProfileView() {
         {user.userId !== profileId
         &&
         <DefaultButton
-        buttonType="primary"
+        buttonType={isFollowing}
         size="small"
         font="Nunito"
-        isDisabled={followingList.includes(userDetailInfo.current._id)}
+        isDisabled={false}
       >
-        {followingList.includes(userDetailInfo.current._id) ? 'following' : 'follow'}
+        {isFollowing}
       </DefaultButton>}
       </ImageAndFollowButtonDiv>
       <UserNameDiv>{userDetailInfo.current.userName}</UserNameDiv>
       <UserIdDiv>{`@${userDetailInfo.current.userId}`}</UserIdDiv>
       <FollowBox>
-        <FollowBoxDiv>
+        <FollowBoxDiv to={`/followers/${profileId}`}>
           <FollowNumberDiv>{userDetailInfo.current.followers.length}</FollowNumberDiv>
           <FollowTextDiv>followers</FollowTextDiv>
         </FollowBoxDiv>
-        <FollowBoxDiv>
+        <FollowBoxDiv to={`/following/${profileId}`}>
           <FollowNumberDiv>{userDetailInfo.current.followings.length}</FollowNumberDiv>
           <FollowTextDiv>following</FollowTextDiv>
         </FollowBoxDiv>

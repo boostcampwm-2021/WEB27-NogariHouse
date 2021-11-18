@@ -19,17 +19,6 @@ interface ISignupUserInfo {
   interesting: string[]
 }
 
-interface IUserDetail {
-  userName: string,
-  userId: string,
-  userEmail: string,
-  description: string,
-  followings: string[],
-  followers: string[],
-  joinDate: Date,
-  profileUrl: string
-}
-
 let instance: any = null;
 class UserService {
   constructor() {
@@ -194,7 +183,9 @@ class UserService {
   makeUserDetailInterface(user: IUserTypesModel & {
     _id: any;
   }) {
-    const {_id, userName, userId, userEmail, description, followings, followers, joinDate, profileUrl} = user;
+    const {
+      _id, userName, userId, userEmail, description, followings, followers, joinDate, profileUrl,
+    } = user;
     return {
       _id,
       userName,
@@ -205,7 +196,7 @@ class UserService {
       followers,
       joinDate,
       profileUrl,
-    }
+    };
   }
 
   async searchUsers(keyword: string, count: number) {
@@ -220,9 +211,27 @@ class UserService {
     }
   }
 
-  async getFollowingsList(userDocumentId: string) {
+  async getMyFollowingsList(userDocumentId: string) {
     try {
       const result = await Users.findOne({ _id: userDocumentId }, ['followings']);
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getFollowingsList(userId: string, count: number) {
+    try {
+      const result = await Users.findOne({ userId }, ['followings']).sort({ date: 1 }).skip(count).limit(10);
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getFollowersList(userId: string, count: number) {
+    try {
+      const result = await Users.findOne({ userId }, ['followers']).sort({ date: 1 }).skip(count).limit(10);
       return result;
     } catch (e) {
       console.error(e);
@@ -235,6 +244,29 @@ class UserService {
       return participantsInfo;
     } catch (e) {
       console.log(e);
+    }
+  }
+
+  async followUser(userDocumentId: string, targetUserDocumentId: string) {
+    try {
+      await Users.findByIdAndUpdate(userDocumentId, { $addToSet: { followings: [targetUserDocumentId] } });
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $addToSet: { followers: [userDocumentId] } });
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+
+  async unfollowUser(userDocumentId: string, targetUserDocumentId: string) {
+    try {
+      await Users.findByIdAndUpdate(userDocumentId, { $pullAll: { followings: [targetUserDocumentId] } });
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $pullAll: { followers: [userDocumentId] } });
+
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
     }
   }
 }

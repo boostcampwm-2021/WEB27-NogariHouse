@@ -25,33 +25,73 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.get('/:userId', async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const userInfo = await usersService.findUserByUserId(userId);
-    if (userInfo) {
-      const userDetailInfo = usersService.makeUserDetailInterface(userInfo);
+  userRouter.get('/:id', async (req: Request, res: Response) => {
+    const { type } = req.query;
+    const { id } = req.params;
+
+    if (type === 'documentId') {
+      const userInfo = await usersService.findUserByDocumentId(id);
+      res.status(200).json({ ok: true, userInfo });
+    } else if (type === 'userId') {
+      const userInfo = await usersService.findUserByUserId(id);
+      const userDetailInfo = userInfo && usersService.makeUserDetailInterface(userInfo);
       res.json({ ok: true, userDetailInfo });
     } else {
       res.json({ ok: false });
     }
-  })
+  });
 
-  userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
+  userRouter.post('/follow', authJWT, async (req: Request, res: Response) => {
+    const { type, userDocumentId, targetUserDocumentId } = req.body;
+    let result: boolean;
+
+    if (type === 'follow') {
+      result = await usersService.followUser(userDocumentId, targetUserDocumentId);
+      res.json({ ok: result })
+    } 
+    else if (type === 'unfollow') {
+      result = await usersService.unfollowUser(userDocumentId, targetUserDocumentId);
+      res.json({ ok: result })  
+    } else {
+      res.status(400).json({ ok: false, msg: '유효하지 않은 요청입니다.' });
+    }
+  });
+
+  userRouter.get('/my-followings/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;
-      const followingList = await usersService.getFollowingsList(userDocumentId);
+      const followingList = (await usersService.getMyFollowingsList(userDocumentId))?.followings;
       res.status(200).json(followingList);
     } catch (error) {
       console.error(error);
     }
   });
 
-  userRouter.get('/:userDocumentId', async (req: Request, res: Response) => {
+  userRouter.get('/followings/:userId', async (req: Request, res: Response) => {
     try {
-      const { userDocumentId } = req.params;
+      const { userId } = req.params;
+      const { count } = req.query;
+      const documentIdOffollowingList = await usersService.getFollowingsList(userId, Number(count));
+      const followingList = await usersService.findUsersById(documentIdOffollowingList!.followings);
+      res.status(200).json({
+        result: true,
+        items: followingList,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
-      const userInfo = await usersService.findUserByDocumentId(userDocumentId);
-      res.status(200).json(userInfo);
+  userRouter.get('/followers/:userId', async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const { count } = req.query;
+      const documentIdOfFollowerList = await usersService.getFollowersList(userId, Number(count));
+      const followerList = await usersService.findUsersById(documentIdOfFollowerList!.followers);
+      res.status(200).json({
+        result: true,
+        items: followerList,
+      });
     } catch (error) {
       console.error(error);
     }
@@ -85,7 +125,6 @@ export default (app: Router) => {
     } else {
       res.json({ isUnique, verificationNumber: '-1' });
     }
-
   });
 
   userRouter.post('/signup/userInfo', async (req: Request, res: Response) => {

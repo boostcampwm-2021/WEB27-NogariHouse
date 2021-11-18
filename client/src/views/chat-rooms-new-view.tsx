@@ -4,8 +4,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
 
-import { NewChatRoomHeader } from '@components/chat/chat-header';
-import ChatRoomsLayout from '@components/chat/chat-room-layout';
+import NewChatRoomHeader from '@src/components/chat/chat-new-header';
+import { ChatRoomsLayout } from '@components/chat/style';
 import UserCardList from '@components/common/user-card-list';
 import { findUsersById } from '@api/index';
 import followType from '@atoms/following-list';
@@ -89,10 +89,11 @@ function ChatRoomsNewView() {
 
   const addSelectedUser = (e: any) => {
     const userCardDiv = e.target.closest('.userCard');
-    if (!userCardDiv) return;
+    const profileUrl = userCardDiv.querySelector('img');
+    if (!userCardDiv || !profileUrl) return;
     const userName = userCardDiv?.getAttribute('data-username');
     (inputBar!.current as any).value = '';
-    setSelectedUsers([...selectedUsers, { userDocumentId: userCardDiv?.getAttribute('data-id'), userName }]);
+    setSelectedUsers([...selectedUsers, { userDocumentId: userCardDiv?.getAttribute('data-id'), userName, profileUrl: profileUrl.getAttribute('src') }]);
   };
 
   const deleteUser = (e: any) => {

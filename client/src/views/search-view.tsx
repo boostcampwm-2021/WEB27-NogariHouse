@@ -16,9 +16,8 @@ import {
 } from '@components/search/style';
 import LoadingSpinner from '@common/loading-spinner';
 import useSetEventModal from '@hooks/useSetEventModal';
-import { EventCardList, makeEventToCard } from '@views/event-view';
-import { RoomCardList, makeRoomToCard } from '@views/room-view';
-import UserCardList from '@common/user-card-list';
+import { makeEventToCard } from '@views/event-view';
+import { makeRoomToCard } from '@views/room-view';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import followingListState from '@atoms/following-list';
@@ -120,9 +119,9 @@ function SearchView() {
     isFollow: !!followingList.includes(userItem._id),
   });
 
-  const makeItemToCardForm = (item:any) => {
+  const makeItemToCardForm = (item: any) => {
     if (item.type === 'event') {
-      return <ItemDiv onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
+      return <ItemDiv key={item.key} onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
     }
 
     if (item.type === 'user') {
@@ -140,7 +139,8 @@ function SearchView() {
     }
 
     if (item.type === 'room') {
-      return <ItemDiv onClick={roomCardClickHandler}>{makeRoomToCard(item)}</ItemDiv>;
+      // eslint-disable-next-line max-len
+      return <ItemDiv key={item._id} onClick={roomCardClickHandler}>{makeRoomToCard(item)}</ItemDiv>;
     }
 
     return <div />;
@@ -152,24 +152,7 @@ function SearchView() {
       return <LoadingSpinner />;
     }
 
-    if (searchType === 'All') {
-      return <>{nowItemsList.map(makeItemToCardForm)}</>;
-    }
-
-    if (searchType === 'Events') {
-      return <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />;
-    }
-
-    if (searchType === 'Rooms') {
-      return <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemsList} />;
-    }
-
-    if (searchType === 'People') {
-      const filteredItemList = nowItemsList
-        .map(makeUserObjectIncludedIsFollow).filter((item) => item._id !== user.userDocumentId);
-
-      return <UserCardList userList={filteredItemList} cardType="follow" />;
-    }
+    return <>{nowItemsList.map(makeItemToCardForm)}</>;
   };
 
   return (

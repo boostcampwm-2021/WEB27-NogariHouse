@@ -1,14 +1,21 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/destructuring-assignment */
-import React from 'react';
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable max-len */
+/* eslint-disable no-unused-expressions */
+import React, { useCallback, useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import followingListState from '@atoms/following-list';
 import UserImage from '@common/user-image';
 import DefaultButton from '@common/default-button';
+import LoadingSpinner from './loading-spinner';
 
-interface userCardProps {
+interface UserCardProps {
   cardType: 'follow' | 'others';
   userData: {
+    _id: string,
     userName: string,
     description: string,
     profileUrl: string,
@@ -21,7 +28,7 @@ interface sizeProps {
 }
 
 const sizes = {
-  follow: { cardLayoutSize: 80, userNameSize: 24, descriptionSize: 20 },
+  follow: { cardLayoutSize: 100, userNameSize: 24, descriptionSize: 18 },
   others: { cardLayoutSize: 60, userNameSize: 16, descriptionSize: 12 },
 };
 
@@ -59,12 +66,42 @@ const UserName = styled.div`
   user-select: none;
 `;
 
+const UserId = styled.div`
+  font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
+  margin-bottom:3px;
+  user-select: none;
+`;
+
 const UserDescription = styled.div`
   font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
   user-select: none;
 `;
 
-export default function UserCard(props:userCardProps) {
+export default function UserCard(props: UserCardProps) {
+  const [loading, setLoading] = useState(false);
+  const isFollowRef = useRef<boolean>(props.userData.isFollow as boolean);
+  const setFollowingList = useSetRecoilState(followingListState);
+
+  const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
+    setLoading(true);
+    const type = isFollow ? 'unfollow' : 'follow';
+    fetch(`${process.env.REACT_APP_API_URL}/api/user/follow`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ type, targetUserDocumentId }),
+    }).then((res) => res.json())
+      .then((json) => {
+        if (json.ok) {
+          isFollowRef.current = !isFollowRef.current;
+          isFollow ? setFollowingList((followList) => followList.filter((id) => id !== targetUserDocumentId)) : setFollowingList((followList) => [...followList, targetUserDocumentId]);
+        }
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <UserCardLayout sizeType={props.cardType}>
       <UserInfoLayout>
@@ -75,22 +112,27 @@ export default function UserCard(props:userCardProps) {
           <UserName sizeType={props.cardType}>
             {props.userData.userName}
           </UserName>
+          <UserId sizeType={props.cardType}>
+            @userId
+          </UserId>
           <UserDescription sizeType={props.cardType}>
             {props.userData.description}
           </UserDescription>
         </UserDescLayout>
       </UserInfoLayout>
+      {loading && <LoadingSpinner />}
       {props.cardType === 'follow'
-        ? (
+        && (
           <DefaultButton
-            buttonType="primary"
+            buttonType={isFollowRef.current ? 'following' : 'follow'}
             size="small"
             font="Nunito"
-            isDisabled={!props.userData.isFollow}
+            isDisabled={false}
+            onClick={() => fetchFollow(isFollowRef.current, props.userData._id)}
           >
-            {props.userData.isFollow ? 'following' : 'follow'}
+            {isFollowRef.current ? 'following' : 'follow'}
           </DefaultButton>
-        ) : ''}
+        )}
     </UserCardLayout>
   );
 }

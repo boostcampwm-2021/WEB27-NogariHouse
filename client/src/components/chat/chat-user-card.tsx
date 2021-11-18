@@ -11,6 +11,7 @@ interface Participants{
 interface chatUserCardProps {
   participantsInfo: Array<Participants>,
   lastMsg: string,
+  clickEvent(): void,
 }
 
 type ProfileProps = { profileUrl: string, length: number };
@@ -88,10 +89,10 @@ const LastChatMsg = styled.p`
   font-size: 20px;
 `;
 
-const ChatUserCard = ({ participantsInfo, lastMsg } : chatUserCardProps) => {
+const ChatUserCard = ({ participantsInfo, lastMsg, clickEvent } : chatUserCardProps) => {
   const userNames = participantsInfo.map((participant) => participant.userName).join(', ');
   return (
-    <ChatUserCardLayout>
+    <ChatUserCardLayout onClick={clickEvent}>
       <ChatUserCardProfileDiv>
         <ChatUserCardFirstProfile profileUrl={participantsInfo[0].profileUrl} length={participantsInfo.length} />
         {participantsInfo.length > 1 && <ChatUserCardSecondProfile profileUrl={participantsInfo[1].profileUrl} length={participantsInfo.length} /> }
