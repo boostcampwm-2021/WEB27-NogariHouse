@@ -12,7 +12,7 @@ export default (app: Router) => {
 
   userRouter.get('/', authJWT, async (req: Request, res: Response) => {
     const { accessToken, userDocumentId } = req.body;
-    const user = await usersService.findUser(userDocumentId);
+    const user = await usersService.findUserByDocumentId(userDocumentId);
     if (user) {
       const {
         _id, profileUrl, userName, userId,
@@ -24,6 +24,17 @@ export default (app: Router) => {
       res.json({ ok: false });
     }
   });
+
+  userRouter.get('/:userId', async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const userInfo = await usersService.findUserByUserId(userId);
+    if (userInfo) {
+      const userDetailInfo = usersService.makeUserDetailInterface(userInfo);
+      res.json({ ok: true, userDetailInfo });
+    } else {
+      res.json({ ok: false });
+    }
+  })
 
   userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
     try {
@@ -39,7 +50,7 @@ export default (app: Router) => {
     try {
       const { userDocumentId } = req.params;
 
-      const userInfo = await usersService.findUser(userDocumentId);
+      const userInfo = await usersService.findUserByDocumentId(userDocumentId);
       res.status(200).json(userInfo);
     } catch (error) {
       console.error(error);

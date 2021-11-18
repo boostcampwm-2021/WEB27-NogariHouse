@@ -84,7 +84,7 @@ function DefaultHeader() {
       <LogoTitle to="/" onClick={() => { resetNowItemsList(); setNowFetching(true); }}> NogariHouse </LogoTitle>
       <IconContainer>
         {rightSideIcons.map(makeIconToLink)}
-        <Link to="/profile"><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
+        <Link to={`profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
       </IconContainer>
     </CustomDefaultHeader>
   );

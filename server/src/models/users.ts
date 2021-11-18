@@ -102,6 +102,10 @@ const usersSchema = new Schema({
     type: String,
     default: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
   },
+  joinDate: {
+    type: Date,
+    default: new Date(),
+  }
 });
 
 usersSchema.pre('insertMany', async (next: any, docs: any) => {
