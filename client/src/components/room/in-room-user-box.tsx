@@ -15,11 +15,11 @@ export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
     stream?: MediaStream | undefined,
-    isMine: boolean
+    isAnonymous?: boolean
 }
 
 export function InRoomOtherUserBox({
-  userDocumentId, isMicOn, stream, isMine,
+  userDocumentId, isMicOn, stream, isAnonymous,
 }: IParticipant) {
   const [userInfo, setUserInfo] = useState<any>();
   const ref = useRef<HTMLVideoElement>(null);
@@ -35,32 +35,32 @@ export function InRoomOtherUserBox({
     ref.current!.srcObject = stream as MediaStream;
   }, [stream]);
 
-  // useEffect(() => {
-  //   if (!ref.current || !isMicOn) return;
-  //   const soundMeter = new SoundMeter(audioCtxRef.current);
-  //   let meterRefresh: any = null;
-  //   soundMeter.connectToSource(true, stream as MediaStream, (e: any) => {
-  //     meterRefresh = setInterval(() => {
-  //       const num = Number(soundMeter.instant.toFixed(2));
-  //       if (num > 0.02 && ref) {
-  //         ref.current!.style.border = '2px solid #58964F';
-  //       } else {
-  //         ref.current!.style.border = 'none';
-  //       }
-  //     }, 500);
-  //   });
+  useEffect(() => {
+    if (!ref.current || !isMicOn) return;
+    const soundMeter = new SoundMeter(audioCtxRef.current);
+    let meterRefresh: any = null;
+    soundMeter.connectToSource(false, stream as MediaStream, (e: any) => {
+      meterRefresh = setInterval(() => {
+        const num = Number(soundMeter.instant.toFixed(2));
+        if (num > 0.02 && ref) {
+          ref.current!.style.border = '2px solid #58964F';
+        } else {
+          ref.current!.style.border = 'none';
+        }
+      }, 500);
+    });
 
-  //   // eslint-disable-next-line consistent-return
-  //   return () => {
-  //     clearInterval(meterRefresh);
-  //     soundMeter.stop();
-  //   };
-  // }, [isMicOn]);
+    // eslint-disable-next-line consistent-return
+    return () => {
+      clearInterval(meterRefresh);
+      soundMeter.stop();
+    };
+  }, [isMicOn]);
 
   return (
     <InRoomUserBoxStyle>
       <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted />
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline />
       </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
@@ -81,27 +81,27 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
         .then((res) => setUserInfo(res!.userInfo));
     }, []);
 
-    // useEffect(() => {
-    //   if (!props.stream || !props.isMicOn) return;
-    //   const soundMeter = new SoundMeter(audioCtxRef.current);
-    //   let meterRefresh: any = null;
-    //   soundMeter.connectToSource(true, props.stream, () => {
-    //     meterRefresh = setInterval(() => {
-    //       const num = Number(soundMeter.instant.toFixed(2));
-    //       if (num > 0.02 && myRef.current) {
-    //         myRef.current.style.border = '2px solid #58964F';
-    //       } else {
-    //         myRef.current.style.border = 'none';
-    //       }
-    //     }, 500);
-    //   });
+    useEffect(() => {
+      if (!props.stream || !props.isMicOn) return;
+      const soundMeter = new SoundMeter(audioCtxRef.current);
+      let meterRefresh: any = null;
+      soundMeter.connectToSource(false, props.stream, () => {
+        meterRefresh = setInterval(() => {
+          const num = Number(soundMeter.instant.toFixed(2));
+          if (num > 0.02 && myRef.current) {
+            myRef.current.style.border = '2px solid #58964F';
+          } else {
+            myRef.current.style.border = 'none';
+          }
+        }, 500);
+      });
 
-    //   // eslint-disable-next-line consistent-return
-    //   return () => {
-    //     clearInterval(meterRefresh);
-    //     soundMeter.stop();
-    //   };
-    // }, [props.isMicOn]);
+      // eslint-disable-next-line consistent-return
+      return () => {
+        clearInterval(meterRefresh);
+        soundMeter.stop();
+      };
+    }, [props.isMicOn]);
 
     return (
       <InRoomUserBoxStyle>

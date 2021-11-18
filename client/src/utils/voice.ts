@@ -16,10 +16,10 @@ export default class SoundMeter {
       this.pitchRatio = 1;
       this.context = context;
       this.instant = 0.0;
-      // this.script = context.createScriptProcessor(2048, 1, 1);
+      this.script = context.createScriptProcessor(2048, 1, 1);
       this.pitchShifterProcessor = context.createScriptProcessor(256, 1, 1);
       this.pitchShifterProcessor.buffer = new Float32Array(256 * 2);
-      // this.script.addEventListener('audioprocess', this.scriptHandler.bind(this));
+      this.script.addEventListener('audioprocess', this.scriptHandler.bind(this));
       this.pitchShifterProcessor.addEventListener('audioprocess', this.pitchShiftHandler.bind(this));
     }
 
@@ -30,7 +30,7 @@ export default class SoundMeter {
 
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < inputData.length; i++) {
-        inputData[i] += 0.05;
+        inputData[i] *= -1
         
         sum += inputData[i] * inputData[i];
       }
@@ -40,7 +40,7 @@ export default class SoundMeter {
       for (var i = 0; i < 256; i++) {
         const a = inputData[i];
         const b = (i !== 255) ? inputData[i + 1] : 0;
-        grainData[i] += a * b + 0.01
+        grainData[i] += a * b
       }
 
       for (var i = 0; i < 256; i++) {
@@ -62,9 +62,13 @@ export default class SoundMeter {
     connectToSource(isAnonymous: boolean, stream: MediaStream, callback: any) {
       try {
         this.mic = this.context.createMediaStreamSource(stream);
-        this.mic.connect(this.pitchShifterProcessor);
-        // this.script.connect(this.pitchShifterProcessor);
-        this.pitchShifterProcessor.connect(this.context.destination);
+        if(isAnonymous) {
+          this.mic.connect(this.pitchShifterProcessor);
+          this.pitchShifterProcessor.connect(this.context.destination);
+        }else { 
+          this.mic.connect(this.script);
+          this.script.connect(this.pitchShifterProcessor);
+        }
         if (typeof callback !== 'undefined') {
           callback(null);
         }
@@ -79,6 +83,6 @@ export default class SoundMeter {
     stop() {
       this.mic.disconnect();
       this.pitchShifterProcessor.disconnect();
-      // this.script.disconnect();
+      this.script.disconnect();
     }
 }
