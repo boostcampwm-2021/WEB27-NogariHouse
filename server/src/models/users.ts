@@ -8,10 +8,6 @@ export interface IUser {
     description: string,
 }
 
-export interface IFollow {
-    [userId: string]: IUser,
-}
-
 export interface IActivity {
     // 추가 설정 필요
 }
@@ -34,8 +30,8 @@ export interface IUsers {
     interesting: Array<string>,
     chatRooms: Array<string>,
     myEvents: Array<string>,
-    followings: IFollow,
-    followers: IFollow,
+    followings: Array<string>,
+    followers: Array<string>,
     joinDate: Date,
     activity: Array<IActivity>,
     recentSearch: Array<IRecentSearch>,

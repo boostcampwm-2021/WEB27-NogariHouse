@@ -49,12 +49,12 @@ export default (app: Router) => {
       result = await usersService.followUser(userDocumentId, targetUserDocumentId);
       res.json({ ok: result })
     } 
-    if (type === 'unfollow') {
+    else if (type === 'unfollow') {
       result = await usersService.unfollowUser(userDocumentId, targetUserDocumentId);
-      res.json({ ok: result })
+      res.json({ ok: result })  
+    } else {
+      res.status(400).json({ ok: false, msg: '유효하지 않은 요청입니다.' });
     }
-
-    res.status(400).json({ ok: false, msg: '유효하지 않은 요청입니다.' });
   });
 
   userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {

@@ -237,6 +237,29 @@ class UserService {
       console.log(e);
     }
   }
+
+  async followUser(userDocumentId: string, targetUserDocumentId: string) {
+    try {
+      await Users.findByIdAndUpdate(userDocumentId, { $addToSet: { followings: [targetUserDocumentId] } });
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $addToSet: { followers: [userDocumentId] } });
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
+
+  async unfollowUser(userDocumentId: string, targetUserDocumentId: string) {
+    try {
+      await Users.findByIdAndUpdate(userDocumentId, { $pullAll: { followings: [targetUserDocumentId] } });
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $pullAll: { followers: [userDocumentId] } });
+
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  }
 }
 
 export default new UserService();
