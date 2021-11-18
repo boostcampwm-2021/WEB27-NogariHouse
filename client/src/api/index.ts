@@ -21,7 +21,7 @@ export const getRoomInfo = async (roomDocumentId: string) => {
 export const getUserInfo = async (userDocumentId: string) => {
   try {
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/user/${userDocumentId}`,
+      `${process.env.REACT_APP_API_URL}/api/user/${userDocumentId}?type=documentId`,
       {
         method: 'get',
         headers: {
@@ -30,7 +30,10 @@ export const getUserInfo = async (userDocumentId: string) => {
       },
     );
     response = await response.json();
-    return response;
+    return response as unknown as {
+      ok: boolean,
+      userInfo: { profileUrl: string, userName: string }
+     };
   } catch (error) {
     console.error(error);
   }

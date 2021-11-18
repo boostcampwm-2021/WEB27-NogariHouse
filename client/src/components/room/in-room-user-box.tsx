@@ -26,7 +26,7 @@ export function InRoomOtherUserBox({
 
   useEffect(() => {
     getUserInfo(userDocumentId)
-      .then((res) => setUserInfo(res));
+      .then((res) => setUserInfo(res!.userInfo));
   }, []);
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     useEffect(() => {
       getUserInfo(props.userDocumentId)
-        .then((res) => setUserInfo(res));
+        .then((res) => setUserInfo(res!.userInfo));
     }, []);
 
     useEffect(() => {

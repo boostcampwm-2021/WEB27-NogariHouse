@@ -25,24 +25,19 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.get('/:userId', async (req: Request, res: Response) => {
-    const { userId } = req.params;
-    const userInfo = await usersService.findUserByUserId(userId);
-    if (userInfo) {
-      const userDetailInfo = usersService.makeUserDetailInterface(userInfo);
+  userRouter.get('/:id', async (req: Request, res: Response) => {
+    const { type } = req.query;
+    const { id } = req.params;
+
+    if (type === 'documentId') {
+      const userInfo = await usersService.findUserByDocumentId(id);
+      res.status(200).json({ ok: true, userInfo });
+    } else if (type === 'userId') {
+      const userInfo = await usersService.findUserByUserId(id);
+      const userDetailInfo = userInfo && usersService.makeUserDetailInterface(userInfo);
       res.json({ ok: true, userDetailInfo });
     } else {
       res.json({ ok: false });
-    }
-  })
-
-  userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
-    try {
-      const { userDocumentId } = req.params;
-      const followingList = await usersService.getFollowingsList(userDocumentId);
-      res.status(200).json(followingList);
-    } catch (error) {
-      console.error(error);
     }
   });
 
@@ -52,6 +47,16 @@ export default (app: Router) => {
 
       const userInfo = await usersService.findUserByDocumentId(userDocumentId);
       res.status(200).json(userInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
+    try {
+      const { userDocumentId } = req.params;
+      const followingList = await usersService.getFollowingsList(userDocumentId);
+      res.status(200).json(followingList);
     } catch (error) {
       console.error(error);
     }
@@ -85,7 +90,6 @@ export default (app: Router) => {
     } else {
       res.json({ isUnique, verificationNumber: '-1' });
     }
-
   });
 
   userRouter.post('/signup/userInfo', async (req: Request, res: Response) => {

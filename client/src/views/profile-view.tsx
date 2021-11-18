@@ -114,7 +114,7 @@ function ProfileView() {
 
   useEffect(() => {
     const getUserDetail = async () => {
-      const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}`).then((res) => res.json());
+      const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`).then((res) => res.json());
       if (result.ok) {
         userDetailInfo.current = result.userDetailInfo;
       }
