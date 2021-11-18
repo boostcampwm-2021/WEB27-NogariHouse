@@ -119,9 +119,9 @@ function SearchView() {
     isFollow: !!followingList.includes(userItem._id),
   });
 
-  const makeItemToCardForm = (item:any) => {
+  const makeItemToCardForm = (item: any) => {
     if (item.type === 'event') {
-      return <ItemDiv onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
+      return <ItemDiv key={item.key} onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
     }
 
     if (item.type === 'user') {
@@ -139,7 +139,8 @@ function SearchView() {
     }
 
     if (item.type === 'room') {
-      return <ItemDiv onClick={roomCardClickHandler}>{makeRoomToCard(item)}</ItemDiv>;
+      // eslint-disable-next-line max-len
+      return <ItemDiv key={item._id} onClick={roomCardClickHandler}>{makeRoomToCard(item)}</ItemDiv>;
     }
 
     return <div />;
