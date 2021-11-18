@@ -1,14 +1,16 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import styled from 'styled-components';
 
 import UserImage from '@common/user-image';
 import DefaultButton from '@common/default-button';
 
-interface userCardProps {
+interface UserCardProps {
   cardType: 'follow' | 'others';
   userData: {
+    _id: string,
     userName: string,
     description: string,
     profileUrl: string,
@@ -64,7 +66,18 @@ const UserDescription = styled.div`
   user-select: none;
 `;
 
-export default function UserCard(props:userCardProps) {
+const fetchFollow = (isFollow: boolean, targetUserDocumentId: string) => {
+  const type = isFollow ? 'unfollow' : 'follow';
+  fetch(`${process.env.REACT_APP_API_URL}/api/user/follow`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ type, targetUserDocumentId }),
+  });
+};
+
+export default function UserCard(props: UserCardProps) {
   return (
     <UserCardLayout sizeType={props.cardType}>
       <UserInfoLayout>
@@ -87,7 +100,7 @@ export default function UserCard(props:userCardProps) {
             size="small"
             font="Nunito"
             isDisabled={false}
-            onClick={() => console.log('following')}
+            onClick={() => fetchFollow(props.userData.isFollow as boolean, props.userData._id)}
           >
             {props.userData.isFollow ? 'following' : 'follow'}
           </DefaultButton>
