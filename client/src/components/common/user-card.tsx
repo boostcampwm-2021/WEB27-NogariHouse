@@ -4,7 +4,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-expressions */
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import UserImage from '@common/user-image';
@@ -21,7 +21,7 @@ interface UserCardProps {
     description: string,
     profileUrl: string,
     isFollow?: boolean,
-  }
+  },
 }
 
 interface sizeProps {
@@ -34,7 +34,7 @@ const sizes = {
   others: { cardLayoutSize: 60, userNameSize: 16, descriptionSize: 12 },
 };
 
-const UserCardLayout = styled(Link)`
+const UserCardLayout = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -91,11 +91,12 @@ const UserDescription = styled.div`
 export default function UserCard(props: UserCardProps) {
   const [loading, setLoading] = useState(false);
   const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, props.userData.isFollow);
+  const history = useHistory();
 
   console.log(props.userData);
 
   return (
-    <UserCardLayout to={`/profile/${props.userData.userId}`} sizeType={props.cardType}>
+    <UserCardLayout onClick={() => props.cardType !== 'others' && history.push(`/profile/${props.userData.userId}`)} sizeType={props.cardType}>
       <UserInfoLayout>
         <UserImageLayout>
           <UserImage src={props.userData.profileUrl} size={props.cardType === 'others' ? 'others' : 'default'} />
