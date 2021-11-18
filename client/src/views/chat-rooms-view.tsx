@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import userType from '@atoms/user';
-import { ChatRoomHeader } from '@components/chat/chat-header';
+import ChatRoomListHeader from '@src/components/chat/chat-list-header';
 import ChatUserCard from '@components/chat/chat-user-card';
 import ChatRoomsLayout from '@components/chat/chat-room-layout';
 import LoadingSpinner from '@common/loading-spinner';
@@ -38,7 +38,7 @@ function ChatRoomsViews() {
   if (loading) return (<LoadingSpinner />);
   return (
     <ChatRoomsLayout>
-      <ChatRoomHeader />
+      <ChatRoomListHeader />
       {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} participantsInfo={chatRoom.participants} lastMsg={chatRoom.lastMsg} />)}
     </ChatRoomsLayout>
   );
