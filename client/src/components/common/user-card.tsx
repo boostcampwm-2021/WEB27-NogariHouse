@@ -1,9 +1,13 @@
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-underscore-dangle */
+/* eslint-disable max-len */
+/* eslint-disable no-unused-expressions */
 import React, { useCallback, useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
+import followingListState from '@atoms/following-list';
 import UserImage from '@common/user-image';
 import DefaultButton from '@common/default-button';
 import LoadingSpinner from './loading-spinner';
@@ -76,6 +80,7 @@ const UserDescription = styled.div`
 export default function UserCard(props: UserCardProps) {
   const [loading, setLoading] = useState(false);
   const isFollowRef = useRef<boolean>(props.userData.isFollow as boolean);
+  const setFollowingList = useSetRecoilState(followingListState);
 
   const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
     setLoading(true);
@@ -91,6 +96,7 @@ export default function UserCard(props: UserCardProps) {
       .then((json) => {
         if (json.ok) {
           isFollowRef.current = !isFollowRef.current;
+          isFollow ? setFollowingList((followList) => followList.filter((id) => id !== targetUserDocumentId)) : setFollowingList((followList) => [...followList, targetUserDocumentId]);
         }
         setLoading(false);
       });
