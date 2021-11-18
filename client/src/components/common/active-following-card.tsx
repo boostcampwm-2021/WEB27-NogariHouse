@@ -58,6 +58,7 @@ const HandsLayout = styled.div`
     align-items: center;
     justify-content: center;
     font-size: 24px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
 function ActiveFollowingCard({ userName, profileUrl }:following) {

@@ -41,14 +41,19 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.get('/:userDocumentId', async (req: Request, res: Response) => {
-    try {
-      const { userDocumentId } = req.params;
+  userRouter.post('/follow', authJWT, async (req: Request, res: Response) => {
+    const { type, userDocumentId, targetUserDocumentId } = req.body;
+    let result: boolean;
 
-      const userInfo = await usersService.findUserByDocumentId(userDocumentId);
-      res.status(200).json(userInfo);
-    } catch (error) {
-      console.error(error);
+    if (type === 'follow') {
+      result = await usersService.followUser(userDocumentId, targetUserDocumentId);
+      res.json({ ok: result })
+    } 
+    else if (type === 'unfollow') {
+      result = await usersService.unfollowUser(userDocumentId, targetUserDocumentId);
+      res.json({ ok: result })  
+    } else {
+      res.status(400).json({ ok: false, msg: '유효하지 않은 요청입니다.' });
     }
   });
 
