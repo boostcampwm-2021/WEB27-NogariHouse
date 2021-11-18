@@ -1,7 +1,50 @@
-import React from 'react';
+/* eslint-disable no-underscore-dangle */
+import React, { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
-function FollowersView() {
-  return (<></>);
+import LoadingSpinner from '@common/loading-spinner';
+import UserCardList from '@src/components/common/user-card-list';
+import useFetchItems from '@src/hooks/useFetchItems';
+import followingListState from '@atoms/following-list';
+
+function FollowerView({ match }:any) {
+  const userId = match.params.id;
+  const [nowItemList, nowItemType] = useFetchItems<any>(`/user/followers/${userId}`, 'followers');
+  const [loading, setLoading] = useState(true);
+  const myFollowingList = useRecoilValue(followingListState);
+
+  const makeUserObjectIncludedIsFollow = (
+    userItem: {
+      _id: string,
+      userName:
+      string,
+      description: string,
+      profileUrl: string
+    },
+  ) => ({
+    _id: userItem._id,
+    userName: userItem.userName,
+    description: userItem.description,
+    profileUrl: userItem.profileUrl,
+    isFollow: !!myFollowingList.includes(userItem._id),
+  });
+
+  useEffect(() => {
+    if (nowItemList && nowItemType === 'followers') {
+      console.log(nowItemList);
+      setLoading(false);
+    }
+  });
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  return (
+    <>
+      <UserCardList userList={nowItemList.map(makeUserObjectIncludedIsFollow)} cardType="follow" />
+    </>
+  );
 }
 
-export default FollowersView;
+export default FollowerView;

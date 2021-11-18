@@ -77,6 +77,21 @@ export default (app: Router) => {
     }
   });
 
+  userRouter.get('/followers/:userId', async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const { count } = req.query;
+      const documentIdOfFollowerList = await usersService.getFollowersList(userId, Number(count));
+      const followerList = await usersService.findUsersById(documentIdOfFollowerList!.followers);
+      res.status(200).json({
+        result: true,
+        items: followerList,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
   userRouter.post('/signin', async (req: Request, res: Response) => {
     const { email, password } = req.body;
     const result = await usersService.signIn(email, password);

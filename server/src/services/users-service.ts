@@ -229,6 +229,15 @@ class UserService {
     }
   }
 
+  async getFollowersList(userId: string, count: number) {
+    try {
+      const result = await Users.findOne({ userId }, ['followers']).sort({ date: 1 }).skip(count).limit(10);
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   async findUsersById(documentIdList: Array<string>) {
     try {
       const participantsInfo = Users.find({ _id: { $in: documentIdList } }, ['userId', 'userName', 'profileUrl', 'description']);
