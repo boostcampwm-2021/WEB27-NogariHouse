@@ -1,6 +1,6 @@
 /* eslint-disable */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
@@ -10,8 +10,6 @@ import LoadingSpinner from '@common/loading-spinner';
 import DefaultButton from '@common/default-button';
 import useIsFollowingRef from '@hooks/useIsFollowingRef';
 import scrollbarStyle from '@styles/scrollbar-style';
-
-const idRegex = /\/profile\/(.*)/;
 
 const ProfileViewLayout = styled.div`
   position:relative;
@@ -103,20 +101,18 @@ const makeDateToJoinDate = (dateString: string) => {
   return `${date.getMonth()+1}월 ${date.getDate()}, ${date.getFullYear()}`
 }
 
-function ProfileView() {
+function ProfileView({ match }: RouteComponentProps<{id: string}>) {
   const user = useRecoilValue(userState);
   const followingList = useRecoilValue(followingListState)
-  const location = useLocation();
-  const paths = location.pathname.match(idRegex);
   const [loading, setLoading] = useState(true);
   const userDetailInfo = useRef<IUserDetail>();
   const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading);
 
-  if (!paths) {
+  if (!match) {
     return <div>존재하지 않는 사용자입니다.</div>;
   }
 
-  const profileId = paths[1];
+  const profileId = match.params.id;
 
   useEffect(() => {
     setLoading(true);
