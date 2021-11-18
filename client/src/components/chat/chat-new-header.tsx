@@ -44,8 +44,11 @@ const DoneBtn = () => {
     if (selectedUserList.length === 0) return;
     postChatRoom([...selectedUserList.map((selectedUser: any) => selectedUser.userDocumentId), user.userDocumentId])
       .then((res: any) => {
+        history.push({
+          pathname: `/chat-rooms/${res.chatRoomId}`,
+          state: { participantsInfo: selectedUserList },
+        });
         setSelectedUserList([]);
-        history.push({ pathname: `/chat-rooms/${res.chatRoomId}` });
       });
   };
 
