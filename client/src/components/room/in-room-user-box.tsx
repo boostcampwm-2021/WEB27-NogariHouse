@@ -35,31 +35,32 @@ export function InRoomOtherUserBox({
     ref.current!.srcObject = stream as MediaStream;
   }, [stream]);
 
-  useEffect(() => {
-    if (!ref.current || !isMicOn) return;
-    const soundMeter = new SoundMeter(audioCtxRef.current);
-    let meterRefresh: any = null;
-    soundMeter.connectToSource(stream, (e: any) => {
-      meterRefresh = setInterval(() => {
-        const num = Number(soundMeter.instant.toFixed(2));
-        if (num > 0.02 && ref) {
-          ref.current!.style.border = '2px solid #58964F';
-        } else {
-          ref.current!.style.border = 'none';
-        }
-      }, 500);
-    });
+  // useEffect(() => {
+  //   if (!ref.current || !isMicOn) return;
+  //   const soundMeter = new SoundMeter(audioCtxRef.current);
+  //   let meterRefresh: any = null;
+  //   soundMeter.connectToSource(true, stream as MediaStream, (e: any) => {
+  //     meterRefresh = setInterval(() => {
+  //       const num = Number(soundMeter.instant.toFixed(2));
+  //       if (num > 0.02 && ref) {
+  //         ref.current!.style.border = '2px solid #58964F';
+  //       } else {
+  //         ref.current!.style.border = 'none';
+  //       }
+  //     }, 500);
+  //   });
 
-    // eslint-disable-next-line consistent-return
-    return () => {
-      clearInterval(meterRefresh);
-    };
-  }, [isMicOn]);
+  //   // eslint-disable-next-line consistent-return
+  //   return () => {
+  //     clearInterval(meterRefresh);
+  //     soundMeter.stop();
+  //   };
+  // }, [isMicOn]);
 
   return (
     <InRoomUserBoxStyle>
       <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted={isMine} />
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted />
       </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
@@ -72,7 +73,7 @@ export function InRoomOtherUserBox({
 export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
   (props, ref) => {
     const [userInfo, setUserInfo] = useState<any>();
-    const audioCtxRef = useRef(new (window.AudioContext)());
+    const audioCtxRef = useRef(new (window.AudioContext || (window as any).webkitAudioContext)());
     const myRef = useRef<any>(ref);
 
     useEffect(() => {
@@ -80,27 +81,27 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
         .then((res) => setUserInfo(res!.userInfo));
     }, []);
 
-    useEffect(() => {
-      if (!props.stream || !props.isMicOn) return;
-      const soundMeter = new SoundMeter(audioCtxRef.current);
-      let meterRefresh: any = null;
-      soundMeter.connectToSource(props.stream, () => {
-        meterRefresh = setInterval(() => {
-          const num = Number(soundMeter.instant.toFixed(2));
-          if (num > 0.02 && myRef.current) {
-            myRef.current.style.border = '2px solid #58964F';
-          } else {
-            myRef.current.style.border = 'none';
-          }
-        }, 500);
-      });
+    // useEffect(() => {
+    //   if (!props.stream || !props.isMicOn) return;
+    //   const soundMeter = new SoundMeter(audioCtxRef.current);
+    //   let meterRefresh: any = null;
+    //   soundMeter.connectToSource(true, props.stream, () => {
+    //     meterRefresh = setInterval(() => {
+    //       const num = Number(soundMeter.instant.toFixed(2));
+    //       if (num > 0.02 && myRef.current) {
+    //         myRef.current.style.border = '2px solid #58964F';
+    //       } else {
+    //         myRef.current.style.border = 'none';
+    //       }
+    //     }, 500);
+    //   });
 
-      // eslint-disable-next-line consistent-return
-      return () => {
-        clearInterval(meterRefresh);
-        soundMeter.stop();
-      };
-    }, [props.isMicOn]);
+    //   // eslint-disable-next-line consistent-return
+    //   return () => {
+    //     clearInterval(meterRefresh);
+    //     soundMeter.stop();
+    //   };
+    // }, [props.isMicOn]);
 
     return (
       <InRoomUserBoxStyle>
