@@ -37,3 +37,8 @@ export const ChatHeaderStyle = styled.div`
     margin: 0px;
   }
 `;
+
+export const ChattingLog = styled.div`
+  width: 99%;
+  height: 300px;
+`;
