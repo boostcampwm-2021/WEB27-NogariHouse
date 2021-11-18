@@ -3,7 +3,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-expressions */
-import React, { useState } from 'react';
+import React, { MouseEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -121,7 +121,7 @@ export default function UserCard(props: UserCardProps) {
             size="small"
             font="Nunito"
             isDisabled={false}
-            onClick={() => fetchFollow(isFollowingRef.current as boolean, props.userData._id)}
+            onClick={(e: MouseEvent) => { e.stopPropagation(); fetchFollow(isFollowingRef.current as boolean, props.userData._id); }}
           >
             {isFollowingRef.current ? 'following' : 'follow'}
           </DefaultButton>
