@@ -3,13 +3,12 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-expressions */
-import React, { useCallback, useRef, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
-import followingListState from '@atoms/following-list';
 import UserImage from '@common/user-image';
 import DefaultButton from '@common/default-button';
+import useIsFollowingRef from '@hooks/useIsFollowingRef';
 import LoadingSpinner from './loading-spinner';
 
 interface UserCardProps {
@@ -80,28 +79,7 @@ const UserDescription = styled.div`
 
 export default function UserCard(props: UserCardProps) {
   const [loading, setLoading] = useState(false);
-  const isFollowingRef = useRef<boolean>(props.userData.isFollow as boolean);
-  const setFollowingList = useSetRecoilState(followingListState);
-
-  const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
-    setLoading(true);
-    const type = isFollow ? 'unfollow' : 'follow';
-    fetch(`${process.env.REACT_APP_API_URL}/api/user/follow`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ type, targetUserDocumentId }),
-    }).then((res) => res.json())
-      .then((json) => {
-        if (json.ok) {
-          isFollowingRef.current = !isFollowingRef.current;
-          isFollow ? setFollowingList((followList) => followList.filter((id) => id !== targetUserDocumentId)) : setFollowingList((followList) => [...followList, targetUserDocumentId]);
-        }
-        setLoading(false);
-      });
-  }, []);
+  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, props.userData.isFollow);
 
   return (
     <UserCardLayout sizeType={props.cardType}>
@@ -129,7 +107,7 @@ export default function UserCard(props: UserCardProps) {
             size="small"
             font="Nunito"
             isDisabled={false}
-            onClick={() => fetchFollow(isFollowingRef.current, props.userData._id)}
+            onClick={() => fetchFollow(isFollowingRef.current as boolean, props.userData._id)}
           >
             {isFollowingRef.current ? 'following' : 'follow'}
           </DefaultButton>

@@ -1,14 +1,15 @@
 /* eslint-disable */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import followingListState from '@atoms/following-list';
 import userState from '@atoms/user';
 import LoadingSpinner from '@common/loading-spinner';
-import scrollbarStyle from '@styles/scrollbar-style';
 import DefaultButton from '@common/default-button';
+import useIsFollowingRef from '@hooks/useIsFollowingRef';
+import scrollbarStyle from '@styles/scrollbar-style';
 
 const idRegex = /\/profile\/(.*)/;
 
@@ -104,12 +105,12 @@ const makeDateToJoinDate = (dateString: string) => {
 
 function ProfileView() {
   const user = useRecoilValue(userState);
-  const [followingList, setFollowingList] = useRecoilState(followingListState)
+  const followingList = useRecoilValue(followingListState)
   const location = useLocation();
   const paths = location.pathname.match(idRegex);
   const [loading, setLoading] = useState(true);
   const userDetailInfo = useRef<IUserDetail>();
-  const isFollowingRef = useRef<boolean>()
+  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading);
 
   if (!paths) {
     return <div>존재하지 않는 사용자입니다.</div>;
@@ -128,29 +129,7 @@ function ProfileView() {
     };
 
     getUserDetail();
-  });
-
-  const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
-    setLoading(true);
-    const type = isFollow ? 'unfollow' : 'follow';
-    fetch(`${process.env.REACT_APP_API_URL}/api/user/follow`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ type, targetUserDocumentId }),
-    }).then((res) => res.json())
-      .then((json) => {
-        if (json.ok) {
-          isFollowingRef.current = !isFollowingRef.current;
-          isFollow 
-          ? setFollowingList((followList) => followList.filter((id) => id !== targetUserDocumentId))
-          : setFollowingList((followList) => [...followList, targetUserDocumentId]);
-        }
-        setLoading(false);
-      });
-  }, []);
+  }, [isFollowingRef.current]);
 
   if (loading) {
     return <LoadingSpinner />;
