@@ -13,7 +13,7 @@ import DefaultButton from '@common/default-button';
 import LoadingSpinner from './loading-spinner';
 
 interface UserCardProps {
-  cardType: 'follow' | 'others';
+  cardType: 'follow' | 'me' | 'others';
   userData: {
     _id: string,
     userName: string,
@@ -24,11 +24,12 @@ interface UserCardProps {
 }
 
 interface sizeProps {
-  sizeType : 'follow' | 'others'
+  sizeType : 'follow' |'me' |'others'
 }
 
 const sizes = {
   follow: { cardLayoutSize: 100, userNameSize: 24, descriptionSize: 18 },
+  me: { cardLayoutSize: 100, userNameSize: 24, descriptionSize: 18 },
   others: { cardLayoutSize: 60, userNameSize: 16, descriptionSize: 12 },
 };
 
@@ -106,7 +107,7 @@ export default function UserCard(props: UserCardProps) {
     <UserCardLayout sizeType={props.cardType}>
       <UserInfoLayout>
         <UserImageLayout>
-          <UserImage src={props.userData.profileUrl} size={props.cardType === 'follow' ? 'default' : 'others'} />
+          <UserImage src={props.userData.profileUrl} size={props.cardType === 'others' ? 'others' : 'default'} />
         </UserImageLayout>
         <UserDescLayout>
           <UserName sizeType={props.cardType}>
