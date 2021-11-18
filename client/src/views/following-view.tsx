@@ -38,7 +38,7 @@ function FollowingView({ match }:any) {
         <UserCard
       // eslint-disable-next-line no-underscore-dangle
           key={newUserItemForm._id}
-          cardType="others"
+          cardType="me"
           userData={newUserItemForm}
         />
       );
