@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React, {
@@ -11,7 +12,7 @@ import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll'
 import searchTypeState from '@atoms/search-type';
 import OptionBar from '@components/search/option-bar';
 import {
-  SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection,
+  SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection, ItemDiv,
 } from '@components/search/style';
 import LoadingSpinner from '@common/loading-spinner';
 import useSetEventModal from '@hooks/useSetEventModal';
@@ -29,6 +30,7 @@ function SearchView() {
   const inputKeywordRef = useRef<HTMLInputElement>(null);
   const nowFetchingRef = useRef<boolean>(false);
   const [loading, setLoading] = useState(true);
+  const [searchDataCount, setSearchDataCount] = useState(0);
   const user = useRecoilValue(userState);
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
@@ -41,7 +43,7 @@ function SearchView() {
 
   const fetchItems = async () => {
     try {
-      const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}?count=${nowItemsList.length}`)
+      const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}?count=${searchDataCount}`)
         .then((res) => res.json())
         .then((json) => json.items);
       setNowItemsList([...nowItemsList, ...newItemsList]);
@@ -55,6 +57,7 @@ function SearchView() {
     searchInfo.current.keyword = inputKeywordRef.current?.value as string;
     searchInfo.current.option = searchType.toLocaleLowerCase();
     resetItemList();
+    setSearchDataCount(0);
     setNowFetching(true);
   };
 
@@ -80,6 +83,7 @@ function SearchView() {
     if (!nowFetchingRef.current) {
       const diff = e.currentTarget.scrollHeight - e.currentTarget.scrollTop;
       if (diff < 700) {
+        setSearchDataCount(searchDataCount + 10);
         setNowFetching(true);
         nowFetchingRef.current = true;
         setTimeout(() => {
@@ -100,37 +104,57 @@ function SearchView() {
     else console.error('no room-id');
   };
 
+  const makeUserObjectIncludedIsFollow = (
+    userItem: {
+      _id: string,
+      userName:
+      string,
+      description: string,
+      profileUrl: string
+    },
+  ) => ({
+    _id: userItem._id,
+    userName: userItem.userName,
+    description: userItem.description,
+    profileUrl: userItem.profileUrl,
+    isFollow: !!followingList.includes(userItem._id),
+  });
+
+  const makeItemToCardForm = (item:any) => {
+    if (item.type === 'event') {
+      return <ItemDiv onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
+    }
+
+    if (item.type === 'user') {
+      if (item._id === user.userDocumentId) return '';
+      const newUserItemForm = makeUserObjectIncludedIsFollow(item);
+
+      return (
+        <UserCard
+          // eslint-disable-next-line no-underscore-dangle
+          key={newUserItemForm._id}
+          cardType="follow"
+          userData={newUserItemForm}
+        />
+      );
+    }
+
+    if (item.type === 'room') {
+      return <ItemDiv onClick={roomCardClickHandler}>{makeRoomToCard(item)}</ItemDiv>;
+    }
+
+    return <div />;
+  };
+
   // eslint-disable-next-line consistent-return
   const showList = () => {
     if (searchInfo.current.option !== searchType.toLocaleLowerCase()) {
       return <LoadingSpinner />;
     }
 
-    // if (searchType === 'All') {
-    //   const newList = nowItemsList.map((result, item) => {
-    //     if (item.type === 'event') {
-    //       return result + makeEventToCard(item);
-    //     }
-
-    //     if (item.type === 'user') {
-    //       return (
-    //         <UserCard
-    //           // eslint-disable-next-line no-underscore-dangle
-    //           key={item._id}
-    //           cardType="follow"
-    //           userData={item}
-    //         />
-    //       );
-    //     }
-
-    //     if (item.type === 'room') {
-    //       return makeRoomToCard(item);
-    //     }
-
-    //     return <div />;
-    //   });
-    //   return newList;
-    // }
+    if (searchType === 'All') {
+      return <>{nowItemsList.map(makeItemToCardForm)}</>;
+    }
 
     if (searchType === 'Events') {
       return <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />;
@@ -141,22 +165,8 @@ function SearchView() {
     }
 
     if (searchType === 'People') {
-      const filteredItemList = nowItemsList.map((item) => {
-        const {
-          _id, userName, description, profileUrl,
-        } = item;
-
-        const newItem = {
-          _id,
-          userName,
-          description,
-          profileUrl,
-          isFollow: !!followingList.includes(_id),
-        };
-
-        return newItem;
-      // eslint-disable-next-line no-underscore-dangle
-      }).filter((item) => item._id !== user.userDocumentId);
+      const filteredItemList = nowItemsList
+        .map(makeUserObjectIncludedIsFollow).filter((item) => item._id !== user.userDocumentId);
 
       return <UserCardList userList={filteredItemList} cardType="follow" />;
     }

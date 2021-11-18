@@ -56,3 +56,9 @@ export const TestBox = styled.div`
   margin-bottom: 10px;
   background-color: white;
 `;
+
+export const ItemDiv = styled.div`
+  div + div {
+  margin-bottom: 10px;
+  }
+`;
