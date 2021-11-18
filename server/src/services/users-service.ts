@@ -211,9 +211,18 @@ class UserService {
     }
   }
 
-  async getFollowingsList(userDocumentId: string) {
+  async getMyFollowingsList(userDocumentId: string) {
     try {
       const result = await Users.findOne({ _id: userDocumentId }, ['followings']);
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getFollowingsList(userId: string, count: number) {
+    try {
+      const result = await Users.findOne({ userId }, ['followings']).sort({ date: 1 }).skip(count).limit(10);
       return result;
     } catch (e) {
       console.error(e);

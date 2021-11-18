@@ -55,23 +55,27 @@ export default (app: Router) => {
   userRouter.get('/my-followings/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;
-      const followingList = (await usersService.getFollowingsList(userDocumentId))?.followings;
+      const followingList = (await usersService.getMyFollowingsList(userDocumentId))?.followings;
       res.status(200).json(followingList);
     } catch (error) {
       console.error(error);
     }
   });
 
-  // userRouter.get('/followings/:userId', async (req: Request, res: Response) => {
-  //   try {
-  //     const { userId } = req.params;
-  //     const { count } = req.query;
-  //     const followingList = await usersService.getFollowingsList(userId);
-  //     res.status(200).json(followingList);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // });
+  userRouter.get('/followings/:userId', async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const { count } = req.query;
+      const documentIdOffollowingList = await usersService.getFollowingsList(userId, Number(count));
+      const followingList = await usersService.findUsersById(documentIdOffollowingList!.followings);
+      res.status(200).json({
+        result: true,
+        items: followingList,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
 
   userRouter.post('/signin', async (req: Request, res: Response) => {
     const { email, password } = req.body;
