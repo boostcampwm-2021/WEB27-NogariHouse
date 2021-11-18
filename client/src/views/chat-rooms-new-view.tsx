@@ -4,7 +4,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
 
-import NewChatRoomHeader from '@src/components/chat/chat-list-header';
+import NewChatRoomHeader from '@src/components/chat/chat-new-header';
 import { ChatRoomsLayout } from '@components/chat/style';
 import UserCardList from '@components/common/user-card-list';
 import { findUsersById } from '@api/index';

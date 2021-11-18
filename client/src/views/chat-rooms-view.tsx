@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
+import { useHistory } from 'react-router-dom';
 
 import userType from '@atoms/user';
 import ChatRoomListHeader from '@src/components/chat/chat-list-header';
@@ -26,6 +27,14 @@ function ChatRoomsViews() {
   const [loading, setLoading] = useState(true);
   const [chatRooms, setChatRooms] = useState<Array<IChatRoom>>([]);
   const { userDocumentId } = useRecoilValue(userType);
+  const history = useHistory();
+
+  const clickEvent = (chatDocumentId: string, participantsInfo: Array<IChatUserType>) => {
+    history.push({
+      pathname: `/chat-rooms/${chatDocumentId}`,
+      state: { participantsInfo },
+    });
+  };
 
   useEffect(() => {
     getChatRooms(userDocumentId)
@@ -39,7 +48,7 @@ function ChatRoomsViews() {
   return (
     <ChatRoomsLayout>
       <ChatRoomListHeader />
-      {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} participantsInfo={chatRoom.participants} lastMsg={chatRoom.lastMsg} />)}
+      {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} clickEvent={() => clickEvent(chatRoom.chatDocumentId, chatRoom.participants)} participantsInfo={chatRoom.participants} lastMsg={chatRoom.lastMsg} />)}
     </ChatRoomsLayout>
   );
 }
