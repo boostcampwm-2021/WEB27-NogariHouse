@@ -16,9 +16,8 @@ import {
 } from '@components/search/style';
 import LoadingSpinner from '@common/loading-spinner';
 import useSetEventModal from '@hooks/useSetEventModal';
-import { EventCardList, makeEventToCard } from '@views/event-view';
-import { RoomCardList, makeRoomToCard } from '@views/room-view';
-import UserCardList from '@common/user-card-list';
+import { makeEventToCard } from '@views/event-view';
+import { makeRoomToCard } from '@views/room-view';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import followingListState from '@atoms/following-list';
@@ -152,24 +151,7 @@ function SearchView() {
       return <LoadingSpinner />;
     }
 
-    if (searchType === 'All') {
-      return <>{nowItemsList.map(makeItemToCardForm)}</>;
-    }
-
-    if (searchType === 'Events') {
-      return <EventCardList setEventModal={setEventModal} eventList={nowItemsList} />;
-    }
-
-    if (searchType === 'Rooms') {
-      return <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemsList} />;
-    }
-
-    if (searchType === 'People') {
-      const filteredItemList = nowItemsList
-        .map(makeUserObjectIncludedIsFollow).filter((item) => item._id !== user.userDocumentId);
-
-      return <UserCardList userList={filteredItemList} cardType="follow" />;
-    }
+    return <>{nowItemsList.map(makeItemToCardForm)}</>;
   };
 
   return (
