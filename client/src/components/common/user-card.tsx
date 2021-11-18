@@ -24,7 +24,7 @@ interface sizeProps {
 }
 
 const sizes = {
-  follow: { cardLayoutSize: 80, userNameSize: 24, descriptionSize: 20 },
+  follow: { cardLayoutSize: 100, userNameSize: 24, descriptionSize: 18 },
   others: { cardLayoutSize: 60, userNameSize: 16, descriptionSize: 12 },
 };
 
@@ -62,6 +62,12 @@ const UserName = styled.div`
   user-select: none;
 `;
 
+const UserId = styled.div`
+  font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
+  margin-bottom:3px;
+  user-select: none;
+`;
+
 const UserDescription = styled.div`
   font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
   user-select: none;
@@ -79,6 +85,7 @@ export default function UserCard(props: UserCardProps) {
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({ type, targetUserDocumentId }),
     }).then((res) => res.json())
       .then((json) => {
@@ -99,6 +106,9 @@ export default function UserCard(props: UserCardProps) {
           <UserName sizeType={props.cardType}>
             {props.userData.userName}
           </UserName>
+          <UserId sizeType={props.cardType}>
+            @userId
+          </UserId>
           <UserDescription sizeType={props.cardType}>
             {props.userData.description}
           </UserDescription>
