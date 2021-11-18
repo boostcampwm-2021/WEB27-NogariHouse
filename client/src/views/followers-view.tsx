@@ -56,7 +56,6 @@ function FollowerView({ match }:any) {
 
   useEffect(() => {
     if (nowItemList && nowItemType === 'followers') {
-      console.log(nowItemList);
       setLoading(false);
     }
   });
