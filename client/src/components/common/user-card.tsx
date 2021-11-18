@@ -81,16 +81,17 @@ export default function UserCard(props:userCardProps) {
         </UserDescLayout>
       </UserInfoLayout>
       {props.cardType === 'follow'
-        ? (
+        && (
           <DefaultButton
-            buttonType="primary"
+            buttonType={props.userData.isFollow ? 'following' : 'follow'}
             size="small"
             font="Nunito"
-            isDisabled={!props.userData.isFollow}
+            isDisabled={false}
+            onClick={() => console.log('following')}
           >
             {props.userData.isFollow ? 'following' : 'follow'}
           </DefaultButton>
-        ) : ''}
+        )}
     </UserCardLayout>
   );
 }

@@ -2,7 +2,7 @@ import React, { MouseEvent } from 'react';
 import styled from 'styled-components';
 
 interface DefaultButtonProps {
-  buttonType: 'primary' | 'secondary' | 'active' | 'thirdly';
+  buttonType: 'follow' | 'following' | 'secondary' | 'active' | 'thirdly';
   size: 'small' | 'medium' | 'large';
   children?: string;
   isDisabled?: boolean;
@@ -17,7 +17,11 @@ const sizes = {
 };
 
 const buttonTypes = {
-  primary: {
+  follow: {
+    color: '#FFFFFF',
+    fontColor: '#586A9A',
+  },
+  following: {
     color: '#586A9A',
     fontColor: '#FFFFFF',
   },

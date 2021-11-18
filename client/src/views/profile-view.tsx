@@ -138,7 +138,7 @@ function ProfileView() {
         {user.userId !== profileId
         &&
         <DefaultButton
-        buttonType="primary"
+        buttonType="follow"
         size="small"
         font="Nunito"
         isDisabled={followingList.includes(userDetailInfo.current._id)}
