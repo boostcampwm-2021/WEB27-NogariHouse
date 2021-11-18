@@ -32,7 +32,7 @@ export const getUserInfo = async (userDocumentId: string) => {
     response = await response.json();
     return response as unknown as {
       ok: boolean,
-      userInfo: { profileUrl: string, userName: string }
+      userInfo: { profileUrl: string, userName: string, userId: string }
      };
   } catch (error) {
     console.error(error);

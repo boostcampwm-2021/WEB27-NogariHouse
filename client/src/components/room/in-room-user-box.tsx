@@ -8,6 +8,7 @@ import {
 
 import { getUserInfo } from '@api/index';
 import SoundMeter from '@src/utils/test';
+import { Link } from 'react-router-dom';
 import { InRoomUserBoxStyle, InRoomUserMicDiv, UserBox } from './style';
 
 export interface IParticipant {
@@ -57,7 +58,9 @@ export function InRoomOtherUserBox({
 
   return (
     <InRoomUserBoxStyle>
-      <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted={isMine} />
+      <Link to={`/profile/${userInfo?.userId}`}>
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted={isMine} />
+      </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
@@ -100,7 +103,9 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     return (
       <InRoomUserBoxStyle>
-        <UserBox ref={myRef} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+        <Link to={`/profile/${userInfo?.userId}`}>
+          <UserBox ref={myRef} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+        </Link>
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>
