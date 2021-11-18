@@ -131,6 +131,8 @@ function ProfileView() {
     return <div>존재하지 않는 사용자입니다.</div>;
   }
 
+  const isFollowing = followingList.includes(userDetailInfo.current._id) ? 'following' : 'follow';
+
   return (
     <ProfileViewLayout>
       <ImageAndFollowButtonDiv>
@@ -138,12 +140,12 @@ function ProfileView() {
         {user.userId !== profileId
         &&
         <DefaultButton
-        buttonType="follow"
+        buttonType={isFollowing}
         size="small"
         font="Nunito"
-        isDisabled={followingList.includes(userDetailInfo.current._id)}
+        isDisabled={false}
       >
-        {followingList.includes(userDetailInfo.current._id) ? 'following' : 'follow'}
+        {isFollowing}
       </DefaultButton>}
       </ImageAndFollowButtonDiv>
       <UserNameDiv>{userDetailInfo.current.userName}</UserNameDiv>
