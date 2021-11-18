@@ -1,52 +1,73 @@
-import React from 'react';
+/* eslint-disable no-underscore-dangle */
+import React, { useEffect, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
+import LoadingSpinner from '@common/loading-spinner';
+import useFetchItems from '@src/hooks/useFetchItems';
+import followingListState from '@atoms/following-list';
 import UserCard from '@common/user-card';
-import UserCardList from '@src/components/common/user-card-list';
+import userState from '@atoms/user';
 
-function FollowingView() {
-  const testUser1 = {
-    _id: '1',
-    userName: 'Mulgyeol1',
-    description: 'test for1',
-    profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
-    isFollow: false,
+function FollowingView({ match }:any) {
+  const userId = match.params.id;
+  const [nowItemList, nowItemType] = useFetchItems<any>(`/user/followings/${userId}`, 'followings');
+  const [loading, setLoading] = useState(true);
+  const myFollowingList = useRecoilValue(followingListState);
+  const user = useRecoilValue(userState);
+
+  const makeUserObjectIncludedIsFollow = (
+    userItem: {
+      _id: string,
+      userName:
+      string,
+      description: string,
+      profileUrl: string
+    },
+  ) => ({
+    _id: userItem._id,
+    userName: userItem.userName,
+    description: userItem.description,
+    profileUrl: userItem.profileUrl,
+    isFollow: !!myFollowingList.includes(userItem._id),
+  });
+
+  const makeItemToCardForm = (item: any) => {
+    const newUserItemForm = makeUserObjectIncludedIsFollow(item);
+    if (newUserItemForm._id === user.userDocumentId) {
+      return (
+        <UserCard
+      // eslint-disable-next-line no-underscore-dangle
+          key={newUserItemForm._id}
+          cardType="others"
+          userData={newUserItemForm}
+        />
+      );
+    }
+
+    return (
+      <UserCard
+          // eslint-disable-next-line no-underscore-dangle
+        key={newUserItemForm._id}
+        cardType="follow"
+        userData={newUserItemForm}
+      />
+    );
   };
 
-  const testUser2 = {
-    _id: '2',
-    userName: 'Mulgyeol2',
-    description: 'test for2',
-    profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
-    isFollow: true,
-  };
+  useEffect(() => {
+    if (nowItemList && nowItemType === 'followings') {
+      console.log(nowItemList);
+      setLoading(false);
+    }
+  });
 
-  const testUser3 = {
-    _id: '3',
-    userName: 'Mulgyeol1',
-    description: 'test for1',
-    profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
-  };
-
-  const testUser4 = {
-    _id: '4',
-    userName: 'Mulgyeol2',
-    description: 'test for2',
-    profileUrl: 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png',
-  };
-
-  const userList1 = [testUser1, testUser2];
-  const userList2 = [testUser3, testUser4];
-
-  const clickEvent = () => (alert('click'));
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
-      <UserCardList userList={userList1} cardType="follow" />
-      <UserCardList userList={userList2} cardType="others" clickEvent={clickEvent} />
-      <UserCard userData={testUser1} cardType="follow" />
-      <UserCard userData={testUser2} cardType="follow" />
-      <UserCard userData={testUser3} cardType="others" />
-      <UserCard userData={testUser4} cardType="others" />
+      {nowItemList.map(makeItemToCardForm)}
     </>
   );
 }

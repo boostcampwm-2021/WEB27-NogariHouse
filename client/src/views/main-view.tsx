@@ -104,7 +104,7 @@ function MainView() {
       accessToken, userDocumentId, profileUrl, userName, userId,
     } = json;
 
-    getFollowingsList(userDocumentId).then((response:any) => setFollowingList(response.followings));
+    getFollowingsList(userDocumentId).then((response:any) => setFollowingList(response));
 
     setUser({
       isLoggedIn: true, userDocumentId, profileUrl, userName, userId,

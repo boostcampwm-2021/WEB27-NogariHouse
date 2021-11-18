@@ -183,7 +183,7 @@ export const getChatRooms = async (userDocumentId: string) => {
 export const getFollowingsList = async (userDocumentId: string) => {
   try {
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/user/followings/${userDocumentId}`,
+      `${process.env.REACT_APP_API_URL}/api/user/my-followings/${userDocumentId}`,
       {
         method: 'get',
         headers: {

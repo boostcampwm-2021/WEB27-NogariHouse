@@ -52,11 +52,41 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
+  userRouter.get('/my-followings/:userDocumentId', async (req: Request, res: Response) => {
     try {
       const { userDocumentId } = req.params;
-      const followingList = await usersService.getFollowingsList(userDocumentId);
+      const followingList = (await usersService.getMyFollowingsList(userDocumentId))?.followings;
       res.status(200).json(followingList);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  userRouter.get('/followings/:userId', async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const { count } = req.query;
+      const documentIdOffollowingList = await usersService.getFollowingsList(userId, Number(count));
+      const followingList = await usersService.findUsersById(documentIdOffollowingList!.followings);
+      res.status(200).json({
+        result: true,
+        items: followingList,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
+  userRouter.get('/followers/:userId', async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.params;
+      const { count } = req.query;
+      const documentIdOfFollowerList = await usersService.getFollowersList(userId, Number(count));
+      const followerList = await usersService.findUsersById(documentIdOfFollowerList!.followers);
+      res.status(200).json({
+        result: true,
+        items: followerList,
+      });
     } catch (error) {
       console.error(error);
     }
