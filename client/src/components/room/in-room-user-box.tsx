@@ -7,7 +7,8 @@ import {
 } from 'react-icons/fi';
 
 import { getUserInfo } from '@api/index';
-import SoundMeter from '@src/utils/test';
+import SoundMeter from '@src/utils/voice';
+import { Link } from 'react-router-dom';
 import { InRoomUserBoxStyle, InRoomUserMicDiv, UserBox } from './style';
 
 export interface IParticipant {
@@ -57,7 +58,9 @@ export function InRoomOtherUserBox({
 
   return (
     <InRoomUserBoxStyle>
-      <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted={isMine} />
+      <Link to={`/profile/${userInfo?.userId}`}>
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted={isMine} />
+      </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
@@ -81,7 +84,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
       if (!props.stream || !props.isMicOn) return;
       const soundMeter = new SoundMeter(audioCtxRef.current);
       let meterRefresh: any = null;
-      soundMeter.connectToSource(props.stream, (e: any) => {
+      soundMeter.connectToSource(props.stream, () => {
         meterRefresh = setInterval(() => {
           const num = Number(soundMeter.instant.toFixed(2));
           if (num > 0.02 && myRef.current) {
@@ -95,12 +98,15 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
       // eslint-disable-next-line consistent-return
       return () => {
         clearInterval(meterRefresh);
+        soundMeter.stop();
       };
     }, [props.isMicOn]);
 
     return (
       <InRoomUserBoxStyle>
-        <UserBox ref={myRef} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+        <Link to={`/profile/${userInfo?.userId}`}>
+          <UserBox ref={myRef} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+        </Link>
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>

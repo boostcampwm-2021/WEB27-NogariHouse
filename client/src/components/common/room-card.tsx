@@ -113,6 +113,7 @@ const RoomCardLayout = styled.div`
 
   &:hover {
     background-color: #eeebe4e4;
+    cursor: pointer;
   }
 `;
 
