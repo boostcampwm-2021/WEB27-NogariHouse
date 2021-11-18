@@ -4,6 +4,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-unused-expressions */
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import UserImage from '@common/user-image';
@@ -16,6 +17,7 @@ interface UserCardProps {
   userData: {
     _id: string,
     userName: string,
+    userId: string,
     description: string,
     profileUrl: string,
     isFollow?: boolean,
@@ -32,7 +34,7 @@ const sizes = {
   others: { cardLayoutSize: 60, userNameSize: 16, descriptionSize: 12 },
 };
 
-const UserCardLayout = styled.div`
+const UserCardLayout = styled(Link)`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -40,8 +42,11 @@ const UserCardLayout = styled.div`
   margin-left: 0.8%;
   width: 99%;
   height: ${(props: sizeProps) => sizes[props.sizeType].cardLayoutSize}px;
+  color: black;
+  text-decoration: none;
 
   &:hover {
+  cursor: default;
   background-color: #eeebe4e4;
   box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
   }
@@ -87,8 +92,10 @@ export default function UserCard(props: UserCardProps) {
   const [loading, setLoading] = useState(false);
   const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, props.userData.isFollow);
 
+  console.log(props.userData);
+
   return (
-    <UserCardLayout sizeType={props.cardType}>
+    <UserCardLayout to={`/profile/${props.userData.userId}`} sizeType={props.cardType}>
       <UserInfoLayout>
         <UserImageLayout>
           <UserImage src={props.userData.profileUrl} size={props.cardType === 'others' ? 'others' : 'default'} />

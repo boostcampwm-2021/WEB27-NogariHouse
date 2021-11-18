@@ -106,14 +106,15 @@ function SearchView() {
   const makeUserObjectIncludedIsFollow = (
     userItem: {
       _id: string,
-      userName:
-      string,
+      userName: string,
+      userId: string,
       description: string,
       profileUrl: string
     },
   ) => ({
     _id: userItem._id,
     userName: userItem.userName,
+    userId: userItem.userId,
     description: userItem.description,
     profileUrl: userItem.profileUrl,
     isFollow: !!followingList.includes(userItem._id),
