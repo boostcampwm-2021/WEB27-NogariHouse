@@ -1,7 +1,7 @@
 /* eslint-disable */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import followingListState from '@atoms/following-list';
@@ -18,6 +18,7 @@ const ProfileViewLayout = styled.div`
   flex-direction: column;
 
   width: 80%;
+  min-width: 400px;
   height: 100%;
   margin: auto;
 
@@ -103,11 +104,12 @@ const makeDateToJoinDate = (dateString: string) => {
 
 function ProfileView() {
   const user = useRecoilValue(userState);
-  const followingList = useRecoilValue(followingListState)
+  const [followingList, setFollowingList] = useRecoilState(followingListState)
   const location = useLocation();
   const paths = location.pathname.match(idRegex);
   const [loading, setLoading] = useState(true);
   const userDetailInfo = useRef<IUserDetail>();
+  const isFollowingRef = useRef<boolean>()
 
   if (!paths) {
     return <div>존재하지 않는 사용자입니다.</div>;
@@ -120,12 +122,35 @@ function ProfileView() {
       const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`).then((res) => res.json());
       if (result.ok) {
         userDetailInfo.current = result.userDetailInfo;
+        isFollowingRef.current = followingList.includes(result.userDetailInfo._id);
       }
       setLoading(false);
     };
 
     getUserDetail();
-  })
+  });
+
+  const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
+    setLoading(true);
+    const type = isFollow ? 'unfollow' : 'follow';
+    fetch(`${process.env.REACT_APP_API_URL}/api/user/follow`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({ type, targetUserDocumentId }),
+    }).then((res) => res.json())
+      .then((json) => {
+        if (json.ok) {
+          isFollowingRef.current = !isFollowingRef.current;
+          isFollow 
+          ? setFollowingList((followList) => followList.filter((id) => id !== targetUserDocumentId))
+          : setFollowingList((followList) => [...followList, targetUserDocumentId]);
+        }
+        setLoading(false);
+      });
+  }, []);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -134,8 +159,6 @@ function ProfileView() {
     return <div>존재하지 않는 사용자입니다.</div>;
   }
 
-  const isFollowing = followingList.includes(userDetailInfo.current._id) ? 'following' : 'follow';
-
   return (
     <ProfileViewLayout>
       <ImageAndFollowButtonDiv>
@@ -143,12 +166,13 @@ function ProfileView() {
         {user.userId !== profileId
         &&
         <DefaultButton
-        buttonType={isFollowing}
+        buttonType={isFollowingRef.current ? 'following' : 'follow'}
         size="small"
         font="Nunito"
         isDisabled={false}
+        onClick={() => fetchFollow(isFollowingRef.current as boolean, userDetailInfo.current!._id)}
       >
-        {isFollowing}
+        {isFollowingRef.current ? 'following' : 'follow'}
       </DefaultButton>}
       </ImageAndFollowButtonDiv>
       <UserNameDiv>{userDetailInfo.current.userName}</UserNameDiv>

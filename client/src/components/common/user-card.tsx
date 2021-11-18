@@ -80,7 +80,7 @@ const UserDescription = styled.div`
 
 export default function UserCard(props: UserCardProps) {
   const [loading, setLoading] = useState(false);
-  const isFollowRef = useRef<boolean>(props.userData.isFollow as boolean);
+  const isFollowingRef = useRef<boolean>(props.userData.isFollow as boolean);
   const setFollowingList = useSetRecoilState(followingListState);
 
   const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
@@ -96,7 +96,7 @@ export default function UserCard(props: UserCardProps) {
     }).then((res) => res.json())
       .then((json) => {
         if (json.ok) {
-          isFollowRef.current = !isFollowRef.current;
+          isFollowingRef.current = !isFollowingRef.current;
           isFollow ? setFollowingList((followList) => followList.filter((id) => id !== targetUserDocumentId)) : setFollowingList((followList) => [...followList, targetUserDocumentId]);
         }
         setLoading(false);
@@ -125,13 +125,13 @@ export default function UserCard(props: UserCardProps) {
       {props.cardType === 'follow'
         && (
           <DefaultButton
-            buttonType={isFollowRef.current ? 'following' : 'follow'}
+            buttonType={isFollowingRef.current ? 'following' : 'follow'}
             size="small"
             font="Nunito"
             isDisabled={false}
-            onClick={() => fetchFollow(isFollowRef.current, props.userData._id)}
+            onClick={() => fetchFollow(isFollowingRef.current, props.userData._id)}
           >
-            {isFollowRef.current ? 'following' : 'follow'}
+            {isFollowingRef.current ? 'following' : 'follow'}
           </DefaultButton>
         )}
     </UserCardLayout>
