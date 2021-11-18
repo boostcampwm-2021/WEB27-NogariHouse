@@ -74,6 +74,10 @@ export const FooterBtnDiv = styled.div`
   svg {
     transform: translate(8px, 8px);
   };
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const InRoomUserBoxStyle = styled.div`
