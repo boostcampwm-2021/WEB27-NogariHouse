@@ -6,7 +6,8 @@ interface DefaultButtonProps {
   size: 'small' | 'medium' | 'large';
   children?: string;
   isDisabled?: boolean;
-  onClick?: (event : MouseEvent) => void;
+  onClick?: (event: MouseEvent) => void;
+  font?: string;
 }
 
 const sizes = {
@@ -42,7 +43,7 @@ const CustomDefaultButton = styled.button`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border: none;
   border-radius: 20px;
-  font-family: "Bangers";
+  font-family: ${(props) => (props.font ? props.font : 'Bangers')};;
   font-size: ${(props: DefaultButtonProps) => sizes[props.size].fontSize}px;
   opacity: ${(props) => (props.disabled ? 0.5 : 1)};
 `;
@@ -53,6 +54,7 @@ function DefaultButton({
   size,
   isDisabled,
   onClick,
+  font,
 }: DefaultButtonProps) {
   return (
     <CustomDefaultButton
@@ -61,6 +63,7 @@ function DefaultButton({
       size={size}
       disabled={isDisabled}
       onClick={onClick}
+      font={font}
     >
       {children}
     </CustomDefaultButton>

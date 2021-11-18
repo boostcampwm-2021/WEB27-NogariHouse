@@ -3,7 +3,7 @@ import {
 } from 'express';
 
 import usersService from '@services/users-service';
-import authJWT from '@middlewares/auth'
+import authJWT from '@middlewares/auth';
 
 const userRouter = Router();
 
@@ -14,11 +14,24 @@ export default (app: Router) => {
     const { accessToken, userDocumentId } = req.body;
     const user = await usersService.findUser(userDocumentId);
     if (user) {
-      const { _id, profileUrl, userName, userId } = user;
-      res.json({ ok: true, accessToken, userDocumentId : _id, profileUrl, userName, userId });
+      const {
+        _id, profileUrl, userName, userId,
+      } = user;
+      res.json({
+        ok: true, accessToken, userDocumentId: _id, profileUrl, userName, userId,
+      });
+    } else {
+      res.json({ ok: false });
     }
-    else {
-      res.json({ ok: false })
+  });
+
+  userRouter.get('/followings/:userDocumentId', async (req: Request, res: Response) => {
+    try {
+      const { userDocumentId } = req.params;
+      const followingList = await usersService.getFollowingsList(userDocumentId);
+      res.status(200).json(followingList);
+    } catch (error) {
+      console.error(error);
     }
   });
 
@@ -53,9 +66,15 @@ export default (app: Router) => {
   userRouter.post('/signup/mail', async (req: Request, res: Response) => {
     const { email } = req.body;
 
-    const verificationNumber = await usersService.sendVerificationMail(email);
+    const isUnique: boolean = await usersService.isUniqueEmail(email);
 
-    res.json({ verificationNumber });
+    if (isUnique) {
+      const verificationNumber = await usersService.sendVerificationMail(email);
+      res.json({ isUnique, verificationNumber });
+    } else {
+      res.json({ isUnique, verificationNumber: '-1' });
+    }
+
   });
 
   userRouter.post('/signup/userInfo', async (req: Request, res: Response) => {

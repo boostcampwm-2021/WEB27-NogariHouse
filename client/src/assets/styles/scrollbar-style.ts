@@ -8,15 +8,14 @@ export default css`
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 8px;
-    background-color: #ced4da;
+    background-color: #DCD9CD;
 
     &:hover {
-      background-color: #adb5bd;
+      background-color: #CECABB;
     }
   }
   &::-webkit-scrollbar-track {
     background: #f1f0e4;
   }
   overflow-y: scroll;
-  overflow: overlay;
 `;

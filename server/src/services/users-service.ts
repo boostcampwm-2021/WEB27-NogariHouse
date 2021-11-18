@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable consistent-return */
@@ -65,9 +66,14 @@ class UserService {
     return result;
   }
 
+  async findUsers(userDocumentId: string) {
+    const result = await Users.findOne({ _id: userDocumentId });
+    return result;
+  }
+
   async signup(info: ISignupUserInfo) {
     try {
-      const result = await Users.insertMany([info]);
+      await Users.insertMany([info]);
     } catch (error) {
       console.error(error);
     }
@@ -125,6 +131,11 @@ class UserService {
     };
   }
 
+  async isUniqueEmail(email: string) {
+    const user = await Users.findOne({ userEmail: email });
+    return !user;
+  }
+
   async sendVerificationMail(email: string) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -150,6 +161,42 @@ class UserService {
     });
 
     return VerificationNumber;
+  }
+
+  makeItemToUserInterface(
+    item: { _id: string, userName: string, description: string, profileUrl: string },
+  ) {
+    const {
+      _id, userName, description, profileUrl,
+    } = item;
+    return ({
+      _id,
+      userName,
+      description,
+      profileUrl,
+      type: 'user',
+    });
+  }
+
+  async searchUsers(keyword: string, count: number) {
+    try {
+      const query = new RegExp(keyword, 'i');
+      const res = await Users.find({
+        $or: [{ userId: query }, { userName: query }, { description: query }],
+      }, ['userName', 'description,', 'profileUrl']).sort({ date: 1 }).skip(count).limit(10);
+      return res;
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async getFollowingsList(userDocumentId: string) {
+    try {
+      const result = await Users.findOne({ _id: userDocumentId }, ['followings']);
+      return result;
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
 

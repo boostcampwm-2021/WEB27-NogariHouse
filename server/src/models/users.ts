@@ -34,8 +34,8 @@ export interface IUsers {
     interesting: Array<string>,
     chatRooms: Array<string>,
     myEvents: Array<string>,
-    following: IFollow,
-    follower: IFollow,
+    followings: IFollow,
+    followers: IFollow,
     joinDate: Date,
     activity: Array<IActivity>,
     recentSearch: Array<IRecentSearch>,
@@ -87,11 +87,11 @@ const usersSchema = new Schema({
     default: [],
   },
   followings: {
-    type: [Object],
+    type: [String],
     default: [],
   },
   followers: {
-    type: [Object],
+    type: [String],
     default: [],
   },
   recentSearch: {

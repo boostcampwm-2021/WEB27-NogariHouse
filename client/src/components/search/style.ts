@@ -1,10 +1,24 @@
 import styled from 'styled-components';
 
+import ScrollBarStyle from '@styles/scrollbar-style';
+
+export const SearchViewLayout = styled.div`
+  position: absolute;
+  height: 80vh;
+  width:100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index:10;
+`;
+
 export const SearchBarLayout = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #F1F0E4;
+  margin-bottom: 10px;
 `;
 
 export const SearchInput = styled.input`
@@ -28,4 +42,17 @@ export const SearchCategoryLayout = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+export const SearchScrollSection = styled.div`
+  width: 100%;
+  height: 70vh;
+  ${ScrollBarStyle};
+`;
+
+export const TestBox = styled.div`
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  background-color: white;
 `;

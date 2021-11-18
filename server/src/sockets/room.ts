@@ -1,4 +1,4 @@
-import { Socket } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 import RoomService from '@services/rooms-service';
 import usersService from '@services/users-service';
@@ -9,17 +9,21 @@ interface IUsers {
 
 const users: IUsers = {};
 
-export default function registerRoomHandler(socket : Socket) {
-  const handleRoomJoin = async (payload : any) => {
+export default function registerRoomHandler(socket : Socket, server : Server) {
+  const handleRoomJoin = async (payload:
+    {roomDocumentId: string, userDocumentId: string, socketId: string}) => {
     const {
-      roomDocumentId, userDocumentId,
+      roomDocumentId, userDocumentId, socketId,
     } = payload;
     socket.join(roomDocumentId);
 
     users[socket.id] = { roomDocumentId, userDocumentId };
-    await RoomService.addParticipant(roomDocumentId, userDocumentId);
-    const userData = await usersService.findUser(userDocumentId);
-    socket.to(roomDocumentId).emit('room:join', { userDocumentId, userData });
+    await RoomService.addParticipant(roomDocumentId, userDocumentId, socketId);
+    const room = await RoomService.findRoom(roomDocumentId);
+    const participantsInfo = room?.participants
+      .filter((participant) => participant.userDocumentId !== userDocumentId);
+
+    server.to(socket.id).emit('room:join', participantsInfo);
   };
 
   const handleRoomLeave = async () => {
@@ -27,27 +31,34 @@ export default function registerRoomHandler(socket : Socket) {
     delete users[socket.id];
 
     await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
-    socket.to(roomDocumentId).emit('room:leave', { userDocumentId });
+    socket.to(roomDocumentId).emit('room:leave', socket.id);
   };
 
   // eslint-disable-next-line no-undef
-  const handleRoomOffer = (offer: RTCSessionDescriptionInit) => {
-    const { roomDocumentId } = users[socket.id];
-    socket.to(roomDocumentId).emit('room:offer', offer);
+  const handleRoomOffer = (offer: RTCSessionDescriptionInit, receiveId: string) => {
+    const { userDocumentId } = users[socket.id];
+    socket.to(receiveId).emit('room:offer', offer, userDocumentId, socket.id);
   };
 
   // eslint-disable-next-line no-undef
-  const handleRoomAnswer = (answer: RTCSessionDescriptionInit) => {
-    const { roomDocumentId } = users[socket.id];
-
-    socket.to(roomDocumentId).emit('room:answer', answer);
+  const handleRoomAnswer = (answer: RTCSessionDescriptionInit, receiveId: string) => {
+    socket.to(receiveId).emit('room:answer', answer, socket.id);
   };
 
   // eslint-disable-next-line no-undef
-  const handleRoomIce = (ice: RTCIceCandidateInit) => {
-    const { roomDocumentId } = users[socket.id];
+  const handleRoomIce = (candidate: RTCIceCandidateInit, receiveId: string) => {
+    socket.to(receiveId).emit('room:ice', { candidate, candidateSendId: socket.id });
+  };
 
-    socket.to(roomDocumentId).emit('room:ice', ice);
+  const handleMic = async (payload: any) => {
+    const {
+      roomDocumentId, userDocumentId, isMicOn,
+    } = payload;
+
+    await RoomService.setMic(roomDocumentId, userDocumentId, isMicOn);
+
+    const userData = { userDocumentId, isMicOn };
+    socket.to(roomDocumentId).emit('room:mic', { userData });
   };
 
   socket.on('room:join', handleRoomJoin);
@@ -55,4 +66,5 @@ export default function registerRoomHandler(socket : Socket) {
   socket.on('room:answer', handleRoomAnswer);
   socket.on('room:ice', handleRoomIce);
   socket.on('disconnect', handleRoomLeave);
+  socket.on('room:mic', handleMic);
 }

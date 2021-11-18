@@ -6,7 +6,7 @@ const server = new Server({
 });
 
 const handleConnection = (socket : Socket) => {
-  registerRoomHandler(socket);
+  registerRoomHandler(socket, server);
 };
 
 server.on('connection', handleConnection);
