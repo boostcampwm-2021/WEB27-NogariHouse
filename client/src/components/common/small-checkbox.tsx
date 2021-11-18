@@ -12,13 +12,33 @@ interface SmallCheckboxProps extends CheckBoxProps{
 }
 
 const CheckBox = styled.input`
+  & {
+    display: none;
+  }
 
   & + label {
-      font-size: 14px;
-      line-height: 21px;
-      display: block;
+      position: absolute; 
+      top: 0px; 
+      right: 55px; 
+      width: 15px;
+      height: 15px;
+      float: left;
+      border-radius: 6px;
+      border: 2px solid #bcbcbc;
       cursor: pointer;
-      margin-left: 4px;
+    }
+
+    & + label span {
+      position: absolute; 
+      top: -2px; 
+      left: 20px; 
+      display: block; 
+      font-weight: bold;
+      user-select: none;
+    }
+
+    &:checked + label {
+      background-color: #4A6970;
     }
 `;
 

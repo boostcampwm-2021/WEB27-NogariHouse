@@ -1,4 +1,3 @@
-/* eslint-disable object-shorthand */
 import React from 'react';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
@@ -27,20 +26,20 @@ const RoomModalLayout = styled.div`
 function RightSideBar() {
   const roomView = useRecoilValue(roomViewType);
 
-  if (roomView === 'createRoomView') { // 방 생성 모달
+  if (roomView === 'createRoomView') {
     return (
       <RoomModalLayout>
         <RoomModal />
       </RoomModalLayout>
     );
-  } if (roomView === 'closedSelectorView') { // closed인 경우 특정 인원을 지정하는 화면을 만들어야함
+  }
+  if (roomView === 'closedSelectorView') {
     return (
       <RoomModalLayout>
         <h1> closed!!! </h1>
       </RoomModalLayout>
     );
   }
-  // 방에 들어가 있는 경우
   if (roomView === 'inRoomView') {
     return (
       <RoomModalLayout>
