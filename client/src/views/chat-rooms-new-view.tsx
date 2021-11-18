@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
 
 import NewChatRoomHeader from '@src/components/chat/chat-list-header';
-import ChatRoomsLayout from '@components/chat/chat-room-layout';
+import { ChatRoomsLayout } from '@components/chat/style';
 import UserCardList from '@components/common/user-card-list';
 import { findUsersById } from '@api/index';
 import followType from '@atoms/following-list';

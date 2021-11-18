@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
-import ChatHeaderStyle from '@components/chat/style';
+import { ChatHeaderStyle } from '@components/chat/style';
 import { postChatRoom } from '@api/index';
 import selectedUserType from '@atoms/chat-selected-users';
 import userType from '@atoms/user';

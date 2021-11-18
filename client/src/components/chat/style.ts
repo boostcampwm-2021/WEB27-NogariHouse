@@ -1,6 +1,20 @@
 import styled from 'styled-components';
+import ScrollBarStyle from '@styles/scrollbar-style';
 
-const ChatHeaderStyle = styled.div`
+export const ChatRoomsLayout = styled.div`
+  background-color: #FFFFFF;
+  border-radius: 30px;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+  position: relative;
+
+  ${ScrollBarStyle};
+`;
+
+export const ChatHeaderStyle = styled.div`
   background-color: #B6B6B6;
 
   width: 100%;
@@ -23,5 +37,3 @@ const ChatHeaderStyle = styled.div`
     margin: 0px;
   }
 `;
-
-export default ChatHeaderStyle;

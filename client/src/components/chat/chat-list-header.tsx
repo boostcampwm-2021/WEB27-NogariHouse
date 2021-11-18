@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { BiMessageSquareAdd } from 'react-icons/bi';
 
-import ChatHeaderStyle from '@components/chat/style';
+import { ChatHeaderStyle } from '@components/chat/style';
 import { makeIconToLink } from '@utils/index';
 
 const ChatHeaderBtnDiv = styled.div`

@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil';
 import userType from '@atoms/user';
 import ChatRoomListHeader from '@src/components/chat/chat-list-header';
 import ChatUserCard from '@components/chat/chat-user-card';
-import ChatRoomsLayout from '@components/chat/chat-room-layout';
+import { ChatRoomsLayout } from '@components/chat/style';
 import LoadingSpinner from '@common/loading-spinner';
 import { getChatRooms } from '@api/index';
 
