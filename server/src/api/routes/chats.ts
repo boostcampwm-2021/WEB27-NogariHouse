@@ -11,6 +11,7 @@ export default (app: Router) => {
   chatRouter.post('/', async (req: Request, res: Response) => {
     try {
       const { participants } = req.body;
+      participants.sort();
       const chatRoomId = await chatService.makeChatRoom(participants);
 
       res.status(200).json({ chatRoomId });
