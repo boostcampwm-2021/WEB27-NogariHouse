@@ -119,6 +119,7 @@ function ProfileView() {
   const profileId = paths[1];
 
   useEffect(() => {
+    setLoading(true);
     const getUserDetail = async () => {
       const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`).then((res) => res.json());
       if (result.ok) {
@@ -129,7 +130,7 @@ function ProfileView() {
     };
 
     getUserDetail();
-  }, [isFollowingRef.current]);
+  }, [isFollowingRef.current, profileId]);
 
   if (loading) {
     return <LoadingSpinner />;
