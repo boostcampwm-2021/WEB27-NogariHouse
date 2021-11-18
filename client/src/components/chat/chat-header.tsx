@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-return-assign */
@@ -5,7 +6,7 @@ import { Link, useHistory } from 'react-router-dom';
 import styled, { css } from 'styled-components';
 import { FiMoreHorizontal } from 'react-icons/fi';
 import { BiMessageSquareAdd } from 'react-icons/bi';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 
 import { makeIconToLink } from '@utils/index';
 import { postChatRoom } from '@api/index';
@@ -72,7 +73,7 @@ const BtnStyle = css`
   }
 `;
 
-const CanCelBtn = styled.button`
+const CanCelBtnStyle = styled.button`
   left: 5%;
   color: #58964F;
   ${BtnStyle};
@@ -85,7 +86,7 @@ const DoneBtnStyle = styled.button`
 `;
 
 const DoneBtn = () => {
-  const selectedUserList = useRecoilValue(selectedUserType);
+  const [selectedUserList, setSelectedUserList] = useRecoilState(selectedUserType);
   const user = useRecoilValue(userType);
   const history = useHistory();
 
@@ -93,6 +94,7 @@ const DoneBtn = () => {
     if (selectedUserList.length === 0) return;
     postChatRoom([...selectedUserList.map((selectedUser: any) => selectedUser.userDocumentId), user.userDocumentId])
       .then((res: any) => {
+        setSelectedUserList([]);
         history.push({ pathname: `/chat-rooms/${res.chatRoomId}` });
       });
   };
@@ -100,6 +102,18 @@ const DoneBtn = () => {
   return (
     <DoneBtnStyle onClick={makeChatRoom}>Done</DoneBtnStyle>
   );
+};
+
+const CancelBtn = () => {
+  const [selectedUserList, setSelectedUserList] = useRecoilState(selectedUserType);
+  const history = useHistory();
+
+  const cancelEvent = () => {
+    setSelectedUserList([]);
+    history.push({ pathname: '/chat-rooms' });
+  };
+
+  return (<CanCelBtnStyle onClick={cancelEvent}>Cancel</CanCelBtnStyle>);
 };
 
 export function ChatRoomHeader() {
@@ -116,7 +130,7 @@ export function ChatRoomHeader() {
 export function NewChatRoomHeader() {
   return (
     <ChatHeaderStyle>
-      <Link to="/chat-rooms"><CanCelBtn>Cancel</CanCelBtn></Link>
+      <CancelBtn />
       <p>NEW MESSAGE</p>
       <DoneBtn />
     </ChatHeaderStyle>
