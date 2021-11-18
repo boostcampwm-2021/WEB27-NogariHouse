@@ -31,8 +31,7 @@ const IconContainer = styled.div`
     filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
   }
 `;
-function ProfileHeader({ match }: RouteComponentProps<{id: string}>) {
-  const BackIcon: IconAndLink = { Component: MdOutlineArrowBackIos, link: '/', key: 'main' };
+function ProfileHeader({ match, history }: RouteComponentProps<{id: string}>) {
   const SettingIcon: IconAndLink = { Component: MdSettings, link: '/settings', key: 'setting' };
   const user = useRecoilValue(userState);
   const setIsOpenModal = useSetRecoilState(isOpenShareModalState);
@@ -44,7 +43,7 @@ function ProfileHeader({ match }: RouteComponentProps<{id: string}>) {
   return (
     <>
       <CustomtHeader>
-        {makeIconToLink(BackIcon)}
+        <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
         <HeaderTitleNunito>
           Profile
         </HeaderTitleNunito>
