@@ -19,17 +19,6 @@ interface ISignupUserInfo {
   interesting: string[]
 }
 
-interface IUserDetail {
-  userName: string,
-  userId: string,
-  userEmail: string,
-  description: string,
-  followings: string[],
-  followers: string[],
-  joinDate: Date,
-  profileUrl: string
-}
-
 let instance: any = null;
 class UserService {
   constructor() {
@@ -194,7 +183,9 @@ class UserService {
   makeUserDetailInterface(user: IUserTypesModel & {
     _id: any;
   }) {
-    const {_id, userName, userId, userEmail, description, followings, followers, joinDate, profileUrl} = user;
+    const {
+      _id, userName, userId, userEmail, description, followings, followers, joinDate, profileUrl,
+    } = user;
     return {
       _id,
       userName,
@@ -205,7 +196,7 @@ class UserService {
       followers,
       joinDate,
       profileUrl,
-    }
+    };
   }
 
   async searchUsers(keyword: string, count: number) {
