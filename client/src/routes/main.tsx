@@ -23,7 +23,7 @@ function MainRouter() {
       <Route exact path="/activity" component={ActivityView} />
       <Route exact path="/chat-rooms" component={ChatRoomsView} />
       <Route exact path="/chat-rooms/new" component={ChatRoomsNewView} />
-      <Route exact path="/chat-rooms/:chat" component={ChatRoomDetailView} />
+      <Route exact path="/chat-rooms/:chatDocumentId" component={ChatRoomDetailView} />
       <Route exact path="/event" component={EventView} />
       <Route exact path="/followers/:id" component={FollowersView} />
       <Route exact path="/following/:id" component={FollowingView} />
