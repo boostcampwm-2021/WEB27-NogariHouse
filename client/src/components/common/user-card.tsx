@@ -37,8 +37,14 @@ const UserCardLayout = styled.div`
   align-items: center;
   justify-content: space-between;
   border-radius: 30px;
-  width: 100%;
+  margin-left: 0.8%;
+  width: 99%;
   height: ${(props: sizeProps) => sizes[props.sizeType].cardLayoutSize}px;
+
+  &:hover {
+  background-color: #eeebe4e4;
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  }
 `;
 
 const UserInfoLayout = styled.div`
