@@ -128,7 +128,7 @@ interface IProfileList {
 }
 
 const makeParticipantsInfoToUserNames = (acc: IUserName[], participant: Participants, idx: number) => {
-  if (idx > 3) return acc;
+  if (idx > 2) return acc;
   acc.push({ name: participant.userName, key: participant._id });
   return acc;
 };
@@ -157,7 +157,6 @@ export default function RoomCard({
   const thumbnailUrl = participantsInfo
   .filter((val, idx) => idx < 2)
   .map((participant, idx) => ({ profileUrl: participant.profileUrl, Style: ProfileStyleArray[idx] }));
-
 
   return (
     <RoomCardLayout>

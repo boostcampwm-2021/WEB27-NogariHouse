@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
 import userType from '@atoms/user';
-import ChatRoomListHeader from '@src/components/chat/chat-list-header';
+import ChatRoomListHeader from '@components/chat/chat-list-header';
 import ChatUserCard from '@components/chat/chat-user-card';
 import { ChatRoomsLayout } from '@components/chat/style';
 import LoadingSpinner from '@common/loading-spinner';
