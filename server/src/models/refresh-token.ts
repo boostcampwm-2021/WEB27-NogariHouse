@@ -2,12 +2,12 @@
 import { Schema, Document, model } from 'mongoose';
 
 export interface IRefreshTokenTypesModel extends Document{
-  userId: String,
+  userDocumentId: String,
   token: String,
 }
 
 const refreshTokenSchema = new Schema({
-  userId: String,
+  userDocumentId: String,
   token: String,
 });
 
