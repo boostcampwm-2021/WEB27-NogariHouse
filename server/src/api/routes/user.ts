@@ -34,7 +34,7 @@ export default (app: Router) => {
       res.status(200).json({ ok: true, userInfo });
     } else if (type === 'userId') {
       const userInfo = await usersService.findUserByUserId(id);
-      const userDetailInfo = userInfo && usersService.makeUserDetailInterface(userInfo);
+      const userDetailInfo = userInfo ? usersService.makeUserDetailInterface(userInfo) : res.json({ ok: false });
       res.json({ ok: true, userDetailInfo });
     } else {
       res.json({ ok: false });

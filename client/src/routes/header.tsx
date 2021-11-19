@@ -8,6 +8,8 @@ import InviteHeader from '@components/invite-header';
 import RecentSearchHeader from '@components/search/recent-search-header';
 import SearchHeader from '@components/search/search-header';
 import ProfileHeader from '@components/profile/profile-header';
+import FollowingHeader from '@components/profile/following-header';
+import FollowersHeader from '@components/profile/followers-header';
 
 function HeaderRouter() {
   return (
@@ -19,6 +21,8 @@ function HeaderRouter() {
       <Route exact path="/event" component={EventHeader} />
       <Route exact path="/invite" component={InviteHeader} />
       <Route exact path="/profile/:id" component={ProfileHeader} />
+      <Route exact path="/following/:id" component={FollowingHeader} />
+      <Route exact path="/followers/:id" component={FollowersHeader} />
       <Route path="/" component={DefaultHeader} />
     </Switch>
   );

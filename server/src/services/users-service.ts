@@ -204,7 +204,7 @@ class UserService {
       const query = new RegExp(keyword, 'i');
       const res = await Users.find({
         $or: [{ userId: query }, { userName: query }, { description: query }],
-      }, ['userName', 'description', 'profileUrl']).sort({ date: 1 }).skip(count).limit(10);
+      }).sort({ date: 1 }).skip(count).limit(10);
       return res;
     } catch (e) {
       console.error(e);
@@ -240,7 +240,7 @@ class UserService {
 
   async findUsersById(documentIdList: Array<string>) {
     try {
-      const participantsInfo = Users.find({ _id: { $in: documentIdList } }, ['userId', 'userName', 'profileUrl', 'description']);
+      const participantsInfo = Users.find({ _id: { $in: documentIdList } });
       return participantsInfo;
     } catch (e) {
       console.log(e);

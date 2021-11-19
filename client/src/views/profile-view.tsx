@@ -1,16 +1,15 @@
 /* eslint-disable */
 import React, { useEffect, useRef, useState } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import followingListState from '@atoms/following-list';
 import userState from '@atoms/user';
 import LoadingSpinner from '@common/loading-spinner';
-import scrollbarStyle from '@styles/scrollbar-style';
 import DefaultButton from '@common/default-button';
-
-const idRegex = /\/profile\/(.*)/;
+import useIsFollowingRef from '@hooks/useIsFollowingRef';
+import scrollbarStyle from '@styles/scrollbar-style';
 
 const ProfileViewLayout = styled.div`
   position:relative;
@@ -18,6 +17,7 @@ const ProfileViewLayout = styled.div`
   flex-direction: column;
 
   width: 80%;
+  min-width: 400px;
   height: 100%;
   margin: auto;
 
@@ -101,31 +101,32 @@ const makeDateToJoinDate = (dateString: string) => {
   return `${date.getMonth()+1}월 ${date.getDate()}, ${date.getFullYear()}`
 }
 
-function ProfileView() {
+function ProfileView({ match }: RouteComponentProps<{id: string}>) {
   const user = useRecoilValue(userState);
   const followingList = useRecoilValue(followingListState)
-  const location = useLocation();
-  const paths = location.pathname.match(idRegex);
   const [loading, setLoading] = useState(true);
   const userDetailInfo = useRef<IUserDetail>();
+  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading);
 
-  if (!paths) {
+  if (!match) {
     return <div>존재하지 않는 사용자입니다.</div>;
   }
 
-  const profileId = paths[1];
+  const profileId = match.params.id;
 
   useEffect(() => {
+    setLoading(true);
     const getUserDetail = async () => {
       const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`).then((res) => res.json());
       if (result.ok) {
         userDetailInfo.current = result.userDetailInfo;
+        isFollowingRef.current = followingList.includes(result.userDetailInfo._id);
       }
       setLoading(false);
     };
 
     getUserDetail();
-  })
+  }, [isFollowingRef.current, profileId]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -134,8 +135,6 @@ function ProfileView() {
     return <div>존재하지 않는 사용자입니다.</div>;
   }
 
-  const isFollowing = followingList.includes(userDetailInfo.current._id) ? 'following' : 'follow';
-
   return (
     <ProfileViewLayout>
       <ImageAndFollowButtonDiv>
@@ -143,12 +142,13 @@ function ProfileView() {
         {user.userId !== profileId
         &&
         <DefaultButton
-        buttonType={isFollowing}
+        buttonType={isFollowingRef.current ? 'following' : 'follow'}
         size="small"
         font="Nunito"
         isDisabled={false}
+        onClick={() => fetchFollow(isFollowingRef.current as boolean, userDetailInfo.current!._id)}
       >
-        {isFollowing}
+        {isFollowingRef.current ? 'following' : 'follow'}
       </DefaultButton>}
       </ImageAndFollowButtonDiv>
       <UserNameDiv>{userDetailInfo.current.userName}</UserNameDiv>
