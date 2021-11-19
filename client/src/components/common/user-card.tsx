@@ -93,8 +93,6 @@ export default function UserCard(props: UserCardProps) {
   const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, props.userData.isFollow);
   const history = useHistory();
 
-  console.log(props.userData);
-
   return (
     <UserCardLayout onClick={() => props.cardType !== 'others' && history.push(`/profile/${props.userData.userId}`)} sizeType={props.cardType}>
       <UserInfoLayout>
