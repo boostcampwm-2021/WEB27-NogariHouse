@@ -39,7 +39,7 @@ export function InRoomOtherUserBox({
     if (!ref.current || !isMicOn) return;
     const soundMeter = new SoundMeter(audioCtxRef.current);
     let meterRefresh: any = null;
-    soundMeter.connectToSource(false, stream as MediaStream, (e: any) => {
+    soundMeter.connectToSource(true, stream as MediaStream, (e: any) => {
       meterRefresh = setInterval(() => {
         const num = Number(soundMeter.instant.toFixed(2));
         if (num > 0.02 && ref) {
@@ -61,7 +61,7 @@ export function InRoomOtherUserBox({
   return (
     <InRoomUserBoxStyle>
       <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline />
+        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted />
       </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }

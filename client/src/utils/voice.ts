@@ -30,9 +30,8 @@ export default class SoundMeter {
 
       // eslint-disable-next-line no-plusplus
       for (let i = 0; i < inputData.length; i++) {
-        inputData[i] *= -1
-        
         sum += inputData[i] * inputData[i];
+        inputData[i] *= -1
       }
       this.instant = Math.sqrt(sum / inputData.length);
       
@@ -40,7 +39,7 @@ export default class SoundMeter {
       for (var i = 0; i < 256; i++) {
         const a = inputData[i];
         const b = (i !== 255) ? inputData[i + 1] : 0;
-        grainData[i] += a * b
+        grainData[i] += a * b * 8;
       }
 
       for (var i = 0; i < 256; i++) {
