@@ -9,12 +9,20 @@ const EventCardLayout = styled.div`
   align-items: flex-start;
   position: relative;
 
-  padding: 24px;
   height: max-content;
   max-height: 200px;
+  padding: 24px;
+  border-radius: 30px;
+
+  margin-left: 0.8%;
 
   div:not(:last-child) {
     margin-bottom: 10px;
+  }
+
+  &:hover {
+  background-color: #eeebe4e4;
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
   }
 `;
 

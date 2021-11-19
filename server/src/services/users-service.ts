@@ -39,15 +39,14 @@ class UserService {
       const accessToken = jwtUtils.sign(user._id, user.userEmail);
       const refreshToken = jwtUtils.refresh();
 
-      // tokenService를 따로 만들어줘야하는가?
       const existingRefreshToken = await RefreshTokens.findOneAndUpdate(
-        { user_id: user._id },
+        { userDocumentId: user._id },
         { token: refreshToken },
       );
 
       if (!existingRefreshToken) {
         const usersRefreshTokens = new RefreshTokens({
-          user_id: user._id,
+          userDocumentId: user._id,
           token: refreshToken,
         });
         await usersRefreshTokens.save();
@@ -89,8 +88,8 @@ class UserService {
     return result;
   }
 
-  async getRefreshTokens(userId: string) {
-    const refreshToken = await RefreshTokens.findOne({ userId });
+  async getRefreshTokens(userDocumentId: string) {
+    const refreshToken = await RefreshTokens.findOne({ userDocumentId });
     if (!refreshToken) {
       return null;
     }
@@ -126,6 +125,7 @@ class UserService {
         userDocumentId: decoded.id,
       };
     }
+
     return {
       ok: true,
       msg: 'Acess token is not expired!',
@@ -204,7 +204,7 @@ class UserService {
       const query = new RegExp(keyword, 'i');
       const res = await Users.find({
         $or: [{ userId: query }, { userName: query }, { description: query }],
-      }, ['userName', 'description', 'profileUrl']).sort({ date: 1 }).skip(count).limit(10);
+      }).sort({ date: 1 }).skip(count).limit(10);
       return res;
     } catch (e) {
       console.error(e);
@@ -240,7 +240,7 @@ class UserService {
 
   async findUsersById(documentIdList: Array<string>) {
     try {
-      const participantsInfo = Users.find({ _id: { $in: documentIdList } }, ['userId', 'userName', 'profileUrl', 'description']);
+      const participantsInfo = Users.find({ _id: { $in: documentIdList } });
       return participantsInfo;
     } catch (e) {
       console.log(e);

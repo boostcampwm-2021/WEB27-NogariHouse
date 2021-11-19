@@ -7,6 +7,7 @@ import UserCard from '@common/user-card';
 interface IUserForCard{
   _id: string,
   userName: string,
+  userId: string,
   description: string,
   profileUrl: string,
   isFollow?: boolean,
