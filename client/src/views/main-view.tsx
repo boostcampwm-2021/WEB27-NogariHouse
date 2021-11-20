@@ -21,7 +21,7 @@ import MainRouter from '@routes/main';
 import DefaultButton from '@common/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
 import LoadingSpinner from '@common/loading-spinner';
-import { getFollowingsList } from '@src/api';
+import { getFollowingsList, getMyInfo } from '@src/api';
 
 const MainLayout = styled.div`
   display: flex;
@@ -116,13 +116,9 @@ function MainView() {
   }, []);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then((res) => res.json())
+    getMyInfo()
       .then((json) => {
-        if (json.ok) {
+        if (json?.ok) {
           updateUserState(json);
         } else {
           resetUser();
