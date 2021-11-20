@@ -49,10 +49,9 @@ const ActiveFollowingLayout = styled.div`
 `;
 const MainSectionLayout = styled.div`
   position: relative;
-  width: 100%;
   height: 80vh;
-  min-width: 360px;
-  flex-grow: 3;
+  min-width: 320px;
+  flex-grow: 10;
   margin: 10px;
 `;
 
@@ -65,8 +64,11 @@ const MainScrollSection = styled.div`
 
 const RoomLayout = styled.div`
   height: 80vh;
-  flex-grow: 2;
+  flex-grow: 1;
   margin: 10px;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const ButtonLayout = styled.div`
