@@ -1,6 +1,10 @@
+/* eslint-disable max-len */
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { FiSend } from 'react-icons/fi';
+import { useRecoilValue } from 'recoil';
+
+import userType from '@atoms/user';
 
 const ChatRoomFooterStyle = styled.div`
   position: absolute;
@@ -29,15 +33,8 @@ const MsgInput = styled.textarea`
   }
 
   &::-webkit-scrollbar {
-    width: 5px;
-    height: 8px;
-    background: #C4C4C4;
+    display: none;
   }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background-color: #DCD9CD;
-  }
-  overflow-y: scroll;
 `;
 
 const SendBtnDiv = styled.div`
@@ -51,11 +48,14 @@ const SendBtnDiv = styled.div`
 
 export default function ChatRoomFooter({ addChattingLog }: any) {
   const messageInput = useRef(null);
+  const user = useRecoilValue(userType);
 
   const sendEvent = () => {
     const message = (messageInput as any).current.value;
     (messageInput as any).current.value = '';
-    addChattingLog(message);
+    addChattingLog({
+      userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message,
+    });
   };
 
   const keyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {

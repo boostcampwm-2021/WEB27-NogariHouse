@@ -39,6 +39,8 @@ export const ChatHeaderStyle = styled.div`
 `;
 
 export const ChattingLog = styled.div`
-  width: 99%;
-  height: 300px;
+  width: 100%;
+  height: 520px;
+
+  ${ScrollBarStyle};
 `;
