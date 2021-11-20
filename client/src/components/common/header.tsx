@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 export const CustomtHeader = styled.nav`
   position: relative;
-  width: calc(100%-96px);
+  width: 99%;
   height: 48px;
-  min-width: 360px;
+  min-width: 320px;
   padding: 24px 48px;
 
   display: flex;
