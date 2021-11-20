@@ -68,7 +68,8 @@ const SelectedUserDiv = styled.div`
 `;
 
 const SelectUserComponent = styled.div`
-  margin 0px 10px 5px 0px;
+  margin: 0px 10px 5px 0px;
+  padding: 0px 10px;
   background-color: #F1F0E4;
   border-radius: 30px;
 
@@ -83,28 +84,28 @@ function ChatRoomsNewView() {
   const followingList = useRecoilValue(followType);
   const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserType);
   const [allUserList, setAllUserList] = useState([]);
-  const [filteredUserList, setUserList] = useState([]);
-  const inputBar = useRef(null);
-  const selectedUserDiv = useRef(null);
+  const [filteredUserList, setFilteredUserList] = useState([]);
+  const inputBarRef = useRef(null);
+  const selectedUserDivRef = useRef(null);
 
   const addSelectedUser = (e: any) => {
     const userCardDiv = e.target.closest('.userCard');
     const profileUrl = userCardDiv.querySelector('img');
     if (!userCardDiv || !profileUrl) return;
     const userName = userCardDiv?.getAttribute('data-username');
-    (inputBar!.current as any).value = '';
+    (inputBarRef!.current as any).value = '';
     setSelectedUsers([...selectedUsers, { userDocumentId: userCardDiv?.getAttribute('data-id'), userName, profileUrl: profileUrl.getAttribute('src') }]);
   };
 
   const deleteUser = (e: any) => {
     setSelectedUsers(selectedUsers.filter((user: any) => user.userDocumentId !== e.target.getAttribute('data-id')));
-    (inputBar!.current as any).value = '';
+    (inputBarRef!.current as any).value = '';
   };
 
   const searchUser = () => {
-    const searchWord = (inputBar.current as any).value;
+    const searchWord = (inputBarRef.current as any).value;
     const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
-    setUserList(allUserList
+    setFilteredUserList(allUserList
       .filter((user: any) => (user.userId.indexOf(searchWord) > -1 || user.userName.indexOf(searchWord) > -1) && selectedUserIds.indexOf(user._id) === -1));
   };
 
@@ -112,13 +113,13 @@ function ChatRoomsNewView() {
     findUsersById(followingList).then((res: any) => {
       const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
       setAllUserList(res.userList);
-      setUserList(res.userList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
+      setFilteredUserList(res.userList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
     });
   }, [followingList]);
 
   useEffect(() => {
     const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
-    setUserList(allUserList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
+    setFilteredUserList(allUserList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
   }, [selectedUsers]);
 
   return (
@@ -126,9 +127,9 @@ function ChatRoomsNewView() {
       <NewChatRoomHeader />
       <SelectDiv>
         <p>TO : </p>
-        <SelectInputBar ref={inputBar} onChange={searchUser} />
+        <SelectInputBar ref={inputBarRef} onChange={searchUser} />
       </SelectDiv>
-      <SelectedUserDiv ref={selectedUserDiv}>
+      <SelectedUserDiv ref={selectedUserDivRef}>
         {selectedUsers.map((user: any) => (
           <SelectUserComponent key={user.userDocumentId} data-id={user.userDocumentId} onClick={deleteUser}>
             {user.userName}

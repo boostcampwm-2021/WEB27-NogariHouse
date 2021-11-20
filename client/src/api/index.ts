@@ -240,3 +240,19 @@ export const postChatRoom = async (participants: Array<string>) => {
     console.error(error);
   }
 };
+
+export const getMyInfo = async () => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
