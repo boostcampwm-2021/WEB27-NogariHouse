@@ -1,9 +1,5 @@
 import React, {
-  UIEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
+  UIEvent, useCallback, useEffect, useRef, useState,
 } from 'react';
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { useCookies } from 'react-cookie';
@@ -21,7 +17,7 @@ import MainRouter from '@routes/main';
 import DefaultButton from '@common/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
 import LoadingSpinner from '@common/loading-spinner';
-import { getFollowingsList } from '@src/api';
+import { getFollowingsList, getMyInfo } from '@src/api';
 
 const MainLayout = styled.div`
   display: flex;
@@ -40,6 +36,7 @@ const SectionLayout = styled.div`
 `;
 
 const ActiveFollowingLayout = styled.div`
+  height: 80vh;
   flex-grow: 1;
   margin: 10px;
   @media (max-width: 1024px) {
@@ -53,16 +50,17 @@ const MainSectionLayout = styled.div`
   min-width: 360px;
   flex-grow: 3;
   margin: 10px;
-
 `;
 
 const MainScrollSection = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   ${ScrollBarStyle};
 `;
 
 const RoomLayout = styled.div`
+  height: 80vh;
   flex-grow: 2;
   margin: 10px;
 `;
@@ -114,13 +112,9 @@ function MainView() {
   }, []);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
-      method: 'GET',
-      credentials: 'include',
-    })
-      .then((res) => res.json())
+    getMyInfo()
       .then((json) => {
-        if (json.ok) {
+        if (json?.ok) {
           updateUserState(json);
         } else {
           resetUser();

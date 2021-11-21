@@ -29,7 +29,7 @@ const RoomDiv = styled.div`
 `;
 
 export const makeRoomToCard = (room: RoomCardProps) => (
-  <div className="RoomCard" key={room._id} data-id={room._id}>
+  <div className="RoomCard" key={room._id} data-id={room._id} data-anonymous={room.isAnonymous}>
     <RoomCard
       key={room._id}
       _id={room._id}
@@ -54,9 +54,13 @@ function RoomView() {
   const roomCardClickHandler = (e: MouseEvent) => {
     const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
     const roomDocumentId = RoomCardDiv?.getAttribute('data-id');
-    setRoomView('inRoomView');
-    if (roomDocumentId) setRoomDocumentId(roomDocumentId);
-    else console.error('no room-id');
+    const isAnonymous = (RoomCardDiv?.getAttribute('data-anonymous') === 'true');
+    if (isAnonymous) {
+      setRoomView('selectModeView');
+    } else {
+      setRoomView('inRoomView');
+      setRoomDocumentId(roomDocumentId as string);
+    }
   };
 
   useEffect(() => {

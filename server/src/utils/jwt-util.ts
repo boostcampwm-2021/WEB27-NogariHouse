@@ -32,6 +32,7 @@ export default {
     algorithm: 'HS256',
     expiresIn: '14d',
   }),
+
   refreshVerify: async (token : string) => {
     try {
       jwt.verify(token, process.env.SECRET as string);

@@ -25,36 +25,37 @@ import userState from '@atoms/user';
 import UserCard from '@common/user-card';
 
 function SearchView() {
-  const searchType = useRecoilValue(searchTypeState);
-  const inputKeywordRef = useRef<HTMLInputElement>(null);
-  const nowFetchingRef = useRef<boolean>(false);
-  const [loading, setLoading] = useState(true);
-  const [searchDataCount, setSearchDataCount] = useState(0);
-  const user = useRecoilValue(userState);
   const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
-  const followingList = useRecoilValue(followingListState);
+  const setRoomView = useSetRecoilState(roomViewType);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const resetItemList = useResetRecoilState(nowItemsListState);
+  const user = useRecoilValue(userState);
+  const followingList = useRecoilValue(followingListState);
+  const searchType = useRecoilValue(searchTypeState);
+  const [loading, setLoading] = useState(true);
+  const [searchDataCount, setSearchDataCount] = useState(0);
+  const inputKeywordRef = useRef<HTMLInputElement>(null);
+  const nowFetchingRef = useRef<boolean>(false);
   const nowItemTypeRef = useRef<string>('');
-  const searchInfo = useRef({ keyword: 'recent', option: 'all' });
-
+  const searchInfoRef = useRef({ keyword: 'recent', option: 'all' });
   const setEventModal = useSetEventModal();
 
   const fetchItems = async () => {
     try {
-      const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}?count=${searchDataCount}`)
+      const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/search/${searchInfoRef.current.option}/${searchInfoRef.current.keyword || 'recent'}?count=${searchDataCount}`)
         .then((res) => res.json())
         .then((json) => json.items);
       setNowItemsList([...nowItemsList, ...newItemsList]);
-      nowItemTypeRef.current = searchInfo.current.keyword;
+      nowItemTypeRef.current = searchInfoRef.current.keyword;
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
   };
 
   const searchRequestHandler = () => {
-    searchInfo.current.keyword = inputKeywordRef.current?.value as string;
-    searchInfo.current.option = searchType.toLocaleLowerCase();
+    searchInfoRef.current.keyword = inputKeywordRef.current?.value as string;
+    searchInfoRef.current.option = searchType.toLocaleLowerCase();
     resetItemList();
     setSearchDataCount(0);
     setNowFetching(true);
@@ -92,9 +93,6 @@ function SearchView() {
     }
   }, []);
 
-  const setRoomView = useSetRecoilState(roomViewType);
-  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
-
   const roomCardClickHandler = (e: MouseEvent) => {
     const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
     const roomDocumentId = RoomCardDiv?.getAttribute('data-id');
@@ -106,14 +104,15 @@ function SearchView() {
   const makeUserObjectIncludedIsFollow = (
     userItem: {
       _id: string,
-      userName:
-      string,
+      userName: string,
+      userId: string,
       description: string,
       profileUrl: string
     },
   ) => ({
     _id: userItem._id,
     userName: userItem.userName,
+    userId: userItem.userId,
     description: userItem.description,
     profileUrl: userItem.profileUrl,
     isFollow: !!followingList.includes(userItem._id),
@@ -148,7 +147,7 @@ function SearchView() {
 
   // eslint-disable-next-line consistent-return
   const showList = () => {
-    if (searchInfo.current.option !== searchType.toLocaleLowerCase()) {
+    if (searchInfoRef.current.option !== searchType.toLocaleLowerCase()) {
       return <LoadingSpinner />;
     }
 

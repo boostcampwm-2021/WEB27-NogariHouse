@@ -34,7 +34,8 @@ export default (app: Router) => {
       res.status(200).json({ ok: true, userInfo });
     } else if (type === 'userId') {
       const userInfo = await usersService.findUserByUserId(id);
-      const userDetailInfo = userInfo && usersService.makeUserDetailInterface(userInfo);
+      const userDetailInfo = userInfo
+        ? usersService.makeUserDetailInterface(userInfo) : res.json({ ok: false });
       res.json({ ok: true, userDetailInfo });
     } else {
       res.json({ ok: false });
@@ -47,11 +48,10 @@ export default (app: Router) => {
 
     if (type === 'follow') {
       result = await usersService.followUser(userDocumentId, targetUserDocumentId);
-      res.json({ ok: result })
-    } 
-    else if (type === 'unfollow') {
+      res.json({ ok: result });
+    } else if (type === 'unfollow') {
       result = await usersService.unfollowUser(userDocumentId, targetUserDocumentId);
-      res.json({ ok: result })  
+      res.json({ ok: result });
     } else {
       res.status(400).json({ ok: false, msg: '유효하지 않은 요청입니다.' });
     }

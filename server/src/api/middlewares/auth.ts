@@ -24,9 +24,8 @@ const authJWT = async (req:Request, res:Response, next:NextFunction) => {
         next();
       }
     }
-  }
-  else {
-    res.json({ ok: false })
+  } else {
+    res.json({ ok: false });
   }
 };
 

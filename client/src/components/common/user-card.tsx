@@ -3,32 +3,34 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 /* eslint-disable no-unused-expressions */
-import React, { useCallback, useRef, useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import React, { MouseEvent, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import followingListState from '@atoms/following-list';
 import UserImage from '@common/user-image';
 import DefaultButton from '@common/default-button';
+import useIsFollowingRef from '@hooks/useIsFollowingRef';
 import LoadingSpinner from './loading-spinner';
 
 interface UserCardProps {
-  cardType: 'follow' | 'others';
+  cardType: 'follow' | 'me' | 'others';
   userData: {
     _id: string,
     userName: string,
+    userId: string,
     description: string,
     profileUrl: string,
     isFollow?: boolean,
-  }
+  },
 }
 
 interface sizeProps {
-  sizeType : 'follow' | 'others'
+  sizeType : 'follow' |'me' |'others'
 }
 
 const sizes = {
   follow: { cardLayoutSize: 100, userNameSize: 24, descriptionSize: 18 },
+  me: { cardLayoutSize: 100, userNameSize: 24, descriptionSize: 18 },
   others: { cardLayoutSize: 60, userNameSize: 16, descriptionSize: 12 },
 };
 
@@ -37,8 +39,17 @@ const UserCardLayout = styled.div`
   align-items: center;
   justify-content: space-between;
   border-radius: 30px;
-  width: 100%;
+  margin-left: 0.8%;
+  width: 99%;
   height: ${(props: sizeProps) => sizes[props.sizeType].cardLayoutSize}px;
+  color: black;
+  text-decoration: none;
+
+  &:hover {
+  cursor: default;
+  background-color: #eeebe4e4;
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  }
 `;
 
 const UserInfoLayout = styled.div`
@@ -79,34 +90,14 @@ const UserDescription = styled.div`
 
 export default function UserCard(props: UserCardProps) {
   const [loading, setLoading] = useState(false);
-  const isFollowRef = useRef<boolean>(props.userData.isFollow as boolean);
-  const setFollowingList = useSetRecoilState(followingListState);
-
-  const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
-    setLoading(true);
-    const type = isFollow ? 'unfollow' : 'follow';
-    fetch(`${process.env.REACT_APP_API_URL}/api/user/follow`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({ type, targetUserDocumentId }),
-    }).then((res) => res.json())
-      .then((json) => {
-        if (json.ok) {
-          isFollowRef.current = !isFollowRef.current;
-          isFollow ? setFollowingList((followList) => followList.filter((id) => id !== targetUserDocumentId)) : setFollowingList((followList) => [...followList, targetUserDocumentId]);
-        }
-        setLoading(false);
-      });
-  }, []);
+  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, props.userData.isFollow);
+  const history = useHistory();
 
   return (
-    <UserCardLayout sizeType={props.cardType}>
+    <UserCardLayout onClick={() => props.cardType !== 'others' && history.push(`/profile/${props.userData.userId}`)} sizeType={props.cardType}>
       <UserInfoLayout>
         <UserImageLayout>
-          <UserImage src={props.userData.profileUrl} size={props.cardType === 'follow' ? 'default' : 'others'} />
+          <UserImage src={props.userData.profileUrl} size={props.cardType === 'others' ? 'others' : 'default'} />
         </UserImageLayout>
         <UserDescLayout>
           <UserName sizeType={props.cardType}>
@@ -124,13 +115,13 @@ export default function UserCard(props: UserCardProps) {
       {props.cardType === 'follow'
         && (
           <DefaultButton
-            buttonType={isFollowRef.current ? 'following' : 'follow'}
+            buttonType={isFollowingRef.current ? 'following' : 'follow'}
             size="small"
             font="Nunito"
             isDisabled={false}
-            onClick={() => fetchFollow(isFollowRef.current, props.userData._id)}
+            onClick={(e: MouseEvent) => { e.stopPropagation(); fetchFollow(isFollowingRef.current as boolean, props.userData._id); }}
           >
-            {isFollowRef.current ? 'following' : 'follow'}
+            {isFollowingRef.current ? 'following' : 'follow'}
           </DefaultButton>
         )}
     </UserCardLayout>
