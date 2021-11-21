@@ -15,7 +15,6 @@ const useItemFecthObserver = (loading: boolean) => {
 
   useEffect(() => {
     let observer: IntersectionObserver;
-    console.log(targetRef.current);
     if (targetRef.current) {
       observer = new IntersectionObserver(onIntersect, {
         threshold: 0.4,
