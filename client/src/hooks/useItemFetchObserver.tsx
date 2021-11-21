@@ -1,9 +1,9 @@
-import { useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 import { useRecoilState } from 'recoil';
 
 import { nowFetchingState } from '@atoms/main-section-scroll';
 
-const useItemFecthObserver = (loading: boolean) => {
+const useItemFecthObserver = (loading: boolean): [RefObject<HTMLDivElement>] => {
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
   const targetRef = useRef<HTMLDivElement>(null);
 

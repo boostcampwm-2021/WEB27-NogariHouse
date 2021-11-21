@@ -2,13 +2,16 @@
 import React, {
   MouseEvent, useEffect, useState,
 } from 'react';
+import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import useFetchItems from '@src/hooks/useFetchItems';
-import { makeDateToHourMinute } from '@src/utils';
+import { nowFetchingState } from '@atoms/main-section-scroll';
 import EventCard from '@common/event-card';
 import LoadingSpinner from '@common/loading-spinner';
+import useFetchItems from '@hooks/useFetchItems';
+import useItemFecthObserver from '@hooks/useItemFetchObserver';
 import useSetEventModal from '@hooks/useSetEventModal';
+import { makeDateToHourMinute } from '@src/utils';
 
 interface EventUser {
   userId: string,
@@ -30,6 +33,12 @@ const EventDiv = styled.div`
  }
 `;
 
+const ObserverBlock = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100px;
+`;
+
 export const makeEventToCard = (event: EventCardProps) => (
   <EventCard
     key={event.key}
@@ -47,6 +56,8 @@ export function EventCardList({ eventList, setEventModal }: { eventList: EventCa
 function EventView() {
   const [nowItemList, nowItemType] = useFetchItems<EventCardProps>('/event', 'event');
   const [loading, setLoading] = useState(true);
+  const nowFetching = useRecoilValue(nowFetchingState);
+  const [targetRef] = useItemFecthObserver(loading);
   const setEventModal = useSetEventModal();
 
   useEffect(() => {
@@ -62,6 +73,9 @@ function EventView() {
   return (
     <>
       <EventCardList setEventModal={setEventModal} eventList={nowItemList} />
+      <ObserverBlock ref={targetRef}>
+        {nowFetching && <LoadingSpinner />}
+      </ObserverBlock>
     </>
   );
 }

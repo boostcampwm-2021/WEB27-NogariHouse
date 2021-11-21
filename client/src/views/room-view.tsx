@@ -6,13 +6,13 @@ import React, {
 import styled from 'styled-components';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import RoomCard from '@common/room-card';
-import useFetchItems from '@src/hooks/useFetchItems';
-import LoadingSpinner from '@common/loading-spinner';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
-import useItemFecthObserver from '@src/hooks/useItemFetchObserver';
-import { nowFetchingState } from '@src/recoil/atoms/main-section-scroll';
+import { nowFetchingState } from '@atoms/main-section-scroll';
+import LoadingSpinner from '@common/loading-spinner';
+import RoomCard from '@common/room-card';
+import useFetchItems from '@hooks/useFetchItems';
+import useItemFecthObserver from '@hooks/useItemFetchObserver';
 
 interface Participants{
   _id: string,
@@ -58,8 +58,8 @@ export function RoomCardList({ roomList, roomCardClickHandler }:
 
 function RoomView() {
   const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room', 'room');
-  const nowFetching = useRecoilValue(nowFetchingState);
   const [loading, setLoading] = useState(true);
+  const nowFetching = useRecoilValue(nowFetchingState);
   const [targetRef] = useItemFecthObserver(loading);
   const setRoomView = useSetRecoilState(roomViewType);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
