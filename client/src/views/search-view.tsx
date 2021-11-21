@@ -26,6 +26,7 @@ import userState from '@atoms/user';
 import UserCard from '@common/user-card';
 import useItemFecthObserver from '@src/hooks/useItemFetchObserver';
 import useFetchItems from '@src/hooks/useFetchItems';
+import { IUserForCard } from '@src/interfaces';
 
 const ObserverBlock = styled.div`
   position: relative;
@@ -79,20 +80,8 @@ function SearchView() {
     else console.error('no room-id');
   };
 
-  const makeUserObjectIncludedIsFollow = (
-    userItem: {
-      _id: string,
-      userName: string,
-      userId: string,
-      description: string,
-      profileUrl: string
-    },
-  ) => ({
-    _id: userItem._id,
-    userName: userItem.userName,
-    userId: userItem.userId,
-    description: userItem.description,
-    profileUrl: userItem.profileUrl,
+  const makeUserObjectIncludedIsFollow = (userItem: Required<IUserForCard>): IUserForCard => ({
+    ...userItem,
     isFollow: !!followingList.includes(userItem._id),
   });
 
