@@ -134,7 +134,7 @@ function ChatRoomDetailView() {
           </Chat>
         ))}
       </ChattingLog>
-      <ChatRoomFooter addChattingLog={addChattingLog} />
+      <ChatRoomFooter addChattingLog={addChattingLog} chatDocumentId={chatDocumentId} />
     </ChatRoomsLayout>
   );
 }

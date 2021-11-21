@@ -231,3 +231,25 @@ export const getChattingLog = async (chatDocumentId: string) => {
     console.log(e);
   }
 };
+
+interface IChattingLog {
+  userDocumentId: string,
+  message: string,
+  date: Date,
+}
+
+export const postChattingMsg = async (chattingLog: IChattingLog, chatDocumentId: string) => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ chattingLog, chatDocumentId }),
+    });
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};

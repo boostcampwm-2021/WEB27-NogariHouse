@@ -5,6 +5,8 @@ import { FiSend } from 'react-icons/fi';
 import { useRecoilValue } from 'recoil';
 
 import userType from '@atoms/user';
+import { makeDateToHourMinute } from '@utils/index';
+import { postChattingMsg } from '@api/index';
 
 const ChatRoomFooterStyle = styled.div`
   position: absolute;
@@ -46,15 +48,17 @@ const SendBtnDiv = styled.div`
   transform: translateY(10px);
 `;
 
-export default function ChatRoomFooter({ addChattingLog }: any) {
+export default function ChatRoomFooter({ addChattingLog, chatDocumentId }: any) {
   const messageInput = useRef(null);
   const user = useRecoilValue(userType);
 
-  const sendEvent = () => {
+  const sendEvent = async () => {
     const message = (messageInput as any).current.value;
     (messageInput as any).current.value = '';
+    const res : any = await postChattingMsg({ userDocumentId: user.userDocumentId, message, date: new Date() }, chatDocumentId);
+    if (!res.ok) return;
     addChattingLog({
-      userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message,
+      userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),
     });
   };
 
