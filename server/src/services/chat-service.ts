@@ -49,6 +49,11 @@ class ChatService {
 
     return newChatRoom._id;
   }
+
+  async getChattingLog(chatDocumentId: string) {
+    const chattingLog = await Chats.findOne({ _id: chatDocumentId }, ['chattingLog']);
+    return chattingLog;
+  }
 }
 
 export = new ChatService();

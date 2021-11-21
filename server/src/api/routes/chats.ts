@@ -16,7 +16,7 @@ export default (app: Router) => {
 
       res.status(200).json({ chatRoomId });
     } catch (error) {
-      console.log(error);
+      res.json({ ok: false });
     }
   });
 
@@ -28,7 +28,19 @@ export default (app: Router) => {
 
       res.status(200).json(chatRoomInfo);
     } catch (error) {
-      console.error(error);
+      res.json({ ok: false });
+    }
+  });
+
+  chatRouter.get('/chat-log/:chatDocumentId', async (req: Request, res: Response) => {
+    try {
+      const { chatDocumentId } = req.params;
+
+      const chattingLog = await chatService.getChattingLog(chatDocumentId);
+
+      res.status(200).json(chattingLog);
+    } catch (e) {
+      res.json({ ok: false });
     }
   });
 };
