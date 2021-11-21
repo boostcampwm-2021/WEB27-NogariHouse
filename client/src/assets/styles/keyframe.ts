@@ -18,6 +18,15 @@ to{
 }
 `;
 
+export const slideXFromTo = (from: number, to: number) => keyframes`
+from{
+    transform: translateX(${from}px);
+}
+to{
+    transform: translateX(${to}px);
+}
+`;
+
 export const spinner = () => keyframes`
     from {transform: rotate(0deg); }
     to {transform: rotate(360deg);}
