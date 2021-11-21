@@ -43,4 +43,16 @@ export default (app: Router) => {
       res.json({ ok: false });
     }
   });
+
+  chatRouter.post('/chat-log', async (req: Request, res: Response) => {
+    try {
+      const { chattingLog, chatDocumentId } = req.body;
+
+      await chatService.addChattingLog(chattingLog, chatDocumentId);
+
+      res.status(200).json({ ok: true });
+    } catch (e) {
+      res.json({ ok: false });
+    }
+  });
 };

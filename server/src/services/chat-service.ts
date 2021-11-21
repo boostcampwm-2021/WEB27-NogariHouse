@@ -54,6 +54,13 @@ class ChatService {
     const chattingLog = await Chats.findOne({ _id: chatDocumentId }, ['chattingLog']);
     return chattingLog;
   }
+
+  async addChattingLog(chattingLog: any, chatDocumentId: string) {
+    await Chats.findOneAndUpdate({ _id: chatDocumentId }, {
+      $push: { chattingLog },
+      $set: { recentActive: chattingLog.date, lastMsg: chattingLog.message },
+    });
+  }
 }
 
 export = new ChatService();
