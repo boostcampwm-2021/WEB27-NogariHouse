@@ -55,7 +55,7 @@ export default function ChatRoomFooter({ addChattingLog, chatDocumentId }: any) 
   const sendEvent = async () => {
     const message = (messageInput as any).current.value;
     (messageInput as any).current.value = '';
-    const res : any = await postChattingMsg({ userDocumentId: user.userDocumentId, message, date: new Date() }, chatDocumentId);
+    const res : any = await postChattingMsg({ userDocumentId: user.userDocumentId, message, date: new Date() }, chatDocumentId, user.userDocumentId);
     if (!res.ok) return;
     addChattingLog({
       userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),

@@ -5,14 +5,17 @@ interface IChattingLog {
     date: Date,
 }
 
-type IUnCheckedMsg = { [userDocumentId: string]: number };
+interface IUnReadMsg {
+  userDocumentId: string,
+  count: number,
+}
 
 interface IChatTypesModel extends Document {
   participants: Array<string>,
   chattingLog: Array<IChattingLog>,
   lastMsg: string,
   recentActive: Date,
-  unCheckedMsg: IUnCheckedMsg,
+  unReadMsg: Array<IUnReadMsg>,
 }
 
 const chatSchema = new Schema({
@@ -32,9 +35,9 @@ const chatSchema = new Schema({
     type: Date,
     default: new Date(),
   },
-  unCheckedMsg: {
-    type: Object,
-    default: {},
+  unReadMsg: {
+    type: [Object],
+    default: [],
   },
 });
 

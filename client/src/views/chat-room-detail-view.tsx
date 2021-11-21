@@ -9,7 +9,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
-import { getChattingLog } from '@api/index';
+import { getChattingLog, setUnCheckedMsg0 } from '@api/index';
 import { ChatRoomsLayout, ChattingLog } from '@components/chat/style';
 import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';
@@ -88,6 +88,7 @@ function ChatRoomDetailView() {
   useEffect(() => {
     getChattingLog(chatDocumentId)
       .then((res: any) => {
+        setUnCheckedMsg0(chatDocumentId, user.userDocumentId);
         setChattingLog(res.chattingLog.map((chat: any) => {
           if (chat.userDocumentId === user.userDocumentId) {
             return ({
@@ -109,6 +110,11 @@ function ChatRoomDetailView() {
         }));
         (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
       });
+    return () => {
+      setUnCheckedMsg0(chatDocumentId, user.userDocumentId).then(() => {
+
+      });
+    };
   }, [chatDocumentId]);
 
   useEffect(() => {

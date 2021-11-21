@@ -46,13 +46,25 @@ export default (app: Router) => {
 
   chatRouter.post('/chat-log', async (req: Request, res: Response) => {
     try {
-      const { chattingLog, chatDocumentId } = req.body;
+      const { chattingLog, chatDocumentId, userDocumentId } = req.body;
 
-      await chatService.addChattingLog(chattingLog, chatDocumentId);
+      await chatService.addChattingLog(chattingLog, chatDocumentId, userDocumentId);
 
       res.status(200).json({ ok: true });
     } catch (e) {
       res.json({ ok: false });
+    }
+  });
+
+  chatRouter.get('/setUnCheckedMsg/:chatDocumentId/:userDocumentId', async (req: Request, res: Response) => {
+    try {
+      const { chatDocumentId, userDocumentId } = req.params;
+
+      await chatService.setUnCheckedMsg(chatDocumentId, userDocumentId);
+
+      res.status(200).json({ ok: true });
+    } catch (e) {
+      res.status(404).json({ ok: false });
     }
   });
 };
