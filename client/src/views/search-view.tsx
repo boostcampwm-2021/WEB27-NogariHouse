@@ -2,13 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import React, {
-  useRef, useCallback, UIEvent, useEffect, useState, MouseEvent,
+  useRef, useEffect, useState, MouseEvent,
 } from 'react';
 import {
   useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
 } from 'recoil';
+import styled from 'styled-components';
 
-import { nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
+import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
 import searchTypeState from '@atoms/search-type';
 import OptionBar from '@components/search/option-bar';
 import {
@@ -23,40 +24,35 @@ import roomDocumentIdState from '@atoms/room-document-id';
 import followingListState from '@atoms/following-list';
 import userState from '@atoms/user';
 import UserCard from '@common/user-card';
+import useItemFecthObserver from '@src/hooks/useItemFetchObserver';
+import useFetchItems from '@src/hooks/useFetchItems';
+
+const ObserverBlock = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100px;
+`;
 
 function SearchView() {
   const searchType = useRecoilValue(searchTypeState);
   const inputKeywordRef = useRef<HTMLInputElement>(null);
-  const nowFetchingRef = useRef<boolean>(false);
   const [loading, setLoading] = useState(true);
-  const [searchDataCount, setSearchDataCount] = useState(0);
+  const [targetRef] = useItemFecthObserver(loading);
   const user = useRecoilValue(userState);
-  const [nowItemsList, setNowItemsList] = useRecoilState(nowItemsListState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
   const followingList = useRecoilValue(followingListState);
   const resetItemList = useResetRecoilState(nowItemsListState);
-  const nowItemTypeRef = useRef<string>('');
   const searchInfo = useRef({ keyword: 'recent', option: 'all' });
+  const [nowItemsList, nowItemType] = useFetchItems<any>(`/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}`, searchInfo.current.keyword);
+  const setNowCount = useSetRecoilState(nowCountState);
 
   const setEventModal = useSetEventModal();
-
-  const fetchItems = async () => {
-    try {
-      const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}?count=${searchDataCount}`)
-        .then((res) => res.json())
-        .then((json) => json.items);
-      setNowItemsList([...nowItemsList, ...newItemsList]);
-      nowItemTypeRef.current = searchInfo.current.keyword;
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   const searchRequestHandler = () => {
     searchInfo.current.keyword = inputKeywordRef.current?.value as string;
     searchInfo.current.option = searchType.toLocaleLowerCase();
     resetItemList();
-    setSearchDataCount(0);
+    setNowCount(0);
     setNowFetching(true);
   };
 
@@ -65,30 +61,10 @@ function SearchView() {
   }, [searchType]);
 
   useEffect(() => {
-    if (nowFetching) {
-      fetchItems().then(() => setNowFetching(false));
-    }
-  }, [nowFetching]);
-
-  useEffect(() => {
-    if (nowItemsList && (nowItemTypeRef.current === 'recent' || nowItemTypeRef.current === inputKeywordRef.current?.value)) {
+    if (nowItemsList && (nowItemType === 'recent' || nowItemType === inputKeywordRef.current?.value)) {
       setLoading(false);
     } else {
       setLoading(true);
-    }
-  }, []);
-
-  const scrollBarChecker = useCallback((e: UIEvent<HTMLDivElement>) => {
-    if (!nowFetchingRef.current) {
-      const diff = e.currentTarget.scrollHeight - e.currentTarget.scrollTop;
-      if (diff < 700) {
-        setSearchDataCount(searchDataCount + 10);
-        setNowFetching(true);
-        nowFetchingRef.current = true;
-        setTimeout(() => {
-          nowFetchingRef.current = false;
-        }, 200);
-      }
     }
   }, []);
 
@@ -163,10 +139,13 @@ function SearchView() {
         {/* 너무 빨리 입력하는 경우 놓치게되어서 onChange, onKeyup을 둘 다 달았습니다..  */}
         <OptionBar />
       </SearchBarLayout>
-      <SearchScrollSection onScroll={scrollBarChecker}>
+      <SearchScrollSection>
         {loading
           ? <LoadingSpinner />
           : showList()}
+        <ObserverBlock ref={targetRef}>
+          {nowFetching && <LoadingSpinner />}
+        </ObserverBlock>
       </SearchScrollSection>
     </SearchViewLayout>
   );
