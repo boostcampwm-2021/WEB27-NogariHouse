@@ -10,6 +10,7 @@ import ChatUserCard from '@components/chat/chat-user-card';
 import { ChatRoomsLayout } from '@components/chat/style';
 import LoadingSpinner from '@common/loading-spinner';
 import { getChatRooms } from '@api/index';
+import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
 
 interface IChatUserType {
   userDocumentId: string,
@@ -21,6 +22,8 @@ interface IChatRoom {
   chatDocumentId: string,
   participants: Array<IChatUserType>,
   lastMsg: string,
+  recentActive: Date,
+  unCheckedMsg: number,
 }
 
 function ChatRoomsViews() {
@@ -48,7 +51,21 @@ function ChatRoomsViews() {
   return (
     <ChatRoomsLayout>
       <ChatRoomListHeader />
-      {chatRooms?.map((chatRoom: IChatRoom) => <ChatUserCard key={chatRoom.chatDocumentId} clickEvent={() => clickEvent(chatRoom.chatDocumentId, chatRoom.participants)} participantsInfo={chatRoom.participants} lastMsg={chatRoom.lastMsg} />)}
+      {chatRooms?.map((chatRoom: IChatRoom) => {
+        const date = new Date(chatRoom.recentActive);
+        return (
+          <ChatUserCard
+            key={chatRoom.chatDocumentId}
+            clickEvent={
+        () => clickEvent(chatRoom.chatDocumentId, chatRoom.participants)
+        }
+            participantsInfo={chatRoom.participants}
+            lastMsg={chatRoom.lastMsg}
+            recentActive={date.getDate() === (new Date()).getDate() ? makeDateToHourMinute(date) : makeDateToMonthDate(date)}
+            unCheckedMsg={chatRoom.unCheckedMsg}
+          />
+        );
+      })}
     </ChatRoomsLayout>
   );
 }

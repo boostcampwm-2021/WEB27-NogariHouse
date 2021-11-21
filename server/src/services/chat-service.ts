@@ -1,3 +1,4 @@
+/* eslint-disable no-return-assign */
 /* eslint-disable no-return-await */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
@@ -20,17 +21,23 @@ class ChatService {
     const chatRoomList = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
 
     const chatRoomInfoArray = await Promise.all((chatRoomList!.chatRooms).map(async (chatDocumentId: string) => {
-      const chatRoomInfo = await Chats.findOne({ _id: chatDocumentId }, ['participants', 'lastMsg', 'recentActive']);
+      const chatRoomInfo = await Chats.findOne({ _id: chatDocumentId }, ['participants', 'lastMsg', 'recentActive', 'unCheckedMsg']);
       const UserInfo : any = [];
       await Promise.all((chatRoomInfo)!.participants.map(async (_id) => {
         if (_id === userDocumentId) return;
         const info = await Users.findOne({ _id }, ['userName', 'profileUrl']);
         UserInfo.push({ userDocumentId: info!._id, userName: info!.userName, profileUrl: info!.profileUrl });
       }));
+
       return ({
-        chatDocumentId, participants: UserInfo, lastMsg: chatRoomInfo?.lastMsg, recentActive: chatRoomInfo?.recentActive,
+        chatDocumentId,
+        participants: UserInfo,
+        lastMsg: chatRoomInfo?.lastMsg,
+        recentActive: chatRoomInfo?.recentActive,
+        unCheckedMsg: chatRoomInfo?.unCheckedMsg[userDocumentId],
       });
     }));
+
     return chatRoomInfoArray.sort((a: any, b: any) => {
       if (a.recentActive < b.recentActive) return 1;
       if (a.recentActive > b.recentActive) return -1;
@@ -42,7 +49,9 @@ class ChatService {
     const chatRoom = await Chats.findOne({ participants }, ['participants']);
     if (chatRoom) return chatRoom._id;
 
-    const newChatRoom = new Chats({ participants });
+    const unCheckedMsg : any = {};
+    participants.forEach((userDocumentId: string) => unCheckedMsg[userDocumentId] = 0);
+    const newChatRoom = new Chats({ participants, unCheckedMsg });
     await newChatRoom.save();
 
     participants.forEach(async (userDocumentId) => await Users.findOneAndUpdate({ _id: userDocumentId }, { $push: { chatRooms: newChatRoom._id } }));

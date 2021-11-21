@@ -5,11 +5,14 @@ interface IChattingLog {
     date: Date,
 }
 
+type IUnCheckedMsg = { [userDocumentId: string]: number };
+
 interface IChatTypesModel extends Document {
   participants: Array<string>,
   chattingLog: Array<IChattingLog>,
   lastMsg: string,
   recentActive: Date,
+  unCheckedMsg: IUnCheckedMsg,
 }
 
 const chatSchema = new Schema({
@@ -28,6 +31,10 @@ const chatSchema = new Schema({
   recentActive: {
     type: Date,
     default: new Date(),
+  },
+  unCheckedMsg: {
+    type: Object,
+    default: {},
   },
 });
 
