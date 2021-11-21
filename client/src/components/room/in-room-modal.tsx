@@ -34,6 +34,7 @@ function InRoomModal() {
   useEffect(() => {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
+        if (!res) setRoomView('NotFoundRoom');
         setRoomInfo(res);
       });
   }, []);
