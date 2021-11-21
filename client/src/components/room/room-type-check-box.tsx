@@ -1,11 +1,10 @@
+/* eslint-disable */
 import React from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { IconType } from 'react-icons';
 import { IoEarthOutline } from 'react-icons/io5';
 import { MdOutlinePeopleOutline, MdLockOutline } from 'react-icons/md';
-
-import roomTypeState from '@atoms/room-type';
 
 const Box = styled.button`
   width : 90px;
@@ -27,16 +26,12 @@ const BoxText = styled.div`
 
 interface RoomTypeCheckBoxProps{
     checkBoxName : 'public' | 'social' | 'closed',
+    onClick: any
+    roomType: any
 }
 
-function RoomTypeCheckBox({ checkBoxName } : RoomTypeCheckBoxProps) {
-  const [roomType, setRoomType] = useRecoilState(roomTypeState);
-
-  const onClick = () => {
-    setRoomType(checkBoxName);
-  };
-
-  const TypeWithIcon = {
+function RoomTypeCheckBox({ checkBoxName, onClick, roomType } : RoomTypeCheckBoxProps) {
+  const TypeWithIcon = { 
     public: { component: IoEarthOutline, color: '#4E84C1' },
     social: { component: MdOutlinePeopleOutline, color: '#78A55A' },
     closed: { component: MdLockOutline, color: '#999999' },
