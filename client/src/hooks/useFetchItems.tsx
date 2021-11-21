@@ -1,21 +1,6 @@
 import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
-import { RefObject, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRecoilState, useResetRecoilState } from 'recoil';
-
-export const useCountRef = (): [RefObject<number>, Function, Function] => {
-  const countRef = useRef(0);
-
-  const resetCount = () => {
-    console.log('reset');
-    countRef.current = 0;
-    console.log(countRef.current);
-  };
-  const updateCountRef = (newItemsList: []) => {
-    countRef.current += Math.min(newItemsList.length, 10);
-  };
-
-  return [countRef, resetCount, updateCountRef];
-};
 
 const useFetchItems = <T extends {}>(apiPath : string, nowItemType: string)
 : [T[], string] => {
