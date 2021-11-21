@@ -13,10 +13,21 @@ import { nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-sect
 
 const CustomDefaultHeader = styled.nav`
   position: relative;
-  width: calc(100%-96px);
+  width: 95%;
   height: 48px;
-  min-width: 900px;
   padding: 24px 48px;
+
+  display: flex;
+  justify-content: space-between;
+`;
+
+const MenuIconsLayout = styled.nav`
+  @media (max-width: 1024px) {
+    display: none;
+  }
+  position: relative;
+  width: 100%;
+  height: 48px;
 
   display: flex;
   justify-content: space-between;
@@ -37,8 +48,8 @@ const IconContainer = styled.div`
 
 const LogoTitle = styled(Link)`
   position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 47.5%;
+  transform: translateX(-47.5%);
   font-family: "Bangers";
   font-size: 48px;
   text-decoration: none;
@@ -78,14 +89,16 @@ function DefaultHeader() {
   ];
   return (
     <CustomDefaultHeader>
-      <IconContainer>
-        {leftSideIcons.map(makeIconToLink)}
-      </IconContainer>
       <LogoTitle to="/" onClick={() => { resetNowItemsList(); setNowFetching(true); }}> NogariHouse </LogoTitle>
-      <IconContainer>
-        {rightSideIcons.map(makeIconToLink)}
-        <Link to={`/profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
-      </IconContainer>
+      <MenuIconsLayout>
+        <IconContainer>
+          {leftSideIcons.map(makeIconToLink)}
+        </IconContainer>
+        <IconContainer>
+          {rightSideIcons.map(makeIconToLink)}
+          <Link to={`/profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
+        </IconContainer>
+      </MenuIconsLayout>
     </CustomDefaultHeader>
   );
 }
