@@ -9,10 +9,12 @@ import { useParams, useLocation } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
+import { getChattingLog } from '@api/index';
 import { ChatRoomsLayout, ChattingLog } from '@components/chat/style';
 import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';
 import userType from '@atoms/user';
+import { makeDateToHourMinute } from '@utils/index';
 
 type urlParams = { chatDocumentId: string };
 
@@ -55,27 +57,59 @@ const UserProfile = styled.img`
   border-radius: 15px;
 `;
 
+const DateDiv = styled.div`
+  color: #CED3C2;
+  font-size: 15px;
+
+  display: flex;
+  align-items: end;
+  margin: 5px;
+`;
+
 interface IChattingLog {
   message: string,
   profileUrl: string,
   userName: string,
   userDocumentId: string,
+  date: string,
 }
 
 function ChatRoomDetailView() {
   const { chatDocumentId } = useParams<urlParams>();
   const location = useLocation<any>();
-  const [chattingLog, setChattingLog] = useState<any>([{
-    message: 'test', userDocumentId: '1', profileUrl: 'https://avatars.githubusercontent.com/u/51700274?v=4', userName: 'caj',
-  }]);
+  const [chattingLog, setChattingLog] = useState<any>([]);
   const user = useRecoilValue(userType);
   const chattingLogDiv = useRef(null);
-
-  console.log(chatDocumentId);
 
   const addChattingLog = (message: string) => {
     setChattingLog([...chattingLog, message]);
   };
+
+  useEffect(() => {
+    getChattingLog(chatDocumentId)
+      .then((res: any) => {
+        setChattingLog(res.chattingLog.map((chat: any) => {
+          if (chat.userDocumentId === user.userDocumentId) {
+            return ({
+              message: chat.message,
+              userDocumentId: chat.userDocumentId,
+              profileUrl: user.profileUrl,
+              userName: user.userName,
+              date: makeDateToHourMinute(new Date(chat.date)),
+            });
+          }
+          const userData = location.state.participantsInfo.filter((userInfo: any) => userInfo.userDocumentId === chat.userDocumentId);
+          return ({
+            message: chat.message,
+            userDocumentId: chat.userDocumentId,
+            profileUrl: userData[0].profileUrl,
+            userName: userData[0].userName,
+            date: makeDateToHourMinute(new Date(chat.date)),
+          });
+        }));
+        (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
+      });
+  }, [chatDocumentId]);
 
   useEffect(() => {
     (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
@@ -86,13 +120,17 @@ function ChatRoomDetailView() {
       <ChatRoomHeader participantsInfo={location.state.participantsInfo} />
       <ChattingLog ref={chattingLogDiv}>
         {chattingLog.map(({
-          message, profileUrl, userName, userDocumentId,
+          message, profileUrl, userName, userDocumentId, date,
         } : IChattingLog, index: number) => (
           <Chat key={index} isMyMsg={userDocumentId === user.userDocumentId}>
             <UserProfile src={profileUrl} />
             <Message isMyMsg={userDocumentId === user.userDocumentId}>
-              <p>{`${userName}\n${message}`}</p>
+              {userDocumentId === user.userDocumentId
+                ? <p style={{ color: '#598272', marginBottom: '0px' }}>Me</p>
+                : <p style={{ color: '#4A6970', marginBottom: '0px' }}>{userName}</p>}
+              <p>{`${message}`}</p>
             </Message>
+            <DateDiv><span>{date}</span></DateDiv>
           </Chat>
         ))}
       </ChattingLog>
