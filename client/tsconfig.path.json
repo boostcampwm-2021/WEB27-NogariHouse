@@ -10,6 +10,7 @@
           "@common/*": [ "src/components/common/*" ], 
           "@styles/*": ["src/assets/styles/*"],
 		      "@hooks/*": [ "src/hooks/*" ],
+		      "@interfaces/*": [ "src/interfaces/*" ],
 		      "@recoil/*": [ "src/recoil/*" ],  
           "@atoms/*": [ "src/recoil/atoms/*" ],  
 		      "@selectors/*": [ "src/recoil/selectors/*" ],  
