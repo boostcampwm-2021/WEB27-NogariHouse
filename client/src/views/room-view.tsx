@@ -59,8 +59,9 @@ function RoomView() {
       setRoomView('selectModeView');
     } else {
       setRoomView('inRoomView');
-      setRoomDocumentId(roomDocumentId as string);
     }
+
+    setRoomDocumentId(roomDocumentId as string);
   };
 
   useEffect(() => {

@@ -5,10 +5,12 @@ import React, {
 import {
   FiMic, FiMicOff,
 } from 'react-icons/fi';
+import { useRecoilValue } from 'recoil';
+import { Link } from 'react-router-dom';
 
 import { getUserInfo } from '@api/index';
 import SoundMeter from '@src/utils/voice';
-import { Link } from 'react-router-dom';
+import anonymousState from '@atoms/anonymous';
 import { InRoomUserBoxStyle, InRoomUserMicDiv, UserBox } from './style';
 
 export interface IParticipant {
@@ -39,7 +41,7 @@ export function InRoomOtherUserBox({
     if (!ref.current || !isMicOn) return;
     const soundMeter = new SoundMeter(audioCtxRef.current);
     let meterRefresh: any = null;
-    soundMeter.connectToSource(true, stream as MediaStream, (e: any) => {
+    soundMeter.connectToSource(isAnonymous as boolean, stream as MediaStream, (e: any) => {
       meterRefresh = setInterval(() => {
         const num = Number(soundMeter.instant.toFixed(2));
         if (num > 0.02 && ref) {
@@ -61,18 +63,19 @@ export function InRoomOtherUserBox({
   return (
     <InRoomUserBoxStyle>
       <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted />
+        <UserBox ref={ref} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay playsInline muted={isAnonymous} />
       </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
-      <p>{ userInfo?.userName }</p>
+      <p>{ isAnonymous ? 'anonymous' : userInfo?.userName }</p>
     </InRoomUserBoxStyle>
   );
 }
 
 export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
   (props, ref) => {
+    const isAnonymous = useRecoilValue(anonymousState);
     const [userInfo, setUserInfo] = useState<any>();
     const audioCtxRef = useRef(new (window.AudioContext || (window as any).webkitAudioContext)());
     const myRef = useRef<any>(ref);
@@ -107,12 +110,12 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
     return (
       <InRoomUserBoxStyle>
         <Link to={`/profile/${userInfo?.userId}`}>
-          <UserBox ref={myRef} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+          <UserBox ref={myRef} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay muted playsInline />
         </Link>
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>
-        <p>{ userInfo?.userName }</p>
+        <p>{ isAnonymous ? 'anonymous' : userInfo?.userName }</p>
       </InRoomUserBoxStyle>
     );
   },
