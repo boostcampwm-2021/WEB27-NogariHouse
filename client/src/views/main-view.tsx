@@ -5,7 +5,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import {
+  useRecoilState, useResetRecoilState, useSetRecoilState, useRecoilValue,
+} from 'recoil';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -22,6 +24,8 @@ import DefaultButton from '@common/default-button';
 import ScrollBarStyle from '@styles/scrollbar-style';
 import LoadingSpinner from '@common/loading-spinner';
 import { getFollowingsList } from '@src/api';
+import isOpenRoomState from '@atoms/is-open-room';
+import { slideXFromTo } from '@src/assets/styles/keyframe';
 
 const MainLayout = styled.div`
   display: flex;
@@ -63,11 +67,23 @@ const MainScrollSection = styled.div`
 `;
 
 const RoomLayout = styled.div`
-  height: 80vh;
-  flex-grow: 1;
-  margin: 10px;
+  @media (minx-width: 768px) {
+    margin: 10px;
+    height: 80vh;
+    flex-grow: 1;
+  }
+  
   @media (max-width: 768px) {
-    display: none;
+    position: fixed;
+    display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};;
+    z-index: 100;
+    height: 85vh;
+    width: 96%;
+    margin-left: 10px;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-out;
+    animation-name: ${slideXFromTo(300, 0)};
+    animation-fill-mode: forward;
   }
 `;
 
@@ -89,6 +105,7 @@ function MainView() {
   const nowFetchingRef = useRef<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(['accessToken']);
+  const isOpenRoom = useRecoilValue(isOpenRoomState);
 
   const scrollBarChecker = useCallback((e: UIEvent<HTMLDivElement>) => {
     if (!nowFetchingRef.current) {
@@ -152,7 +169,7 @@ function MainView() {
               <MainRouter />
             </MainScrollSection>
           </MainSectionLayout>
-          <RoomLayout>
+          <RoomLayout state={isOpenRoom}>
             <RightSideBar />
           </RoomLayout>
         </SectionLayout>
