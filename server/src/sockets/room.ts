@@ -26,6 +26,7 @@ export default function registerRoomHandler(socket : Socket, server : Server) {
   };
 
   const handleRoomLeave = async () => {
+    if (!users[socket.id]) return;
     const { roomDocumentId, userDocumentId } = users[socket.id];
     delete users[socket.id];
 
