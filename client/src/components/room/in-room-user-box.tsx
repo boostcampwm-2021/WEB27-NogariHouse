@@ -5,7 +5,7 @@ import React, {
 import {
   FiMic, FiMicOff,
 } from 'react-icons/fi';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { Link } from 'react-router-dom';
 
 import { getUserInfo } from '@api/index';
@@ -83,7 +83,7 @@ export function InRoomOtherUserBox({
 
 export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
   (props, ref) => {
-    const isAnonymous = useRecoilValue(anonymousState);
+    const [isAnonymous, setIsAnonymous] = useRecoilState(anonymousState);
     const [userInfo, setUserInfo] = useState<any>();
     const audioCtxRef = useRef(new (window.AudioContext || (window as any).webkitAudioContext)());
     const myRef = useRef<any>(ref);
@@ -91,6 +91,10 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
     useEffect(() => {
       getUserInfo(props.userDocumentId)
         .then((res) => setUserInfo(res!.userInfo));
+
+      return () => {
+        setIsAnonymous(false);
+      };
     }, []);
 
     useEffect(() => {
