@@ -28,7 +28,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #F1F0E4;
     width: 100vw;
     min-width: 320px;
-
+    user-select: none;
     overflow: hidden;
   }
 `;
