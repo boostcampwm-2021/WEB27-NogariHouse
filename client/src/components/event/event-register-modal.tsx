@@ -14,6 +14,7 @@ const CustomEventRegisterModal = styled(ModalBox)`
   align-items: center;
   min-width: 500px;
   min-height: 500px;
+  padding: 0px;
   background-color:white;
   border-radius: 30px;
 `;
