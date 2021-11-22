@@ -8,7 +8,7 @@ interface IUsers {
 
 const users: IUsers = {};
 
-export default function registerRoomHandler(socket : Socket, server : Namespace) {
+export default function registerRoomHandler(socket : Socket, namespace : Namespace) {
   const handleRoomJoin = async (payload:
     {roomDocumentId: string, userDocumentId: string, socketId: string, isAnonymous: boolean}) => {
     const {
@@ -22,7 +22,7 @@ export default function registerRoomHandler(socket : Socket, server : Namespace)
     const participantsInfo = room?.participants
       .filter((participant) => participant.userDocumentId !== userDocumentId);
 
-    server.to(socket.id).emit('room:join', participantsInfo);
+    namespace.to(socket.id).emit('room:join', participantsInfo);
   };
 
   const handleRoomLeave = async () => {
