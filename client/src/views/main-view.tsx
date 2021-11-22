@@ -3,14 +3,14 @@ import React, {
   useCallback, useEffect, useRef, useState,
 } from 'react';
 import {
-  useRecoilState, useResetRecoilState, useRecoilValue,
+  useRecoilState, useResetRecoilState, useRecoilValue, useSetRecoilState,
 } from 'recoil';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import userState from '@atoms/user';
-import followingListState from '@atoms/following-list';
+import followingListState, { activeFollowingListState } from '@atoms/following-list';
 import LargeLogo from '@components/sign/large-logo';
 import LeftSideBar from '@components/left-sidebar';
 import RightSideBar from '@components/room/right-sidebar';
@@ -96,6 +96,7 @@ const ButtonLayout = styled.div`
 function MainView() {
   const [user, setUser] = useRecoilState(userState);
   const [followingList, setFollowingList] = useRecoilState(followingListState);
+  const setactiveFollowingList = useSetRecoilState(activeFollowingListState);
   const resetUser = useResetRecoilState(userState);
   const [loading, setLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,10 +120,11 @@ function MainView() {
     userSocket.current = io(`${process.env.REACT_APP_SOCKET_URL}/user`);
 
     userSocket.current.on('user:firstFollowingList', (activeFollowingList) => {
+      setactiveFollowingList(activeFollowingList);
       console.log(activeFollowingList);
     });
     userSocket.current.emit('user:join', {
-      userDocumentId: user.userDocumentId, userId: user.userId, profileUrl: user.profileUrl, followingList,
+      userDocumentId, userName, profileUrl, followingList,
     });
   }, []);
 

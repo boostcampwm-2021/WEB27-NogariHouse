@@ -4,6 +4,8 @@ import styled from 'styled-components';
 
 import ActiveFollowingCard from '@common/active-following-card';
 import { Socket } from 'socket.io-client';
+import { useRecoilValue } from 'recoil';
+import { activeFollowingListState } from '@src/recoil/atoms/following-list';
 
 const ActiveFollowingList = styled.div`
   width: 100%;
@@ -11,42 +13,18 @@ const ActiveFollowingList = styled.div`
   flex-direction: column;
 `;
 
-const dummyFollowingList = [
-  {
-    userName: 'Mulgyeol',
-    profileUrl: 'https://avatars.githubusercontent.com/u/59464537?v=4',
-    description: 'test1',
-    isActive: true,
-  },
-  {
-    userName: 'HanCiHu',
-    profileUrl: 'https://avatars.githubusercontent.com/u/51700274?v=4',
-    description: 'test2',
-    isActive: true,
-  },
-  {
-    userName: 'NEM-NE',
-    profileUrl: 'https://avatars.githubusercontent.com/u/55152516?v=4',
-    description: 'test2',
-    isActive: true,
-  },
-  {
-    userName: 'iHoHyeon',
-    profileUrl: 'https://github.com/iHoHyeon.png',
-    description: 'test3',
-    isActive: true,
-  },
-];
-
 interface ILeftSideBarProps {
   socketRef: React.RefObject<Socket | null>,
 }
 
 function LeftSideBar({ socketRef } : ILeftSideBarProps) {
+  const activeFollowingList = useRecoilValue(activeFollowingListState);
+
   console.log(socketRef);
+
   return (
     <ActiveFollowingList>
-      {dummyFollowingList
+      {activeFollowingList
         .filter((list) => list.isActive)
         .map((list) => (
           <ActiveFollowingCard
