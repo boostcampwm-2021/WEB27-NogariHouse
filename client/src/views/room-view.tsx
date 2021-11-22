@@ -1,13 +1,18 @@
+/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, {
+  MouseEvent, useEffect, useState,
+} from 'react';
 import styled from 'styled-components';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import RoomCard from '@common/room-card';
-import useFetchItems from '@src/hooks/useFetchItems';
-import LoadingSpinner from '@common/loading-spinner';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
+import { nowFetchingState } from '@atoms/main-section-scroll';
+import LoadingSpinner from '@common/loading-spinner';
+import RoomCard from '@common/room-card';
+import useFetchItems from '@hooks/useFetchItems';
+import useItemFecthObserver from '@hooks/useItemFetchObserver';
 
 interface Participants{
   _id: string,
@@ -26,6 +31,12 @@ const RoomDiv = styled.div`
   div + div {
     margin-bottom: 10px;
   }
+`;
+
+const ObserverBlock = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100px;
 `;
 
 export const makeRoomToCard = (room: RoomCardProps) => (
@@ -48,6 +59,8 @@ export function RoomCardList({ roomList, roomCardClickHandler }:
 function RoomView() {
   const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room', 'room');
   const [loading, setLoading] = useState(true);
+  const nowFetching = useRecoilValue(nowFetchingState);
+  const [targetRef] = useItemFecthObserver(loading);
   const setRoomView = useSetRecoilState(roomViewType);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
 
@@ -74,7 +87,14 @@ function RoomView() {
     return <LoadingSpinner />;
   }
 
-  return <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemList} />;
+  return (
+    <>
+      <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemList} />
+      <ObserverBlock ref={targetRef}>
+        {nowFetching && <LoadingSpinner />}
+      </ObserverBlock>
+    </>
+  );
 }
 
 export default RoomView;

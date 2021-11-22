@@ -14,11 +14,12 @@ import InterestItem from '@common/interest-item';
 import { postSignUpUserInfo } from '@src/api';
 
 const InterestItemWarapper = styled.div`
-  width: 50%;
+  width: 100%;
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   div {
-    margin-right: 5%;
+    margin-right: 10px;
     margin-bottom: 5%;
   }
   margin-top: 5%;
@@ -26,6 +27,7 @@ const InterestItemWarapper = styled.div`
 `;
 
 const CustomInfoInputBar = styled(CustomInputBar)`
+  font-size: min(5vw, 30px);
   width: 70%;
 `;
 

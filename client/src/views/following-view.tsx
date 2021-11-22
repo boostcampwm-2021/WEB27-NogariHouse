@@ -7,15 +7,7 @@ import useFetchItems from '@src/hooks/useFetchItems';
 import followingListState from '@atoms/following-list';
 import UserCard from '@common/user-card';
 import userState from '@atoms/user';
-
-interface IUserForCard{
-  _id: string,
-  userName: string,
-  userId: string,
-  description: string,
-  profileUrl: string,
-  isFollow?: boolean,
-}
+import { IUserForCard } from '@src/interfaces';
 
 function FollowingView({ match }: any) {
   const userId = match.params.id;
@@ -25,11 +17,7 @@ function FollowingView({ match }: any) {
   const user = useRecoilValue(userState);
 
   const makeUserObjectIncludedIsFollow = (userItem: Required<IUserForCard>): IUserForCard => ({
-    _id: userItem._id,
-    userName: userItem.userName,
-    userId: match as string,
-    description: userItem.description,
-    profileUrl: userItem.profileUrl,
+    ...userItem,
     isFollow: !!myFollowingList.includes(userItem._id),
   });
 

@@ -4,6 +4,7 @@ import { MdOutlineArrowBackIos } from 'react-icons/md';
 
 import { ChatHeaderStyle } from '@components/chat/style';
 import { makeIconToLink } from '@utils/index';
+import React from 'react';
 
 const BackBtn = styled.div`
   position: absolute;
@@ -57,7 +58,7 @@ const ParticipantsName = styled.div`
   text-align: center;
 `;
 
-export default ({ participantsInfo }: any) => {
+export default React.memo(({ participantsInfo }: any) => {
   const userNames = participantsInfo.map((user:any) => user.userName).join(', ');
 
   return (
@@ -75,4 +76,4 @@ export default ({ participantsInfo }: any) => {
       </ParticipantsDiv>
     </ChatHeaderStyle>
   );
-};
+});

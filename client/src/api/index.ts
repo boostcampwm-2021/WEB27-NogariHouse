@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable consistent-return */
 // eslint-disable-next-line consistent-return
 export const getRoomInfo = async (roomDocumentId: string) => {
@@ -254,5 +255,63 @@ export const getMyInfo = async () => {
     return response;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const getChattingLog = async (chatDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log/${chatDocumentId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+interface IChattingLog {
+  userDocumentId: string,
+  message: string,
+  date: Date,
+}
+
+export const postChattingMsg = async (chattingLog: IChattingLog, chatDocumentId: string, userDocumentId: string) => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ chattingLog, chatDocumentId, userDocumentId }),
+    });
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const setUnCheckedMsg0 = async (chatDocumentId: string, userDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/chat-rooms/setUnCheckedMsg/${chatDocumentId}/${userDocumentId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (e) {
+    console.log(e);
   }
 };

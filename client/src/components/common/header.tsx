@@ -2,10 +2,10 @@ import styled from 'styled-components';
 
 export const CustomtHeader = styled.nav`
   position: relative;
-  width: calc(100%-96px);
+  width: 95%;
   height: 48px;
-  min-width: 360px;
-  padding: 24px 48px;
+  min-width: 320px;
+  margin: 24px 24px;
 
   display: flex;
   justify-content: space-between;
@@ -18,10 +18,10 @@ export const CustomtHeader = styled.nav`
 export const HeaderTitleNunito = styled.div`
   position: absolute;
   line-height: 48px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 47.5%;
+  transform: translateX(-47.5%);
   font-weight: bold;
-  font-size: 32px;
+  font-size: min(4.4vw, 32px);
   text-decoration: none;
   text-align: center;
   color: black;
