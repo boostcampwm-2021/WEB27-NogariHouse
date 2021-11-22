@@ -2,9 +2,7 @@ import React, {
   useEffect, useState, RefObject,
 } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
-import {
-  FiPlus, FiMic, FiMicOff,
-} from 'react-icons/fi';
+import { FiPlus, FiMic, FiMicOff } from 'react-icons/fi';
 
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
@@ -16,7 +14,7 @@ import { getRoomInfo } from '@api/index';
 import { useRtc, IRTC } from '@hooks/useRtc';
 import {
   InRoomHeader, TitleDiv, InRoomFooter, InRoomUserList, FooterBtnDiv,
-} from './style';
+} from '@components/room/style';
 
 export interface IRooms extends Document{
   title: string,

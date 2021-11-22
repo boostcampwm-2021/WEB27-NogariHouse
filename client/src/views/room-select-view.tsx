@@ -7,8 +7,8 @@ import viewAnonymous from '@selectors/view-anonymous';
 import roomViewState from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import DefaultButton from '@common/default-button';
-import RoomTypeCheckBox from './room-type-check-box';
-import { ButtonLayout } from './style';
+import RoomTypeCheckBox from '../components/room/room-type-check-box';
+import { ButtonLayout } from '../components/room/style';
 
 const ModalLayout = styled.div`
     display: flex;

@@ -11,7 +11,7 @@ import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
 import { postRoomInfo } from '@api/index';
-import { ButtonLayout } from './style';
+import { ButtonLayout } from '../components/room/style';
 
 const CustomTitleForm = styled.div`
   display: flex;
