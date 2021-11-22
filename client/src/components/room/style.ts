@@ -114,3 +114,11 @@ export const UserBox = styled.video`
   overflow: hidden;
   background-color: #6F8A87;
 `;
+
+export const ButtonLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 30%;
+`;

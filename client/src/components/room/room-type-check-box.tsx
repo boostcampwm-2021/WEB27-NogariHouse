@@ -1,10 +1,8 @@
-/* eslint-disable */
 import React from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
 import { IconType } from 'react-icons';
 import { IoEarthOutline } from 'react-icons/io5';
-import { MdOutlinePeopleOutline, MdLockOutline, MdGroupOff, MdGroup } from 'react-icons/md';
+import { MdLockOutline, MdGroupOff, MdGroup } from 'react-icons/md';
 
 const Box = styled.button`
   width : 90px;
@@ -25,15 +23,14 @@ const BoxText = styled.div`
 `;
 
 interface RoomTypeCheckBoxProps{
-    checkBoxName : 'public' | 'social' | 'closed' | 'known' | 'unknown',
+    checkBoxName : 'public' | 'closed' | 'known' | 'unknown',
     onClick: any
     roomType: any
 }
 
 function RoomTypeCheckBox({ checkBoxName, onClick, roomType } : RoomTypeCheckBoxProps) {
-  const TypeWithIcon = { 
+  const TypeWithIcon = {
     public: { component: IoEarthOutline, color: '#4E84C1' },
-    social: { component: MdOutlinePeopleOutline, color: '#78A55A' },
     closed: { component: MdLockOutline, color: '#999999' },
     unknown: { component: MdGroupOff, color: '#999999' },
     known: { component: MdGroup, color: '#999999' },

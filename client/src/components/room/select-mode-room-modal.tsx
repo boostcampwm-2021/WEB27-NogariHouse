@@ -8,6 +8,7 @@ import roomViewState from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from './room-type-check-box';
+import { ButtonLayout } from './style';
 
 const ModalLayout = styled.div`
     display: flex;
@@ -24,14 +25,6 @@ const CheckboxLayout = styled.div`
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
-`;
-
-const ButtonLayout = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  align-items: center;
-  height: 30%;
 `;
 
 const ModeButton = styled(RoomTypeCheckBox)`

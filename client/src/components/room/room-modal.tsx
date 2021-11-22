@@ -10,6 +10,7 @@ import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
 import { postRoomInfo } from '@api/index';
+import { ButtonLayout } from './style';
 
 const CustomTitleForm = styled.div`
   display: flex;
@@ -29,6 +30,14 @@ const TitleInputbar = styled.input`
   &:focus {
     outline: none;
   }
+`;
+
+const CheckboxLayout = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
 `;
 
 const TitleInputbarLabel = styled.label`
@@ -77,20 +86,26 @@ function RoomModal() {
 
   return (
     <>
-      {/* eslint-disable-next-line react/jsx-no-bind */}
-      <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeOnClick.bind(null, 'public')} roomType={roomType} />
-      {/* eslint-disable-next-line react/jsx-no-bind */}
-      <RoomTypeCheckBox checkBoxName="social" onClick={roomTypeOnClick.bind(null, 'social')} roomType={roomType} />
-      {/* eslint-disable-next-line react/jsx-no-bind */}
-      <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
+      <h2> Let&apos;s have fun together! </h2>
+      <CheckboxLayout>
+        {/* eslint-disable-next-line react/jsx-no-bind */}
+        <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeOnClick.bind(null, 'public')} roomType={roomType} />
+        {/* eslint-disable-next-line react/jsx-no-bind */}
+        <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
+      </CheckboxLayout>
       <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputOnChange} />
       </CustomTitleForm>
-      <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
-        Lets Go
-      </DefaultButton>
+      <ButtonLayout>
+        <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
+          Let&apos;s Go
+        </DefaultButton>
+        <DefaultButton buttonType="thirdly" size="medium" onClick={() => alert('random!!!')}>
+          Randomly assigned
+        </DefaultButton>
+      </ButtonLayout>
     </>
   );
 }
