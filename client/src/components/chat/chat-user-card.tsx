@@ -12,6 +12,8 @@ interface chatUserCardProps {
   participantsInfo: Array<Participants>,
   lastMsg: string,
   clickEvent(): void,
+  recentActive: string,
+  unCheckedMsg: number,
 }
 
 type ProfileProps = { profileUrl: string, length: number };
@@ -27,6 +29,10 @@ const ChatUserCardLayout = styled.div`
 
   display: flex;
   flex-direction: row;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const ChatUserCardProfileDiv = styled.div`
@@ -89,7 +95,28 @@ const LastChatMsg = styled.p`
   font-size: 20px;
 `;
 
-const ChatUserCard = ({ participantsInfo, lastMsg, clickEvent } : chatUserCardProps) => {
+const ExInfoDiv = styled.div`
+  margin-left: 20px;
+  p {
+    margin: 5px 0px 10px 0px;
+    transform: translateY(25px);
+    font-size: 20px;
+    font-family: "Nunito";
+  }
+`;
+
+const UnCheckMsg = styled.p`
+  width: 25px;
+  height: 25px;
+  background-color: #C4CDC0;
+
+  border-radius: 20px;
+  text-align: center;
+`;
+
+const ChatUserCard = ({
+  participantsInfo, lastMsg, recentActive, clickEvent, unCheckedMsg,
+} : chatUserCardProps) => {
   const userNames = participantsInfo.map((participant) => participant.userName).join(', ');
   return (
     <ChatUserCardLayout onClick={clickEvent}>
@@ -101,6 +128,10 @@ const ChatUserCard = ({ participantsInfo, lastMsg, clickEvent } : chatUserCardPr
         <UserNameInfo>{userNames}</UserNameInfo>
         <LastChatMsg>{lastMsg}</LastChatMsg>
       </ChatUserCardInfo>
+      <ExInfoDiv>
+        <p style={{ color: '#C4CDC0' }}>{recentActive}</p>
+        {unCheckedMsg > 0 ? <UnCheckMsg>{unCheckedMsg}</UnCheckMsg> : ''}
+      </ExInfoDiv>
     </ChatUserCardLayout>
   );
 };

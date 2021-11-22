@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable consistent-return */
 // eslint-disable-next-line consistent-return
 export const getRoomInfo = async (roomDocumentId: string) => {
@@ -11,6 +12,9 @@ export const getRoomInfo = async (roomDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -29,6 +33,9 @@ export const getUserInfo = async (userDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response as unknown as {
       ok: boolean,
@@ -48,6 +55,8 @@ export const postRoomInfo = async (roomInfo: Object) => {
       },
       body: JSON.stringify(roomInfo),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
 
     response = await response.json();
     return response;
@@ -103,6 +112,8 @@ export const postSignUpUserInfo = async (postSignupUserInfoConfig: Object) => {
       body: JSON.stringify(postSignupUserInfoConfig),
     });
 
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -119,6 +130,8 @@ export const postCheckMail = async (email: { email: string }) => {
       },
       body: JSON.stringify(email),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
 
     const json = await response.json();
     return json as { isUnique: boolean, verificationNumber: string };
@@ -139,6 +152,9 @@ export const getSearchResult = async (searchInfo: {keyword:string, option:string
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -155,6 +171,9 @@ export const findUsersById = async (findUserList: Array<string>) => {
       },
       body: JSON.stringify({ userList: findUserList }),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -173,6 +192,9 @@ export const getChatRooms = async (userDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -191,6 +213,9 @@ export const getFollowingsList = async (userDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -207,9 +232,86 @@ export const postChatRoom = async (participants: Array<string>) => {
       },
       body: JSON.stringify({ participants }),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const getMyInfo = async () => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getChattingLog = async (chatDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log/${chatDocumentId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+interface IChattingLog {
+  userDocumentId: string,
+  message: string,
+  date: Date,
+}
+
+export const postChattingMsg = async (chattingLog: IChattingLog, chatDocumentId: string, userDocumentId: string) => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ chattingLog, chatDocumentId, userDocumentId }),
+    });
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const setUnCheckedMsg0 = async (chatDocumentId: string, userDocumentId: string) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/chat-rooms/setUnCheckedMsg/${chatDocumentId}/${userDocumentId}`,
+      {
+        method: 'get',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (e) {
+    console.log(e);
   }
 };

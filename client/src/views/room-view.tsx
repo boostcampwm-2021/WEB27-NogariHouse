@@ -1,13 +1,18 @@
+/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
-import React, { MouseEvent, useEffect, useState } from 'react';
+import React, {
+  MouseEvent, useEffect, useState,
+} from 'react';
 import styled from 'styled-components';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
-import RoomCard from '@common/room-card';
-import useFetchItems from '@src/hooks/useFetchItems';
-import LoadingSpinner from '@common/loading-spinner';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
+import { nowFetchingState } from '@atoms/main-section-scroll';
+import LoadingSpinner from '@common/loading-spinner';
+import RoomCard from '@common/room-card';
+import useFetchItems from '@hooks/useFetchItems';
+import useItemFecthObserver from '@hooks/useItemFetchObserver';
 
 interface Participants{
   _id: string,
@@ -28,8 +33,14 @@ const RoomDiv = styled.div`
   }
 `;
 
+const ObserverBlock = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100px;
+`;
+
 export const makeRoomToCard = (room: RoomCardProps) => (
-  <div className="RoomCard" key={room._id} data-id={room._id}>
+  <div className="RoomCard" key={room._id} data-id={room._id} data-anonymous={room.isAnonymous}>
     <RoomCard
       key={room._id}
       _id={room._id}
@@ -48,15 +59,22 @@ export function RoomCardList({ roomList, roomCardClickHandler }:
 function RoomView() {
   const [nowItemList, nowItemType] = useFetchItems<RoomCardProps>('/room', 'room');
   const [loading, setLoading] = useState(true);
+  const nowFetching = useRecoilValue(nowFetchingState);
+  const [targetRef] = useItemFecthObserver(loading);
   const setRoomView = useSetRecoilState(roomViewType);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
 
   const roomCardClickHandler = (e: MouseEvent) => {
     const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
     const roomDocumentId = RoomCardDiv?.getAttribute('data-id');
-    setRoomView('inRoomView');
-    if (roomDocumentId) setRoomDocumentId(roomDocumentId);
-    else console.error('no room-id');
+    const isAnonymous = (RoomCardDiv?.getAttribute('data-anonymous') === 'true');
+    if (isAnonymous) {
+      setRoomView('selectModeView');
+    } else {
+      setRoomView('inRoomView');
+    }
+
+    setRoomDocumentId(roomDocumentId as string);
   };
 
   useEffect(() => {
@@ -69,7 +87,14 @@ function RoomView() {
     return <LoadingSpinner />;
   }
 
-  return <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemList} />;
+  return (
+    <>
+      <RoomCardList roomCardClickHandler={roomCardClickHandler} roomList={nowItemList} />
+      <ObserverBlock ref={targetRef}>
+        {nowFetching && <LoadingSpinner />}
+      </ObserverBlock>
+    </>
+  );
 }
 
 export default RoomView;

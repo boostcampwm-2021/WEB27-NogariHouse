@@ -1,12 +1,13 @@
 import React, {
   useEffect, useState, RefObject,
 } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useSetRecoilState, useResetRecoilState } from 'recoil';
 import {
   FiMoreHorizontal, FiScissors, FiPlus, FiMic, FiMicOff,
 } from 'react-icons/fi';
 
-import roomViewType from '@src/recoil/atoms/room-view-type';
+import roomDocumentIdState from '@atoms/room-document-id';
+import roomViewState from '@atoms/room-view-type';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
@@ -24,7 +25,8 @@ export interface IRooms extends Document{
 
 // 룸 생성 모달
 function InRoomModal() {
-  const setRoomView = useSetRecoilState(roomViewType);
+  const setRoomView = useSetRecoilState(roomViewState);
+  const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [isMic, setMic] = useState(false);
   const [
@@ -34,8 +36,15 @@ function InRoomModal() {
   useEffect(() => {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
+        if (!res) {
+          setRoomView('notFoundRoomView');
+        }
         setRoomInfo(res);
       });
+
+    return () => {
+      resetRoomDocumentId();
+    };
   }, []);
 
   useEffect(() => {
@@ -50,6 +59,7 @@ function InRoomModal() {
               mic: userData.isMicOn as boolean,
               stream: cur.stream as MediaStream,
               socketId: cur.socketId,
+              isAnonymous: cur.isAnonymous,
             });
           } else acc.push(cur);
           return acc;
@@ -81,9 +91,11 @@ function InRoomModal() {
       </InRoomHeader>
       <InRoomUserList>
         {/* eslint-disable-next-line max-len */}
-        <InRoomUserBox ref={myVideoRef as RefObject<HTMLVideoElement>} key={user.userDocumentId} stream={myStreamRef.current as MediaStream} userDocumentId={user.userDocumentId} isMicOn={isMic} isMine />
-        {/* eslint-disable-next-line max-len */}
-        {participants.map(({ userDocumentId, stream, mic }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isMine={false} />)}
+        <InRoomUserBox ref={myVideoRef as RefObject<HTMLVideoElement>} key={user.userDocumentId} stream={myStreamRef.current as MediaStream} userDocumentId={user.userDocumentId} isMicOn={isMic} isAnonymous />
+        {participants.map(({
+          userDocumentId, stream, mic, isAnonymous,
+        // eslint-disable-next-line max-len
+        }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isAnonymous={isAnonymous} />)}
 
       </InRoomUserList>
       <InRoomFooter>

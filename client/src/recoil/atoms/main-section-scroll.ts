@@ -9,3 +9,8 @@ export const nowItemsListState = atom<any[]>({ // any대신 item들의 타입이
   key: 'nowItemsCountState',
   default: [],
 });
+
+export const nowCountState = atom<number>({
+  key: 'nowCountState',
+  default: 0,
+});

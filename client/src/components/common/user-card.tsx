@@ -104,7 +104,7 @@ export default function UserCard(props: UserCardProps) {
             {props.userData.userName}
           </UserName>
           <UserId sizeType={props.cardType}>
-            @userId
+            {props.userData.userId}
           </UserId>
           <UserDescription sizeType={props.cardType}>
             {props.userData.description}

@@ -3,6 +3,7 @@ import { Schema, Document, model } from 'mongoose';
 interface IParticipant {
   userDocumentId: string,
   isMicOn: boolean,
+  isAnonymous?: boolean,
 }
 
 export interface IRooms extends Document{
