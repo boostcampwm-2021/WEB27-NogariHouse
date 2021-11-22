@@ -147,4 +147,14 @@ export default (app: Router) => {
       res.json({ ok: false });
     }
   });
+
+  userRouter.post('/profile-image', async (req: Request, res: Response) => {
+    const { imageData, userDocumentId } = req.body;
+    try {
+      const newProfileUrl = await usersService.changeProfileImage(userDocumentId, imageData);
+      res.status(200).json({ ok: true, newProfileUrl });
+    } catch (e) {
+      res.json({ ok: false });
+    }
+  });
 };
