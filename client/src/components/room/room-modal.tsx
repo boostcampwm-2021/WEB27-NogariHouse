@@ -6,6 +6,7 @@ import { useSetRecoilState, useRecoilValue } from 'recoil';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState from '@atoms/user';
 import roomViewState from '@atoms/room-view-type';
+import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
@@ -50,6 +51,7 @@ function RoomModal() {
   const user = useRecoilValue(userTypeState);
   const setRoomView = useSetRecoilState(roomViewState);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+  const setIsOpenModal = useSetRecoilState(isOpenRoomModalState);
   const [roomType, setRoomType] = useState('public');
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -66,7 +68,8 @@ function RoomModal() {
     postRoomInfo(roomInfo)
       .then((roomDocumentId: any) => {
         setRoomDocumentId(roomDocumentId);
-        if (isAnonymous) setRoomView('selectModeView');
+        if (roomType === 'closed') setIsOpenModal(true);
+        else if (isAnonymous) setRoomView('selectModeView');
         else setRoomView('inRoomView');
       })
       .catch((err) => console.error(err));
@@ -93,7 +96,7 @@ function RoomModal() {
         {/* eslint-disable-next-line react/jsx-no-bind */}
         <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
       </CheckboxLayout>
-      <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} />
+      { roomType !== 'closed' ? <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} /> : ''}
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputOnChange} />

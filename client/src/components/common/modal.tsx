@@ -8,7 +8,7 @@ export const ModalBox = styled.div`
   top: 20%;
   display: flex;
   flex-direction: column;
-  background-color: rgb(255, 255, 255);
+  background-color: #F1F0E4;
   border-radius: 32px;
   padding: 56px;
   margin-left: calc(25% - 56px);

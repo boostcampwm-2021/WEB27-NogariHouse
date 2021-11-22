@@ -14,3 +14,8 @@ export const isOpenShareModalState = atom<boolean>({
   key: 'isOpenShareModalState',
   default: false,
 });
+
+export const isOpenRoomModalState = atom<boolean>({
+  key: 'isOpenRoomModalState',
+  default: false,
+});
