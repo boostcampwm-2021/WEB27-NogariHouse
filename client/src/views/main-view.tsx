@@ -54,18 +54,12 @@ const MainSectionLayout = styled.div`
   height: 80vh;
   min-width: 320px;
   flex-grow: 10;
-  margin: 10px 0px;
-`;
-
-const MainScrollSection = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
+  margin: 10px;
   ${ScrollBarStyle};
 `;
 
 const RoomLayout = styled.div`
-  width: 350px;
+  width: 400px;
   @media (min-width: 768px) {
     margin: 10px;
     height: 80vh;
@@ -145,9 +139,7 @@ function MainView() {
             <LeftSideBar />
           </ActiveFollowingLayout>
           <MainSectionLayout>
-            <MainScrollSection>
-              <MainRouter />
-            </MainScrollSection>
+            <MainRouter />
           </MainSectionLayout>
           <RoomLayout state={isOpenRoom}>
             <RightSideBar />
