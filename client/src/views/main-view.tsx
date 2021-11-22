@@ -1,8 +1,6 @@
 import React, {
-  UIEvent,
   useCallback,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 import {
@@ -12,7 +10,6 @@ import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { nowFetchingState } from '@atoms/main-section-scroll';
 import userState from '@atoms/user';
 import followingListState from '@atoms/following-list';
 import LargeLogo from '@components/sign/large-logo';
@@ -101,24 +98,9 @@ function MainView() {
   const setFollowingList = useSetRecoilState(followingListState);
   const resetUser = useResetRecoilState(userState);
   const [loading, setLoading] = useState(true);
-  const setNowFetching = useSetRecoilState(nowFetchingState);
-  const nowFetchingRef = useRef<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(['accessToken']);
   const isOpenRoom = useRecoilValue(isOpenRoomState);
-
-  const scrollBarChecker = useCallback((e: UIEvent<HTMLDivElement>) => {
-    if (!nowFetchingRef.current) {
-      const diff = e.currentTarget.scrollHeight - e.currentTarget.scrollTop;
-      if (diff < 700) {
-        setNowFetching(true);
-        nowFetchingRef.current = true;
-        setTimeout(() => {
-          nowFetchingRef.current = false;
-        }, 200);
-      }
-    }
-  }, []);
 
   const updateUserState = useCallback(async (json) => {
     const {
@@ -165,7 +147,7 @@ function MainView() {
             <LeftSideBar />
           </ActiveFollowingLayout>
           <MainSectionLayout>
-            <MainScrollSection onScroll={scrollBarChecker}>
+            <MainScrollSection>
               <MainRouter />
             </MainScrollSection>
           </MainSectionLayout>

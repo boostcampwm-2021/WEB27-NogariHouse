@@ -11,7 +11,7 @@ import {
 
 import { makeIconToLink } from '@utils/index';
 import userState from '@atoms/user';
-import { nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
+import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import SliderMenu from '@common/menu-modal';
@@ -98,6 +98,7 @@ function DefaultHeader() {
   const resetNowItemsList = useResetRecoilState(nowItemsListState);
   const [isOpenMenu, setIsOpenMenu] = useRecoilState(isOpenSliderMenuState);
   const [isOpenRoom, setIsOpenRoom] = useRecoilState(isOpenRoomState);
+  const setNowCount = useSetRecoilState(nowCountState);
 
   const leftSideIcons: IconAndLink[] = [
     { Component: HiSearch, link: '/search', key: 'search' },
@@ -111,7 +112,7 @@ function DefaultHeader() {
   return (
     <>
       <CustomDefaultHeader>
-        <LogoTitle to="/" onClick={() => { resetNowItemsList(); setNowFetching(true); }}> NogariHouse </LogoTitle>
+        <LogoTitle to="/" onClick={() => { resetNowItemsList(); setNowCount(0); setNowFetching(true); }}> NogariHouse </LogoTitle>
         <OpenMenuButton onClick={() => { setIsOpenMenu(!isOpenMenu); }}>Menu</OpenMenuButton>
         <OpenRoomStateButton onClick={() => { setIsOpenRoom(!isOpenRoom); }}>
           Room
