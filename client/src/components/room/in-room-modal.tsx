@@ -8,6 +8,7 @@ import {
 
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
+import isOpenRoomState from '@atoms/is-open-room';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
@@ -27,6 +28,7 @@ export interface IRooms extends Document{
 function InRoomModal() {
   const setRoomView = useSetRecoilState(roomViewState);
   const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [isMic, setMic] = useState(false);
   const [
@@ -44,6 +46,7 @@ function InRoomModal() {
 
     return () => {
       resetRoomDocumentId();
+      setIsOpenRoom(false);
     };
   }, []);
 
