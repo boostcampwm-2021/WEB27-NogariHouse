@@ -15,6 +15,8 @@ const ActiveFollowingListWrapper = styled.div`
 `;
 
 const ExceptionMessage = styled.div`
+  position: relative;
+  top: 30vh;
   margin: auto;
   color: #a8a59b;
   font-size: 18px;

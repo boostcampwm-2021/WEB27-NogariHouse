@@ -41,19 +41,20 @@ const SectionLayout = styled.div`
 `;
 
 const ActiveFollowingLayout = styled.div`
+  width: 250px;
   height: 80vh;
-  flex-grow: 1;
   margin: 10px;
   @media (max-width: 1024px) {
     display: none;
   }
 `;
+
 const MainSectionLayout = styled.div`
   position: relative;
   height: 80vh;
   min-width: 320px;
   flex-grow: 10;
-  margin: 10px;
+  margin: 10px 0px;
 `;
 
 const MainScrollSection = styled.div`
@@ -64,10 +65,10 @@ const MainScrollSection = styled.div`
 `;
 
 const RoomLayout = styled.div`
+  width: 350px;
   @media (min-width: 768px) {
     margin: 10px;
     height: 80vh;
-    flex-grow: 1;
   }
   
   @media (max-width: 768px) {
@@ -75,8 +76,8 @@ const RoomLayout = styled.div`
     display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};;
     z-index: 100;
     height: 85vh;
-    width: 96%;
-    margin-left: 10px;
+    width: 99vw;
+    margin-left: 0.5vw;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
     animation-name: ${slideXFromTo(300, 0)};

@@ -8,7 +8,6 @@ interface following{
 
 const CardLayout = styled.div`
     width: 100%;
-    min-width: 250px;
     display : flex;
     align-items: center;
     margin-bottom: 10px;
