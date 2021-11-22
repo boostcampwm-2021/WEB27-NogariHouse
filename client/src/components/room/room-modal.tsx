@@ -5,7 +5,7 @@ import { useSetRecoilState, useRecoilValue } from 'recoil';
 
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState from '@atoms/user';
-import roomViewType from '@atoms/room-view-type';
+import roomViewState from '@atoms/room-view-type';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
@@ -39,7 +39,7 @@ const TitleInputbarLabel = styled.label`
 // 룸 생성 모달
 function RoomModal() {
   const user = useRecoilValue(userTypeState);
-  const setRoomView = useSetRecoilState(roomViewType);
+  const setRoomView = useSetRecoilState(roomViewState);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const [roomType, setRoomType] = useState('public');
   const [isDisabled, setIsDisabled] = useState(true);
@@ -57,7 +57,7 @@ function RoomModal() {
     postRoomInfo(roomInfo)
       .then((roomDocumentId: any) => {
         setRoomDocumentId(roomDocumentId);
-        if (roomType === 'closedSelectorView') setRoomView('closedSelectorView');
+        if (isAnonymous) setRoomView('selectModeView');
         else setRoomView('inRoomView');
       })
       .catch((err) => console.error(err));

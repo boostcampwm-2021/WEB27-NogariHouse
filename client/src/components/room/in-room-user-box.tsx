@@ -62,17 +62,31 @@ export function InRoomOtherUserBox({
 
   return (
     <InRoomUserBoxStyle>
-      <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox
-          ref={ref}
-          poster={isAnonymous
-            ? process.env.REACT_APP_DEFAULT_USER_IMAGE
-            : userInfo?.profileUrl}
-          autoPlay
-          playsInline
-          muted={isAnonymous}
-        />
-      </Link>
+      {isAnonymous
+        ? (
+          <UserBox
+            ref={ref}
+            poster={isAnonymous
+              ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+              : userInfo?.profileUrl}
+            autoPlay
+            playsInline
+            muted={isAnonymous}
+          />
+        )
+        : (
+          <Link to={`/profile/${userInfo?.userId}`}>
+            <UserBox
+              ref={ref}
+              poster={isAnonymous
+                ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+                : userInfo?.profileUrl}
+              autoPlay
+              playsInline
+              muted={isAnonymous}
+            />
+          </Link>
+        )}
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
@@ -101,7 +115,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
       if (!props.stream || !props.isMicOn) return;
       const soundMeter = new SoundMeter(audioCtxRef.current);
       let meterRefresh: any = null;
-      soundMeter.connectToSource(false, props.stream, () => {
+      soundMeter.connectToSource(isAnonymous, props.stream, () => {
         meterRefresh = setInterval(() => {
           const num = Number(soundMeter.instant.toFixed(2));
           if (num > 0.02 && myRef.current) {
@@ -114,6 +128,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
       // eslint-disable-next-line consistent-return
       return () => {
+        if (myRef.current) myRef.current.style.border = 'none';
         clearInterval(meterRefresh);
         soundMeter.stop();
       };
@@ -121,17 +136,31 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     return (
       <InRoomUserBoxStyle>
-        <Link to={`/profile/${userInfo?.userId}`}>
-          <UserBox
-            ref={myRef}
-            poster={isAnonymous
-              ? process.env.REACT_APP_DEFAULT_USER_IMAGE
-              : userInfo?.profileUrl}
-            autoPlay
-            muted
-            playsInline
-          />
-        </Link>
+        { isAnonymous
+          ? (
+            <UserBox
+              ref={myRef}
+              poster={isAnonymous
+                ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+                : userInfo?.profileUrl}
+              autoPlay
+              muted
+              playsInline
+            />
+          )
+          : (
+            <Link to={`/profile/${userInfo?.userId}`}>
+              <UserBox
+                ref={myRef}
+                poster={isAnonymous
+                  ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+                  : userInfo?.profileUrl}
+                autoPlay
+                muted
+                playsInline
+              />
+            </Link>
+          )}
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>

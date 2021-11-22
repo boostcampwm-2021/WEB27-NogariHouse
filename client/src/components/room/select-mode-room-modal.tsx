@@ -1,11 +1,13 @@
 /* eslint-disable  */
 import React, { useState } from 'react';
-import { useSetRecoilState } from 'recoil';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import viewAnonymous from '@selectors/view-anonymous';
+import roomViewState from '@atoms/room-view-type';
+import roomDocumentIdState from '@atoms/room-document-id';
+import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from './room-type-check-box';
-import DefaultButton from '../common/default-button';
 
 const ModalLayout = styled.div`
     display: flex;
@@ -16,12 +18,20 @@ const ModalLayout = styled.div`
     width: 80%;
 `;
 
-const ButtonLayout = styled.div`
+const CheckboxLayout = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
   width: 100%;
+`;
+
+const ButtonLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  height: 30%;
 `;
 
 const ModeButton = styled(RoomTypeCheckBox)`
@@ -31,6 +41,8 @@ const ModeButton = styled(RoomTypeCheckBox)`
 function SelectModeRoomModal() {
   const [modeType, setModeType] = useState<string>('known');
   const setViewAnonymous = useSetRecoilState(viewAnonymous);
+  const setRoomView = useSetRecoilState(roomViewState);
+  const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
 
   const typeHandler = (mode: string) => {
     setModeType(mode)
@@ -40,19 +52,29 @@ function SelectModeRoomModal() {
     setViewAnonymous(modeType);
   }
 
+  const clickGotoEvent = () => {
+    setRoomView('createRoomView');
+    resetRoomDocumentId();
+  }
+
   return (
     <>
       <ModalLayout>
         <h2> Please select the room mode. </h2>
-        <ButtonLayout>
+        <CheckboxLayout>
             {/* eslint-disable-next-line react/jsx-no-bind */}
             <ModeButton checkBoxName="known" onClick={typeHandler.bind(null, 'known')} roomType={modeType} />
             {/* eslint-disable-next-line react/jsx-no-bind */}
             <ModeButton checkBoxName="unknown" onClick={typeHandler.bind(null, 'unknown')} roomType={modeType} />
+        </CheckboxLayout>
+        <ButtonLayout>
+          <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler}>
+            Lets Go
+          </DefaultButton>
+          <DefaultButton buttonType="thirdly" size="medium" onClick={clickGotoEvent}>
+            Go to the Create View
+          </DefaultButton>
         </ButtonLayout>
-        <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler}>
-          Lets Go
-        </DefaultButton>
       </ModalLayout>
     </>
   );
