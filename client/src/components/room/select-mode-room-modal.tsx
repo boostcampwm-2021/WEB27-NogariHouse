@@ -5,12 +5,23 @@ import styled from 'styled-components';
 
 import viewAnonymous from '@selectors/view-anonymous';
 import RoomTypeCheckBox from './room-type-check-box';
+import DefaultButton from '../common/default-button';
 
 const ModalLayout = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
+    height: 90%;
+    width: 80%;
+`;
+
+const ButtonLayout = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
 `;
 
 const ModeButton = styled(RoomTypeCheckBox)`
@@ -18,21 +29,30 @@ const ModeButton = styled(RoomTypeCheckBox)`
 `;
 
 function SelectModeRoomModal() {
-  const [modeType, setModeType] = useState<string>();
+  const [modeType, setModeType] = useState<string>('known');
   const setViewAnonymous = useSetRecoilState(viewAnonymous);
 
   const typeHandler = (mode: string) => {
-    setViewAnonymous(mode);
+    setModeType(mode)
+  }
+
+  const submitButtonHandler = () => {
+    setViewAnonymous(modeType);
   }
 
   return (
     <>
       <ModalLayout>
-        <h2> 입장 모드 선택하기 </h2>
-        {/* eslint-disable-next-line react/jsx-no-bind */}
-        <ModeButton checkBoxName="notAnonymous" onClick={typeHandler.bind(null, 'notAnonymous')} roomType={modeType} />
-        {/* eslint-disable-next-line react/jsx-no-bind */}
-        <ModeButton checkBoxName="anonymous" onClick={typeHandler.bind(null, 'anonymous')} roomType={modeType} />
+        <h2> Please select the room mode. </h2>
+        <ButtonLayout>
+            {/* eslint-disable-next-line react/jsx-no-bind */}
+            <ModeButton checkBoxName="known" onClick={typeHandler.bind(null, 'known')} roomType={modeType} />
+            {/* eslint-disable-next-line react/jsx-no-bind */}
+            <ModeButton checkBoxName="unknown" onClick={typeHandler.bind(null, 'unknown')} roomType={modeType} />
+        </ButtonLayout>
+        <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler}>
+          Lets Go
+        </DefaultButton>
       </ModalLayout>
     </>
   );

@@ -10,7 +10,7 @@ const viewAnonymousSelector = selector({
     return { view: roomViewName, isAnonymous };
   },
   set: ({ set }, isAnonymous) => {
-    if (isAnonymous === 'anonymous') {
+    if (isAnonymous === 'unknown') {
       set(anonymous, true);
     } else {
       set(anonymous, false);

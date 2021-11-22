@@ -25,7 +25,7 @@ const BoxText = styled.div`
 `;
 
 interface RoomTypeCheckBoxProps{
-    checkBoxName : 'public' | 'social' | 'closed' | 'notAnonymous' | 'anonymous',
+    checkBoxName : 'public' | 'social' | 'closed' | 'known' | 'unknown',
     onClick: any
     roomType: any
 }
@@ -35,8 +35,8 @@ function RoomTypeCheckBox({ checkBoxName, onClick, roomType } : RoomTypeCheckBox
     public: { component: IoEarthOutline, color: '#4E84C1' },
     social: { component: MdOutlinePeopleOutline, color: '#78A55A' },
     closed: { component: MdLockOutline, color: '#999999' },
-    anonymous: { component: MdGroup, color: '#999999' },
-    notAnonymous: { component: MdGroupOff, color: '#999999' },
+    unknown: { component: MdGroupOff, color: '#999999' },
+    known: { component: MdGroup, color: '#999999' },
   };
 
   const Icon : IconType = TypeWithIcon[checkBoxName].component;
