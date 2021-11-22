@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { MouseEvent } from 'react';
+import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-interface following{
-    userName: string,
-    profileUrl: string,
+interface IActiveFollowingCardProps{
+  userDocumentId:string,
+  userName: string,
+  userId: string,
+  profileUrl: string,
+  onClickHands: (userDocumentId: string) => (e: MouseEvent) => void;
 }
 
 const CardLayout = styled.div`
@@ -11,6 +15,13 @@ const CardLayout = styled.div`
     display : flex;
     align-items: center;
     margin-bottom: 10px;
+    border-radius: 30px;
+
+    &:hover {
+      cursor: default;
+      background-color: #eeebe4e4;
+      cursor: default;
+    }
 `;
 
 const ImageLayout = styled.div`
@@ -58,11 +69,19 @@ const HandsLayout = styled.div`
     justify-content: center;
     font-size: 24px;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+    &:hover {
+      cursor: pointer;
+    }
 `;
 
-function ActiveFollowingCard({ userName, profileUrl }:following) {
+function ActiveFollowingCard({
+  userDocumentId, userName, userId, profileUrl, onClickHands,
+}: IActiveFollowingCardProps) {
+  const history = useHistory();
+
   return (
-    <CardLayout>
+    <CardLayout onClick={() => history.push(`/profile/${userId}`)}>
       <ImageLayout>
         <GreenLight />
         <img src={profileUrl} alt="profile" width="48px" height="48px" />
@@ -71,7 +90,7 @@ function ActiveFollowingCard({ userName, profileUrl }:following) {
         <UserName>{userName}</UserName>
         <div>online</div>
       </DescriptionLayout>
-      <HandsLayout>
+      <HandsLayout onClick={onClickHands(userDocumentId)}>
         👋
       </HandsLayout>
     </CardLayout>

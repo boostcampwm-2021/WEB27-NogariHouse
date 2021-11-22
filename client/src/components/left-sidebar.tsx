@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
-import React, { useEffect, useRef, useState } from 'react';
+import React, {
+  MouseEvent, useEffect, useRef, useState,
+} from 'react';
 import styled from 'styled-components';
 
 import ActiveFollowingCard from '@common/active-following-card';
@@ -26,6 +28,7 @@ const ExceptionMessage = styled.div`
 interface IActiveFollowingUser {
   userDocumentId: string,
   userName: string,
+  userId: string,
   profileUrl: string,
   isActive: boolean,
 }
@@ -77,10 +80,15 @@ function LeftSideBar() {
   useEffect(() => {
     if (userSocketRef.current) {
       userSocketRef.current.emit('user:join', {
-        userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, followingList,
+        ...user, followingList,
       });
     }
   }, [followingList]);
+
+  const onClickHands = (userDocumentId: string) => (e: MouseEvent) => {
+    e.stopPropagation();
+    userSocketRef.current?.emit('user:hands', userDocumentId);
+  };
 
   return (
     <ActiveFollowingListWrapper>
@@ -90,8 +98,11 @@ function LeftSideBar() {
         .map((list) => (
           <ActiveFollowingCard
             key={list.userName}
+            userDocumentId={list.userDocumentId}
             userName={list.userName}
+            userId={list.userId}
             profileUrl={list.profileUrl}
+            onClickHands={onClickHands}
           />
         ))}
     </ActiveFollowingListWrapper>

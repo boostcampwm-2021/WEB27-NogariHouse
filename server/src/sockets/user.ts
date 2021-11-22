@@ -4,6 +4,7 @@ import { Namespace, Socket } from 'socket.io';
 interface IJoinPayload {
     userDocumentId: string,
     userName: string,
+    userId: string,
     profileUrl: string,
     followingList: string[],
 }
@@ -11,6 +12,7 @@ interface IJoinPayload {
 interface IActiveFollowingUser {
     userDocumentId: string,
     userName: string,
+    userId: string,
     profileUrl: string,
     isActive: boolean,
 }
@@ -22,9 +24,9 @@ activeUser.set('618238ccd24b76444a6c592f', { userName: 'sungbin', profileUrl: 'h
 
 export default function userHandler(socket : Socket, server : Namespace) {
   const handleUserJoin = ({
-    userDocumentId, userName, profileUrl, followingList,
+    userDocumentId, userName, userId, profileUrl, followingList,
   }: IJoinPayload) => {
-    activeUser.set(userDocumentId, { userName, profileUrl });
+    activeUser.set(userDocumentId, { userName, userId, profileUrl });
     socketUser.set(socket.id, userDocumentId);
 
     const activeFollowingList = followingList.reduce((acc: IActiveFollowingUser[], id: string) => {
@@ -33,7 +35,7 @@ export default function userHandler(socket : Socket, server : Namespace) {
     }, []);
 
     server.emit('user:newActiveUser', {
-      userDocumentId, userName, profileUrl, isActive: true,
+      userDocumentId, userName, userId, profileUrl, isActive: true,
     });
     // 기존 접속자들에게 새로운 유저 데이터 보내주기
 
