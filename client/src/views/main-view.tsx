@@ -42,6 +42,7 @@ const SectionLayout = styled.div`
 
 const ActiveFollowingLayout = styled.div`
   height: 80vh;
+  min-width: 240px;
   margin: 10px;
   flex-grow: 3;
   @media (max-width: 1024px) {
