@@ -6,11 +6,10 @@ interface SignTitleProps {
 }
 
 const TitleDiv = styled.div`
-  height: 70px;
-  width: calc(740px*100vw/1440px);
-  font-size: 4rem;
-  min-width: 650px;
+  width: max-content;
+  font-size: min(6vw, 60px);
   text-align: center;
+  
 `;
 
 function SignTitle({
