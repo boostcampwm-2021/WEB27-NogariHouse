@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable max-len */
 import React, {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useState,
 } from 'react';
 import {
   useRecoilState, useResetRecoilState, useRecoilValue, useSetRecoilState,
@@ -10,7 +11,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import userState from '@atoms/user';
-import followingListState, { activeFollowingListState } from '@atoms/following-list';
+import followingListState from '@atoms/following-list';
 import LargeLogo from '@components/sign/large-logo';
 import LeftSideBar from '@components/left-sidebar';
 import RightSideBar from '@components/room/right-sidebar';
@@ -22,7 +23,6 @@ import LoadingSpinner from '@common/loading-spinner';
 import { getFollowingsList, getMyInfo } from '@src/api';
 import isOpenRoomState from '@atoms/is-open-room';
 import { slideXFromTo } from '@src/assets/styles/keyframe';
-import { io, Socket } from 'socket.io-client';
 
 const MainLayout = styled.div`
   display: flex;
@@ -95,37 +95,26 @@ const ButtonLayout = styled.div`
 
 function MainView() {
   const [user, setUser] = useRecoilState(userState);
-  const [followingList, setFollowingList] = useRecoilState(followingListState);
-  const setactiveFollowingList = useSetRecoilState(activeFollowingListState);
+  const setFollowingList = useSetRecoilState(followingListState);
   const resetUser = useResetRecoilState(userState);
   const [loading, setLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(['accessToken']);
   const isOpenRoom = useRecoilValue(isOpenRoomState);
-  const userSocket = useRef<Socket | null>(null);
 
   const updateUserState = useCallback(async (json) => {
     const {
       accessToken, userDocumentId, profileUrl, userName, userId,
     } = json;
 
-    getFollowingsList(userDocumentId).then((response:any) => setFollowingList(response));
+    const response: any = await getFollowingsList(userDocumentId);
+    setFollowingList(response);
 
     setUser({
       isLoggedIn: true, userDocumentId, profileUrl, userName, userId,
     });
 
     setCookie('accessToken', accessToken);
-
-    userSocket.current = io(`${process.env.REACT_APP_SOCKET_URL}/user`);
-
-    userSocket.current.on('user:firstFollowingList', (activeFollowingList) => {
-      setactiveFollowingList(activeFollowingList);
-      console.log(activeFollowingList);
-    });
-    userSocket.current.emit('user:join', {
-      userDocumentId, userName, profileUrl, followingList,
-    });
   }, []);
 
   useEffect(() => {
@@ -152,7 +141,7 @@ function MainView() {
         <HeaderRouter />
         <SectionLayout>
           <ActiveFollowingLayout>
-            <LeftSideBar socketRef={userSocket} />
+            <LeftSideBar />
           </ActiveFollowingLayout>
           <MainSectionLayout>
             <MainScrollSection>

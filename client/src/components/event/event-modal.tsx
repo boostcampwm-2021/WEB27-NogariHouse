@@ -9,7 +9,7 @@ function EventModal() {
 
   return (
     <>
-      <BackgroundWrapper />
+      <BackgroundWrapper onClick={() => setIsOpenEventModal(false)} />
       <ModalBox>
         <button type="button" aria-label="test" onClick={() => setIsOpenEventModal(false)}>cancle</button>
       </ModalBox>
