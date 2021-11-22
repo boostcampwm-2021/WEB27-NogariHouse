@@ -14,6 +14,13 @@ const ActiveFollowingListWrapper = styled.div`
   flex-direction: column;
 `;
 
+const ExceptionMessage = styled.div`
+  margin: auto;
+  color: #a8a59b;
+  font-size: 18px;
+  font-weight: bold;
+`;
+
 interface IActiveFollowingUser {
   userDocumentId: string,
   userName: string,
@@ -75,6 +82,7 @@ function LeftSideBar() {
 
   return (
     <ActiveFollowingListWrapper>
+      {!activeFollowingList.length && <ExceptionMessage>There is no active friends</ExceptionMessage>}
       {activeFollowingList
         .filter((list) => list.isActive)
         .map((list) => (
