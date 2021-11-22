@@ -48,7 +48,9 @@ const SendBtnDiv = styled.div`
   transform: translateY(10px);
 `;
 
-export default function ChatRoomFooter({ addChattingLog, chatDocumentId, socket }: any) {
+export default function ChatRoomFooter({
+  addChattingLog, chatDocumentId, socket, participants,
+}: any) {
   const messageInput = useRef(null);
   const user = useRecoilValue(userType);
 
@@ -69,6 +71,7 @@ export default function ChatRoomFooter({ addChattingLog, chatDocumentId, socket 
       date: makeDateToHourMinute(new Date()),
       chatDocumentId,
     });
+    socket?.emit('chat:alertMsg', { participants, chatDocumentId });
     addChattingLog(chatLog);
   };
 

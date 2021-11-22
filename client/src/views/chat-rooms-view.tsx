@@ -1,16 +1,18 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
-import userType from '@atoms/user';
+import userState from '@atoms/user';
 import ChatRoomListHeader from '@components/chat/chat-list-header';
 import ChatUserCard from '@components/chat/chat-user-card';
 import { ChatRoomsLayout } from '@components/chat/style';
 import LoadingSpinner from '@common/loading-spinner';
 import { getChatRooms } from '@api/index';
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
+import useSocket from '@utils/socket';
 
 interface IChatUserType {
   userDocumentId: string,
@@ -29,13 +31,36 @@ interface IChatRoom {
 function ChatRoomsViews() {
   const [loading, setLoading] = useState(true);
   const [chatRooms, setChatRooms] = useState<Array<IChatRoom>>([]);
-  const { userDocumentId } = useRecoilValue(userType);
+  const { userDocumentId } = useRecoilValue(userState);
   const history = useHistory();
+  const socket = useSocket('/chat');
 
   const clickEvent = (chatDocumentId: string, participantsInfo: Array<IChatUserType>) => {
     history.push({
       pathname: `/chat-rooms/${chatDocumentId}`,
       state: { participantsInfo },
+    });
+  };
+
+  const setNewRooms = (payload: any) => {
+    const {
+      chatDocumentId, lastMsg, recentActive, unCheckedMsg,
+    } = payload;
+    setChatRooms((oldRooms) => {
+      const newChatRooms = oldRooms.reduce((acc: any, cur) => {
+        if (cur.chatDocumentId !== chatDocumentId) acc.push(cur);
+        else {
+          acc.push({
+            chatDocumentId, lastMsg, recentActive, unCheckedMsg, participants: cur.participants,
+          });
+        }
+        return acc;
+      }, []);
+      return (newChatRooms.sort((a: any, b: any) => {
+        if (a.recentActive < b.recentActive) return 1;
+        if (a.recentActive > b.recentActive) return -1;
+        return 0;
+      }));
     });
   };
 
@@ -46,6 +71,12 @@ function ChatRoomsViews() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.emit('chat:viewJoin', userDocumentId);
+    socket.on('chat:alertMsg', setNewRooms);
+  }, [socket]);
 
   if (loading) return (<LoadingSpinner />);
   return (

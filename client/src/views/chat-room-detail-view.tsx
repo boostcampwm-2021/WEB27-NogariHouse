@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable max-len */
@@ -13,9 +14,9 @@ import { getChattingLog, setUnCheckedMsg0 } from '@api/index';
 import { ChatRoomsLayout, ChattingLog } from '@components/chat/style';
 import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';
-import userType from '@atoms/user';
+import userState from '@atoms/user';
 import { makeDateToHourMinute } from '@utils/index';
-import useSocket from '@hooks/useSocket';
+import useSocket from '@utils/socket';
 
 type urlParams = { chatDocumentId: string };
 
@@ -79,7 +80,7 @@ function ChatRoomDetailView() {
   const { chatDocumentId } = useParams<urlParams>();
   const location = useLocation<any>();
   const [chattingLog, setChattingLog] = useState<any>([]);
-  const user = useRecoilValue(userType);
+  const user = useRecoilValue(userState);
   const chattingLogDiv = useRef(null);
   const socket = useSocket('/chat');
 
@@ -125,11 +126,13 @@ function ChatRoomDetailView() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.emit('chat:join', chatDocumentId);
+    socket.emit('chat:roomJoin', chatDocumentId);
     socket.on('chat:sendMsg', (payload: any) => {
-      console.log(payload);
       addChattingLog(payload);
     });
+    return () => {
+      socket.emit('chat:leave', chatDocumentId);
+    };
   }, [socket]);
 
   return (
@@ -151,7 +154,12 @@ function ChatRoomDetailView() {
           </Chat>
         ))}
       </ChattingLog>
-      <ChatRoomFooter addChattingLog={addChattingLog} chatDocumentId={chatDocumentId} socket={socket} />
+      <ChatRoomFooter
+        addChattingLog={addChattingLog}
+        chatDocumentId={chatDocumentId}
+        socket={socket}
+        participants={location.state.participantsInfo.map((participant: any) => participant.userDocumentId)}
+      />
     </ChatRoomsLayout>
   );
 }

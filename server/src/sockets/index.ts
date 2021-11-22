@@ -13,6 +13,6 @@ const chatNamespace = server.of('/chat');
 
 roomNamespace.on('connection', (socket: Socket) => roomHandler(socket, roomNamespace));
 userNamespace.on('connection', (socket: Socket) => userHandler(socket, userNamespace));
-chatNamespace.on('connection', (socket: Socket) => chatHandler(socket, server));
+chatNamespace.on('connection', (socket: Socket) => chatHandler(socket));
 
 export default server;
