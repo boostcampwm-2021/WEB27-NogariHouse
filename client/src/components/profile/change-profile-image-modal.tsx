@@ -18,9 +18,9 @@ const ChangePofileImageLayout = styled.div`
 `;
 
 const PreviewProfileImage = styled.img`
-  width: 200px;
-  height: 200px;
-  min-height: 200px;
+  width: 150px;
+  height: 150px;
+  min-height: 150px;
   object-fit: contain;
   margin: 20px;
   border-radius: 30px;
@@ -68,6 +68,12 @@ const ButtonsLayout = styled.div`
   height: 120px;
 `;
 
+const CustomInput = styled.input`
+  padding:0;
+  margin-bottom: 20px;
+  width : 200px;
+`;
+
 function ShareModal() {
   const [isOpenChangeProfileImageModal,
     setIsOpenChangeProfileImageModalState] = useRecoilState(isOpenChangeProfileImageModalState);
@@ -81,15 +87,15 @@ function ShareModal() {
       const imageUrl = URL.createObjectURL(imageFile);
       setPreviewImageURL(imageUrl);
       setPotentialProfileImage(imageFile);
-      console.log(imageFile);
     }
   };
 
   const changeImageHandler = async () => {
     if (potentialProfileImage) {
-      const datas = new FormData();
-      datas.append('image', potentialProfileImage, potentialProfileImage.name);
-      await changeProfileImage(user.userDocumentId, datas);
+      const formData = new FormData();
+      formData.append('profileImage', potentialProfileImage);
+      formData.append('userDocumentId', user.userDocumentId);
+      await changeProfileImage(user.userDocumentId, formData);
     }
   };
 
@@ -101,12 +107,10 @@ function ShareModal() {
       <ModalBox>
         <ChangePofileImageLayout>
           <PreviewProfileImage src={previewImageURL} />
-          <CustomForm action="/uploadFileWithOriginalFilename" method="post">
-            <input type="file" id="image-file" accept="image/gif, image/jpeg, image/png" onChange={inputOnChange} />
+          <CustomForm>
+            <CustomInput type="file" accept="image/gif, image/jpeg, image/png" onChange={inputOnChange} />
             <ButtonsLayout>
-              <DefaultButton buttonType="secondary" size="medium" onClick={() => changeImageHandler()}>
-                Change
-              </DefaultButton>
+              <DefaultButton buttonType="secondary" size="medium" onClick={() => changeImageHandler()}>Change</DefaultButton>
               <DefaultButton buttonType="thirdly" size="medium" onClick={() => setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}>
                 Cancel
               </DefaultButton>
