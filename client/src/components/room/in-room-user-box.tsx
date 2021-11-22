@@ -54,7 +54,7 @@ export function InRoomOtherUserBox({
 
     // eslint-disable-next-line consistent-return
     return () => {
-      ref.current!.style.border = 'none';
+      if (ref.current) ref.current.style.border = 'none';
       clearInterval(meterRefresh);
       soundMeter.stop();
     };

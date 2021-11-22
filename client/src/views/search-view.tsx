@@ -45,12 +45,12 @@ function SearchView() {
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const resetItemList = useResetRecoilState(nowItemsListState);
   const followingList = useRecoilValue(followingListState);
-  const searchInfo = useRef({ keyword: 'recent', option: 'all' });
-  const [nowItemsList, nowItemType] = useFetchItems<any>(`/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}`, searchInfo.current.keyword);
+  const searchInfoRef = useRef({ keyword: 'recent', option: 'all' });
+  const [nowItemsList, nowItemType] = useFetchItems<any>(`/search/${searchInfoRef.current.option}/${searchInfoRef.current.keyword || 'recent'}`, searchInfoRef.current.keyword);
   const setNowCount = useSetRecoilState(nowCountState);
 
   const setEventModal = useSetEventModal();
-  
+
   const searchRequestHandler = () => {
     searchInfoRef.current.keyword = inputKeywordRef.current?.value as string;
     searchInfoRef.current.option = searchType.toLocaleLowerCase();
