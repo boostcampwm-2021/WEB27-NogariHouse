@@ -319,13 +319,13 @@ export const setUnCheckedMsg0 = async (chatDocumentId: string, userDocumentId: s
 export const changeProfileImage = async (userDocumentId: string, imageData: FormData) => {
   try {
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/user/profile-image/${userDocumentId}`,
+      `${process.env.REACT_APP_API_URL}/api/user/profile-image`,
       {
         method: 'post',
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        body: JSON.stringify({ imageData }),
+        body: JSON.stringify({ imageData, userDocumentId }),
       },
     );
     response = await response.json();

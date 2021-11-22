@@ -7,6 +7,7 @@ import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import userState from '@atoms/user';
 import DefaultButton from '@common/default-button';
+import { changeProfileImage } from '@src/api';
 
 const ChangePofileImageLayout = styled.div`
   width: 100%;
@@ -72,7 +73,7 @@ function ShareModal() {
     setIsOpenChangeProfileImageModalState] = useRecoilState(isOpenChangeProfileImageModalState);
   const user = useRecoilValue(userState);
   const [previewImageURL, setPreviewImageURL] = useState(user.profileUrl);
-  const [potentialProfileImage, setPotentialProfileImage] = useState<FormData | null>(null);
+  const [potentialProfileImage, setPotentialProfileImage] = useState<any>(null);
 
   const inputOnChange = (e : any) => {
     if (e.target.files[0]) {
@@ -86,7 +87,9 @@ function ShareModal() {
 
   const changeImageHandler = async () => {
     if (potentialProfileImage) {
-      console.log(potentialProfileImage);
+      const datas = new FormData();
+      datas.append('image', potentialProfileImage, potentialProfileImage.name);
+      await changeProfileImage(user.userDocumentId, datas);
     }
   };
 
