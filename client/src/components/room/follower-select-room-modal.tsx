@@ -162,9 +162,6 @@ function FollowerSelectModal() {
     const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
     setFilteredUserList(allUserList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
 
-    return () => {
-      setSelectedUsers([]);
-    }
   }, [selectedUsers]);
 
 

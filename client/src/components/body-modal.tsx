@@ -6,7 +6,7 @@ import {
 import EventModal from '@components/event/event-modal';
 import EventRegisterModal from '@components/event/event-register-modal';
 import ShareModal from '@components/profile/share-modal';
-import FollowerSelectModal from '@src/views/follower-select-room-view';
+import FollowerSelectModal from '@src/components/room/follower-select-room-modal';
 
 function BodyModal() {
   const isOpenEventModal = useRecoilValue(isOpenEventModalState);
