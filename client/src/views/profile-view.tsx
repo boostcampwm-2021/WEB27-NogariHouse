@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable no-underscore-dangle, max-len */
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -9,7 +9,6 @@ import userState from '@atoms/user';
 import LoadingSpinner from '@common/loading-spinner';
 import DefaultButton from '@common/default-button';
 import useIsFollowingRef from '@hooks/useIsFollowingRef';
-import scrollbarStyle from '@styles/scrollbar-style';
 
 const ProfileViewLayout = styled.div`
   position:relative;
@@ -17,18 +16,15 @@ const ProfileViewLayout = styled.div`
   flex-direction: column;
 
   width: 80%;
-  min-width: 400px;
   height: 100%;
   margin: auto;
-
-  ${scrollbarStyle};
 `;
 
 const ImageAndFollowButtonDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 const LargeProfileImageBox = styled.img`
   width: 100px;
@@ -72,17 +68,17 @@ const FollowNumberDiv = styled.div`
 const FollowTextDiv = styled.div`
   font-size: 24px;
   transform: translateY(3px);
-`
+`;
 
 const DescriptionDiv = styled.div`
   font-size: 20px;
   margin-top: 30px;
-`
+`;
 
 const JoinDateDiv = styled.div`
   font-size: 20px;
   margin-top: 50px;
-`
+`;
 
 interface IUserDetail {
   _id: string,
@@ -98,12 +94,12 @@ interface IUserDetail {
 
 const makeDateToJoinDate = (dateString: string) => {
   const date = new Date(dateString);
-  return `${date.getMonth()+1}월 ${date.getDate()}, ${date.getFullYear()}`
-}
+  return `${date.getMonth() + 1}월 ${date.getDate()}, ${date.getFullYear()}`;
+};
 
 function ProfileView({ match }: RouteComponentProps<{id: string}>) {
   const user = useRecoilValue(userState);
-  const followingList = useRecoilValue(followingListState)
+  const followingList = useRecoilValue(followingListState);
   const [loading, setLoading] = useState(true);
   const userDetailInfo = useRef<IUserDetail>();
   const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading);
@@ -140,16 +136,17 @@ function ProfileView({ match }: RouteComponentProps<{id: string}>) {
       <ImageAndFollowButtonDiv>
         <LargeProfileImageBox src={userDetailInfo.current.profileUrl} />
         {user.userId !== profileId
-        &&
+        && (
         <DefaultButton
-        buttonType={isFollowingRef.current ? 'following' : 'follow'}
-        size="small"
-        font="Nunito"
-        isDisabled={false}
-        onClick={() => fetchFollow(isFollowingRef.current as boolean, userDetailInfo.current!._id)}
-      >
-        {isFollowingRef.current ? 'following' : 'follow'}
-      </DefaultButton>}
+          buttonType={isFollowingRef.current ? 'following' : 'follow'}
+          size="small"
+          font="Nunito"
+          isDisabled={false}
+          onClick={() => fetchFollow(isFollowingRef.current as boolean, userDetailInfo.current!._id)}
+        >
+          {isFollowingRef.current ? 'following' : 'follow'}
+        </DefaultButton>
+        )}
       </ImageAndFollowButtonDiv>
       <UserNameDiv>{userDetailInfo.current.userName}</UserNameDiv>
       <UserIdDiv>{`@${userDetailInfo.current.userId}`}</UserIdDiv>
