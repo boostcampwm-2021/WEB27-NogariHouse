@@ -7,7 +7,7 @@ import { ModalBox, BackgroundWrapper } from '@common/modal';
 import { postEvent } from '@api/index';
 
 const CustomEventRegisterModal = styled(ModalBox)`
-  top: 50px;
+  top: 15vh;
   flex-grow: 3;
   display: flex;
   flex-direction: column;

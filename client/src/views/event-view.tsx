@@ -11,7 +11,7 @@ import LoadingSpinner from '@common/loading-spinner';
 import useFetchItems from '@hooks/useFetchItems';
 import useItemFecthObserver from '@hooks/useItemFetchObserver';
 import useSetEventModal from '@hooks/useSetEventModal';
-import { makeDateToHourMinute } from '@src/utils';
+import { makeDateToHourMinute, makeDateToMonthDate } from '@src/utils';
 
 interface EventUser {
   userId: string,
@@ -42,7 +42,7 @@ const ObserverBlock = styled.div`
 export const makeEventToCard = (event: EventCardProps) => (
   <EventCard
     key={event.key}
-    time={makeDateToHourMinute(new Date(event.time))}
+    time={`${makeDateToMonthDate(new Date(event.time))} ${makeDateToHourMinute(new Date(event.time))}`}
     title={event.title}
     participants={event.participants}
     description={event.description}
