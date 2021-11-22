@@ -19,8 +19,10 @@ const ChangePofileImageLayout = styled.div`
 const PreviewProfileImage = styled.img`
   width: 200px;
   height: 200px;
+  min-height: 200px;
+  object-fit: contain;
   margin: 20px;
-  border-radius: 30%;
+  border-radius: 30px;
   border: 0.1px solid #b8b8b8;
 
   &:hover{
@@ -69,13 +71,22 @@ function ShareModal() {
   const [isOpenChangeProfileImageModal,
     setIsOpenChangeProfileImageModalState] = useRecoilState(isOpenChangeProfileImageModalState);
   const user = useRecoilValue(userState);
-  const [previewImage, setPreviewImage] = useState(user.profileUrl);
+  const [previewImageURL, setPreviewImageURL] = useState(user.profileUrl);
+  const [potentialProfileImage, setPotentialProfileImage] = useState<FormData | null>(null);
 
   const inputOnChange = (e : any) => {
     if (e.target.files[0]) {
       const imageFile = e.target.files[0];
       const imageUrl = URL.createObjectURL(imageFile);
-      setPreviewImage(imageUrl);
+      setPreviewImageURL(imageUrl);
+      setPotentialProfileImage(imageFile);
+      console.log(imageFile);
+    }
+  };
+
+  const changeImageHandler = async () => {
+    if (potentialProfileImage) {
+      console.log(potentialProfileImage);
     }
   };
 
@@ -86,11 +97,11 @@ function ShareModal() {
       />
       <ModalBox>
         <ChangePofileImageLayout>
-          <PreviewProfileImage src={previewImage} />
+          <PreviewProfileImage src={previewImageURL} />
           <CustomForm action="/uploadFileWithOriginalFilename" method="post">
             <input type="file" id="image-file" accept="image/gif, image/jpeg, image/png" onChange={inputOnChange} />
             <ButtonsLayout>
-              <DefaultButton buttonType="secondary" size="medium">
+              <DefaultButton buttonType="secondary" size="medium" onClick={() => changeImageHandler()}>
                 Change
               </DefaultButton>
               <DefaultButton buttonType="thirdly" size="medium" onClick={() => setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}>

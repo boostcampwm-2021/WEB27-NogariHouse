@@ -315,3 +315,22 @@ export const setUnCheckedMsg0 = async (chatDocumentId: string, userDocumentId: s
     console.log(e);
   }
 };
+
+export const changeProfileImage = async (userDocumentId: string, imageData: FormData) => {
+  try {
+    let response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/user/profile-image/${userDocumentId}`,
+      {
+        method: 'post',
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+        body: JSON.stringify({ imageData }),
+      },
+    );
+    response = await response.json();
+    return response;
+  } catch (e) {
+    console.log(e);
+  }
+};
