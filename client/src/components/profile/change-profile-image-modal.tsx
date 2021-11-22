@@ -81,7 +81,9 @@ function ShareModal() {
 
   return (
     <>
-      <BackgroundWrapper />
+      <BackgroundWrapper
+        onClick={() => setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}
+      />
       <ModalBox>
         <ChangePofileImageLayout>
           <PreviewProfileImage src={previewImage} />
