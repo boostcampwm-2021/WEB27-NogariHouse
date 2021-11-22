@@ -41,17 +41,19 @@ function SearchView() {
   const [targetRef] = useItemFecthObserver(loading);
   const user = useRecoilValue(userState);
   const [nowFetching, setNowFetching] = useRecoilState(nowFetchingState);
-  const followingList = useRecoilValue(followingListState);
+  const setRoomView = useSetRecoilState(roomViewType);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const resetItemList = useResetRecoilState(nowItemsListState);
+  const followingList = useRecoilValue(followingListState);
   const searchInfo = useRef({ keyword: 'recent', option: 'all' });
   const [nowItemsList, nowItemType] = useFetchItems<any>(`/search/${searchInfo.current.option}/${searchInfo.current.keyword || 'recent'}`, searchInfo.current.keyword);
   const setNowCount = useSetRecoilState(nowCountState);
 
   const setEventModal = useSetEventModal();
-
+  
   const searchRequestHandler = () => {
-    searchInfo.current.keyword = inputKeywordRef.current?.value as string;
-    searchInfo.current.option = searchType.toLocaleLowerCase();
+    searchInfoRef.current.keyword = inputKeywordRef.current?.value as string;
+    searchInfoRef.current.option = searchType.toLocaleLowerCase();
     resetItemList();
     setNowCount(0);
     setNowFetching(true);
@@ -68,9 +70,6 @@ function SearchView() {
       setLoading(true);
     }
   }, []);
-
-  const setRoomView = useSetRecoilState(roomViewType);
-  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
 
   const roomCardClickHandler = (e: MouseEvent) => {
     const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
@@ -114,7 +113,7 @@ function SearchView() {
 
   // eslint-disable-next-line consistent-return
   const showList = () => {
-    if (searchInfo.current.option !== searchType.toLocaleLowerCase()) {
+    if (searchInfoRef.current.option !== searchType.toLocaleLowerCase()) {
       return <LoadingSpinner />;
     }
 

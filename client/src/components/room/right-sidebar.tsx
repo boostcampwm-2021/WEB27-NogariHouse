@@ -5,6 +5,8 @@ import { useRecoilValue } from 'recoil';
 import RoomModal from '@components/room/room-modal';
 import InRoomModal from '@components/room/in-room-modal';
 import roomViewType from '@atoms/room-view-type';
+import NotFoundRoomModal from './not-found-room-modal';
+import SelectModeRoomModal from './select-mode-room-modal';
 
 const RoomModalLayout = styled.div`
   display: flex;
@@ -43,6 +45,22 @@ function RightSideBar() {
     return (
       <RoomModalLayout>
         <InRoomModal />
+      </RoomModalLayout>
+    );
+  }
+
+  if (roomView === 'selectModeView') {
+    return (
+      <RoomModalLayout>
+        <SelectModeRoomModal />
+      </RoomModalLayout>
+    );
+  }
+
+  if (roomView === 'notFoundRoomView') {
+    return (
+      <RoomModalLayout>
+        <NotFoundRoomModal />
       </RoomModalLayout>
     );
   }

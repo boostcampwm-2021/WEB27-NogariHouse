@@ -9,6 +9,7 @@ import useSocket from '@src/hooks/useSocket';
 import { bindTrailingArgs } from '@src/utils';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState, { IUser } from '@atoms/user';
+import anonymousState from '@atoms/anonymous';
 
 export interface IRTC {
   socketId?: string,
@@ -16,6 +17,7 @@ export interface IRTC {
   stream?: MediaStream,
   peerConnection?: RTCPeerConnection,
   mic?: boolean,
+  isAnonymous?: boolean
 }
 
 export interface IParticipant extends IRTC {
@@ -56,12 +58,13 @@ export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<R
     payload.socket.emit('room:ice', candidate, payload.socketId);
   };
 
-  const handleTrackEvent = (data:RTCTrackEvent, payload: { userDocumentId: string, mic: boolean, socketId: string }) => {
+  const handleTrackEvent = (data:RTCTrackEvent, payload: { userDocumentId: string, mic: boolean, socketId: string, isAnonymous: boolean }) => {
     setParticipants((oldParticipants: Array<T>) => oldParticipants!.filter((participant: T) => (participant.userDocumentId !== payload.userDocumentId)).concat({
       stream: data.streams[0],
       userDocumentId: payload.userDocumentId,
       mic: payload.mic,
       socketId: payload.socketId,
+      isAnonymous: payload.isAnonymous,
     } as unknown as T));
   };
 
@@ -74,6 +77,7 @@ export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<R
         userDocumentId: participant.userDocumentId,
         mic: participant.mic as unknown,
         socketId: participant.socketId,
+        isAnonymous: participant.isAnonymous,
         socket,
       });
 
@@ -98,6 +102,7 @@ export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<R
 export const useRtc = <T extends IRTC>(): [Array<T>, Dispatch<React.SetStateAction<T[]>>, RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined, MutableRefObject<MediaStream | null>] => {
   const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const [participants, setParticipants] = useState<Array<T>>([]);
+  const isAnonymous = useRecoilValue(anonymousState);
   const roomDocumentId = useRecoilValue(roomDocumentIdState);
   const [user] = useRecoilState(userTypeState);
   const socket = useSocket();
@@ -109,7 +114,7 @@ export const useRtc = <T extends IRTC>(): [Array<T>, Dispatch<React.SetStateActi
     const init = async () => {
       await getLocalStream();
       socket.emit('room:join', {
-        roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id,
+        roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
       });
     };
 
@@ -128,9 +133,12 @@ export const useRtc = <T extends IRTC>(): [Array<T>, Dispatch<React.SetStateActi
       });
     });
 
-    socket.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-shadow
+    socket.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string, isAnonymous: boolean) => {
       if (!myStreamRef.current) return;
-      const participant: any = { userDocumentId, socketId, mic: false };
+      const participant: any = {
+        userDocumentId, socketId, isAnonymous, mic: false,
+      };
       const peerConnection = setPeerConnection(participant, socket);
       if (!(peerConnection && socket)) return;
       peerConnectionsRef.current = { ...peerConnectionsRef.current, [socketId]: peerConnection };

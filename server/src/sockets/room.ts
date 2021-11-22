@@ -10,14 +10,14 @@ const users: IUsers = {};
 
 export default function registerRoomHandler(socket : Socket, server : Server) {
   const handleRoomJoin = async (payload:
-    {roomDocumentId: string, userDocumentId: string, socketId: string}) => {
+    {roomDocumentId: string, userDocumentId: string, socketId: string, isAnonymous: boolean}) => {
     const {
-      roomDocumentId, userDocumentId, socketId,
+      roomDocumentId, userDocumentId, socketId, isAnonymous,
     } = payload;
     socket.join(roomDocumentId);
 
-    users[socket.id] = { roomDocumentId, userDocumentId };
-    await RoomService.addParticipant(roomDocumentId, userDocumentId, socketId);
+    users[socket.id] = { roomDocumentId, userDocumentId, isAnonymous };
+    await RoomService.addParticipant(roomDocumentId, userDocumentId, socketId, isAnonymous);
     const room = await RoomService.findRoom(roomDocumentId);
     const participantsInfo = room?.participants
       .filter((participant) => participant.userDocumentId !== userDocumentId);
@@ -35,8 +35,8 @@ export default function registerRoomHandler(socket : Socket, server : Server) {
 
   // eslint-disable-next-line no-undef
   const handleRoomOffer = (offer: RTCSessionDescriptionInit, receiveId: string) => {
-    const { userDocumentId } = users[socket.id];
-    socket.to(receiveId).emit('room:offer', offer, userDocumentId, socket.id);
+    const { userDocumentId, isAnonymous } = users[socket.id];
+    socket.to(receiveId).emit('room:offer', offer, userDocumentId, socket.id, isAnonymous);
   };
 
   // eslint-disable-next-line no-undef

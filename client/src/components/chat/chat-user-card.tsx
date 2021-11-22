@@ -29,6 +29,10 @@ const ChatUserCardLayout = styled.div`
 
   display: flex;
   flex-direction: row;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const ChatUserCardProfileDiv = styled.div`

@@ -27,7 +27,7 @@ function FollowerView({ match }: RouteComponentProps<{id: string}>) {
     if (newUserItemForm._id === user.userDocumentId) {
       return (
         <UserCard
-      // eslint-disable-next-line no-underscore-dangle
+          // eslint-disable-next-line no-underscore-dangle
           key={newUserItemForm._id}
           cardType="me"
           userData={newUserItemForm}
@@ -37,7 +37,7 @@ function FollowerView({ match }: RouteComponentProps<{id: string}>) {
 
     return (
       <UserCard
-          // eslint-disable-next-line no-underscore-dangle
+        // eslint-disable-next-line no-underscore-dangle
         key={newUserItemForm._id}
         cardType="follow"
         userData={newUserItemForm}

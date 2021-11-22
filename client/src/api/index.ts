@@ -12,6 +12,9 @@ export const getRoomInfo = async (roomDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -30,6 +33,9 @@ export const getUserInfo = async (userDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response as unknown as {
       ok: boolean,
@@ -49,6 +55,8 @@ export const postRoomInfo = async (roomInfo: Object) => {
       },
       body: JSON.stringify(roomInfo),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
 
     response = await response.json();
     return response;
@@ -104,6 +112,8 @@ export const postSignUpUserInfo = async (postSignupUserInfoConfig: Object) => {
       body: JSON.stringify(postSignupUserInfoConfig),
     });
 
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -120,6 +130,8 @@ export const postCheckMail = async (email: { email: string }) => {
       },
       body: JSON.stringify(email),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
 
     const json = await response.json();
     return json as { isUnique: boolean, verificationNumber: string };
@@ -140,6 +152,9 @@ export const getSearchResult = async (searchInfo: {keyword:string, option:string
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -156,6 +171,9 @@ export const findUsersById = async (findUserList: Array<string>) => {
       },
       body: JSON.stringify({ userList: findUserList }),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -174,6 +192,9 @@ export const getChatRooms = async (userDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -192,6 +213,9 @@ export const getFollowingsList = async (userDocumentId: string) => {
         },
       },
     );
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {
@@ -208,6 +232,25 @@ export const postChatRoom = async (participants: Array<string>) => {
       },
       body: JSON.stringify({ participants }),
     });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getMyInfo = async () => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user`, {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
     response = await response.json();
     return response;
   } catch (error) {

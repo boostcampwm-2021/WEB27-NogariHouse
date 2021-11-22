@@ -1,9 +1,8 @@
 /* eslint-disable object-shorthand */
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
 
-import roomTypeState from '@atoms/room-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState from '@atoms/user';
 import roomViewType from '@atoms/room-view-type';
@@ -41,8 +40,8 @@ const TitleInputbarLabel = styled.label`
 function RoomModal() {
   const user = useRecoilValue(userTypeState);
   const setRoomView = useSetRecoilState(roomViewType);
-  const [roomType] = useRecoilState(roomTypeState);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+  const [roomType, setRoomType] = useState('public');
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -72,11 +71,18 @@ function RoomModal() {
     setIsAnonymous(!isAnonymous);
   };
 
+  const roomTypeOnClick = (checkBoxName: string) => {
+    setRoomType(checkBoxName);
+  };
+
   return (
     <>
-      <RoomTypeCheckBox checkBoxName="public" />
-      <RoomTypeCheckBox checkBoxName="social" />
-      <RoomTypeCheckBox checkBoxName="closed" />
+      {/* eslint-disable-next-line react/jsx-no-bind */}
+      <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeOnClick.bind(null, 'public')} roomType={roomType} />
+      {/* eslint-disable-next-line react/jsx-no-bind */}
+      <RoomTypeCheckBox checkBoxName="social" onClick={roomTypeOnClick.bind(null, 'social')} roomType={roomType} />
+      {/* eslint-disable-next-line react/jsx-no-bind */}
+      <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
       <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>

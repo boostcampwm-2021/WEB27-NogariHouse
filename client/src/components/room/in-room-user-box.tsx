@@ -5,21 +5,23 @@ import React, {
 import {
   FiMic, FiMicOff,
 } from 'react-icons/fi';
+import { useRecoilValue } from 'recoil';
+import { Link } from 'react-router-dom';
 
 import { getUserInfo } from '@api/index';
 import SoundMeter from '@src/utils/voice';
-import { Link } from 'react-router-dom';
+import anonymousState from '@atoms/anonymous';
 import { InRoomUserBoxStyle, InRoomUserMicDiv, UserBox } from './style';
 
 export interface IParticipant {
     userDocumentId: string,
     isMicOn: boolean,
     stream?: MediaStream | undefined,
-    isMine: boolean
+    isAnonymous?: boolean
 }
 
 export function InRoomOtherUserBox({
-  userDocumentId, isMicOn, stream, isMine,
+  userDocumentId, isMicOn, stream, isAnonymous,
 }: IParticipant) {
   const [userInfo, setUserInfo] = useState<any>();
   const ref = useRef<HTMLVideoElement>(null);
@@ -39,7 +41,7 @@ export function InRoomOtherUserBox({
     if (!ref.current || !isMicOn) return;
     const soundMeter = new SoundMeter(audioCtxRef.current);
     let meterRefresh: any = null;
-    soundMeter.connectToSource(stream, (e: any) => {
+    soundMeter.connectToSource(isAnonymous as boolean, stream as MediaStream, (e: any) => {
       meterRefresh = setInterval(() => {
         const num = Number(soundMeter.instant.toFixed(2));
         if (num > 0.02 && ref) {
@@ -52,27 +54,30 @@ export function InRoomOtherUserBox({
 
     // eslint-disable-next-line consistent-return
     return () => {
+      ref.current!.style.border = 'none';
       clearInterval(meterRefresh);
+      soundMeter.stop();
     };
   }, [isMicOn]);
 
   return (
     <InRoomUserBoxStyle>
       <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox ref={ref} poster={userInfo?.profileUrl} autoPlay playsInline muted={isMine} />
+        <UserBox ref={ref} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay playsInline muted={isAnonymous} />
       </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
-      <p>{ userInfo?.userName }</p>
+      <p>{ isAnonymous ? 'anonymous' : userInfo?.userName }</p>
     </InRoomUserBoxStyle>
   );
 }
 
 export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
   (props, ref) => {
+    const isAnonymous = useRecoilValue(anonymousState);
     const [userInfo, setUserInfo] = useState<any>();
-    const audioCtxRef = useRef(new (window.AudioContext)());
+    const audioCtxRef = useRef(new (window.AudioContext || (window as any).webkitAudioContext)());
     const myRef = useRef<any>(ref);
 
     useEffect(() => {
@@ -84,7 +89,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
       if (!props.stream || !props.isMicOn) return;
       const soundMeter = new SoundMeter(audioCtxRef.current);
       let meterRefresh: any = null;
-      soundMeter.connectToSource(props.stream, () => {
+      soundMeter.connectToSource(false, props.stream, () => {
         meterRefresh = setInterval(() => {
           const num = Number(soundMeter.instant.toFixed(2));
           if (num > 0.02 && myRef.current) {
@@ -105,12 +110,12 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
     return (
       <InRoomUserBoxStyle>
         <Link to={`/profile/${userInfo?.userId}`}>
-          <UserBox ref={myRef} poster={userInfo?.profileUrl} autoPlay muted playsInline />
+          <UserBox ref={myRef} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay muted playsInline />
         </Link>
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>
-        <p>{ userInfo?.userName }</p>
+        <p>{ isAnonymous ? 'anonymous' : userInfo?.userName }</p>
       </InRoomUserBoxStyle>
     );
   },
