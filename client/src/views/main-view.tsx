@@ -67,7 +67,7 @@ const RoomLayout = styled.div`
     margin: 10px;
     flex-grow: 5;
   }
-  
+
   @media (max-width: 768px) {
     position: fixed;
     display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};;

@@ -1,12 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 
-const useSocket = (nameSpace: string): Socket | undefined => {
+const useSocket = (namespace: string): Socket | undefined => {
   const socket = useRef<Socket>();
 
   useEffect(() => {
     const url = process.env.REACT_APP_SOCKET_URL as string;
-    socket.current = io(url + nameSpace);
+    socket.current = io(url + namespace);
 
     return () => {
       if (socket.current) {

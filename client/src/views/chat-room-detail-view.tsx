@@ -15,6 +15,7 @@ import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';
 import userType from '@atoms/user';
 import { makeDateToHourMinute } from '@utils/index';
+import useSocket from '@hooks/useSocket';
 
 type urlParams = { chatDocumentId: string };
 
@@ -80,9 +81,10 @@ function ChatRoomDetailView() {
   const [chattingLog, setChattingLog] = useState<any>([]);
   const user = useRecoilValue(userType);
   const chattingLogDiv = useRef(null);
+  const socket = useSocket('/chat');
 
-  const addChattingLog = (message: string) => {
-    setChattingLog([...chattingLog, message]);
+  const addChattingLog = (chatLog: any) => {
+    setChattingLog((oldLog: any) => [...oldLog, chatLog]);
   };
 
   useEffect(() => {
@@ -121,6 +123,15 @@ function ChatRoomDetailView() {
     (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
   }, [chattingLog]);
 
+  useEffect(() => {
+    if (!socket) return;
+    socket.emit('chat:join', chatDocumentId);
+    socket.on('chat:sendMsg', (payload: any) => {
+      console.log(payload);
+      addChattingLog(payload);
+    });
+  }, [socket]);
+
   return (
     <ChatRoomsLayout>
       <ChatRoomHeader participantsInfo={location.state.participantsInfo} />
@@ -140,7 +151,7 @@ function ChatRoomDetailView() {
           </Chat>
         ))}
       </ChattingLog>
-      <ChatRoomFooter addChattingLog={addChattingLog} chatDocumentId={chatDocumentId} />
+      <ChatRoomFooter addChattingLog={addChattingLog} chatDocumentId={chatDocumentId} socket={socket} />
     </ChatRoomsLayout>
   );
 }
