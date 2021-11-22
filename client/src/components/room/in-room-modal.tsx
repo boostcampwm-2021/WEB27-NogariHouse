@@ -9,6 +9,7 @@ import {
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
 import isOpenRoomState from '@atoms/is-open-room';
+import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
@@ -29,6 +30,7 @@ function InRoomModal() {
   const setRoomView = useSetRecoilState(roomViewState);
   const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
+  const setIsOpenModal = useSetRecoilState(isOpenRoomModalState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [isMic, setMic] = useState(false);
   const [
@@ -102,7 +104,7 @@ function InRoomModal() {
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
-        <FooterBtnDiv><FiPlus /></FooterBtnDiv>
+        <FooterBtnDiv><FiPlus onClick={() => setIsOpenModal(true)} /></FooterBtnDiv>
         <FooterBtnDiv>
           {isMic
             ? <FiMic onClick={() => micToggle(false)} />
