@@ -41,9 +41,9 @@ const SectionLayout = styled.div`
 `;
 
 const ActiveFollowingLayout = styled.div`
-  width: 250px;
   height: 80vh;
   margin: 10px;
+  flex-grow: 3;
   @media (max-width: 1024px) {
     display: none;
   }
@@ -52,25 +52,27 @@ const ActiveFollowingLayout = styled.div`
 const MainSectionLayout = styled.div`
   position: relative;
   height: 80vh;
+  width: 55vw;
   min-width: 320px;
-  flex-grow: 10;
+  flex-grow: 12;
   margin: 10px;
   ${ScrollBarStyle};
 `;
 
 const RoomLayout = styled.div`
-  width: 400px;
   @media (min-width: 768px) {
-    margin: 10px;
     height: 80vh;
+    width: 25vw;
+    margin: 10px;
+    flex-grow: 5;
   }
   
   @media (max-width: 768px) {
     position: fixed;
     display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};;
     z-index: 100;
-    height: 85vh;
     width: 99vw;
+    height: 85vh;
     margin-left: 0.5vw;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
