@@ -1,7 +1,9 @@
+/* eslint-disable max-len */
 import React from 'react';
 import styled from 'styled-components';
 
 import ActiveFollowingCard from '@common/active-following-card';
+import { Socket } from 'socket.io-client';
 
 const ActiveFollowingList = styled.div`
   width: 100%;
@@ -9,7 +11,7 @@ const ActiveFollowingList = styled.div`
   flex-direction: column;
 `;
 
-const followingList = [
+const dummyFollowingList = [
   {
     userName: 'Mulgyeol',
     profileUrl: 'https://avatars.githubusercontent.com/u/59464537?v=4',
@@ -36,10 +38,15 @@ const followingList = [
   },
 ];
 
-function LeftSideBar() {
+interface ILeftSideBarProps {
+  socketRef: React.RefObject<Socket | null>,
+}
+
+function LeftSideBar({ socketRef } : ILeftSideBarProps) {
+  console.log(socketRef);
   return (
     <ActiveFollowingList>
-      {followingList
+      {dummyFollowingList
         .filter((list) => list.isActive)
         .map((list) => (
           <ActiveFollowingCard

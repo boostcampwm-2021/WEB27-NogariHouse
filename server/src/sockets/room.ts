@@ -1,4 +1,4 @@
-import { Server, Socket } from 'socket.io';
+import { Namespace, Socket } from 'socket.io';
 
 import RoomService from '@services/rooms-service';
 
@@ -8,7 +8,7 @@ interface IUsers {
 
 const users: IUsers = {};
 
-export default function registerRoomHandler(socket : Socket, server : Server) {
+export default function registerRoomHandler(socket : Socket, server : Namespace) {
   const handleRoomJoin = async (payload:
     {roomDocumentId: string, userDocumentId: string, socketId: string, isAnonymous: boolean}) => {
     const {

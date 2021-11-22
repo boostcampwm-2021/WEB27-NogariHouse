@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 import {
-  useRecoilState, useResetRecoilState, useSetRecoilState, useRecoilValue,
+  useRecoilState, useResetRecoilState, useRecoilValue,
 } from 'recoil';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
@@ -21,6 +22,7 @@ import LoadingSpinner from '@common/loading-spinner';
 import { getFollowingsList, getMyInfo } from '@src/api';
 import isOpenRoomState from '@atoms/is-open-room';
 import { slideXFromTo } from '@src/assets/styles/keyframe';
+import { io, Socket } from 'socket.io-client';
 
 const MainLayout = styled.div`
   display: flex;
@@ -93,12 +95,13 @@ const ButtonLayout = styled.div`
 
 function MainView() {
   const [user, setUser] = useRecoilState(userState);
-  const setFollowingList = useSetRecoilState(followingListState);
+  const [followingList, setFollowingList] = useRecoilState(followingListState);
   const resetUser = useResetRecoilState(userState);
   const [loading, setLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(['accessToken']);
   const isOpenRoom = useRecoilValue(isOpenRoomState);
+  const userSocket = useRef<Socket | null>(null);
 
   const updateUserState = useCallback(async (json) => {
     const {
@@ -112,6 +115,15 @@ function MainView() {
     });
 
     setCookie('accessToken', accessToken);
+
+    userSocket.current = io(`${process.env.REACT_APP_SOCKET_URL}/user`);
+
+    userSocket.current.on('user:firstFollowingList', (activeFollowingList) => {
+      console.log(activeFollowingList);
+    });
+    userSocket.current.emit('user:join', {
+      userDocumentId: user.userDocumentId, userId: user.userId, profileUrl: user.profileUrl, followingList,
+    });
   }, []);
 
   useEffect(() => {
@@ -138,7 +150,7 @@ function MainView() {
         <HeaderRouter />
         <SectionLayout>
           <ActiveFollowingLayout>
-            <LeftSideBar />
+            <LeftSideBar socketRef={userSocket} />
           </ActiveFollowingLayout>
           <MainSectionLayout>
             <MainScrollSection>
