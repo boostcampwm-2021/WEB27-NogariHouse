@@ -13,19 +13,7 @@ import LoadingSpinner from '@common/loading-spinner';
 import RoomCard from '@common/room-card';
 import useFetchItems from '@hooks/useFetchItems';
 import useItemFecthObserver from '@hooks/useItemFetchObserver';
-
-interface Participants{
-  _id: string,
-  userName: string,
-  profileUrl: string
-}
-
-interface RoomCardProps {
-  _id: string,
-  title: string,
-  isAnonymous: boolean,
-  participantsInfo: Array<Participants>,
-}
+import { RoomCardProps } from '@interfaces/index';
 
 const RoomDiv = styled.div`
   div + div {

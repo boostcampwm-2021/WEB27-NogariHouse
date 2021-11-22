@@ -63,7 +63,15 @@ export function InRoomOtherUserBox({
   return (
     <InRoomUserBoxStyle>
       <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox ref={ref} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay playsInline muted={isAnonymous} />
+        <UserBox
+          ref={ref}
+          poster={isAnonymous
+            ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+            : userInfo?.profileUrl}
+          autoPlay
+          playsInline
+          muted={isAnonymous}
+        />
       </Link>
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
@@ -110,7 +118,15 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
     return (
       <InRoomUserBoxStyle>
         <Link to={`/profile/${userInfo?.userId}`}>
-          <UserBox ref={myRef} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay muted playsInline />
+          <UserBox
+            ref={myRef}
+            poster={isAnonymous
+              ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+              : userInfo?.profileUrl}
+            autoPlay
+            muted
+            playsInline
+          />
         </Link>
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
