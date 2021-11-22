@@ -62,7 +62,7 @@ const MainScrollSection = styled.div`
 `;
 
 const RoomLayout = styled.div`
-  @media (minx-width: 768px) {
+  @media (min-width: 768px) {
     margin: 10px;
     height: 80vh;
     flex-grow: 1;
