@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
 import {
-  FiMoreHorizontal, FiScissors, FiPlus, FiMic, FiMicOff,
+  FiPlus, FiMic, FiMicOff,
 } from 'react-icons/fi';
 
 import roomDocumentIdState from '@atoms/room-document-id';
@@ -14,7 +14,7 @@ import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/roo
 import { getRoomInfo } from '@api/index';
 import { useRtc, IRTC } from '@hooks/useRtc';
 import {
-  InRoomHeader, TitleDiv, OptionBtn, InRoomFooter, InRoomUserList, FooterBtnDiv,
+  InRoomHeader, TitleDiv, InRoomFooter, InRoomUserList, FooterBtnDiv,
 } from './style';
 
 export interface IRooms extends Document{
@@ -90,7 +90,6 @@ function InRoomModal() {
     <>
       <InRoomHeader>
         <TitleDiv><span>{roomInfo?.title}</span></TitleDiv>
-        <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
         {/* eslint-disable-next-line max-len */}
@@ -103,7 +102,6 @@ function InRoomModal() {
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
-        <FooterBtnDiv><FiScissors /></FooterBtnDiv>
         <FooterBtnDiv><FiPlus /></FooterBtnDiv>
         <FooterBtnDiv>
           {isMic
