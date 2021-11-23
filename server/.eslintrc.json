@@ -19,7 +19,8 @@
     "rules": {
         "linebreak-style": 0,
         "import/extensions": "off",
-        "import/no-unresolved": 1
+        "import/no-unresolved": 1,
+        "max-len": ["error", { "code": 150 }]
     },
     "settings": {
         "import/resolver": {

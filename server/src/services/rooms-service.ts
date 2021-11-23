@@ -1,6 +1,5 @@
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
 import Rooms from '@models/rooms';
 import Users from '@models/users';
 

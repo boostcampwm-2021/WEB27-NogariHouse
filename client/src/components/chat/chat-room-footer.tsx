@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { useRef } from 'react';
 import styled from 'styled-components';
 import { FiSend } from 'react-icons/fi';

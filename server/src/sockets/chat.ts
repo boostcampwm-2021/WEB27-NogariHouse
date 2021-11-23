@@ -1,5 +1,5 @@
 /* eslint-disable prefer-destructuring */
-/* eslint-disable max-len */
+
 import { Socket } from 'socket.io';
 import Chats from '@models/chats';
 

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable consistent-return */
 // eslint-disable-next-line consistent-return
 export const getRoomInfo = async (roomDocumentId: string) => {

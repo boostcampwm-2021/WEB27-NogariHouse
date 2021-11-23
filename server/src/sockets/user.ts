@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import { Namespace, Socket } from 'socket.io';
 
 interface IJoinPayload {

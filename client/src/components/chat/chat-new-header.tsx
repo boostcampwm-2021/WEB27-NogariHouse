@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
+
 import styled, { css } from 'styled-components';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';

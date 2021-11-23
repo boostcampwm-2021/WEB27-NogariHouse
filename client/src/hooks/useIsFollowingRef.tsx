@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable no-unused-expressions */
 import react, { useCallback, useRef } from 'react';
 import { useRecoilState } from 'recoil';

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 import styled, { css } from 'styled-components';
 import { useResetRecoilState } from 'recoil';
 import { IoClose } from 'react-icons/io5';

@@ -1,5 +1,4 @@
 /* eslint-disable consistent-return */
-/* eslint-disable max-len */
 import styled from 'styled-components';
 
 interface Participants{
@@ -44,7 +43,8 @@ const ChatUserCardProfileDiv = styled.div`
   position: relative;
 `;
 
-const ChatUserCardFirstProfile = styled.div.attrs((props: ProfileProps) => ({ style: { background: `center / contain no-repeat url(${props.profileUrl})` } }))`
+const ChatUserCardFirstProfile = styled.div.attrs((props: ProfileProps) => (
+  { style: { background: `center / contain no-repeat url(${props.profileUrl})` } }))`
   position: absolute;
 
   width: ${(props: ProfileProps) => (props.length === 1 ? 75 : 60)}%;

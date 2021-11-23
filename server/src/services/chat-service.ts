@@ -2,10 +2,7 @@
 /* eslint-disable no-return-await */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
-/* eslint-disable max-len */
-/* eslint-disable array-callback-return */
 /* eslint-disable class-methods-use-this */
-// import Chats from '@models/chats';
 import Users from '@models/users';
 import Chats from '@models/chats';
 

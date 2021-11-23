@@ -1,5 +1,4 @@
 /* eslint-disable consistent-return */
-/* eslint-disable max-len */
 import React, {
   MouseEvent, useEffect, useRef, useState,
 } from 'react';
