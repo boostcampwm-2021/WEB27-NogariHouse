@@ -48,6 +48,9 @@ const Message = styled.div< { isMyMsg: boolean } >`
 
   p {
     margin: 10px;
+    &: hover {
+      cursor: default;
+    }
   }
 `;
 
