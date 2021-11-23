@@ -1,6 +1,6 @@
 ## 👨🏻‍🏫 노가리 하우스 소개
 
-<img src="https://img.shields.io/badge/version-v0.2.2-red" alt="version0.2.2" />
+<img src="https://img.shields.io/badge/version-v0.3.1-red" alt="version0.3.1" />
    
    
 ## [🐟 Nogari House 바로가기 🐟](https://nogarihouse.nemne.dev/)
