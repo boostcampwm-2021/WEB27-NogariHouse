@@ -38,8 +38,8 @@ function EventHeader() {
     <>
       <CustomtHeader>
         {makeIconToLink(Icon)}
-        <HeaderTitleNunito onClick={() => alert('test modal')}>
-          UPCOMING FOR YOU ▼
+        <HeaderTitleNunito>
+          UPCOMING FOR EVERYONE
         </HeaderTitleNunito>
         <EventAddButton>
           <BiCalendarPlus onClick={changeModalState} size={48} />
