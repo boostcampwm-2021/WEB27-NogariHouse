@@ -5,8 +5,9 @@ import usersService from './users-service';
 
 export default {
   get10EventItems: async (count : number) => {
+    const gmtDate = (new Date()).getTime();
     try {
-      const items = await Events.find({ date: { $gte: new Date() } })
+      const items = await Events.find({ date: { $gte: new Date(gmtDate + 9 * 60 * 60 * 1000) } })
         .sort({ date: 1 })
         .skip(count)
         .limit(10);
