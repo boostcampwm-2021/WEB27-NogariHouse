@@ -5,7 +5,6 @@ import {
 import usersService from '@services/users-service';
 import authJWT from '@middlewares/auth';
 import imageUpload from '@middlewares/image-upload';
-import users from '@src/models/users';
 
 const userRouter = Router();
 
