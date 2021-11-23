@@ -1,11 +1,11 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
-import { Socket } from 'socket.io';
+import { Socket, Namespace } from 'socket.io';
 import Chats from '@models/chats';
 import chatService from '@services/chat-service';
 
-export default function chatEventHandler(socket : Socket) {
+export default function chatEventHandler(socket : Socket, namespace: Namespace) {
   const chatRoomJoinHandler = (chatDocumentId: string) => socket.join(chatDocumentId);
   const chatViewJoinHandler = (userDocumentId: string) => socket.join(userDocumentId);
 
@@ -31,7 +31,7 @@ export default function chatEventHandler(socket : Socket) {
       const chatInfo : any = await Chats.findOne({ _id: chatDocumentId }, ['lastMsg', 'unReadMsg', 'recentActive']);
       const count = chatInfo.unReadMsg[chatInfo.unReadMsg.findIndex((user: any) => user.userDocumentId === userDocumentId)].count;
       socket.to(userDocumentId).emit('chat:alertMsg', {
-        chatDocumentId, lastMsg: chatInfo.lastMsg, recentActive: chatInfo.recentActive, unCheckedMsg: count,
+        chatDocumentId, lastMsg: chatInfo.lastMsg, recentActive: chatInfo.recentActive, unCheckedMsg: count + 1,
       });
     });
   };
@@ -57,16 +57,27 @@ export default function chatEventHandler(socket : Socket) {
         linkTo: roomDocumentId,
       }, chatDocumentId, userInfo.userDocumentId);
 
-      socket.to(chatDocumentId.toString()).emit('chat:sendMsg', {
+      namespace.to(chatDocumentId.toString()).emit('chat:sendMsg', {
         userDocumentId: userInfo.userDocumentId, userName: userInfo.userName, profileUrl: userInfo.profileUrl, message, date, linkTo: roomDocumentId,
       });
-      if (isNew) socket.to(participant.userDocumentId).emit('chat:makeChat', { chatDocumentId, participantsInfo: [userInfo] });
+
+      if (isNew) {
+        socket.to(participant.userDocumentId).emit('chat:makeChat', { chatDocumentId, participantsInfo: [userInfo] });
+        namespace.to(userInfo.userDocumentId).emit('chat:makeChat', { chatDocumentId, participantsInfo: [participant] });
+      }
       socket.to(participant.userDocumentId).emit('chat:alertMsg', {
         chatDocumentId,
         lastMsg: message,
         recentActive: new Date(),
         unCheckedMsg: chatRoom!.unReadMsg[chatRoom!.unReadMsg.findIndex((user: any) => user.userDocumentId === participant.userDocumentId)].count + 1,
       });
+      namespace.to(userInfo.userDocumentId).emit('chat:alertMsg', {
+        chatDocumentId,
+        lastMsg: message,
+        recentActive: new Date(),
+        unCheckedMsg: 0,
+      });
+      await chatService.setUnCheckedMsg(chatDocumentId, userInfo.userDocumentId);
     });
   };
 
