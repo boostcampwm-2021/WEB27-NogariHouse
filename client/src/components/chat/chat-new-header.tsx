@@ -24,6 +24,7 @@ const ChatNewHeader = styled.div`
   align-items: center;
   justify-content: space-between;
 
+  position: relative;
 
   p{
     position: absolute;
