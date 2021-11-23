@@ -7,7 +7,7 @@ import { useRecoilValue, useRecoilState } from 'recoil';
 import NewChatRoomHeader from '@src/components/chat/chat-new-header';
 import { ChatRoomsLayout } from '@components/chat/style';
 import UserCardList from '@components/common/user-card-list';
-import { findUsersById } from '@api/index';
+import { findUsersByIdList } from '@api/index';
 import followType from '@atoms/following-list';
 import selectedUserType from '@atoms/chat-selected-users';
 
@@ -110,7 +110,7 @@ function ChatRoomsNewView() {
   };
 
   useEffect(() => {
-    findUsersById(followingList).then((res: any) => {
+    findUsersByIdList(followingList).then((res: any) => {
       const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
       setAllUserList(res.userList);
       setFilteredUserList(res.userList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));

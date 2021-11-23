@@ -10,7 +10,7 @@ import roomViewState from '@atoms/room-view-type';
 import { BackgroundWrapper } from '@common/modal';
 import UserCardList from '@components/common/user-card-list';
 import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
-import { findUsersById } from '@api/index';
+import { findUsersByIdList } from '@api/index';
 import Scroll from '@styles/scrollbar-style';
 import { slideYFromTo } from '@src/assets/styles/keyframe';
 import DefaultButton from '@src/components/common/default-button';
@@ -151,7 +151,7 @@ function FollowerSelectModal() {
   };
 
   useEffect(() => {
-    findUsersById(followingList).then((res: any) => {
+    findUsersByIdList(followingList).then((res: any) => {
       const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
       setAllUserList(res.userList);
       setFilteredUserList(res.userList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));

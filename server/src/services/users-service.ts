@@ -238,7 +238,7 @@ class UserService {
     }
   }
 
-  async findUsersById(documentIdList: Array<string>) {
+  async findUsersByIdList(documentIdList: Array<string>) {
     try {
       const participantsInfo = Users.find({ _id: { $in: documentIdList } });
       return participantsInfo;
