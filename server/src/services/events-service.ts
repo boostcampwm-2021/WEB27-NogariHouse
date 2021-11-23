@@ -5,9 +5,8 @@ import usersService from './users-service';
 
 export default {
   get10EventItems: async (count : number) => {
-    const gmtDate = (new Date()).getTime();
     try {
-      const items = await Events.find({ date: { $gte: new Date(gmtDate + 9 * 60 * 60 * 1000) } })
+      const items = await Events.find({ date: { $gte: new Date() } })
         .sort({ date: 1 })
         .skip(count)
         .limit(10);
@@ -40,16 +39,11 @@ export default {
     };
   },
 
-  makeDateToHour: (stringDate : string):string => {
-    const date = new Date(stringDate);
-    return `${((date.getHours).toString()).padStart(2, '0')}:${((date.getMinutes).toString()).padStart(2, '0')}`;
-  },
-
   setEvent: (title:string, participants:object, date:Date, description:string) => {
     const newEvent = new Events({
       title,
       participants,
-      date,
+      date: new Date(date),
       description,
     });
     return newEvent.save();
