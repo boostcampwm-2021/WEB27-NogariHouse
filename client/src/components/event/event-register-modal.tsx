@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
@@ -5,6 +6,7 @@ import { useRecoilState } from 'recoil';
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import { postEvent } from '@api/index';
+import EventSelectUserDropdown from './event-select-uesr-dropdown';
 
 const CustomEventRegisterModal = styled(ModalBox)`
   top: 15vh;
@@ -92,8 +94,26 @@ const CustomTextArea = styled.textarea`
   &:focus {outline:none;}
 `;
 
+const SelectUserComponent = styled.div`
+  padding: 0px 5px;
+  background-color: #F1F0E4;
+  border-radius: 30px;
+
+  font-family: 'Nunito';
+  color: #819C88;
+
+  cursor: default;
+`;
+
 const InputDescSpan = styled.span`
   color : gray;
+`;
+
+const AddGuestSpan = styled.span`
+  color : gray;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 function EventRegisterModal() {
@@ -103,6 +123,8 @@ function EventRegisterModal() {
   const inputDateRef = useRef<HTMLInputElement>(null);
   const inputTimeRef = useRef<HTMLInputElement>(null);
   const textDescRef = useRef<HTMLTextAreaElement>(null);
+  const [selectedList, setSelectedList] = useState<string[]>([]);
+  const [isOpenSelectedList, setisOpenSelectedList] = useState(false);
 
   const changeModalState = () => {
     setIsOpenModal(!isOpenModal);
@@ -121,7 +143,7 @@ function EventRegisterModal() {
   const publishButtonHandler = () => {
     const eventInfo = {
       title: inputTitleRef.current?.value,
-      participants: ['test'],
+      participants: selectedList,
       date: new Date(`${inputDateRef.current?.value} ${inputTimeRef.current?.value}`),
       description: textDescRef.current?.value,
     };
@@ -148,10 +170,15 @@ function EventRegisterModal() {
               <CustomInput type="text" ref={inputTitleRef} name="title" placeholder="Event Name" onChange={inputOnChange} />
               <CustomInputDiv>
                 <InputDescSpan>with</InputDescSpan>
-                <div />
+                {selectedList.map((userId: string) => (
+                  <SelectUserComponent key={userId} data-id={userId}>
+                    {userId}
+                  </SelectUserComponent>
+                ))}
               </CustomInputDiv>
               <CustomInputDiv>
-                <InputDescSpan>Add a Co-host or Guest</InputDescSpan>
+                <AddGuestSpan onClick={() => setisOpenSelectedList((now) => (!now))}>Add a Co-host or Guest</AddGuestSpan>
+                <EventSelectUserDropdown isOpenSelectedList={isOpenSelectedList} setSelectedList={setSelectedList} />
               </CustomInputDiv>
             </CustomFormBox>
             <CustomFormBox>
