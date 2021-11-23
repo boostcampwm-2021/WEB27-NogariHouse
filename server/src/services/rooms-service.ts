@@ -62,8 +62,13 @@ class RoomService {
       }) => {
         const userList = participants.map(({ userDocumentId }) => ({ _id: userDocumentId }));
         const participantsInfo = await Users.find({ _id: { $in: userList } }, ['userName', 'profileUrl']);
+        const newParticipantsInfo = participantsInfo.map((info, idx) => ({
+          userName: info.userName,
+          profileUrl: info.profileUrl,
+          isAnonymous: participants[idx].isAnonymous,
+        }));
         const roomInfo = {
-          _id, title, isAnonymous, participantsInfo,
+          _id, title, isAnonymous, participantsInfo: newParticipantsInfo,
         };
         return roomInfo;
       }));

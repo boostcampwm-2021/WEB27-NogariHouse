@@ -4,24 +4,7 @@ import styled from 'styled-components';
 
 import { deleteRoom } from '@api/index';
 import { isEmptyArray } from '@utils/index';
-
-interface Participants{
-  _id: string,
-  userName: string,
-  profileUrl: string
-}
-
-interface RoomCardProps {
-  _id: string,
-  title: string,
-  isAnonymous: boolean,
-  participantsInfo: Array<Participants>,
-}
-
-interface ProfileProps {
-  profileUrl: string,
-  length: number
-}
+import { Participants, RoomCardProps } from '@interfaces/index';
 
 const RoomCardProfileDiv = styled.div`
   width: 100px;
@@ -117,6 +100,11 @@ const RoomCardLayout = styled.div`
   }
 `;
 
+interface ProfileProps {
+  profileUrl: string,
+  length: number
+}
+
 interface IUserName {
   name: string,
   key: string,
@@ -128,8 +116,10 @@ interface IProfileList {
 }
 
 const makeParticipantsInfoToUserNames = (acc: IUserName[], participant: Participants, idx: number) => {
-  if (idx > 2) return acc;
-  acc.push({ name: participant.userName, key: participant._id });
+  if (acc.length > 2) return acc;
+  if(!participant.isAnonymous){
+    acc.push({ name: participant.userName, key: participant._id });
+  }else acc.push({ name: 'anonymous', key: participant._id });
   return acc;
 };
 
@@ -156,7 +146,12 @@ export default function RoomCard({
 
   const thumbnailUrl = participantsInfo
   .filter((val, idx) => idx < 2)
-  .map((participant, idx) => ({ profileUrl: participant.profileUrl, Style: ProfileStyleArray[idx] }));
+  .map((participant, idx) => {
+    if (participant.isAnonymous){
+      return { profileUrl: process.env.REACT_APP_DEFAULT_USER_IMAGE as string, Style: ProfileStyleArray[idx] }
+    }
+    return { profileUrl: participant.profileUrl, Style: ProfileStyleArray[idx] }
+  });
 
   return (
     <RoomCardLayout>

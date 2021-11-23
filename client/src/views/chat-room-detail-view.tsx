@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/no-unused-prop-types */
 /* eslint-disable max-len */
@@ -13,8 +14,9 @@ import { getChattingLog, setUnCheckedMsg0 } from '@api/index';
 import { ChatRoomsLayout, ChattingLog } from '@components/chat/style';
 import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';
-import userType from '@atoms/user';
+import userState from '@atoms/user';
 import { makeDateToHourMinute } from '@utils/index';
+import useChatSocket from '@src/utils/chat-socket';
 
 type urlParams = { chatDocumentId: string };
 
@@ -46,6 +48,9 @@ const Message = styled.div< { isMyMsg: boolean } >`
 
   p {
     margin: 10px;
+    &: hover {
+      cursor: default;
+    }
   }
 `;
 
@@ -78,11 +83,12 @@ function ChatRoomDetailView() {
   const { chatDocumentId } = useParams<urlParams>();
   const location = useLocation<any>();
   const [chattingLog, setChattingLog] = useState<any>([]);
-  const user = useRecoilValue(userType);
+  const user = useRecoilValue(userState);
   const chattingLogDiv = useRef(null);
+  const chatSocket = useChatSocket();
 
-  const addChattingLog = (message: string) => {
-    setChattingLog([...chattingLog, message]);
+  const addChattingLog = (chatLog: any) => {
+    setChattingLog((oldLog: any) => [...oldLog, chatLog]);
   };
 
   useEffect(() => {
@@ -121,6 +127,17 @@ function ChatRoomDetailView() {
     (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
   }, [chattingLog]);
 
+  useEffect(() => {
+    if (!chatSocket) return;
+    chatSocket.emit('chat:roomJoin', chatDocumentId);
+    chatSocket.on('chat:sendMsg', (payload: any) => {
+      addChattingLog(payload);
+    });
+    return () => {
+      chatSocket.emit('chat:leave', chatDocumentId);
+    };
+  }, [chatSocket]);
+
   return (
     <ChatRoomsLayout>
       <ChatRoomHeader participantsInfo={location.state.participantsInfo} />
@@ -140,7 +157,12 @@ function ChatRoomDetailView() {
           </Chat>
         ))}
       </ChattingLog>
-      <ChatRoomFooter addChattingLog={addChattingLog} chatDocumentId={chatDocumentId} />
+      <ChatRoomFooter
+        addChattingLog={addChattingLog}
+        chatDocumentId={chatDocumentId}
+        chatSocket={chatSocket}
+        participants={location.state.participantsInfo.map((participant: any) => participant.userDocumentId)}
+      />
     </ChatRoomsLayout>
   );
 }

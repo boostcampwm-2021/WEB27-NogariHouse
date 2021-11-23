@@ -8,13 +8,14 @@ export const ModalBox = styled.div`
   top: 20%;
   display: flex;
   flex-direction: column;
-  background-color: rgb(255, 255, 255);
+
   border-radius: 32px;
   padding: 56px;
   margin-left: calc(25% - 56px);
   box-shadow: rgb(0 0 0 / 55%) 0px 10px 25px;
   z-index: 990;
   opacity: 1;
+  background-color: #F1F0E4;
   
   animation-duration: 0.5s;
   animation-timing-function: ease-out;

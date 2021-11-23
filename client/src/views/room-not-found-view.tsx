@@ -7,8 +7,8 @@ import NotFoundGif from '@images/not-found.gif';
 
 const NotFoundImg = styled.img`
   box-sizing: border-box;
-  width: 340px;
-  margin: 0px 30px;
+  width: 300px;
+  margin: 0px 10px;
 `;
 
 function NotFoundRoomModal() {

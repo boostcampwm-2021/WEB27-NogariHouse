@@ -2,11 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 
-import RoomModal from '@components/room/room-modal';
-import InRoomModal from '@components/room/in-room-modal';
 import roomViewType from '@atoms/room-view-type';
-import NotFoundRoomModal from './not-found-room-modal';
-import SelectModeRoomModal from './select-mode-room-modal';
+import RoomModal from '@src/views/room-new-view';
+import InRoomModal from '@src/views/room-in-view';
+import NotFoundRoomModal from '@src/views/room-not-found-view';
+import SelectModeRoomModal from '@src/views/room-select-view';
 
 const RoomModalLayout = styled.div`
   display: flex;

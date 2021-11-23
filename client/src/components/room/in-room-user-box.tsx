@@ -5,7 +5,7 @@ import React, {
 import {
   FiMic, FiMicOff,
 } from 'react-icons/fi';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { Link } from 'react-router-dom';
 
 import { getUserInfo } from '@api/index';
@@ -62,9 +62,31 @@ export function InRoomOtherUserBox({
 
   return (
     <InRoomUserBoxStyle>
-      <Link to={`/profile/${userInfo?.userId}`}>
-        <UserBox ref={ref} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay playsInline muted={isAnonymous} />
-      </Link>
+      {isAnonymous
+        ? (
+          <UserBox
+            ref={ref}
+            poster={isAnonymous
+              ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+              : userInfo?.profileUrl}
+            autoPlay
+            playsInline
+            muted={isAnonymous}
+          />
+        )
+        : (
+          <Link to={`/profile/${userInfo?.userId}`}>
+            <UserBox
+              ref={ref}
+              poster={isAnonymous
+                ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+                : userInfo?.profileUrl}
+              autoPlay
+              playsInline
+              muted={isAnonymous}
+            />
+          </Link>
+        )}
       <InRoomUserMicDiv>
         { isMicOn ? <FiMic /> : <FiMicOff /> }
       </InRoomUserMicDiv>
@@ -75,7 +97,7 @@ export function InRoomOtherUserBox({
 
 export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
   (props, ref) => {
-    const isAnonymous = useRecoilValue(anonymousState);
+    const [isAnonymous, setIsAnonymous] = useRecoilState(anonymousState);
     const [userInfo, setUserInfo] = useState<any>();
     const audioCtxRef = useRef(new (window.AudioContext || (window as any).webkitAudioContext)());
     const myRef = useRef<any>(ref);
@@ -83,13 +105,17 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
     useEffect(() => {
       getUserInfo(props.userDocumentId)
         .then((res) => setUserInfo(res!.userInfo));
+
+      return () => {
+        setIsAnonymous(false);
+      };
     }, []);
 
     useEffect(() => {
       if (!props.stream || !props.isMicOn) return;
       const soundMeter = new SoundMeter(audioCtxRef.current);
       let meterRefresh: any = null;
-      soundMeter.connectToSource(false, props.stream, () => {
+      soundMeter.connectToSource(isAnonymous, props.stream, () => {
         meterRefresh = setInterval(() => {
           const num = Number(soundMeter.instant.toFixed(2));
           if (num > 0.02 && myRef.current) {
@@ -102,6 +128,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
       // eslint-disable-next-line consistent-return
       return () => {
+        if (myRef.current) myRef.current.style.border = 'none';
         clearInterval(meterRefresh);
         soundMeter.stop();
       };
@@ -109,9 +136,31 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     return (
       <InRoomUserBoxStyle>
-        <Link to={`/profile/${userInfo?.userId}`}>
-          <UserBox ref={myRef} poster={isAnonymous ? 'https://kr.object.ncloudstorage.com/nogarihouse/profile/default-user-image.png' : userInfo?.profileUrl} autoPlay muted playsInline />
-        </Link>
+        { isAnonymous
+          ? (
+            <UserBox
+              ref={myRef}
+              poster={isAnonymous
+                ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+                : userInfo?.profileUrl}
+              autoPlay
+              muted
+              playsInline
+            />
+          )
+          : (
+            <Link to={`/profile/${userInfo?.userId}`}>
+              <UserBox
+                ref={myRef}
+                poster={isAnonymous
+                  ? process.env.REACT_APP_DEFAULT_USER_IMAGE
+                  : userInfo?.profileUrl}
+                autoPlay
+                muted
+                playsInline
+              />
+            </Link>
+          )}
         <InRoomUserMicDiv>
           { props.isMicOn ? <FiMic /> : <FiMicOff /> }
         </InRoomUserMicDiv>

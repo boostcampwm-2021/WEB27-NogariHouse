@@ -7,15 +7,17 @@ import { ModalBox, BackgroundWrapper } from '@common/modal';
 import { postEvent } from '@api/index';
 
 const CustomEventRegisterModal = styled(ModalBox)`
-  top: 50px;
+  top: 15vh;
   flex-grow: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   min-width: 500px;
   min-height: 500px;
+  padding: 0px;
   background-color:white;
   border-radius: 30px;
+  background-color: #F1F0E4;
 `;
 
 const ModalHeader = styled.div`
@@ -36,7 +38,7 @@ const CustomFormBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #F1F0E4;
+  background-color: #FFF;
   width: 100%;
   border-radius: 10px;
   margin-bottom: 10px;
@@ -46,7 +48,7 @@ const CustomFormBox = styled.div`
 const CancelButton = styled.button`
   color : #58964F;
   border: none;
-  background-color: #FFFFFF;
+  background-color: #F1F0E4;
   &:hover {
     cursor: pointer;
   }
@@ -55,7 +57,7 @@ const CancelButton = styled.button`
 const PublishButton = styled.button`
   color :  #586A9A;
   border: none;
-  background-color: #FFFFFF;
+  background-color: #F1F0E4;
   &:hover {
     cursor: pointer;
   }
@@ -69,7 +71,7 @@ const PublishButton = styled.button`
 
 const CustomInput = styled.input`
   border: none;
-  background-color: #F1F0E4;
+  background-color: #FFF;
   width: 80%;
   &:focus {outline:none;}
   margin: 5px;
@@ -83,7 +85,7 @@ margin: 5px;`;
 
 const CustomTextArea = styled.textarea`
   border: none;
-  background-color: #F1F0E4;
+  background-color: #FFF;
   width: 80%;
   height: 200px;
   margin: 5px;

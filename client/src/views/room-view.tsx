@@ -9,23 +9,12 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import { nowFetchingState } from '@atoms/main-section-scroll';
+import isOpenRoomState from '@atoms/is-open-room';
 import LoadingSpinner from '@common/loading-spinner';
 import RoomCard from '@common/room-card';
 import useFetchItems from '@hooks/useFetchItems';
 import useItemFecthObserver from '@hooks/useItemFetchObserver';
-
-interface Participants{
-  _id: string,
-  userName: string,
-  profileUrl: string
-}
-
-interface RoomCardProps {
-  _id: string,
-  title: string,
-  isAnonymous: boolean,
-  participantsInfo: Array<Participants>,
-}
+import { RoomCardProps } from '@interfaces/index';
 
 const RoomDiv = styled.div`
   div + div {
@@ -63,6 +52,7 @@ function RoomView() {
   const [targetRef] = useItemFecthObserver(loading);
   const setRoomView = useSetRecoilState(roomViewType);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
 
   const roomCardClickHandler = (e: MouseEvent) => {
     const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
@@ -75,6 +65,7 @@ function RoomView() {
     }
 
     setRoomDocumentId(roomDocumentId as string);
+    setIsOpenRoom(true);
   };
 
   useEffect(() => {

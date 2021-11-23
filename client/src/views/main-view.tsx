@@ -1,8 +1,10 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable max-len */
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
 import {
-  useRecoilState, useResetRecoilState, useSetRecoilState, useRecoilValue,
+  useRecoilState, useResetRecoilState, useRecoilValue, useSetRecoilState,
 } from 'recoil';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
@@ -40,41 +42,39 @@ const SectionLayout = styled.div`
 
 const ActiveFollowingLayout = styled.div`
   height: 80vh;
-  flex-grow: 1;
+  min-width: 240px;
   margin: 10px;
+  flex-grow: 3;
   @media (max-width: 1024px) {
     display: none;
   }
 `;
+
 const MainSectionLayout = styled.div`
   position: relative;
   height: 80vh;
+  width: 55vw;
   min-width: 320px;
-  flex-grow: 10;
+  flex-grow: 12;
   margin: 10px;
-`;
-
-const MainScrollSection = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
   ${ScrollBarStyle};
 `;
 
 const RoomLayout = styled.div`
   @media (min-width: 768px) {
-    margin: 10px;
     height: 80vh;
-    flex-grow: 1;
+    width: 25vw;
+    margin: 10px;
+    flex-grow: 5;
   }
-  
+
   @media (max-width: 768px) {
     position: fixed;
     display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};;
     z-index: 100;
+    width: 99vw;
     height: 85vh;
-    width: 96%;
-    margin-left: 10px;
+    margin-left: 0.5vw;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
     animation-name: ${slideXFromTo(300, 0)};
@@ -105,7 +105,8 @@ function MainView() {
       accessToken, userDocumentId, profileUrl, userName, userId,
     } = json;
 
-    getFollowingsList(userDocumentId).then((response:any) => setFollowingList(response));
+    const response: any = await getFollowingsList(userDocumentId);
+    setFollowingList(response);
 
     setUser({
       isLoggedIn: true, userDocumentId, profileUrl, userName, userId,
@@ -141,9 +142,7 @@ function MainView() {
             <LeftSideBar />
           </ActiveFollowingLayout>
           <MainSectionLayout>
-            <MainScrollSection>
-              <MainRouter />
-            </MainScrollSection>
+            <MainRouter />
           </MainSectionLayout>
           <RoomLayout state={isOpenRoom}>
             <RightSideBar />

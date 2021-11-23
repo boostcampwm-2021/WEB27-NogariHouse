@@ -14,3 +14,13 @@ export const isOpenShareModalState = atom<boolean>({
   key: 'isOpenShareModalState',
   default: false,
 });
+
+export const isOpenRoomModalState = atom<boolean>({
+  key: 'isOpenRoomModalState',
+  default: false,
+});
+
+export const isOpenChangeProfileImageModalState = atom<boolean>({
+  key: 'isOpenChangeProfileImageModalState',
+  default: false,
+});
