@@ -1,11 +1,12 @@
 /* eslint-disable max-len */
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import { postEvent } from '@api/index';
+import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
 import EventSelectUserDropdown from './event-select-uesr-dropdown';
 
 const CustomEventRegisterModal = styled(ModalBox)`
@@ -125,6 +126,9 @@ function EventRegisterModal() {
   const textDescRef = useRef<HTMLTextAreaElement>(null);
   const [selectedList, setSelectedList] = useState<string[]>([]);
   const [isOpenSelectedList, setisOpenSelectedList] = useState(false);
+  const setNowFetching = useSetRecoilState(nowFetchingState);
+  const resetNowItemsList = useResetRecoilState(nowItemsListState);
+  const setNowCount = useSetRecoilState(nowCountState);
 
   const changeModalState = () => {
     setIsOpenModal(!isOpenModal);
@@ -153,6 +157,9 @@ function EventRegisterModal() {
       .catch((err) => console.error(err));
 
     changeModalState();
+    resetNowItemsList();
+    setNowCount(0);
+    setNowFetching(true);
   };
 
   if (isOpenModal) {
