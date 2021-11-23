@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable class-methods-use-this */
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 

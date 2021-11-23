@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
 import Rooms from '@models/rooms';
 import Users from '@models/users';
@@ -10,7 +9,6 @@ class RoomService {
     instance = this;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async addParticipant(roomDocumentId: string, userDocumentId: string, socketId: string, isAnonymous: boolean) {
     await Rooms.findOneAndUpdate({ _id: roomDocumentId }, {
       $push: {
