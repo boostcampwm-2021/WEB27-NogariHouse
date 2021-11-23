@@ -1,15 +1,18 @@
 import { Server, Socket } from 'socket.io';
 import roomHandler from './room';
 import userHandler from './user';
+import chatHandler from './chat';
 
 const server = new Server({
   cors: { origin: '*' },
 });
 
-const roomNameSpace = server.of('/room');
-const userNameSpace = server.of('/user');
+const roomNamespace = server.of('/room');
+const userNamespace = server.of('/user');
+const chatNamespace = server.of('/chat');
 
-roomNameSpace.on('connection', (socket: Socket) => roomHandler(socket, roomNameSpace));
-userNameSpace.on('connection', (socket: Socket) => userHandler(socket, userNameSpace));
+roomNamespace.on('connection', (socket: Socket) => roomHandler(socket, roomNamespace));
+userNamespace.on('connection', (socket: Socket) => userHandler(socket, userNamespace));
+chatNamespace.on('connection', (socket: Socket) => chatHandler(socket));
 
 export default server;

@@ -29,6 +29,7 @@ const ChatUserCardLayout = styled.div`
 
   display: flex;
   flex-direction: row;
+  position: relative;
 
   &:hover {
     cursor: pointer;
@@ -46,8 +47,8 @@ const ChatUserCardProfileDiv = styled.div`
 const ChatUserCardFirstProfile = styled.div.attrs((props: ProfileProps) => ({ style: { background: `center / contain no-repeat url(${props.profileUrl})` } }))`
   position: absolute;
 
-  width: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
-  height: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
+  width: ${(props: ProfileProps) => (props.length === 1 ? 75 : 60)}%;
+  height: ${(props: ProfileProps) => (props.length === 1 ? 75 : 60)}%;
 
   border-radius: 25px;
 
@@ -63,15 +64,16 @@ const ChatUserCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
   top: 50px;
   left: 40px;
 
-  width: 55px;
-  height: 55px;
-  background-size: 80px;
-  border-radius: 25px;
+  width: 50%;
+  height: 50%;
+  background-size: 50%;
+  border-radius: 30px;
 
   z-index: 1;
 `;
 
 const ChatUserCardInfo = styled.div`
+  min-width: 150px;
   p{
     margin: 0px 0px 10px 0px;
     transform: translate(10px, 25px);
@@ -97,6 +99,9 @@ const LastChatMsg = styled.p`
 
 const ExInfoDiv = styled.div`
   margin-left: 20px;
+  position: absolute;
+  right: 10%;
+
   p {
     margin: 5px 0px 10px 0px;
     transform: translateY(25px);

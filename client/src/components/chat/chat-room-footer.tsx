@@ -48,7 +48,9 @@ const SendBtnDiv = styled.div`
   transform: translateY(10px);
 `;
 
-export default function ChatRoomFooter({ addChattingLog, chatDocumentId }: any) {
+export default function ChatRoomFooter({
+  addChattingLog, chatDocumentId, chatSocket, participants,
+}: any) {
   const messageInput = useRef(null);
   const user = useRecoilValue(userType);
 
@@ -57,9 +59,20 @@ export default function ChatRoomFooter({ addChattingLog, chatDocumentId }: any) 
     (messageInput as any).current.value = '';
     const res : any = await postChattingMsg({ userDocumentId: user.userDocumentId, message, date: new Date() }, chatDocumentId, user.userDocumentId);
     if (!res.ok) return;
-    addChattingLog({
+    const chatLog = {
       userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),
+    };
+
+    chatSocket?.emit('chat:sendMsg', {
+      userDocumentId: user.userDocumentId,
+      userName: user.userName,
+      profileUrl: user.profileUrl,
+      message,
+      date: makeDateToHourMinute(new Date()),
+      chatDocumentId,
     });
+    chatSocket?.emit('chat:alertMsg', { participants, chatDocumentId });
+    addChattingLog(chatLog);
   };
 
   const keyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
