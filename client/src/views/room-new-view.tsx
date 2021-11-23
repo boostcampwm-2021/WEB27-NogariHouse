@@ -63,7 +63,7 @@ function RoomModal() {
       title: inputRef.current?.value as string,
       userId: user.userId,
       userName: user.userName,
-      isAnonymous: isAnonymous,
+      isAnonymous: (roomType !== 'closed') ? isAnonymous : false,
     };
     postRoomInfo(roomInfo)
       .then((roomDocumentId: any) => {
@@ -96,7 +96,7 @@ function RoomModal() {
         {/* eslint-disable-next-line react/jsx-no-bind */}
         <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
       </CheckboxLayout>
-      { roomType !== 'closed' ? <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} /> : ''}
+      <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} roomType={roomType} />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputOnChange} />

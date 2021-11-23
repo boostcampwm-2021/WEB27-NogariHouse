@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import SmallCheckbox, { CheckBoxProps } from '@common/small-checkbox';
@@ -19,9 +19,16 @@ const Text = styled.span`
   margin-left: 4px;
 `;
 
-function AnonymousCheckBox({ checked, onChange }: CheckBoxProps) {
+function AnonymousCheckBox({ checked, onChange, roomType }: CheckBoxProps) {
+  const smallCheckboxLayoutRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!smallCheckboxLayoutRef.current) return;
+    smallCheckboxLayoutRef.current.style.visibility = (roomType === 'closed') ? 'hidden' : 'visible';
+  }, [roomType]);
+
   return (
-    <AnonymousCheckBoxLayout>
+    <AnonymousCheckBoxLayout ref={smallCheckboxLayoutRef}>
       <SmallCheckbox id="c1" checked={checked} onChange={onChange} />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label htmlFor={'c1' as string}>
