@@ -16,7 +16,7 @@ import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';
 import userState from '@atoms/user';
 import { makeDateToHourMinute } from '@utils/index';
-import useSocket from '@utils/socket';
+import useChatSocket from '@src/utils/chat-socket';
 
 type urlParams = { chatDocumentId: string };
 
@@ -85,7 +85,7 @@ function ChatRoomDetailView() {
   const [chattingLog, setChattingLog] = useState<any>([]);
   const user = useRecoilValue(userState);
   const chattingLogDiv = useRef(null);
-  const socket = useSocket('/chat');
+  const socket = useChatSocket();
 
   const addChattingLog = (chatLog: any) => {
     setChattingLog((oldLog: any) => [...oldLog, chatLog]);

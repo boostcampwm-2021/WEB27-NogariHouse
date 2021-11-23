@@ -12,7 +12,7 @@ import { ChatRoomsLayout } from '@components/chat/style';
 import LoadingSpinner from '@common/loading-spinner';
 import { getChatRooms } from '@api/index';
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
-import useSocket from '@utils/socket';
+import useChatSocket from '@src/utils/chat-socket';
 
 interface IChatUserType {
   userDocumentId: string,
@@ -33,7 +33,7 @@ function ChatRoomsViews() {
   const [chatRooms, setChatRooms] = useState<Array<IChatRoom>>([]);
   const { userDocumentId } = useRecoilValue(userState);
   const history = useHistory();
-  const socket = useSocket('/chat');
+  const socket = useChatSocket();
 
   const clickEvent = (chatDocumentId: string, participantsInfo: Array<IChatUserType>) => {
     history.push({
