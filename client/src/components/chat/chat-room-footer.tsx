@@ -6,7 +6,6 @@ import { useRecoilValue } from 'recoil';
 
 import userType from '@atoms/user';
 import { makeDateToHourMinute } from '@utils/index';
-import { postChattingMsg } from '@api/index';
 
 const ChatRoomFooterStyle = styled.div`
   position: absolute;
@@ -51,17 +50,13 @@ const SendBtnDiv = styled.div`
 export default function ChatRoomFooter({
   addChattingLog, chatDocumentId, chatSocket, participants,
 }: any) {
-  const messageInput = useRef(null);
+  const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const user = useRecoilValue(userType);
 
   const sendEvent = async () => {
-    const message = (messageInput as any).current.value;
-    (messageInput as any).current.value = '';
-    const res : any = await postChattingMsg({ userDocumentId: user.userDocumentId, message, date: new Date() }, chatDocumentId, user.userDocumentId);
-    if (!res.ok) return;
-    const chatLog = {
-      userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),
-    };
+    if (!messageInputRef.current) return;
+    const message = messageInputRef.current.value;
+    messageInputRef.current.value = '';
 
     chatSocket?.emit('chat:sendMsg', {
       userDocumentId: user.userDocumentId,
@@ -72,7 +67,9 @@ export default function ChatRoomFooter({
       chatDocumentId,
     });
     chatSocket?.emit('chat:alertMsg', { participants, chatDocumentId });
-    addChattingLog(chatLog);
+    addChattingLog({
+      userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),
+    });
   };
 
   const keyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -86,7 +83,7 @@ export default function ChatRoomFooter({
 
   return (
     <ChatRoomFooterStyle onKeyPress={keyPressHandler}>
-      <MsgInput ref={messageInput} />
+      <MsgInput ref={messageInputRef} />
       <SendBtnDiv onClick={sendEvent}><FiSend size={32} /></SendBtnDiv>
     </ChatRoomFooterStyle>
   );
