@@ -6,7 +6,10 @@ import usersService from './users-service';
 export default {
   get10EventItems: async (count : number) => {
     try {
-      const items = await Events.find({}).sort({ date: 1 }).skip(count).limit(10);
+      const items = await Events.find({ date: { $gte: new Date() } })
+        .sort({ date: 1 })
+        .skip(count)
+        .limit(10);
       return items;
     } catch (e) {
       console.error(e);
