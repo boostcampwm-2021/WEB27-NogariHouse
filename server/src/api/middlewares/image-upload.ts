@@ -20,7 +20,7 @@ const storage = multerS3({
   key(req:Request, file, cb) {
     const originFilename = file.originalname;
     const extension = originFilename.substring(originFilename.lastIndexOf('.'));
-    cb(null, `uploads/profile-images/${new Date().getTime()}${v4()}${extension}`);
+    cb(null, `uploads/profile-images/${new Date().getTime()}-${v4()}${extension}`);
   },
 });
 
