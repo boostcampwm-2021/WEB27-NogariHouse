@@ -309,3 +309,21 @@ export const changeProfileImage = async (userDocumentId: string, formData: FormD
     console.log(e);
   }
 };
+
+export const getRandomRoomDocumentId = async () => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/room/public/random`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error(error);
+  }
+};
