@@ -4,10 +4,10 @@
 /* eslint-disable max-len */
 /* eslint-disable prefer-template */
 import React, {
-  useEffect, useState, useRef,
+  useEffect, useRef, useReducer,
 } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
-import { useRecoilValue } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
 import { getChattingLog, setUnCheckedMsg0 } from '@api/index';
@@ -15,8 +15,10 @@ import { ChatRoomsLayout, ChattingLog } from '@components/chat/style';
 import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';
 import userState from '@atoms/user';
-import { makeDateToHourMinute } from '@utils/index';
+import roomDocumentIdState from '@atoms/room-document-id';
+import roomViewState from '@atoms/room-view-type';
 import useChatSocket from '@src/utils/chat-socket';
+import { chatReducer, initialState } from '@components/chat/reducer';
 
 type urlParams = { chatDocumentId: string };
 
@@ -77,43 +79,34 @@ interface IChattingLog {
   userName: string,
   userDocumentId: string,
   date: string,
+  linkTo: string,
 }
 
 function ChatRoomDetailView() {
+  const setRoomView = useSetRecoilState(roomViewState);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const { chatDocumentId } = useParams<urlParams>();
   const location = useLocation<any>();
-  const [chattingLog, setChattingLog] = useState<any>([]);
   const user = useRecoilValue(userState);
   const chattingLogDiv = useRef(null);
   const chatSocket = useChatSocket();
+  const [chatState, dispatch] = useReducer(chatReducer, initialState);
 
   const addChattingLog = (chatLog: any) => {
-    setChattingLog((oldLog: any) => [...oldLog, chatLog]);
+    dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog } });
+  };
+
+  const moveToLink = (linkTo: string) => {
+    if (!linkTo) return;
+    setRoomDocumentId(linkTo);
+    setRoomView('inRoomView');
   };
 
   useEffect(() => {
     getChattingLog(chatDocumentId)
       .then((res: any) => {
         setUnCheckedMsg0(chatDocumentId, user.userDocumentId);
-        setChattingLog(res.chattingLog.map((chat: any) => {
-          if (chat.userDocumentId === user.userDocumentId) {
-            return ({
-              message: chat.message,
-              userDocumentId: chat.userDocumentId,
-              profileUrl: user.profileUrl,
-              userName: user.userName,
-              date: makeDateToHourMinute(new Date(chat.date)),
-            });
-          }
-          const userData = location.state.participantsInfo.filter((userInfo: any) => userInfo.userDocumentId === chat.userDocumentId);
-          return ({
-            message: chat.message,
-            userDocumentId: chat.userDocumentId,
-            profileUrl: userData[0].profileUrl,
-            userName: userData[0].userName,
-            date: makeDateToHourMinute(new Date(chat.date)),
-          });
-        }));
+        dispatch({ type: 'UPDATE', payload: { responseChattingLog: res.chattingLog, participantsInfo: location.state.participantsInfo, user } });
         (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
       });
     return () => {
@@ -125,13 +118,13 @@ function ChatRoomDetailView() {
 
   useEffect(() => {
     (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
-  }, [chattingLog]);
+  }, [chatState.chattingLog]);
 
   useEffect(() => {
     if (!chatSocket) return;
     chatSocket.emit('chat:roomJoin', chatDocumentId);
     chatSocket.on('chat:sendMsg', (payload: any) => {
-      addChattingLog(payload);
+      dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog: payload } });
     });
     return () => {
       chatSocket.emit('chat:leave', chatDocumentId);
@@ -142,12 +135,12 @@ function ChatRoomDetailView() {
     <ChatRoomsLayout>
       <ChatRoomHeader participantsInfo={location.state.participantsInfo} />
       <ChattingLog ref={chattingLogDiv}>
-        {chattingLog.map(({
-          message, profileUrl, userName, userDocumentId, date,
+        {chatState.chattingLog.map(({
+          message, profileUrl, userName, userDocumentId, date, linkTo,
         } : IChattingLog, index: number) => (
           <Chat key={index} isMyMsg={userDocumentId === user.userDocumentId}>
             <UserProfile src={profileUrl} />
-            <Message isMyMsg={userDocumentId === user.userDocumentId}>
+            <Message isMyMsg={userDocumentId === user.userDocumentId} onClick={() => moveToLink(linkTo)}>
               {userDocumentId === user.userDocumentId
                 ? <p style={{ color: '#598272', marginBottom: '0px' }}>Me</p>
                 : <p style={{ color: '#4A6970', marginBottom: '0px' }}>{userName}</p>}
