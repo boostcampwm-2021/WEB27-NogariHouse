@@ -3,15 +3,18 @@
 /* eslint-disable max-len */
 import { Socket } from 'socket.io';
 import Chats from '@models/chats';
+import chatService from '@services/chat-service';
 
 export default function chatEventHandler(socket : Socket) {
   const chatRoomJoinHandler = (chatDocumentId: string) => socket.join(chatDocumentId);
   const chatViewJoinHandler = (userDocumentId: string) => socket.join(userDocumentId);
 
-  const sendMsgHandler = (payload: any) => {
+  const sendMsgHandler = async (payload: any) => {
     const {
-      userDocumentId, userName, profileUrl, message, date, chatDocumentId,
+      userDocumentId, userName, profileUrl, message, chatDocumentId, date,
     } = payload;
+    const chattingLog = { date: new Date(), userDocumentId, message };
+    await chatService.addChattingLog(chattingLog, chatDocumentId, userDocumentId);
 
     socket.to(chatDocumentId).emit('chat:sendMsg', {
       userDocumentId, userName, profileUrl, message, date,
@@ -40,10 +43,38 @@ export default function chatEventHandler(socket : Socket) {
     });
   };
 
+  const inviteRoomHandler = (payload: any) => {
+    const {
+      // eslint-disable-next-line no-unused-vars
+      participants, message, roomDocumentId, userInfo, date,
+    } = payload;
+    participants.forEach(async (participant: any) => {
+      const { chatRoom, chatDocumentId, isNew } = await chatService.makeChatRoom([participant.userDocumentId, userInfo.userDocumentId].sort());
+      await chatService.addChattingLog({
+        message,
+        date: new Date(),
+        userDocumentId: userInfo.userDocumentId,
+        linkTo: roomDocumentId,
+      }, chatDocumentId, userInfo.userDocumentId);
+
+      socket.to(chatDocumentId.toString()).emit('chat:sendMsg', {
+        userDocumentId: userInfo.userDocumentId, userName: userInfo.userName, profileUrl: userInfo.profileUrl, message, date, linkTo: roomDocumentId,
+      });
+      if (isNew) socket.to(participant.userDocumentId).emit('chat:makeChat', { chatDocumentId, participantsInfo: [userInfo] });
+      socket.to(participant.userDocumentId).emit('chat:alertMsg', {
+        chatDocumentId,
+        lastMsg: message,
+        recentActive: new Date(),
+        unCheckedMsg: chatRoom!.unReadMsg[chatRoom!.unReadMsg.findIndex((user: any) => user.userDocumentId === participant.userDocumentId)].count + 1,
+      });
+    });
+  };
+
   socket.on('chat:roomJoin', chatRoomJoinHandler);
   socket.on('chat:viewJoin', chatViewJoinHandler);
   socket.on('chat:sendMsg', sendMsgHandler);
   socket.on('chat:leave', chatLeaveHandler);
   socket.on('chat:alertMsg', alertMsgHandler);
   socket.on('chat:makeChat', makeChatHandler);
+  socket.on('chat:inviteRoom', inviteRoomHandler);
 }
