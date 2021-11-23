@@ -37,13 +37,13 @@ const EventSelectUserDropdown = React.memo(({ setSelectedList, isOpenSelectedLis
 
   const clickSelectedList = (e: MouseEvent) => {
     const userCardDiv = (e.target as HTMLDivElement).closest('.userCard');
-    const userName = userCardDiv?.getAttribute('data-username');
-    if (!userName) return;
+    const userId = userCardDiv?.getAttribute('data-userId');
+    if (!userId) return;
     setSelectedList((list) => {
-      if (list.includes(userName)) {
-        return list.filter((inListUserId) => inListUserId !== userName);
+      if (list.includes(userId)) {
+        return list.filter((inListUserId) => inListUserId !== userId);
       }
-      return [...list.filter((inListUserId) => inListUserId !== userName), userName];
+      return [...list.filter((inListUserId) => inListUserId !== userId), userId];
     });
   };
 

@@ -9,9 +9,13 @@ export default (app: Router) => {
 
   eventRouter.get('/', async (req:Request, res:Response) => {
     const { count } = req.query;
-    const items = (await eventsService.get10EventItems(Number(count)))
-      ?.map(eventsService.makeItemToEventInterface);
-    res.json({ items });
+    const rawItems = await eventsService.get10EventItems(Number(count));
+    if (!rawItems) {
+      res.json({ ok: false });
+    } else {
+      const items = await Promise.all(rawItems.map(eventsService.makeItemToEventInterface));
+      res.json({ ok: true, items });
+    }
   });
 
   eventRouter.post('/', async (req: Request, res: Response) => {

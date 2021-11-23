@@ -172,7 +172,7 @@ function EventRegisterModal() {
                 <InputDescSpan>with</InputDescSpan>
                 {selectedList.map((userId: string) => (
                   <SelectUserComponent key={userId} data-id={userId}>
-                    {userId}
+                    {`@${userId}`}
                   </SelectUserComponent>
                 ))}
               </CustomInputDiv>

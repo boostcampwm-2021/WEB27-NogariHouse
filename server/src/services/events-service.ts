@@ -1,6 +1,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 import Events, { IEventsTypesModel } from '@models/events';
+import usersService from './users-service';
 
 export default {
   get10EventItems: async (count : number) => {
@@ -22,15 +23,18 @@ export default {
     }
   },
 
-  makeItemToEventInterface: (item : IEventsTypesModel & {_id: number}) => (
-    {
+  makeItemToEventInterface: async (item : IEventsTypesModel & {_id: number}) => {
+    const participantsList = await Promise.all(item.participants
+      .map(async (userId) => usersService.findUserByUserId(userId)));
+    return {
       key: item._id,
       time: String(item.date),
       title: item.title,
-      participants: item.participants,
+      participants: participantsList,
       description: item.description,
       type: 'event',
-    }),
+    };
+  },
 
   makeDateToHour: (stringDate : string):string => {
     const date = new Date(stringDate);
