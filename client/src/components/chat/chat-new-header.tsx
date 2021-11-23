@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
+import useChatSocket from '@utils/chat-socket';
 import { ChatHeaderStyle } from '@components/chat/style';
 import { postChatRoom } from '@api/index';
 import selectedUserType from '@atoms/chat-selected-users';
@@ -39,6 +40,7 @@ const DoneBtn = () => {
   const [selectedUserList, setSelectedUserList] = useRecoilState(selectedUserType);
   const user = useRecoilValue(userType);
   const history = useHistory();
+  const chatSocket = useChatSocket();
 
   const makeChatRoom = () => {
     if (selectedUserList.length === 0) return;
@@ -49,6 +51,10 @@ const DoneBtn = () => {
           state: { participantsInfo: selectedUserList },
         });
         setSelectedUserList([]);
+        chatSocket.emit('chat:makeChat', {
+          chatDocumentId: res.chatRoomId,
+          participantsInfo: [...selectedUserList, { userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl }],
+        });
       });
   };
 

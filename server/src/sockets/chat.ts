@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable max-len */
 import { Socket } from 'socket.io';
@@ -32,9 +33,17 @@ export default function chatEventHandler(socket : Socket) {
     });
   };
 
+  const makeChatHandler = ({ participantsInfo, chatDocumentId }: any) => {
+    participantsInfo.map((user: any) => {
+      const newParticipants = participantsInfo.filter((participant: any) => participant.userDocumentId !== user.userDocumentId);
+      socket.to(user.userDocumentId).emit('chat:makeChat', { chatDocumentId, participantsInfo: newParticipants });
+    });
+  };
+
   socket.on('chat:roomJoin', chatRoomJoinHandler);
   socket.on('chat:viewJoin', chatViewJoinHandler);
   socket.on('chat:sendMsg', sendMsgHandler);
   socket.on('chat:leave', chatLeaveHandler);
   socket.on('chat:alertMsg', alertMsgHandler);
+  socket.on('chat:makeChat', makeChatHandler);
 }
