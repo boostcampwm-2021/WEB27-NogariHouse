@@ -2,19 +2,19 @@ import React, {
   useEffect, useState, RefObject,
 } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
-import {
-  FiMoreHorizontal, FiScissors, FiPlus, FiMic, FiMicOff,
-} from 'react-icons/fi';
+import { FiPlus, FiMic, FiMicOff } from 'react-icons/fi';
 
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
+import isOpenRoomState from '@atoms/is-open-room';
+import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-room-user-box';
 import { getRoomInfo } from '@api/index';
 import { useRtc, IRTC } from '@hooks/useRtc';
 import {
-  InRoomHeader, TitleDiv, OptionBtn, InRoomFooter, InRoomUserList, FooterBtnDiv,
-} from './style';
+  InRoomHeader, TitleDiv, InRoomFooter, InRoomUserList, FooterBtnDiv,
+} from '@components/room/style';
 
 export interface IRooms extends Document{
   title: string,
@@ -27,6 +27,8 @@ export interface IRooms extends Document{
 function InRoomModal() {
   const setRoomView = useSetRecoilState(roomViewState);
   const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
+  const setIsOpenModal = useSetRecoilState(isOpenRoomModalState);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [isMic, setMic] = useState(false);
   const [
@@ -44,6 +46,7 @@ function InRoomModal() {
 
     return () => {
       resetRoomDocumentId();
+      setIsOpenRoom(false);
     };
   }, []);
 
@@ -87,7 +90,6 @@ function InRoomModal() {
     <>
       <InRoomHeader>
         <TitleDiv><span>{roomInfo?.title}</span></TitleDiv>
-        <OptionBtn><FiMoreHorizontal /></OptionBtn>
       </InRoomHeader>
       <InRoomUserList>
         {/* eslint-disable-next-line max-len */}
@@ -100,8 +102,7 @@ function InRoomModal() {
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
-        <FooterBtnDiv><FiScissors /></FooterBtnDiv>
-        <FooterBtnDiv><FiPlus /></FooterBtnDiv>
+        <FooterBtnDiv><FiPlus onClick={() => setIsOpenModal(true)} /></FooterBtnDiv>
         <FooterBtnDiv>
           {isMic
             ? <FiMic onClick={() => micToggle(false)} />

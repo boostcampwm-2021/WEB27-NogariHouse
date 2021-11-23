@@ -8,6 +8,7 @@ export const ModalBox = styled.div`
   top: 20%;
   display: flex;
   flex-direction: column;
+
   border-radius: 32px;
   padding: 56px;
   margin-left: calc(25% - 56px);

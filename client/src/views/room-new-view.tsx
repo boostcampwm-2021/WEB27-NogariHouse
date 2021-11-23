@@ -5,11 +5,13 @@ import { useSetRecoilState, useRecoilValue } from 'recoil';
 
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState from '@atoms/user';
-import roomViewType from '@atoms/room-view-type';
+import roomViewState from '@atoms/room-view-type';
+import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
 import { postRoomInfo } from '@api/index';
+import { ButtonLayout } from '../components/room/style';
 
 const CustomTitleForm = styled.div`
   display: flex;
@@ -31,6 +33,14 @@ const TitleInputbar = styled.input`
   }
 `;
 
+const CheckboxLayout = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+`;
+
 const TitleInputbarLabel = styled.label`
   font-size: 12px;
   color: #B6B6B6;
@@ -39,8 +49,9 @@ const TitleInputbarLabel = styled.label`
 // 룸 생성 모달
 function RoomModal() {
   const user = useRecoilValue(userTypeState);
-  const setRoomView = useSetRecoilState(roomViewType);
+  const setRoomView = useSetRecoilState(roomViewState);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+  const setIsOpenModal = useSetRecoilState(isOpenRoomModalState);
   const [roomType, setRoomType] = useState('public');
   const [isDisabled, setIsDisabled] = useState(true);
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -57,7 +68,8 @@ function RoomModal() {
     postRoomInfo(roomInfo)
       .then((roomDocumentId: any) => {
         setRoomDocumentId(roomDocumentId);
-        if (roomType === 'closedSelectorView') setRoomView('closedSelectorView');
+        if (roomType === 'closed') setIsOpenModal(true);
+        else if (isAnonymous) setRoomView('selectModeView');
         else setRoomView('inRoomView');
       })
       .catch((err) => console.error(err));
@@ -77,20 +89,26 @@ function RoomModal() {
 
   return (
     <>
-      {/* eslint-disable-next-line react/jsx-no-bind */}
-      <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeOnClick.bind(null, 'public')} roomType={roomType} />
-      {/* eslint-disable-next-line react/jsx-no-bind */}
-      <RoomTypeCheckBox checkBoxName="social" onClick={roomTypeOnClick.bind(null, 'social')} roomType={roomType} />
-      {/* eslint-disable-next-line react/jsx-no-bind */}
-      <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
-      <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} />
+      <h2> Let&apos;s have fun together! </h2>
+      <CheckboxLayout>
+        {/* eslint-disable-next-line react/jsx-no-bind */}
+        <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeOnClick.bind(null, 'public')} roomType={roomType} />
+        {/* eslint-disable-next-line react/jsx-no-bind */}
+        <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
+      </CheckboxLayout>
+      { roomType !== 'closed' ? <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} /> : ''}
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputOnChange} />
       </CustomTitleForm>
-      <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
-        Lets Go
-      </DefaultButton>
+      <ButtonLayout>
+        <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
+          Let&apos;s Go
+        </DefaultButton>
+        <DefaultButton buttonType="thirdly" size="medium" onClick={() => alert('random!!!')}>
+          Randomly assigned
+        </DefaultButton>
+      </ButtonLayout>
     </>
   );
 }
