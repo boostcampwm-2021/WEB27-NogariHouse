@@ -11,6 +11,7 @@ function EventModal() {
     <>
       <BackgroundWrapper onClick={() => setIsOpenEventModal(false)} />
       <ModalBox>
+        <h1>Detailed page is not available yet.</h1>
         <button type="button" aria-label="test" onClick={() => setIsOpenEventModal(false)}>cancle</button>
       </ModalBox>
     </>
