@@ -49,7 +49,6 @@ class RoomService {
     await Rooms.updateOne({ _id: roomDocumentId, 'participants.userDocumentId': userDocumentId }, { $set: { 'participants.$.mic': isMicOn } });
   }
 
-  // eslint-disable-next-line consistent-return
   async get10Rooms(count: number) {
     try {
       const rooms = await Rooms.find({ type: 'public' }, ['title', 'isAnonymous', 'participants'], { skip: count, limit: 3 });
@@ -83,7 +82,6 @@ class RoomService {
     });
   }
 
-  // eslint-disable-next-line consistent-return
   async searchRooms(keyword: string, count: number) {
     try {
       const query = new RegExp(keyword, 'i');

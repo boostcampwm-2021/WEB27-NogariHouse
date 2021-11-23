@@ -178,7 +178,6 @@ export const useRtc = <T extends IRTC>(): [
       setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.socketId !== socketId));
     });
 
-    // eslint-disable-next-line consistent-return
     return () => {
       participants.forEach((participant) => {
         if (!peerConnectionsRef.current[participant.userDocumentId]) return;
