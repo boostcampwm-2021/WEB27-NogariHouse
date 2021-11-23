@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable max-len */
 import React, {
   MouseEvent, useEffect, useRef, useState,
@@ -55,23 +56,22 @@ function LeftSideBar() {
   };
 
   useEffect(() => {
-    if (user.isLoggedIn) {
-      userSocketRef.current = io(`${process.env.REACT_APP_SOCKET_URL}/user`);
+    if (!user.isLoggedIn) return;
+    userSocketRef.current = io(`${process.env.REACT_APP_SOCKET_URL}/user`);
 
-      userSocketRef.current.on('user:firstFollowingList', (firstActiveFollowingList) => {
-        setFirstFollowingList(firstActiveFollowingList);
-      });
-      userSocketRef.current.on('user:newActiveUser', (newActiveUserData) => {
-        const newDocumentId = newActiveUserData.userDocumentId;
-        if (followingList.includes(newDocumentId)) addNewActiveFollowing(newActiveUserData);
-      });
-      userSocketRef.current.on('user:newLeaveUser', (leaveUserDocumentId) => {
-        deleteLeaveActiveFollowing(leaveUserDocumentId);
-      });
-      userSocketRef.current.on('user:hands', (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
-        if (handsData.to === user.userDocumentId) alert(`${handsData.from.userName}님이 손을 흔들었습니다.`);
-      });
-    }
+    userSocketRef.current.on('user:firstFollowingList', (firstActiveFollowingList) => {
+      setFirstFollowingList(firstActiveFollowingList);
+    });
+    userSocketRef.current.on('user:newActiveUser', (newActiveUserData) => {
+      const newDocumentId = newActiveUserData.userDocumentId;
+      if (followingList.includes(newDocumentId)) addNewActiveFollowing(newActiveUserData);
+    });
+    userSocketRef.current.on('user:newLeaveUser', (leaveUserDocumentId) => {
+      deleteLeaveActiveFollowing(leaveUserDocumentId);
+    });
+    userSocketRef.current.on('user:hands', (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
+      if (handsData.to === user.userDocumentId) alert(`${handsData.from.userName}님이 손을 흔들었습니다.`);
+    });
 
     return () => {
       if (userSocketRef.current) {

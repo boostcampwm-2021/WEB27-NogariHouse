@@ -1,5 +1,5 @@
 import { Server, Socket } from 'socket.io';
-import registerRoomHandler from './room';
+import roomHandler from './room';
 import userHandler from './user';
 
 const server = new Server({
@@ -9,7 +9,7 @@ const server = new Server({
 const roomNameSpace = server.of('/room');
 const userNameSpace = server.of('/user');
 
-roomNameSpace.on('connection', (socket: Socket) => registerRoomHandler(socket, roomNameSpace));
+roomNameSpace.on('connection', (socket: Socket) => roomHandler(socket, roomNameSpace));
 userNameSpace.on('connection', (socket: Socket) => userHandler(socket, userNameSpace));
 
 export default server;

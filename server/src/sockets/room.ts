@@ -8,7 +8,7 @@ interface IUsers {
 
 const users: IUsers = {};
 
-export default function registerRoomHandler(socket : Socket, namespace : Namespace) {
+export default function RoomHandler(socket : Socket, namespace : Namespace) {
   const handleRoomJoin = async (payload:
     {roomDocumentId: string, userDocumentId: string, socketId: string, isAnonymous: boolean}) => {
     const {
