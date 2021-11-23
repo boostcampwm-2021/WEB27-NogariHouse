@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 
 import React, { useEffect, useState } from 'react';

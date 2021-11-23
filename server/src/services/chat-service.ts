@@ -1,7 +1,6 @@
 /* eslint-disable no-return-assign */
 /* eslint-disable no-return-await */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 /* eslint-disable class-methods-use-this */
 import Users from '@models/users';
 import Chats from '@models/chats';

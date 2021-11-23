@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import React, {
   MouseEvent, useEffect, useRef, useState,
 } from 'react';

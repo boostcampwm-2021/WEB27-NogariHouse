@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-// eslint-disable-next-line consistent-return
 export const getRoomInfo = async (roomDocumentId: string) => {
   try {
     let response = await fetch(

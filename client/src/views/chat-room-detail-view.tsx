@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/no-unused-prop-types */
 import React, {
