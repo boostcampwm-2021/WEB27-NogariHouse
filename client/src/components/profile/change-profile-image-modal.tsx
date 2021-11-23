@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
@@ -39,28 +39,6 @@ const CustomForm = styled.form`
   height: 100%;
 `;
 
-// const ImageLabel = styled.label`
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-//     background-color: #9AACA1;
-//     border-radius: 30px;
-//     font-size: 20px;
-//     font-family: Nunito;
-//     color: #FFF;
-//     width: 100px;
-//     height: 40px;
-
-// `;
-
-// const HiddenInput = styled.input`
-//   width: 0;
-//   height: 0;
-//   padding: 0;
-//   overflow: hidden;
-//   border: 0;
-// `;
-
 const ButtonsLayout = styled.div`
   display: flex;
   flex-direction: column;
@@ -77,7 +55,7 @@ const CustomInput = styled.input`
 function ShareModal() {
   const [isOpenChangeProfileImageModal,
     setIsOpenChangeProfileImageModalState] = useRecoilState(isOpenChangeProfileImageModalState);
-  const user = useRecoilValue(userState);
+  const [user, setUser] = useRecoilState(userState);
   const [previewImageURL, setPreviewImageURL] = useState(user.profileUrl);
   const [potentialProfileImage, setPotentialProfileImage] = useState<any>(null);
 
@@ -95,7 +73,11 @@ function ShareModal() {
       const formData = new FormData();
       formData.append('profileImage', potentialProfileImage);
       formData.append('userDocumentId', user.userDocumentId);
-      await changeProfileImage(user.userDocumentId, formData);
+      // eslint-disable-next-line max-len
+      const response = await changeProfileImage(user.userDocumentId, formData) as any;
+      const { newProfileUrl } = response;
+      setUser({ ...user, profileUrl: newProfileUrl });
+      setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal);
     }
   };
 
