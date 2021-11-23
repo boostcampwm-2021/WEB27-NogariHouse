@@ -22,7 +22,7 @@ function SearchHeader() {
   return (
     <CustomtHeader>
       {Icons.map(makeIconToLink)}
-      <HeaderTitleNunito>Explore</HeaderTitleNunito>
+      <HeaderTitleNunito to="/search">Explore</HeaderTitleNunito>
     </CustomtHeader>
   );
 }

@@ -13,11 +13,11 @@ const LogoTitle = styled(Link)`
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 `;
 
-function FollowersHeader({ history }: RouteComponentProps) {
+function FollowersHeader({ history, location }: RouteComponentProps) {
   return (
     <CustomtHeader>
       <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
-      <HeaderTitleNunito>FOLLOWERS</HeaderTitleNunito>
+      <HeaderTitleNunito to={location.pathname}>FOLLOWERS</HeaderTitleNunito>
       <LogoTitle to="/">NOGARIHOUSE</LogoTitle>
     </CustomtHeader>
   );

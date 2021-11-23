@@ -19,7 +19,7 @@ function ActivityHeader() {
   return (
     <CustomtHeader>
       {makeIconToLink(Icon)}
-      <HeaderTitleNunito>ACTIVITY</HeaderTitleNunito>
+      <HeaderTitleNunito to="/activity">ACTIVITY</HeaderTitleNunito>
       <div />
     </CustomtHeader>
   );
