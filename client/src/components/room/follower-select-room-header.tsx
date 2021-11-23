@@ -1,10 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import styled, { css } from 'styled-components';
-import { useResetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { IoClose } from 'react-icons/io5';
 
-import selectedUserType from '@atoms/chat-selected-users';
+import userState from '@atoms/user';
+import roomViewState from '@atoms/room-view-type';
+import { isOpenRoomModalState } from '@atoms/is-open-modal';
+import roomDoucumentIdState from '@atoms/room-document-id';
+import { makeDateToHourMinute } from '@utils/index';
+import useChatSocket from '@utils/chat-socket';
 
 const HeaderStyle = styled.div`
 
@@ -36,10 +41,6 @@ const BtnStyle = css`
   font-size: 20px;
 
   border: none;
-
-  &:hover {
-    filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
-  }
 `;
 
 const CanCelBtnStyle = styled(IoClose)`
@@ -52,18 +53,49 @@ const CanCelBtnStyle = styled(IoClose)`
   ${BtnStyle};
 `;
 
-export default function FollowerSelectRoomHeader({ onClick }: any) {
-  const resetSelectedUserList = useResetRecoilState(selectedUserType);
+const DoneBtnStyle = styled.button`
+  right: 5%;
+  
+  &:hover {
+    cursor: pointer;
+  }
+
+  ${BtnStyle};
+`;
+
+export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any) {
+  const setIsOpenRoomModal = useSetRecoilState(isOpenRoomModalState);
+  const setRoomView = useSetRecoilState(roomViewState);
+  const roomDocumentId = useRecoilValue(roomDoucumentIdState);
+  const user = useRecoilValue(userState);
+  const chatSocket = useChatSocket();
 
   const cancelEvent = () => {
-    resetSelectedUserList();
     onClick();
+  };
+
+  const submitEventHandler = () => {
+    const inviteInfo = {
+      participants: selectedUsers,
+      message: `${user.userName}님이 노가리 방으로 초대했습니다!`,
+      userInfo: {
+        userDocumentId: user.userDocumentId,
+        userName: user.userName,
+        profileUrl: user.profileUrl,
+      },
+      roomDocumentId,
+      date: makeDateToHourMinute(new Date()),
+    };
+    chatSocket.emit('chat:inviteRoom', inviteInfo);
+    setRoomView('inRoomView');
+    setIsOpenRoomModal(false);
   };
 
   return (
     <HeaderStyle>
-      <CanCelBtnStyle size={40} onClick={cancelEvent}>Cancel</CanCelBtnStyle>
+      <CanCelBtnStyle size={40} onClick={cancelEvent} />
       <p>START A ROOM</p>
+      <DoneBtnStyle onClick={submitEventHandler}>Done</DoneBtnStyle>
     </HeaderStyle>
   );
 }

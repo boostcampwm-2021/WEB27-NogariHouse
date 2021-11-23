@@ -5,19 +5,14 @@ import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
 
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import followState from '@atoms/following-list';
-import selectedUserState from '@atoms/chat-selected-users';
-import roomViewState from '@atoms/room-view-type';
-import userState from '@atoms/user';
-import roomDoucumentIdState from '@atoms/room-document-id';
-import { BackgroundWrapper } from '@common/modal';
 import UserCardList from '@components/common/user-card-list';
 import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
+import { BackgroundWrapper } from '@common/modal';
 import { findUsersById } from '@api/index';
-import Scroll from '@styles/scrollbar-style';
-import { slideYFromTo } from '@src/assets/styles/keyframe';
-import DefaultButton from '@src/components/common/default-button';
-import useChatSocket from '@utils/chat-socket';
-import { makeDateToHourMinute } from '@utils/index';
+import {hiddenScroll} from '@styles/scrollbar-style';
+import { slideYFromTo } from '@styles/keyframe';
+import { IUser } from '@interfaces/index';
+
 const ModalBox = styled.div`
   position: absolute;
   width: 50%;
@@ -48,7 +43,7 @@ const Layout = styled.div`
   overflow: hidden;
   position: relative;
 
-  ${Scroll};
+  ${hiddenScroll}
 `;
 
 const SelectDiv = styled.div`
@@ -125,15 +120,11 @@ const SelectUserComponent = styled.div`
 function FollowerSelectModal() {
   const setIsOpenRoomModal = useSetRecoilState(isOpenRoomModalState);
   const followingList = useRecoilValue(followState);
-  const user = useRecoilValue(userState);
-  const roomDocumentId = useRecoilValue(roomDoucumentIdState);
-  const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserState);
-  const setRoomView = useSetRecoilState(roomViewState);
+  const [selectedUsers, setSelectedUsers] = useState<Array<IUser>>([]);
   const [allUserList, setAllUserList] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
   const inputBarRef = useRef(null);
   const selectedUserDivRef = useRef(null);
-  const chatSocket = useChatSocket();
 
   const addSelectedUser = (e: any) => {
     const userCardDiv = e.target.closest('.userCard');
@@ -170,30 +161,12 @@ function FollowerSelectModal() {
 
   }, [selectedUsers]);
 
-
-  const submitEventHandler = () => {
-    const inviteInfo = {
-      participants: selectedUsers,
-      message: `${user.userName}님이 노가리 방으로 초대했습니다!`,
-      userInfo: {
-        userDocumentId: user.userDocumentId,
-        userName: user.userName,
-        profileUrl: user.profileUrl,
-      },
-      roomDocumentId,
-      date: makeDateToHourMinute(new Date()),
-    }
-    chatSocket.emit('chat:inviteRoom', inviteInfo);
-    setRoomView('inRoomView');
-    setIsOpenRoomModal(false);
-  }
-
   return (
     <>
       <BackgroundWrapper onClick={() => setIsOpenRoomModal(false)} />
       <ModalBox>
+      <FollowerSelectRoomHeader onClick={() => setIsOpenRoomModal(false)} selectedUsers={selectedUsers} />
         <Layout>
-          <FollowerSelectRoomHeader onClick={() => setIsOpenRoomModal(false)} />
           <SelectDiv>
             <p>ADD : </p>
             <SelectInputBar ref={inputBarRef} onChange={searchUser} />
@@ -206,9 +179,6 @@ function FollowerSelectModal() {
             ))}
           </SelectedUserDiv>
           <UserCardList cardType="others" userList={filteredUserList} clickEvent={addSelectedUser} />
-          <DefaultButton buttonType="thirdly" size="small" onClick={submitEventHandler}>
-            🎉 Let&apos;s Go
-          </DefaultButton>
         </Layout>
       </ModalBox>
     </>

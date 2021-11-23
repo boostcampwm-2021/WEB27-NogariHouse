@@ -1,3 +1,9 @@
+export interface IUser {
+  userDocumentId: string,
+  userName: string,
+  profileUrl: string,
+}
+
 export interface IUserForCard{
   _id: string,
   userName: string,
