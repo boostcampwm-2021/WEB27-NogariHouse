@@ -85,7 +85,7 @@ function ChatRoomDetailView() {
   const [chattingLog, setChattingLog] = useState<any>([]);
   const user = useRecoilValue(userState);
   const chattingLogDiv = useRef(null);
-  const socket = useChatSocket();
+  const chatSocket = useChatSocket();
 
   const addChattingLog = (chatLog: any) => {
     setChattingLog((oldLog: any) => [...oldLog, chatLog]);
@@ -128,15 +128,15 @@ function ChatRoomDetailView() {
   }, [chattingLog]);
 
   useEffect(() => {
-    if (!socket) return;
-    socket.emit('chat:roomJoin', chatDocumentId);
-    socket.on('chat:sendMsg', (payload: any) => {
+    if (!chatSocket) return;
+    chatSocket.emit('chat:roomJoin', chatDocumentId);
+    chatSocket.on('chat:sendMsg', (payload: any) => {
       addChattingLog(payload);
     });
     return () => {
-      socket.emit('chat:leave', chatDocumentId);
+      chatSocket.emit('chat:leave', chatDocumentId);
     };
-  }, [socket]);
+  }, [chatSocket]);
 
   return (
     <ChatRoomsLayout>
@@ -160,7 +160,7 @@ function ChatRoomDetailView() {
       <ChatRoomFooter
         addChattingLog={addChattingLog}
         chatDocumentId={chatDocumentId}
-        socket={socket}
+        chatSocket={chatSocket}
         participants={location.state.participantsInfo.map((participant: any) => participant.userDocumentId)}
       />
     </ChatRoomsLayout>
