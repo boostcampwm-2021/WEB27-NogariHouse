@@ -81,10 +81,17 @@ const CustomInput = styled.input`
 `;
 
 const CustomInputDiv = styled.div`
-display: flex;
-height:20px;
-width: 80%;
-margin: 5px;`;
+  display: flex;
+  height:20px;
+  width: 80%;
+  margin: 5px;
+  overflow-x: scroll;
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+  &::-webkit-scrollbar {
+    display: none;
+    }
+`;
 
 const CustomTextArea = styled.textarea`
   border: none;
