@@ -26,9 +26,7 @@ export default (app: Router) => {
     const { userDocumentId } = req.body;
     const { count } = req.query;
     try {
-      const user = await usersService.findUserByDocumentId(userDocumentId);
-      const activityList = user!.activity;
-      const items = await usersService.makeItemToActivityInterface(activityList, Number(count));
+      const items = await usersService.getActivityList(userDocumentId, Number(count));
       res.json({ ok: true, items });
     } catch (e) {
       console.error(e);

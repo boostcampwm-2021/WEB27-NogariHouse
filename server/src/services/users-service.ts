@@ -196,12 +196,14 @@ class UserService {
     };
   }
 
-  async makeItemToActivityInterface(activityList: Array<IActivity>, count: number) {
-    const newActivityList = await Promise.all(activityList.reverse().slice(count, count + 10).map(async (activity: IActivity) => {
+  async getActivityList(userDocumentId: string, count: number) {
+    const user = await Users.findById(userDocumentId, ['activity']);
+    const newActivityList = await Promise.all(user!.activity.reverse().slice(count, count + 10).map(async (activity: IActivity) => {
       const detailFrom = await this.findUserByDocumentId(activity.from);
       const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
       return { ...activity, from: newFrom };
     }));
+    await Users.findByIdAndUpdate(userDocumentId, { activity: user!.activity.map((el) => ({ ...el, isChecked: true })) });
     return newActivityList;
   }
 
