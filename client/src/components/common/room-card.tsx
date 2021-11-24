@@ -14,21 +14,21 @@ const RoomCardProfileDiv = styled.div`
   position: relative;
 `;
 
-const RoomCardFirstProfile = styled.div.attrs((props: ProfileProps) => {
+const RoomCardFirstProfile = styled.div.attrs((props: IProfileProps) => {
   return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
 })`
   position: absolute;
 
-  width: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
-  height: ${(props: ProfileProps) => (props.length === 1 ? 85 : 65)}px;
+  width: ${(props: IProfileProps) => (props.length === 1 ? 85 : 65)}px;
+  height: ${(props: IProfileProps) => (props.length === 1 ? 85 : 65)}px;
 
   border-radius: 25px;
 
-  background-size: ${(props: ProfileProps) => (props.length === 1 ? 120 : 100)}px;
+  background-size: ${(props: IProfileProps) => (props.length === 1 ? 120 : 100)}px;
   z-index: 2;
 `;
 
-const RoomCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
+const RoomCardSecondProfile = styled.div.attrs((props: IProfileProps) => {
   if (props.length === 1) return ;
   return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
 })`
@@ -100,7 +100,7 @@ const RoomCardLayout = styled.div`
   }
 `;
 
-interface ProfileProps {
+interface IProfileProps {
   profileUrl: string,
   length: number
 }

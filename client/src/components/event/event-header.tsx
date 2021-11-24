@@ -1,7 +1,5 @@
-/* eslint-disable max-len */
 import React from 'react';
 import styled from 'styled-components';
-import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { BiCalendarPlus } from 'react-icons/bi';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
@@ -10,14 +8,7 @@ import { CustomtHeader, HeaderTitleNunito } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
-
-interface IconAndLink {
-  Component:IconType,
-  key: string | number,
-  link: string,
-  size?: number,
-  color?: string,
-}
+import { IconAndLink } from '@interfaces/index';
 
 const EventAddButton = styled.div`
   position: relative;

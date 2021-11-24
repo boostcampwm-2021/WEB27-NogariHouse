@@ -12,16 +12,11 @@ import LoadingSpinner from '@common/loading-spinner';
 import { getChatRooms } from '@api/index';
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
 import useChatSocket from '@src/utils/chat-socket';
-
-interface IChatUserType {
-  userDocumentId: string,
-  userName: string,
-  profileUrl: string,
-}
+import { IUser } from '@interfaces/index';
 
 interface IChatRoom {
   chatDocumentId: string,
-  participants: Array<IChatUserType>,
+  participants: Array<IUser>,
   lastMsg: string,
   recentActive: Date,
   unCheckedMsg: number,
@@ -34,7 +29,7 @@ function ChatRoomsViews() {
   const history = useHistory();
   const socket = useChatSocket();
 
-  const clickEvent = (chatDocumentId: string, participantsInfo: Array<IChatUserType>) => {
+  const clickEvent = (chatDocumentId: string, participantsInfo: Array<IUser>) => {
     history.push({
       pathname: `/chat-rooms/${chatDocumentId}`,
       state: { participantsInfo },

@@ -1,14 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IconType } from 'react-icons';
 
-interface IconAndLink {
-    Component:IconType,
-    key: string | number,
-    link: string,
-    size?: number,
-    color?: string,
-  }
+import { IconAndLink } from '@interfaces/index';
 
 interface Params {
   [key: string]: any

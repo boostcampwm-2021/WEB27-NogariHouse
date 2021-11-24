@@ -19,10 +19,6 @@ export interface IRTC {
   isAnonymous?: boolean
 }
 
-export interface IParticipant extends IRTC {
-    mic?: boolean,
-  }
-
 export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObject<HTMLVideoElement | null>, () => Promise<void>] => {
   const myStreamRef = useRef<MediaStream | null>(null);
   const myVideoRef = useRef<HTMLVideoElement | null>(null);

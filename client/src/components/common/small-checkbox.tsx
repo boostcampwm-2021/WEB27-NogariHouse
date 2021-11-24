@@ -7,7 +7,7 @@ export interface CheckBoxProps {
   roomType?: string,
 }
 
-interface SmallCheckboxProps extends CheckBoxProps{
+interface ISmallCheckboxProps extends CheckBoxProps{
   id?: string,
   isDisabled?: boolean,
 }
@@ -45,7 +45,7 @@ const CheckBox = styled.input`
 
 function SmallCheckbox({
   id, isDisabled, onChange, checked,
-}: SmallCheckboxProps) {
+}: ISmallCheckboxProps) {
   return (
     <CheckBox type="checkbox" id={id} disabled={isDisabled} checked={checked} onChange={onChange} />
   );

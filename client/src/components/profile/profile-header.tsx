@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos, MdSettings } from 'react-icons/md';
 import { HiShare } from 'react-icons/hi';
 import { RouteComponentProps } from 'react-router-dom';
@@ -10,14 +9,7 @@ import { isOpenShareModalState } from '@atoms/is-open-modal';
 import userState from '@atoms/user';
 import { CustomtHeader, HeaderTitleNunito } from '@common/header';
 import { makeIconToLink } from '@utils/index';
-
-interface IconAndLink {
-  Component:IconType,
-  key: string | number,
-  link: string,
-  size?: number,
-  color?: string,
-}
+import { IconAndLink } from '@interfaces/index';
 
 const IconContainer = styled.div`
   display: flex;
