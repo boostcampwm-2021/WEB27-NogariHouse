@@ -114,7 +114,7 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
       if (!props.stream || !props.isMicOn) return;
       const soundMeter = new SoundMeter(audioCtxRef.current);
       let meterRefresh: any = null;
-      soundMeter.connectToSource(isAnonymous, props.stream, () => {
+      soundMeter.connectToSource(false, props.stream, () => {
         meterRefresh = setInterval(() => {
           const num = Number(soundMeter.instant.toFixed(2));
           if (num > 0.02 && myRef.current) {

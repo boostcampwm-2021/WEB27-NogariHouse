@@ -45,6 +45,15 @@ export default (app: Router) => {
     }
   });
 
+  roomRouter.get('/public/random', async (req: Request, res: Response) => {
+    try {
+      const roomInfo = await RoomService.getRandomRoomDocumentId();
+      res.status(200).json(roomInfo);
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
   roomRouter.delete('/:roomDocumentId', async (req: Request, res: Response) => {
     try {
       const { roomDocumentId } = req.params;

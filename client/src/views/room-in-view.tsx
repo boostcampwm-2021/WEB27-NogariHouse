@@ -100,15 +100,12 @@ function InRoomModal() {
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
-        <FooterBtnDiv><FiPlus onClick={() => setIsOpenModal(true)} /></FooterBtnDiv>
-        <FooterBtnDiv>
-          {isMic
-            ? <FiMic onClick={() => micToggle(false)} />
-            : <FiMicOff onClick={() => micToggle(true)} />}
+        <FooterBtnDiv onClick={() => setIsOpenModal(true)}><FiPlus /></FooterBtnDiv>
+        <FooterBtnDiv onClick={() => micToggle(!isMic)}>
+          {isMic ? <FiMic /> : <FiMicOff /> }
         </FooterBtnDiv>
       </InRoomFooter>
     </>
   );
 }
-
 export default InRoomModal;

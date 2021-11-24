@@ -1,10 +1,13 @@
+/* eslint-disable max-len */
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import { postEvent } from '@api/index';
+import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
+import EventSelectUserDropdown from './event-select-uesr-dropdown';
 
 const CustomEventRegisterModal = styled(ModalBox)`
   top: 15vh;
@@ -78,10 +81,17 @@ const CustomInput = styled.input`
 `;
 
 const CustomInputDiv = styled.div`
-display: flex;
-height:20px;
-width: 80%;
-margin: 5px;`;
+  display: flex;
+  height:20px;
+  width: 80%;
+  margin: 5px;
+  overflow-x: scroll;
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+  &::-webkit-scrollbar {
+    display: none;
+    }
+`;
 
 const CustomTextArea = styled.textarea`
   border: none;
@@ -92,8 +102,26 @@ const CustomTextArea = styled.textarea`
   &:focus {outline:none;}
 `;
 
+const SelectUserComponent = styled.div`
+  padding: 0px 5px;
+  background-color: #F1F0E4;
+  border-radius: 30px;
+
+  font-family: 'Nunito';
+  color: #819C88;
+
+  cursor: default;
+`;
+
 const InputDescSpan = styled.span`
   color : gray;
+`;
+
+const AddGuestSpan = styled.span`
+  color : gray;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 function EventRegisterModal() {
@@ -103,6 +131,11 @@ function EventRegisterModal() {
   const inputDateRef = useRef<HTMLInputElement>(null);
   const inputTimeRef = useRef<HTMLInputElement>(null);
   const textDescRef = useRef<HTMLTextAreaElement>(null);
+  const [selectedList, setSelectedList] = useState<string[]>([]);
+  const [isOpenSelectedList, setisOpenSelectedList] = useState(false);
+  const setNowFetching = useSetRecoilState(nowFetchingState);
+  const resetNowItemsList = useResetRecoilState(nowItemsListState);
+  const setNowCount = useSetRecoilState(nowCountState);
 
   const changeModalState = () => {
     setIsOpenModal(!isOpenModal);
@@ -121,7 +154,7 @@ function EventRegisterModal() {
   const publishButtonHandler = () => {
     const eventInfo = {
       title: inputTitleRef.current?.value,
-      participants: ['test'],
+      participants: selectedList,
       date: new Date(`${inputDateRef.current?.value} ${inputTimeRef.current?.value}`),
       description: textDescRef.current?.value,
     };
@@ -131,6 +164,9 @@ function EventRegisterModal() {
       .catch((err) => console.error(err));
 
     changeModalState();
+    resetNowItemsList();
+    setNowCount(0);
+    setNowFetching(true);
   };
 
   if (isOpenModal) {
@@ -148,10 +184,15 @@ function EventRegisterModal() {
               <CustomInput type="text" ref={inputTitleRef} name="title" placeholder="Event Name" onChange={inputOnChange} />
               <CustomInputDiv>
                 <InputDescSpan>with</InputDescSpan>
-                <div />
+                {selectedList.map((userId: string) => (
+                  <SelectUserComponent key={userId} data-id={userId}>
+                    {`@${userId}`}
+                  </SelectUserComponent>
+                ))}
               </CustomInputDiv>
               <CustomInputDiv>
-                <InputDescSpan>Add a Co-host or Guest</InputDescSpan>
+                <AddGuestSpan onClick={() => setisOpenSelectedList((now) => (!now))}>Add a Co-host or Guest</AddGuestSpan>
+                <EventSelectUserDropdown isOpenSelectedList={isOpenSelectedList} setSelectedList={setSelectedList} />
               </CustomInputDiv>
             </CustomFormBox>
             <CustomFormBox>

@@ -234,7 +234,7 @@ class UserService {
     }
   }
 
-  async findUsersById(documentIdList: Array<string>) {
+  async findUsersByIdList(documentIdList: Array<string>) {
     try {
       const participantsInfo = Users.find({ _id: { $in: documentIdList } });
       return participantsInfo;
@@ -262,6 +262,15 @@ class UserService {
       return true;
     } catch (e) {
       console.error(e);
+      return false;
+    }
+  }
+
+  async updateUserProfileUrl(userDocumentId: string, profileUrl: string) {
+    try {
+      await Users.updateOne({ _id: userDocumentId }, { profileUrl });
+      return true;
+    } catch (e) {
       return false;
     }
   }

@@ -10,7 +10,7 @@ import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
-import { postRoomInfo } from '@api/index';
+import { getRandomRoomDocumentId, postRoomInfo } from '@api/index';
 import { ButtonLayout } from '../components/room/style';
 
 const CustomTitleForm = styled.div`
@@ -63,7 +63,7 @@ function RoomModal() {
       title: inputRef.current?.value as string,
       userId: user.userId,
       userName: user.userName,
-      isAnonymous: isAnonymous,
+      isAnonymous: (roomType !== 'closed') ? isAnonymous : false,
     };
     postRoomInfo(roomInfo)
       .then((roomDocumentId: any) => {
@@ -75,16 +75,22 @@ function RoomModal() {
       .catch((err) => console.error(err));
   };
 
-  const inputOnChange = () => {
+  const inputHandler = () => {
     setIsDisabled(!inputRef.current?.value);
   };
 
-  const checkboxOnChange = () => {
+  const checkboxHandler = () => {
     setIsAnonymous(!isAnonymous);
   };
 
-  const roomTypeOnClick = (checkBoxName: string) => {
+  const roomTypeHandler = (checkBoxName: string) => {
     setRoomType(checkBoxName);
+  };
+
+  const randomlyAssignedHandler = async () => {
+    const roomDocumentId = await getRandomRoomDocumentId();
+    setRoomDocumentId(roomDocumentId);
+    setRoomView('selectModeView');
   };
 
   return (
@@ -92,20 +98,20 @@ function RoomModal() {
       <h2> Let&apos;s have fun together! </h2>
       <CheckboxLayout>
         {/* eslint-disable-next-line react/jsx-no-bind */}
-        <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeOnClick.bind(null, 'public')} roomType={roomType} />
+        <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeHandler.bind(null, 'public')} roomType={roomType} />
         {/* eslint-disable-next-line react/jsx-no-bind */}
-        <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeOnClick.bind(null, 'closed')} roomType={roomType} />
+        <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeHandler.bind(null, 'closed')} roomType={roomType} />
       </CheckboxLayout>
-      { roomType !== 'closed' ? <AnonymousCheckBox checked={isAnonymous} onChange={checkboxOnChange} /> : ''}
+      <AnonymousCheckBox checked={isAnonymous} onChange={checkboxHandler} roomType={roomType} />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
-        <TitleInputbar ref={inputRef} onChange={inputOnChange} />
+        <TitleInputbar ref={inputRef} onChange={inputHandler} />
       </CustomTitleForm>
       <ButtonLayout>
         <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
           Let&apos;s Go
         </DefaultButton>
-        <DefaultButton buttonType="thirdly" size="medium" onClick={() => alert('random!!!')}>
+        <DefaultButton buttonType="thirdly" size="medium" onClick={randomlyAssignedHandler}>
           Randomly assigned
         </DefaultButton>
       </ButtonLayout>

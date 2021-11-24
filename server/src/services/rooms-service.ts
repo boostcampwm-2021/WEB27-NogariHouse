@@ -103,6 +103,17 @@ class RoomService {
       console.error(e);
     }
   }
+
+  // eslint-disable-next-line consistent-return
+  async getRandomRoomDocumentId() {
+    try {
+      const rooms = await Rooms.find({ type: 'public', isAnonymous: true });
+      const index = Math.floor(Math.random() * rooms.length);
+      return rooms[index]._id.toString();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 }
 
 export = new RoomService();

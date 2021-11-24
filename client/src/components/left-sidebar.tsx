@@ -70,13 +70,13 @@ function LeftSideBar() {
     userSocketRef.current.on('user:hands', (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
       if (handsData.to === user.userDocumentId) alert(`${handsData.from.userName}님이 손을 흔들었습니다.`);
     });
-
-    return () => {
-      if (userSocketRef.current) {
-        userSocketRef.current.disconnect();
-      }
-    };
   }, [user]);
+
+  useEffect(() => () => {
+    if (userSocketRef.current) {
+      userSocketRef.current.disconnect();
+    }
+  }, []);
 
   useEffect(() => {
     if (userSocketRef.current) {

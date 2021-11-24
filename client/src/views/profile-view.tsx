@@ -34,7 +34,7 @@ const LargeProfileImageBox = styled.img`
   border-radius: 30%;
 
   &:hover{
-    cursor: pointer;
+    cursor: ${(props: {isMine:boolean}) => (props.isMine && 'pointer')};
   };
 `;
 
@@ -117,7 +117,7 @@ function ProfileView({ match }: RouteComponentProps<{id: string}>) {
     };
 
     getUserDetail();
-  }, [isFollowingRef.current, profileId]);
+  }, [isFollowingRef.current, profileId, user]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -131,7 +131,8 @@ function ProfileView({ match }: RouteComponentProps<{id: string}>) {
       <ImageAndFollowButtonDiv>
         <LargeProfileImageBox
           src={userDetailInfo.current.profileUrl}
-          onClick={() => setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}
+          isMine={user.userId === profileId}
+          onClick={() => user.userId === profileId && setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}
         />
         {user.userId !== profileId
         && (

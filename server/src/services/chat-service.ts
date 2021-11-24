@@ -42,8 +42,8 @@ class ChatService {
   }
 
   async makeChatRoom(participants: Array<string>) {
-    const chatRoom = await Chats.findOne({ participants }, ['participants']);
-    if (chatRoom) return chatRoom._id;
+    const chatRoom = await Chats.findOne({ participants }, ['participants', 'unReadMsg']);
+    if (chatRoom) return { chatRoom, chatDocumentId: chatRoom._id, isNew: false };
 
     const unReadMsg = participants.map((userDocumentId: string) => ({ userDocumentId, count: 0 }));
     const newChatRoom = new Chats({ participants, unReadMsg });
@@ -51,7 +51,7 @@ class ChatService {
 
     participants.forEach(async (userDocumentId) => await Users.findOneAndUpdate({ _id: userDocumentId }, { $push: { chatRooms: newChatRoom._id } }));
 
-    return newChatRoom._id;
+    return { chatRoom, chatDocumentId: newChatRoom._id, isNew: true };
   }
 
   async getChattingLog(chatDocumentId: string) {

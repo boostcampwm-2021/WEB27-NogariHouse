@@ -159,7 +159,7 @@ export const getSearchResult = async (searchInfo: {keyword:string, option:string
   }
 };
 
-export const findUsersById = async (findUserList: Array<string>) => {
+export const findUsersByIdList = async (findUserList: Array<string>) => {
   try {
     let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/info`, {
       method: 'post',
@@ -273,28 +273,6 @@ export const getChattingLog = async (chatDocumentId: string) => {
   }
 };
 
-interface IChattingLog {
-  userDocumentId: string,
-  message: string,
-  date: Date,
-}
-
-export const postChattingMsg = async (chattingLog: IChattingLog, chatDocumentId: string, userDocumentId: string) => {
-  try {
-    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log`, {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ chattingLog, chatDocumentId, userDocumentId }),
-    });
-    response = await response.json();
-    return response;
-  } catch (error) {
-    console.error(error);
-  }
-};
-
 export const setUnCheckedMsg0 = async (chatDocumentId: string, userDocumentId: string) => {
   try {
     let response = await fetch(
@@ -326,5 +304,23 @@ export const changeProfileImage = async (userDocumentId: string, formData: FormD
     return response;
   } catch (e) {
     console.log(e);
+  }
+};
+
+export const getRandomRoomDocumentId = async () => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/room/public/random`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.error(error);
   }
 };

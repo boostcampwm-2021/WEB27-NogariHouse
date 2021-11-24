@@ -19,3 +19,13 @@ export default css`
   }
   overflow-y: scroll;
 `;
+
+export const hiddenScroll = css`
+  overflow-y: scroll;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
