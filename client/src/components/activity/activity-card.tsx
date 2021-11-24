@@ -2,11 +2,13 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
+
 const ActivityCardLayout = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  flex-direction: row;
   position: relative;
+  justify-content: space-between;
 
   height: max-content;
   padding: 24px;
@@ -14,19 +16,10 @@ const ActivityCardLayout = styled.div`
 
   margin-left: 0.8%;
 
-  div:not(:last-child) {
-    margin-bottom: 10px;
-  }
-
   &:hover {
   background-color: #eeebe4e4;
   box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
   }
-`;
-
-const TimeDiv = styled.div`
-  font-size: 14px;
-  color: gray;
 `;
 
 const ImageLayout = styled.img`
@@ -38,14 +31,36 @@ const ImageLayout = styled.img`
     overflow: hidden;
 `;
 
-const UserNameDiv = styled.div`
+const UserNameSpan = styled.span`
   font-size: 16px;
   font-weight: bold;
 `;
 
-const DiscriptionDiv = styled.div`
-  font-size: 14px;
-  font-weight: 600;
+const DiscriptionSpan = styled.span`
+  font-size: min(16px, 4vw);
+  word-break: break-all;
+  width: calc(100% - 60px);
+`;
+
+const LeftSide = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 80%;
+  overflow: hidden;
+`;
+
+const RightSide = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20%;
+  min-width: 20%;
+`;
+
+const TimeDiv = styled.div`
+  font-size: min(3vw, 14px);
+  color: gray;
 `;
 
 interface ActivityUser {
@@ -58,23 +73,32 @@ interface ActivityCardProps {
   type: 'follow' | 'event' | 'room',
   clickDocumentId: string,
   from: ActivityUser,
-  time: string,
+  date: Date,
 }
 
 const mapping = {
   follow: '님이 팔로우 했습니다',
   room: '님이 room을 생성했습니다. 참여하실래요?',
-  event: '이벤트 등록',
+  event: '님이 등록한 이벤트에 초대되셨습니다 !',
 };
 
-function ActivityCard({ type, clickDocumentId, from, time }: ActivityCardProps) {
-  console.log(type, clickDocumentId);
+const activityClickEvent = (type: string, clickDocumentId: string) => {
+  alert(`${type}, ${clickDocumentId}`);
+};
+
+function ActivityCard({ type, clickDocumentId, from, date }: ActivityCardProps) {
   return (
-    <ActivityCardLayout>
-      <ImageLayout src="github.com/iHoHyeon.png" />
-      <UserNameDiv>{from.userName}</UserNameDiv>
-      <DiscriptionDiv>{mapping[type]}</DiscriptionDiv>
-      <TimeDiv>{time}</TimeDiv>
+    <ActivityCardLayout onClick={() => activityClickEvent(type, clickDocumentId)}>
+      <LeftSide>
+        <ImageLayout src={from.profileUrl} />
+        <DiscriptionSpan>
+          <UserNameSpan>{from.userName}</UserNameSpan>
+          {mapping[type]}
+        </DiscriptionSpan>
+      </LeftSide>
+      <RightSide>
+        <TimeDiv>{date.getDate() === (new Date()).getDate() ? makeDateToHourMinute(date) : makeDateToMonthDate(date)}</TimeDiv>
+      </RightSide>
     </ActivityCardLayout>
   );
 }
