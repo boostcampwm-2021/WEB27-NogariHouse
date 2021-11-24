@@ -2,6 +2,7 @@ import {
   Router, Request, Response,
 } from 'express';
 import chatService from '@services/chat-service';
+import authJWT from '@middlewares/auth';
 
 const chatRouter = Router();
 
@@ -15,6 +16,17 @@ export default (app: Router) => {
       const { chatDocumentId } = await chatService.makeChatRoom(participants);
 
       res.status(200).json({ chatDocumentId });
+    } catch (error) {
+      res.json({ ok: false });
+    }
+  });
+
+  chatRouter.get('/unReadMsgCount', authJWT, async (req: Request, res: Response) => {
+    const { userDocumentId } = req.body;
+    try {
+      const unReadMsgCount = await chatService.getUnReadMsgCount(userDocumentId);
+
+      res.json({ ok: false, unReadMsgCount });
     } catch (error) {
       res.json({ ok: false });
     }

@@ -343,3 +343,22 @@ export const getIsActivityChecked = async () => {
     console.log(error);
   }
 };
+
+export const getUnReadMsgCount = async () => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chat-rooms/unReadMsgCount`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+    const json = await response.json();
+    return json;
+  } catch (error) {
+    console.log(error);
+  }
+};
