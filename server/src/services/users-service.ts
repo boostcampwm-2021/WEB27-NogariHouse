@@ -2,7 +2,7 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users, { IUserTypesModel } from '@models/users';
+import Users, { IUserTypesModel, IActivity } from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
@@ -193,6 +193,15 @@ class UserService {
       joinDate,
       profileUrl,
     };
+  }
+
+  async makeItemToActivityInterface(activityList: Array<IActivity>) {
+    const newActivityList = await Promise.all(activityList.map(async (activity: IActivity) => {
+      const detailFrom = await this.findUserByDocumentId(activity.from);
+      const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
+      return { ...activity, from: newFrom };
+    }));
+    return newActivityList;
   }
 
   async searchUsers(keyword: string, count: number) {
