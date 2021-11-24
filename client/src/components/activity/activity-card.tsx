@@ -87,6 +87,7 @@ const activityClickEvent = (type: string, clickDocumentId: string) => {
 };
 
 function ActivityCard({ type, clickDocumentId, from, date }: ActivityCardProps) {
+  const time = new Date(date);
   return (
     <ActivityCardLayout onClick={() => activityClickEvent(type, clickDocumentId)}>
       <LeftSide>
@@ -97,7 +98,7 @@ function ActivityCard({ type, clickDocumentId, from, date }: ActivityCardProps) 
         </DiscriptionSpan>
       </LeftSide>
       <RightSide>
-        <TimeDiv>{date.getDate() === (new Date()).getDate() ? makeDateToHourMinute(date) : makeDateToMonthDate(date)}</TimeDiv>
+        <TimeDiv>{time.getDate() === (new Date()).getDate() ? makeDateToHourMinute(time) : makeDateToMonthDate(time)}</TimeDiv>
       </RightSide>
     </ActivityCardLayout>
   );
