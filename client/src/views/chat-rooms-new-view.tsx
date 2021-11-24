@@ -1,14 +1,13 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import NewChatRoomHeader from '@src/components/chat/chat-new-header';
 import { ChatRoomsLayout } from '@components/chat/style';
 import UserCardList from '@components/common/user-card-list';
 import { findUsersByIdList } from '@api/index';
 import followType from '@atoms/following-list';
-import selectedUserType from '@atoms/chat-selected-users';
 
 const SelectDiv = styled.div`
   width: 90%;
@@ -81,7 +80,7 @@ const SelectUserComponent = styled.div`
 
 function ChatRoomsNewView() {
   const followingList = useRecoilValue(followType);
-  const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserType);
+  const [selectedUsers, setSelectedUsers] = useState<any>([]);
   const [allUserList, setAllUserList] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
   const inputBarRef = useRef(null);
@@ -129,7 +128,7 @@ function ChatRoomsNewView() {
 
   return (
     <ChatRoomsLayout>
-      <NewChatRoomHeader />
+      <NewChatRoomHeader selectedUserList={selectedUsers} />
       <SelectDiv>
         <p>TO : </p>
         <SelectInputBar ref={inputBarRef} onChange={searchUser} />
