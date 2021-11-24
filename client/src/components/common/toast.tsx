@@ -99,9 +99,9 @@ function Toast() {
   }, [toastList, isStop]);
 
   const TypeWithIcon = {
-    success: { component: MdCheckCircle, color: '#5cb85c' },
+    success: { component: MdCheckCircle, color: '#58964F' },
     danger: { component: MdError, color: '#d9534f' },
-    info: { component: MdInfo, color: '#5bc0de' },
+    info: { component: MdInfo, color: '#586A9A' },
     warning: { component: MdWarning, color: '#f0ad4e' },
   };
 
