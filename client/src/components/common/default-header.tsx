@@ -40,7 +40,7 @@ const MenuIconsLayout = styled.nav`
   position: relative;
   width: 100%;
   height: 48px;
-  margin: 0 24px;
+  margin: 0 min(1vw,24px);
 
   display: flex;
   justify-content: space-between;
@@ -52,7 +52,7 @@ const ResponsiveMenuIconsLayout = styled.nav`
   }
   width: 100%;
   height: 48px;
-  margin: 0 24px;
+  margin: 0 min(1vw,24px);
 
   display: flex;
   justify-content: space-between;
@@ -69,7 +69,7 @@ const OpenMenuButton = styled.button`
   padding:0;
   overflow:visible;
   cursor:pointer;
-  margin-left: 24px;
+  margin-left: min(2vw,24px);
 `;
 
 const OpenRoomStateButton = styled.button`
@@ -84,7 +84,7 @@ const OpenRoomStateButton = styled.button`
   padding:0;
   overflow:visible;
   cursor:pointer;
-  margin-right: 24px;
+  margin-right: min(2vw,24px);
 `;
 
 const IconContainer = styled.div`

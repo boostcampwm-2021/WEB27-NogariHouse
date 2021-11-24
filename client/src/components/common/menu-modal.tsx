@@ -8,6 +8,7 @@ import { HiOutlineLogout } from 'react-icons/hi';
 
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
+import isOpenActiveFollowingModalState from '@atoms/is-open-active-following-modal';
 import userState from '@atoms/user';
 import { signOutHandler } from '@utils/index';
 
@@ -56,6 +57,7 @@ const ProfileBox = styled.div`
   cursor: default;
   background-color: #eeebe4e4;
   box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  cursor: pointer;
   }
 `;
 
@@ -93,7 +95,7 @@ const LinkMenu = styled.div`
   border-bottom: 1px solid #e6e6e6;
 
   &:hover {
-  cursor: default;
+  cursor: pointer;
   background-color: #eeebe4e4;
   box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
   }
@@ -120,6 +122,29 @@ const SignOutButton = styled.button`
   margin: 10px 10px 10px 0;
 `;
 
+const StyledButton = styled.button`
+  background: inherit ;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+
+  width: 100% - 10px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  color: black;
+  border-bottom: 1px solid #e6e6e6;
+
+  &:hover {
+  cursor: pointer;
+  background-color: #eeebe4e4;
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  }
+`;
+
 const SignOutText = styled.div`
   font-size: 16px;
   font-weight: bold;
@@ -136,6 +161,7 @@ function SliderMenu() {
   const user = useRecoilValue(userState);
   const [isOpenMenu, setIsOpenMenu] = useRecoilState(isOpenSliderMenuState);
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
+  const setisOpenActiveFollowingModal = useSetRecoilState(isOpenActiveFollowingModalState);
   const clickHandler = () => {
     setIsOpenMenu(!isOpenMenu);
     setIsOpenRoom(false);
@@ -175,6 +201,9 @@ function SliderMenu() {
             </ProfileBox>
           </StyledLink>
           {linkList.map(makeLinkListToStyledLink)}
+          <StyledButton onClick={() => setisOpenActiveFollowingModal(true)}>
+            Active Following List
+          </StyledButton>
         </StyledLinkListLayout>
         <MenuFooter>
           <SignOutButton onClick={signOutHandler}>

@@ -9,6 +9,7 @@ import {
 } from 'recoil';
 import { useCookies } from 'react-cookie';
 import { Link } from 'react-router-dom';
+import { HiChevronDoubleLeft } from 'react-icons/hi';
 import styled from 'styled-components';
 
 import userState from '@atoms/user';
@@ -23,6 +24,7 @@ import ScrollBarStyle from '@styles/scrollbar-style';
 import LoadingSpinner from '@common/loading-spinner';
 import { getFollowingsList, getMyInfo } from '@src/api';
 import isOpenRoomState from '@atoms/is-open-room';
+import isOpenActiveFollowingModalState from '@atoms/is-open-active-following-modal';
 import { slideXFromTo } from '@src/assets/styles/keyframe';
 import useOutsideClick from '@src/hooks/useOutsideClick';
 
@@ -32,6 +34,7 @@ const MainLayout = styled.div`
   align-items: center;
   justify-content: center;
   height: 100vh;
+  max-height: -webkit-fill-available;
   width: 100vw;
 `;
 
@@ -44,20 +47,31 @@ const SectionLayout = styled.div`
 
 const ActiveFollowingLayout = styled.div`
   height: 80vh;
-  min-width: 240px;
+  min-width: 280px;
+  width: 20vw;
   margin: 10px;
-  flex-grow: 3;
   @media (max-width: 1024px) {
-    display: none;
+    position: fixed;
+    display: ${(props: { state: boolean }) => (props.state ? 'flex' : 'none')};
+    flex-direction: column;
+    justify-content: space-space-between;
+    align-items: center;
+    z-index: 100;
+    background-color: #F1F0E4;
+    width: 100vw;
+    min-width: 320px;
+    height: 85vh;
   }
 `;
 
 const MainSectionLayout = styled.div`
+  @media (min-width: 1024px) {
+    min-width: 500px;
+  }
   position: relative;
   height: 80vh;
-  width: 55vw;
+  width: 100%;
   min-width: 320px;
-  flex-grow: 12;
   margin: 10px;
   ${ScrollBarStyle};
 `;
@@ -65,14 +79,14 @@ const MainSectionLayout = styled.div`
 const RoomLayout = styled.div`
   @media (min-width: 768px) {
     height: 80vh;
-    width: 25vw;
+    width: 40vw;
+    min-width: 320px;
     margin: 10px;
-    flex-grow: 5;
   }
 
   @media (max-width: 768px) {
     position: fixed;
-    display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};;
+    display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};
     z-index: 100;
     width: 99vw;
     height: 85vh;
@@ -93,6 +107,29 @@ const ButtonLayout = styled.div`
   justify-content: space-between;
 `;
 
+const ActiveFollowingFooter = styled.footer`
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  width: 100%;
+  @media (min-width: 1024px) {
+    display: none;
+  }
+`;
+
+const CloseButton = styled.button`
+  display: flex;
+  align-items: center;
+  background: inherit ;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+  cursor:pointer;
+  margin: 10px 10px 10px 0;
+`;
+
 function MainView() {
   const [user, setUser] = useRecoilState(userState);
   const setFollowingList = useSetRecoilState(followingListState);
@@ -100,6 +137,7 @@ function MainView() {
   const [loading, setLoading] = useState(true);
   const [cookies, setCookie] = useCookies(['accessToken']);
   const isOpenRoom = useRecoilValue(isOpenRoomState);
+  const [isOpenActiveFollowingModal, setIsOpenActiveFollowingModal] = useRecoilState(isOpenActiveFollowingModalState);
   const RightSideBarLayoutRef = useRef<HTMLDivElement>(null);
 
   const updateUserState = useCallback(async (json) => {
@@ -142,8 +180,13 @@ function MainView() {
       <>
         <HeaderRouter />
         <SectionLayout>
-          <ActiveFollowingLayout>
+          <ActiveFollowingLayout state={isOpenActiveFollowingModal}>
             <LeftSideBar />
+            <ActiveFollowingFooter>
+              <CloseButton onClick={() => setIsOpenActiveFollowingModal(false)}>
+                <HiChevronDoubleLeft size="35" />
+              </CloseButton>
+            </ActiveFollowingFooter>
           </ActiveFollowingLayout>
           <MainSectionLayout>
             <MainRouter />

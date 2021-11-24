@@ -1,6 +1,6 @@
 import React from 'react';
 import { IconType } from 'react-icons';
-import { CustomtHeader } from '@common/header';
+import { CustomtHeader, CustomMenuIconsLayout } from '@common/header';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
 import { makeIconToLink } from '@utils/index';
@@ -18,7 +18,9 @@ function SignHeader() {
 
   return (
     <CustomtHeader>
-      {makeIconToLink(Icon)}
+      <CustomMenuIconsLayout>
+        {makeIconToLink(Icon)}
+      </CustomMenuIconsLayout>
     </CustomtHeader>
   );
 }

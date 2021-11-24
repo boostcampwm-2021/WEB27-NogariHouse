@@ -2,7 +2,7 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos, MdPersonPin } from 'react-icons/md';
 
-import { CustomtHeader, HeaderTitleNunito } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 
 interface IconAndLink {
@@ -21,7 +21,9 @@ function SearchHeader() {
 
   return (
     <CustomtHeader>
-      {Icons.map(makeIconToLink)}
+      <CustomMenuIconsLayout>
+        {Icons.map(makeIconToLink)}
+      </CustomMenuIconsLayout>
       <HeaderTitleNunito to="/search">Explore</HeaderTitleNunito>
     </CustomtHeader>
   );
