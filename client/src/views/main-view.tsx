@@ -127,7 +127,7 @@ const CloseButton = styled.button`
   padding:0;
   overflow:visible;
   cursor:pointer;
-  margin: 10px 10px 10px 0;
+  margin: 10px 30px 10px 0;
 `;
 
 function MainView() {
@@ -180,7 +180,7 @@ function MainView() {
       <>
         <HeaderRouter />
         <SectionLayout>
-          <ActiveFollowingLayout state={isOpenActiveFollowingModal}>
+          <ActiveFollowingLayout state={isOpenActiveFollowingModal} onClick={() => setIsOpenActiveFollowingModal(false)}>
             <LeftSideBar />
             <ActiveFollowingFooter>
               <CloseButton onClick={() => setIsOpenActiveFollowingModal(false)}>
