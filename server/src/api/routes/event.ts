@@ -1,11 +1,13 @@
 import { Router, Request, Response } from 'express';
 
 import eventsService from '@services/events-service';
+import authJWT from '@middlewares/auth';
 
 const eventRouter = Router();
 
 export default (app: Router) => {
   app.use('/event', eventRouter);
+  eventRouter.use(authJWT);
 
   eventRouter.get('/', async (req:Request, res:Response) => {
     const { count } = req.query;
