@@ -25,6 +25,7 @@ import { IconAndLink } from '@interfaces/index';
 import { getIsActivityChecked, getUnReadMsgCount } from '@api/index';
 import unReadMsgCountState from '@atoms/not-read-msg';
 import useChatSocket from '@utils/chat-socket';
+import useUserSocket from '@src/utils/user-socket';
 
 const CustomDefaultHeader = styled.nav`
   width: 100%;
@@ -155,7 +156,7 @@ function DefaultHeader() {
   const [isActivityChecked, setActivityChecked] = useState(false);
   const [unReadMsgCount, setUnReadMsgCount] = useRecoilState(unReadMsgCountState);
   const setNowCount = useSetRecoilState(nowCountState);
-  const chatSocket = useChatSocket();
+  const userSocket = useUserSocket();
 
   const leftSideIcons: IconAndLink[] = [
     { Component: HiSearch, link: '/search', key: 'search' },
@@ -182,12 +183,12 @@ function DefaultHeader() {
   }, [chatSocket]);
 
   useEffect(() => {
-    if (!chatSocket) return;
-    chatSocket.on('user:getActivity', () => setActivityChecked(true));
+    if (!userSocket) return;
+    userSocket.on('user:getActivity', () => setActivityChecked(true));
     return () => {
-      chatSocket.emit('user:headerLeave');
+      userSocket.emit('user:headerLeave');
     };
-  }, [chatSocket]);
+  }, [userSocket]);
 
   return (
     <>
