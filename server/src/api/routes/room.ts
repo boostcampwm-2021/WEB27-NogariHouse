@@ -1,7 +1,9 @@
 import {
   Router, Request, Response,
 } from 'express';
+
 import RoomService from '@services/rooms-service';
+import usersService from '@services/users-service';
 
 const roomRouter = Router();
 
@@ -21,7 +23,10 @@ export default (app: Router) => {
         title, type, isAnonymous,
       } = req.body as unknown as Query;
 
-      const roomId = await RoomService.setRoom(title, type, isAnonymous);
+      const [roomId] = await RoomService.setRoom(title, type, isAnonymous);
+      const activityAddResult = await usersService.addActivityTypeRoom(userDocumentId, roomId);
+
+      if (!activityAddResult) res.status(400).json({ ok: false });
       res.status(200).json(roomId);
     } catch (error) {
       console.error(error);
