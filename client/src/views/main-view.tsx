@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-unused-expressions */
-/* eslint-disable max-len */
+
 import React, {
   useCallback, useEffect, useState,
 } from 'react';
@@ -96,7 +97,6 @@ function MainView() {
   const setFollowingList = useSetRecoilState(followingListState);
   const resetUser = useResetRecoilState(userState);
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(['accessToken']);
   const isOpenRoom = useRecoilValue(isOpenRoomState);
 

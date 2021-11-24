@@ -1,8 +1,5 @@
-/* eslint-disable consistent-return */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/no-unused-prop-types */
-/* eslint-disable max-len */
-/* eslint-disable prefer-template */
 import React, {
   useEffect, useRef, useReducer,
 } from 'react';
@@ -50,7 +47,7 @@ const Message = styled.div< { isMyMsg: boolean } >`
 
   p {
     margin: 10px;
-    &: hover {
+    &:hover {
       cursor: default;
     }
   }

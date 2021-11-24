@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import styled from 'styled-components';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 

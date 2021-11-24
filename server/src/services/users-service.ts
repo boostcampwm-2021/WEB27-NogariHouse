@@ -1,8 +1,4 @@
-/* eslint-disable max-len */
-/* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable consistent-return */
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 

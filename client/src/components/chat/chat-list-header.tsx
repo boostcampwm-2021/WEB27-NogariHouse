@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-return-assign */
 import styled from 'styled-components';

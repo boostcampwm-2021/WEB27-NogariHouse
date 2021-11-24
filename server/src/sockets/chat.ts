@@ -1,6 +1,5 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable prefer-destructuring */
-/* eslint-disable max-len */
 import { Socket, Namespace } from 'socket.io';
 import Chats from '@models/chats';
 import chatService from '@services/chat-service';

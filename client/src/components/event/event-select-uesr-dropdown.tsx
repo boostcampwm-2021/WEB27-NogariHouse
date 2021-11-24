@@ -1,11 +1,10 @@
-/* eslint-disable max-len */
 import React, { useState, useEffect, MouseEvent } from 'react';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import followingListState from '@atoms/following-list';
 import UserCardList from '@components/common/user-card-list';
-import { findUsersByIdList } from '@src/api';
+import { findUsersByIdList } from '@api/index';
 import { IUserForCard } from '@interfaces/index';
 import LoadingSpinner from '@common/loading-spinner';
 

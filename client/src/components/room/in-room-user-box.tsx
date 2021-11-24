@@ -52,7 +52,6 @@ export function InRoomOtherUserBox({
       }, 500);
     });
 
-    // eslint-disable-next-line consistent-return
     return () => {
       if (ref.current) ref.current.style.border = 'none';
       clearInterval(meterRefresh);
@@ -126,7 +125,6 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
         }, 500);
       });
 
-      // eslint-disable-next-line consistent-return
       return () => {
         if (myRef.current) myRef.current.style.border = 'none';
         clearInterval(meterRefresh);

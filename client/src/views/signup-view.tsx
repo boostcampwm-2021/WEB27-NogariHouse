@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useCallback, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -85,10 +84,31 @@ function SignUpView() {
           : <SignTitle title="enter the verification code" />}
         <CustomInputBox>
           {isEmailInputView
-            ? <CustomInputBar key="text" ref={inputEmailRef} onChange={inputOnChange} type="text" placeholder="E-mail Address" />
-            : <CustomInputBar key="verification" ref={inputVerificationRef} onChange={inputOnChange} type="verification" placeholder="Verification code" />}
+            ? (
+              <CustomInputBar
+                key="text"
+                ref={inputEmailRef}
+                onChange={inputOnChange}
+                type="text"
+                placeholder="E-mail Address"
+              />
+            )
+            : (
+              <CustomInputBar
+                key="verification"
+                ref={inputVerificationRef}
+                onChange={inputOnChange}
+                type="verification"
+                placeholder="Verification code"
+              />
+            )}
         </CustomInputBox>
-        <DefaultButton buttonType="secondary" size="medium" onClick={isEmailInputView ? onClickEmailNextButton : onClickVerificationNextButton} isDisabled={isDisabled}>
+        <DefaultButton
+          buttonType="secondary"
+          size="medium"
+          onClick={isEmailInputView ? onClickEmailNextButton : onClickVerificationNextButton}
+          isDisabled={isDisabled}
+        >
           NEXT
         </DefaultButton>
       </SignBody>

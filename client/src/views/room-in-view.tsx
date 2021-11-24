@@ -92,11 +92,9 @@ function InRoomModal() {
         <TitleDiv><span>{roomInfo?.title}</span></TitleDiv>
       </InRoomHeader>
       <InRoomUserList>
-        {/* eslint-disable-next-line max-len */}
         <InRoomUserBox ref={myVideoRef as RefObject<HTMLVideoElement>} key={user.userDocumentId} stream={myStreamRef.current as MediaStream} userDocumentId={user.userDocumentId} isMicOn={isMic} isAnonymous />
         {participants.map(({
           userDocumentId, stream, mic, isAnonymous,
-        // eslint-disable-next-line max-len
         }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isAnonymous={isAnonymous} />)}
 
       </InRoomUserList>

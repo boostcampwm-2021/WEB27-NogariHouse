@@ -1,6 +1,5 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
+
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';

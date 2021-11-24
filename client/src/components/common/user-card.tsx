@@ -1,8 +1,4 @@
-/* eslint-disable react/no-unused-prop-types */
-/* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-expressions */
 import React, { MouseEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -88,38 +84,38 @@ const UserDescription = styled.div`
   user-select: none;
 `;
 
-export default function UserCard(props: UserCardProps) {
+export default function UserCard({ cardType, userData }: UserCardProps) {
   const [loading, setLoading] = useState(false);
-  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, props.userData.isFollow);
+  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, userData.isFollow);
   const history = useHistory();
 
   return (
-    <UserCardLayout onClick={() => props.cardType !== 'others' && history.push(`/profile/${props.userData.userId}`)} sizeType={props.cardType}>
+    <UserCardLayout onClick={() => cardType !== 'others' && history.push(`/profile/${userData.userId}`)} sizeType={cardType}>
       <UserInfoLayout>
         <UserImageLayout>
-          <UserImage src={props.userData.profileUrl} size={props.cardType === 'others' ? 'others' : 'default'} />
+          <UserImage src={userData.profileUrl} size={cardType === 'others' ? 'others' : 'default'} />
         </UserImageLayout>
         <UserDescLayout>
-          <UserName sizeType={props.cardType}>
-            {props.userData.userName}
+          <UserName sizeType={cardType}>
+            {userData.userName}
           </UserName>
-          <UserId sizeType={props.cardType}>
-            {props.userData.userId}
+          <UserId sizeType={cardType}>
+            {userData.userId}
           </UserId>
-          <UserDescription sizeType={props.cardType}>
-            {props.userData.description}
+          <UserDescription sizeType={cardType}>
+            {userData.description}
           </UserDescription>
         </UserDescLayout>
       </UserInfoLayout>
       {loading && <LoadingSpinner />}
-      {props.cardType === 'follow'
+      {cardType === 'follow'
         && (
           <DefaultButton
             buttonType={isFollowingRef.current ? 'following' : 'follow'}
             size="small"
             font="Nunito"
             isDisabled={false}
-            onClick={(e: MouseEvent) => { e.stopPropagation(); fetchFollow(isFollowingRef.current as boolean, props.userData._id); }}
+            onClick={(e: MouseEvent) => { e.stopPropagation(); fetchFollow(isFollowingRef.current as boolean, userData._id); }}
           >
             {isFollowingRef.current ? 'following' : 'follow'}
           </DefaultButton>

@@ -1,5 +1,3 @@
-/* eslint-disable consistent-return */
-/* eslint-disable max-len */
 import styled from 'styled-components';
 
 interface Participants{

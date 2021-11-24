@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -94,7 +93,12 @@ function ChatRoomsNewView() {
     if (!userCardDiv || !profileUrl) return;
     const userName = userCardDiv?.getAttribute('data-username');
     (inputBarRef!.current as any).value = '';
-    setSelectedUsers([...selectedUsers, { userDocumentId: userCardDiv?.getAttribute('data-id'), userName, profileUrl: profileUrl.getAttribute('src') }]);
+    setSelectedUsers([...selectedUsers,
+      {
+        userDocumentId: userCardDiv?.getAttribute('data-id'),
+        userName,
+        profileUrl: profileUrl.getAttribute('src'),
+      }]);
   };
 
   const deleteUser = (e: any) => {
@@ -106,7 +110,8 @@ function ChatRoomsNewView() {
     const searchWord = (inputBarRef.current as any).value;
     const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
     setFilteredUserList(allUserList
-      .filter((user: any) => (user.userId.indexOf(searchWord) > -1 || user.userName.indexOf(searchWord) > -1) && selectedUserIds.indexOf(user._id) === -1));
+      .filter((user: any) => (user.userId.indexOf(searchWord) > -1 || user.userName.indexOf(searchWord) > -1)
+      && selectedUserIds.indexOf(user._id) === -1));
   };
 
   useEffect(() => {

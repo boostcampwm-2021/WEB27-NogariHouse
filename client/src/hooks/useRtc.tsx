@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import {
   MutableRefObject, RefObject, useCallback, useRef, useEffect, useState, Dispatch,
 } from 'react';
@@ -44,7 +43,10 @@ export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObje
   return [myStreamRef, myVideoRef, getLocalStream];
 };
 
-export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<React.SetStateAction<Array<T>>>, myStreamRef: MutableRefObject<MediaStream | null>) => {
+export const useSetPeerConnection = <T extends IRTC>(
+  setParticipants: Dispatch<React.SetStateAction<Array<T>>>,
+  myStreamRef: MutableRefObject<MediaStream | null>,
+) => {
   const peerConnectionConfig = {
     iceServers: [
       {
@@ -59,13 +61,15 @@ export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<R
   };
 
   const handleTrackEvent = (data:RTCTrackEvent, payload: { userDocumentId: string, mic: boolean, socketId: string, isAnonymous: boolean }) => {
-    setParticipants((oldParticipants: Array<T>) => oldParticipants!.filter((participant: T) => (participant.userDocumentId !== payload.userDocumentId)).concat({
-      stream: data.streams[0],
-      userDocumentId: payload.userDocumentId,
-      mic: payload.mic,
-      socketId: payload.socketId,
-      isAnonymous: payload.isAnonymous,
-    } as unknown as T));
+    setParticipants((oldParticipants: Array<T>) => oldParticipants!
+      .filter((participant: T) => (participant.userDocumentId !== payload.userDocumentId))
+      .concat({
+        stream: data.streams[0],
+        userDocumentId: payload.userDocumentId,
+        mic: payload.mic,
+        socketId: payload.socketId,
+        isAnonymous: payload.isAnonymous,
+      } as unknown as T));
   };
 
   const setPeerConnection = useCallback((participant: T, socket: Socket) => {
@@ -99,7 +103,15 @@ export const useSetPeerConnection = <T extends IRTC>(setParticipants: Dispatch<R
   return setPeerConnection;
 };
 
-export const useRtc = <T extends IRTC>(): [Array<T>, Dispatch<React.SetStateAction<T[]>>, RefObject<HTMLVideoElement | null>, string, IUser, Socket | undefined, MutableRefObject<MediaStream | null>] => {
+export const useRtc = <T extends IRTC>(): [
+  Array<T>,
+  Dispatch<React.SetStateAction<T[]>>,
+  RefObject<HTMLVideoElement | null>,
+  string,
+  IUser,
+  Socket | undefined,
+  MutableRefObject<MediaStream | null>
+] => {
   const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
   const [participants, setParticipants] = useState<Array<T>>([]);
   const isAnonymous = useRecoilValue(anonymousState);
@@ -166,7 +178,6 @@ export const useRtc = <T extends IRTC>(): [Array<T>, Dispatch<React.SetStateActi
       setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.socketId !== socketId));
     });
 
-    // eslint-disable-next-line consistent-return
     return () => {
       participants.forEach((participant) => {
         if (!peerConnectionsRef.current[participant.userDocumentId]) return;

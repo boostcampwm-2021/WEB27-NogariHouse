@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, max-len */
+/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { useRecoilValue, useRecoilState } from 'recoil';
