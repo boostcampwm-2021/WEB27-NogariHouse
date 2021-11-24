@@ -108,7 +108,7 @@ function Toast() {
   useEffect(() => {
     const interval = setInterval(() => {
       if (toastList.length) {
-        deleteToast(toastList[0].id);
+        deleteToast(toastList[0].id as number);
       }
     }, 1000);
 
@@ -133,7 +133,7 @@ function Toast() {
           return (
             <Notification key={i} style={{ backgroundColor }}>
               {/* eslint-disable-next-line react/jsx-no-bind */}
-              <NotificationButton onClick={deleteToast.bind(null, toastItem.id)}>X</NotificationButton>
+              <NotificationButton onClick={deleteToast.bind(null, toastItem.id as number)}>X</NotificationButton>
               <NotificationContentLayout>
                 <Icon size={36} />
                 <div>

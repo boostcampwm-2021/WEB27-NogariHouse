@@ -1,7 +1,7 @@
 import { atom } from 'recoil';
 
 export interface IToast {
-    id: number,
+    id?: number,
     type: 'success' | 'danger' | 'info' | 'warning',
     title: string,
     description: string,

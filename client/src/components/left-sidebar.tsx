@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {
   MouseEvent, useEffect, useRef, useState,
 } from 'react';
 import styled from 'styled-components';
+import { io, Socket } from 'socket.io-client';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import ActiveFollowingCard from '@common/active-following-card';
-import { io, Socket } from 'socket.io-client';
-import { useRecoilValue } from 'recoil';
+import { IToast } from '@atoms/toast-list';
+import toastListSelector from '@selectors/toast-list';
 import followingListState from '@src/recoil/atoms/following-list';
 import userState from '@src/recoil/atoms/user';
 
@@ -35,6 +38,7 @@ interface IActiveFollowingUser {
 function LeftSideBar() {
   const user = useRecoilValue(userState);
   const followingList = useRecoilValue(followingListState);
+  const setToastList = useSetRecoilState(toastListSelector);
   const [activeFollowingList, setActiveFollowingList] = useState<IActiveFollowingUser[]>([]);
   const userSocketRef = useRef<Socket | null>(null);
 
@@ -68,7 +72,14 @@ function LeftSideBar() {
       deleteLeaveActiveFollowing(leaveUserDocumentId);
     });
     userSocketRef.current.on('user:hands', (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
-      if (handsData.to === user.userDocumentId) alert(`${handsData.from.userName}님이 손을 흔들었습니다.`);
+      if (handsData.to === user.userDocumentId) {
+        const newToast: IToast = {
+          type: 'info',
+          title: '반가운 인사',
+          description: `${handsData.from.userName}님이 손을 흔들었습니다!`,
+        };
+        setToastList(newToast);
+      }
     });
   }, [user]);
 

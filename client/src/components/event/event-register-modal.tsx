@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
+import toastListSelector from '@selectors/toast-list';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import { postEvent } from '@api/index';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
@@ -136,6 +137,7 @@ function EventRegisterModal() {
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const resetNowItemsList = useResetRecoilState(nowItemsListState);
   const setNowCount = useSetRecoilState(nowCountState);
+  const setToastList = useSetRecoilState(toastListSelector);
 
   const changeModalState = () => {
     setIsOpenModal(!isOpenModal);
@@ -151,22 +153,29 @@ function EventRegisterModal() {
     }
   };
 
-  const publishButtonHandler = () => {
-    const eventInfo = {
-      title: inputTitleRef.current?.value,
-      participants: selectedList,
-      date: new Date(`${inputDateRef.current?.value} ${inputTimeRef.current?.value}`),
-      description: textDescRef.current?.value,
-    };
+  const publishButtonHandler = async () => {
+    try {
+      const eventInfo = {
+        title: inputTitleRef.current?.value,
+        participants: selectedList,
+        date: new Date(`${inputDateRef.current?.value} ${inputTimeRef.current?.value}`),
+        description: textDescRef.current?.value,
+      };
 
-    postEvent(eventInfo)
-      .then(() => alert('이벤트 등록이 완료되었습니다.'))
-      .catch((err) => console.error(err));
+      await postEvent(eventInfo);
+      setToastList({
+        type: 'success',
+        title: '등록 성공',
+        description: `${inputTitleRef.current?.value} 이벤트가 등록되었습니다!`,
+      });
 
-    changeModalState();
-    resetNowItemsList();
-    setNowCount(0);
-    setNowFetching(true);
+      changeModalState();
+      resetNowItemsList();
+      setNowCount(0);
+      setNowFetching(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   if (isOpenModal) {
