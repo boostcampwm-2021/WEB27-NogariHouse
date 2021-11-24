@@ -157,6 +157,7 @@ function DefaultHeader() {
   const [unReadMsgCount, setUnReadMsgCount] = useRecoilState(unReadMsgCountState);
   const setNowCount = useSetRecoilState(nowCountState);
   const userSocket = useUserSocket();
+  const chatSocket = useChatSocket();
 
   const leftSideIcons: IconAndLink[] = [
     { Component: HiSearch, link: '/search', key: 'search' },
@@ -174,7 +175,7 @@ function DefaultHeader() {
   }, [chatSocket]);
 
   useEffect(() => {
-    getUnReadMsgCount().then((res) => setUnReadMsgCount(res.unReadMsgCount));
+    getUnReadMsgCount().then((res: any) => setUnReadMsgCount(res.unReadMsgCount));
     chatSocket.emit('chat:viewJoin', user.userDocumentId);
     chatSocket.on('chat:updateCount', () => setUnReadMsgCount((oldCount) => oldCount + 1));
     return () => {
