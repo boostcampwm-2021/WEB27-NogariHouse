@@ -8,8 +8,8 @@ export default {
     };
 
     return jwt.sign(payload, process.env.SECRET as string, {
-      algorithm: 'HS256',
-      expiresIn: '2h',
+      algorithm: process.env.ACCESSTOKEN_ALGORITHM as jwt.Algorithm,
+      expiresIn: process.env.ACCESSTOKEN_EXPIRESIN as string,
     });
   },
   verify: (token : any) => {
@@ -29,8 +29,8 @@ export default {
     }
   },
   refresh: () => jwt.sign({}, process.env.SECRET as string, {
-    algorithm: 'HS256',
-    expiresIn: '14d',
+    algorithm: process.env.REFRESHTOKEN_ALGORITHM as jwt.Algorithm,
+    expiresIn: process.env.REFRESHTOKEN_EXPIRESIN as string,
   }),
 
   refreshVerify: async (token : string) => {

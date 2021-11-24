@@ -269,6 +269,15 @@ class UserService {
       return false;
     }
   }
+
+  async updateUserProfileUrl(userDocumentId: string, profileUrl: string) {
+    try {
+      await Users.updateOne({ _id: userDocumentId }, { profileUrl });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 export default new UserService();
