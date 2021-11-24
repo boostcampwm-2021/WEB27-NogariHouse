@@ -97,6 +97,12 @@ const StyledLink = styled(Link)`
     }
 `;
 
+interface ILinkList {
+  key: string,
+  text: string,
+  link: string,
+}
+
 function SliderMenu() {
   const user = useRecoilValue(userState);
   const [isOpenMenu, setIsOpenMenu] = useRecoilState(isOpenSliderMenuState);
@@ -105,6 +111,21 @@ function SliderMenu() {
     setIsOpenMenu(!isOpenMenu);
     setIsOpenRoom(false);
   };
+
+  const makeLinkListToStyledLink = (list: ILinkList) => (
+    <StyledLink to={list.link} key={list.key}>
+      <LinkMenu>{list.text}</LinkMenu>
+    </StyledLink>
+  );
+
+  const linkList:ILinkList[] = [
+    { text: 'Search', link: '/search', key: 'search' },
+    { text: 'Message', link: '/chat-rooms', key: 'chat-rooms' },
+    { text: 'Invite', link: '/invite', key: 'invite' },
+    { text: 'Activity', link: '/activity', key: 'activity' },
+    { text: 'Event', link: '/event', key: 'event' },
+  ];
+
   return (
     <>
       <BackgroundWrapper onClick={() => setIsOpenMenu(!isOpenMenu)} />
@@ -124,21 +145,7 @@ function SliderMenu() {
               </ProfileInfo>
             </ProfileBox>
           </StyledLink>
-          <StyledLink to="/search">
-            <LinkMenu>Search</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/chat-rooms">
-            <LinkMenu>Message</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/invite">
-            <LinkMenu>Invite</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/activity">
-            <LinkMenu>Activity</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/event">
-            <LinkMenu>Event</LinkMenu>
-          </StyledLink>
+          {linkList.map(makeLinkListToStyledLink)}
         </StyledLinkListLayout>
 
         <button type="button" onClick={() => setIsOpenMenu(!isOpenMenu)}>close</button>
