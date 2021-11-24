@@ -51,6 +51,6 @@ export const isEmptyArray = (array: any[]) => !array.length;
 
 export const cookies = new Cookies();
 
-export const signOut = () => {
+export const removeAccessToken = async () => {
   cookies.remove('accessToken');
 };

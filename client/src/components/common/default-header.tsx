@@ -3,24 +3,24 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { IconType } from 'react-icons';
 import {
-  HiOutlinePaperAirplane, HiSearch, HiOutlineMail, HiOutlineCalendar, HiOutlineBell,
+  HiOutlinePaperAirplane, HiSearch, HiOutlineMail, HiOutlineCalendar, HiOutlineBell, HiOutlineLogout,
 } from 'react-icons/hi';
 import {
   useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
 } from 'recoil';
 
-import { makeIconToLink } from '@utils/index';
+import { makeIconToLink, removeAccessToken } from '@utils/index';
 import userState from '@atoms/user';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import SliderMenu from '@common/menu-modal';
+import { deleteRefreshToken } from '@src/api';
 
 const CustomDefaultHeader = styled.nav`
-  position: relative;
-  width: 95%;
+  width: 100%;
   height: 48px;
-  margin: 24px;
+  margin: 24px 0;
 
   display: flex;
   justify-content: space-between;
@@ -33,29 +33,44 @@ const MenuIconsLayout = styled.nav`
   position: relative;
   width: 100%;
   height: 48px;
+  margin: 0 24px;
+
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ResponsiveMenuIconsLayout = styled.nav`
+  @media (min-width: 1025px) {
+    display: none;
+  }
+  width: 100%;
+  height: 48px;
+  margin: 0 24px;
 
   display: flex;
   justify-content: space-between;
 `;
 
 const OpenMenuButton = styled.button`
-  @media (min-width: 1024px) {
+  @media (min-width: 1025px) {
       display: none;
   }
+  margin-left: 24px;
 `;
 
 const OpenRoomStateButton = styled.button`
-  margin-right: 24px;
   @media (min-width: 768px) {
       display: none;
   }
+
+  margin-right: 24px;
 `;
 
 const IconContainer = styled.div`
   display: flex;
   justify-content: space-between;
 
-  a:not(:last-child) {
+  a {
     margin-right: 30px;
   }
 
@@ -66,8 +81,8 @@ const IconContainer = styled.div`
 
 const LogoTitle = styled(Link)`
   position: absolute;
-  left: 47.5%;
-  transform: translateX(-47.5%);
+  left: 50%;
+  transform: translateX(-50%);
   font-family: "Bangers";
   font-size: min(8vw, 48px);
   text-decoration: none;
@@ -80,7 +95,6 @@ const ImageLayout = styled.img`
     width: 48px;
     min-width: 48px;
     height: 48px;
-    margin-right: 10px;
     border-radius: 70%;
     overflow: hidden;
 `;
@@ -110,21 +124,31 @@ function DefaultHeader() {
     { Component: HiOutlineCalendar, link: '/event', key: 'event' },
     { Component: HiOutlineBell, link: '/activity', key: 'activity' },
   ];
+
+  const signOutHandler = async () => {
+    removeAccessToken();
+    await deleteRefreshToken(user.userDocumentId);
+    window.location.reload();
+  };
+
   return (
     <>
       <CustomDefaultHeader>
         <LogoTitle to="/" onClick={() => { resetNowItemsList(); setNowCount(0); setNowFetching(true); }}> NogariHouse </LogoTitle>
-        <OpenMenuButton onClick={() => { setIsOpenMenu(!isOpenMenu); }}>Menu</OpenMenuButton>
-        <OpenRoomStateButton onClick={() => { setIsOpenRoom(!isOpenRoom); }}>
-          Room
-        </OpenRoomStateButton>
+        <ResponsiveMenuIconsLayout>
+          <OpenMenuButton onClick={() => { setIsOpenMenu(!isOpenMenu); }}>Menu</OpenMenuButton>
+          <OpenRoomStateButton onClick={() => { setIsOpenRoom(!isOpenRoom); }}>
+            Room
+          </OpenRoomStateButton>
+        </ResponsiveMenuIconsLayout>
         <MenuIconsLayout>
           <IconContainer>
+            <Link to={`/profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
             {leftSideIcons.map(makeIconToLink)}
           </IconContainer>
           <IconContainer>
             {rightSideIcons.map(makeIconToLink)}
-            <Link to={`/profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
+            <HiOutlineLogout size="48" onClick={signOutHandler} />
           </IconContainer>
         </MenuIconsLayout>
       </CustomDefaultHeader>
