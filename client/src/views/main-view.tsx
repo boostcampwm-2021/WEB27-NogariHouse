@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-expressions */
 
 import React, {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useState, useRef,
 } from 'react';
 import {
   useRecoilState, useResetRecoilState, useRecoilValue, useSetRecoilState,
@@ -24,6 +24,7 @@ import LoadingSpinner from '@common/loading-spinner';
 import { getFollowingsList, getMyInfo } from '@src/api';
 import isOpenRoomState from '@atoms/is-open-room';
 import { slideXFromTo } from '@src/assets/styles/keyframe';
+import useOutsideClick from '@src/hooks/useOutsideClick';
 
 const MainLayout = styled.div`
   display: flex;
@@ -99,6 +100,7 @@ function MainView() {
   const [loading, setLoading] = useState(true);
   const [cookies, setCookie] = useCookies(['accessToken']);
   const isOpenRoom = useRecoilValue(isOpenRoomState);
+  const RightSideBarLayoutRef = useRef<HTMLDivElement>(null);
 
   const updateUserState = useCallback(async (json) => {
     const {
@@ -114,6 +116,8 @@ function MainView() {
 
     setCookie('accessToken', accessToken);
   }, []);
+
+  useOutsideClick(RightSideBarLayoutRef);
 
   useEffect(() => {
     getMyInfo()
@@ -144,7 +148,7 @@ function MainView() {
           <MainSectionLayout>
             <MainRouter />
           </MainSectionLayout>
-          <RoomLayout state={isOpenRoom}>
+          <RoomLayout state={isOpenRoom} ref={RightSideBarLayoutRef}>
             <RightSideBar />
           </RoomLayout>
         </SectionLayout>
