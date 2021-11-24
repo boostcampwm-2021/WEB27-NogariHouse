@@ -92,11 +92,25 @@ function InRoomModal() {
         <TitleDiv><span>{roomInfo?.title}</span></TitleDiv>
       </InRoomHeader>
       <InRoomUserList>
-        <InRoomUserBox ref={myVideoRef as RefObject<HTMLVideoElement>} key={user.userDocumentId} stream={myStreamRef.current as MediaStream} userDocumentId={user.userDocumentId} isMicOn={isMic} isAnonymous />
+        <InRoomUserBox
+          ref={myVideoRef as RefObject<HTMLVideoElement>}
+          key={user.userDocumentId}
+          stream={myStreamRef.current as MediaStream}
+          userDocumentId={user.userDocumentId}
+          isMicOn={isMic}
+          isAnonymous
+        />
         {participants.map(({
           userDocumentId, stream, mic, isAnonymous,
-        }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isAnonymous={isAnonymous} />)}
-
+        }: any) => (
+          <InRoomOtherUserBox
+            key={userDocumentId}
+            stream={stream}
+            userDocumentId={userDocumentId}
+            isMicOn={mic}
+            isAnonymous={isAnonymous}
+          />
+        ))}
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>

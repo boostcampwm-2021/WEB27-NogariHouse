@@ -37,7 +37,7 @@
     "no-undef": 0,
     "import/no-unresolved": 0,
     "max-len": ["error", { "code": 150 }],
-    "consistent-return": 0,
+    "consistent-return": 0
   },
   "settings": {
     "import/resolver": {

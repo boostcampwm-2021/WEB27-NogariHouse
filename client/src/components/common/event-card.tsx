@@ -1,5 +1,4 @@
-/* eslint-disable object-curly-newline*/
-
+/* eslint-disable object-curly-newline */
 import React from 'react';
 import styled from 'styled-components';
 

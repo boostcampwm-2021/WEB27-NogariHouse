@@ -46,7 +46,10 @@ function SearchView() {
   const resetItemList = useResetRecoilState(nowItemsListState);
   const followingList = useRecoilValue(followingListState);
   const searchInfoRef = useRef({ keyword: 'recent', option: 'all' });
-  const [nowItemsList, nowItemType] = useFetchItems<any>(`/search/${searchInfoRef.current.option}/${searchInfoRef.current.keyword || 'recent'}`, searchInfoRef.current.keyword);
+  const [nowItemsList, nowItemType] = useFetchItems<any>(
+    `/search/${searchInfoRef.current.option}/${searchInfoRef.current.keyword || 'recent'}`,
+    searchInfoRef.current.keyword,
+  );
   const setNowCount = useSetRecoilState(nowCountState);
 
   const setEventModal = useSetEventModal();
