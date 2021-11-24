@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const CustomtHeader = styled.nav`
@@ -15,7 +16,7 @@ export const CustomtHeader = styled.nav`
   }
 `;
 
-export const HeaderTitleNunito = styled.div`
+export const HeaderTitleNunito = styled(Link)`
   position: absolute;
   line-height: 48px;
   left: 47.5%;

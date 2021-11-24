@@ -19,7 +19,7 @@ function InviteHeader() {
   return (
     <CustomtHeader>
       {makeIconToLink(Icon)}
-      <HeaderTitleNunito>INVITE</HeaderTitleNunito>
+      <HeaderTitleNunito to="/invite">INVITE</HeaderTitleNunito>
       <div />
     </CustomtHeader>
   );

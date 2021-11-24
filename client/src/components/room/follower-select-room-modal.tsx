@@ -8,8 +8,8 @@ import followState from '@atoms/following-list';
 import UserCardList from '@components/common/user-card-list';
 import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
 import { BackgroundWrapper } from '@common/modal';
-import { findUsersById } from '@api/index';
-import {hiddenScroll} from '@styles/scrollbar-style';
+import { findUsersByIdList } from '@api/index';
+import { hiddenScroll } from '@styles/scrollbar-style';
 import { slideYFromTo } from '@styles/keyframe';
 import { IUser } from '@interfaces/index';
 
@@ -148,7 +148,7 @@ function FollowerSelectModal() {
   };
 
   useEffect(() => {
-    findUsersById(followingList).then((res: any) => {
+    findUsersByIdList(followingList).then((res: any) => {
       const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
       setAllUserList(res.userList);
       setFilteredUserList(res.userList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));

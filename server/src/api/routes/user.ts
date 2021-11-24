@@ -73,7 +73,7 @@ export default (app: Router) => {
       const { userId } = req.params;
       const { count } = req.query;
       const documentIdOffollowingList = await usersService.getFollowingsList(userId, Number(count));
-      const followingList = await usersService.findUsersById(documentIdOffollowingList!.followings);
+      const followingList = await usersService.findUsersByIdList(documentIdOffollowingList!.followings);
       res.status(200).json({
         result: true,
         items: followingList,
@@ -88,7 +88,7 @@ export default (app: Router) => {
       const { userId } = req.params;
       const { count } = req.query;
       const documentIdOfFollowerList = await usersService.getFollowersList(userId, Number(count));
-      const followerList = await usersService.findUsersById(documentIdOfFollowerList!.followers);
+      const followerList = await usersService.findUsersByIdList(documentIdOfFollowerList!.followers);
       res.status(200).json({
         result: true,
         items: followerList,
@@ -141,7 +141,7 @@ export default (app: Router) => {
   userRouter.post('/info', async (req: Request, res: Response) => {
     const userDocumentIdList = req.body;
     try {
-      const userList = (await usersService.findUsersById(userDocumentIdList.userList))
+      const userList = (await usersService.findUsersByIdList(userDocumentIdList.userList))
         ?.map(usersService.makeItemToUserInterface);
       res.json({ ok: true, userList });
     } catch (e) {

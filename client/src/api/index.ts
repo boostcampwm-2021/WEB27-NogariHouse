@@ -162,7 +162,7 @@ export const getSearchResult = async (searchInfo: {keyword:string, option:string
   }
 };
 
-export const findUsersById = async (findUserList: Array<string>) => {
+export const findUsersByIdList = async (findUserList: Array<string>) => {
   try {
     let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/info`, {
       method: 'post',

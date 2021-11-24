@@ -31,7 +31,7 @@ const IconContainer = styled.div`
     filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
   }
 `;
-function ProfileHeader({ match, history }: RouteComponentProps<{id: string}>) {
+function ProfileHeader({ match, history, location }: RouteComponentProps<{id: string}>) {
   const SettingIcon: IconAndLink = { Component: MdSettings, link: '/settings', key: 'setting' };
   const user = useRecoilValue(userState);
   const setIsOpenModal = useSetRecoilState(isOpenShareModalState);
@@ -44,7 +44,7 @@ function ProfileHeader({ match, history }: RouteComponentProps<{id: string}>) {
     <>
       <CustomtHeader>
         <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
-        <HeaderTitleNunito>
+        <HeaderTitleNunito to={location.pathname}>
           Profile
         </HeaderTitleNunito>
         <IconContainer>

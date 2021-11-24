@@ -19,7 +19,7 @@ function RecentSearchHeader() {
   return (
     <CustomtHeader>
       {makeIconToLink(Icon)}
-      <HeaderTitleNunito>Recently Listened to</HeaderTitleNunito>
+      <HeaderTitleNunito to="/search/recent">Recently Listened to</HeaderTitleNunito>
       <div />
     </CustomtHeader>
   );
