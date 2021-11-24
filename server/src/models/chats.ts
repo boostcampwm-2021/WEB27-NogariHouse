@@ -7,7 +7,7 @@ interface IChattingLog {
   linkTo: string,
 }
 
-interface IUnReadMsg {
+export interface IUnReadMsg {
   userDocumentId: string,
   count: number,
 }
