@@ -153,6 +153,7 @@ function MainView() {
     });
 
     setCookie('accessToken', accessToken);
+    setLoading(false);
   }, []);
 
   useOutsideClick(RightSideBarLayoutRef);
@@ -164,10 +165,8 @@ function MainView() {
           updateUserState(json);
         } else {
           resetUser();
+          setLoading(false);
         }
-      })
-      .then(() => {
-        setLoading(false);
       });
   }, []);
 
