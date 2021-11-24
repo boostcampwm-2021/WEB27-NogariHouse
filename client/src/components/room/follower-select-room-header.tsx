@@ -55,7 +55,7 @@ const CanCelBtnStyle = styled(IoClose)`
 
 const DoneBtnStyle = styled.button`
   right: 5%;
-  
+  background-color: #F1F0E4;
   &:hover {
     cursor: pointer;
   }
