@@ -49,8 +49,13 @@ export function bindTrailingArgs(fn: any, ...boundArgs: any[]) {
 
 export const isEmptyArray = (array: any[]) => !array.length;
 
-export const cookies = new Cookies();
+const cookies = new Cookies();
 
-export const removeAccessToken = async () => {
+const removeAccessToken = async () => {
   cookies.remove('accessToken');
+};
+
+export const signOutHandler = async () => {
+  removeAccessToken();
+  window.location.reload();
 };

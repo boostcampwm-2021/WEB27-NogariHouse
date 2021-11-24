@@ -4,10 +4,12 @@ import { Link } from 'react-router-dom';
 import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { slideXFromTo } from '@src/assets/styles/keyframe';
 import { BackgroundWrapper } from '@common/modal';
+import { HiOutlineLogout } from 'react-icons/hi';
 
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import userState from '@atoms/user';
+import { signOutHandler } from '@utils/index';
 
 const MenuModalBox = styled.div`
   position: fixed;
@@ -31,6 +33,14 @@ const MenuModalBox = styled.div`
 const StyledLinkListLayout = styled.div`
   display: flex;
   flex-direction: column;
+`;
+
+const MenuFooter = styled.footer`
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  width: 100%;
+  border-top: 1px solid #B6B6B6;
 `;
 
 const ProfileBox = styled.div`
@@ -97,6 +107,25 @@ const StyledLink = styled(Link)`
     }
 `;
 
+const SignOutButton = styled.button`
+  display: flex;
+  align-items: center;
+  background: inherit ;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+  cursor:pointer;
+  margin: 10px 10px 10px 0;
+`;
+
+const SignOutText = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+`;
+
 interface ILinkList {
   key: string,
   text: string,
@@ -147,8 +176,12 @@ function SliderMenu() {
           </StyledLink>
           {linkList.map(makeLinkListToStyledLink)}
         </StyledLinkListLayout>
-
-        <button type="button" onClick={() => setIsOpenMenu(!isOpenMenu)}>close</button>
+        <MenuFooter>
+          <SignOutButton onClick={signOutHandler}>
+            <SignOutText>Sign Out</SignOutText>
+            <HiOutlineLogout size="35" />
+          </SignOutButton>
+        </MenuFooter>
       </MenuModalBox>
     </>
   );

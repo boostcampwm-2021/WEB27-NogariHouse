@@ -16,13 +16,12 @@ import {
   useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
 } from 'recoil';
 
-import { makeIconToLink, removeAccessToken } from '@utils/index';
+import { makeIconToLink, signOutHandler } from '@utils/index';
 import userState from '@atoms/user';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import SliderMenu from '@common/menu-modal';
-import { deleteRefreshToken } from '@src/api';
 
 const CustomDefaultHeader = styled.nav`
   width: 100%;
@@ -145,12 +144,6 @@ function DefaultHeader() {
     { Component: HiOutlineCalendar, link: '/event', key: 'event' },
     { Component: HiOutlineBell, link: '/activity', key: 'activity' },
   ];
-
-  const signOutHandler = async () => {
-    removeAccessToken();
-    await deleteRefreshToken(user.userDocumentId);
-    window.location.reload();
-  };
 
   return (
     <>
