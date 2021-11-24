@@ -3,7 +3,14 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { IconType } from 'react-icons';
 import {
-  HiOutlinePaperAirplane, HiSearch, HiOutlineMail, HiOutlineCalendar, HiOutlineBell, HiOutlineLogout,
+  HiOutlinePaperAirplane,
+  HiSearch,
+  HiOutlineMail,
+  HiOutlineCalendar,
+  HiOutlineBell,
+  HiOutlineLogout,
+  HiMenu,
+  HiTable,
 } from 'react-icons/hi';
 import {
   useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
@@ -55,6 +62,13 @@ const OpenMenuButton = styled.button`
   @media (min-width: 1025px) {
       display: none;
   }
+  background: inherit ;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+  cursor:pointer;
   margin-left: 24px;
 `;
 
@@ -63,6 +77,13 @@ const OpenRoomStateButton = styled.button`
       display: none;
   }
 
+  background: inherit ;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+  cursor:pointer;
   margin-right: 24px;
 `;
 
@@ -136,9 +157,11 @@ function DefaultHeader() {
       <CustomDefaultHeader>
         <LogoTitle to="/" onClick={() => { resetNowItemsList(); setNowCount(0); setNowFetching(true); }}> NogariHouse </LogoTitle>
         <ResponsiveMenuIconsLayout>
-          <OpenMenuButton onClick={() => { setIsOpenMenu(!isOpenMenu); }}>Menu</OpenMenuButton>
+          <OpenMenuButton onClick={() => { setIsOpenMenu(!isOpenMenu); }}>
+            <HiMenu size="48" />
+          </OpenMenuButton>
           <OpenRoomStateButton onClick={() => { setIsOpenRoom(!isOpenRoom); }}>
-            Room
+            <HiTable size="48" />
           </OpenRoomStateButton>
         </ResponsiveMenuIconsLayout>
         <MenuIconsLayout>
