@@ -12,9 +12,9 @@ export default (app: Router) => {
     try {
       const { participants } = req.body;
       participants.sort();
-      const chatRoomId = await chatService.makeChatRoom(participants);
+      const { chatDocumentId } = await chatService.makeChatRoom(participants);
 
-      res.status(200).json({ chatRoomId });
+      res.status(200).json({ chatDocumentId });
     } catch (error) {
       res.json({ ok: false });
     }
@@ -39,18 +39,6 @@ export default (app: Router) => {
       const chattingLog = await chatService.getChattingLog(chatDocumentId);
 
       res.status(200).json(chattingLog);
-    } catch (e) {
-      res.json({ ok: false });
-    }
-  });
-
-  chatRouter.post('/chat-log', async (req: Request, res: Response) => {
-    try {
-      const { chattingLog, chatDocumentId, userDocumentId } = req.body;
-
-      await chatService.addChattingLog(chattingLog, chatDocumentId, userDocumentId);
-
-      res.status(200).json({ ok: true });
     } catch (e) {
       res.json({ ok: false });
     }

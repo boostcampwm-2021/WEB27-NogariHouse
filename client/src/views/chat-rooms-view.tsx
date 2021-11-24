@@ -64,6 +64,13 @@ function ChatRoomsViews() {
     });
   };
 
+  const newChatRooms = (payload: any) => {
+    const { chatDocumentId, participantsInfo } = payload;
+    setChatRooms((oldRooms: any) => [{
+      chatDocumentId, participants: participantsInfo, lastMsg: '', recentActive: new Date(), unCheckedMsg: 0,
+    }, ...oldRooms]);
+  };
+
   useEffect(() => {
     getChatRooms(userDocumentId)
       .then((res: any) => {
@@ -76,6 +83,7 @@ function ChatRoomsViews() {
     if (!socket) return;
     socket.emit('chat:viewJoin', userDocumentId);
     socket.on('chat:alertMsg', setNewRooms);
+    socket.on('chat:makeChat', newChatRooms);
   }, [socket]);
 
   if (loading) return (<LoadingSpinner />);

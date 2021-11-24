@@ -4,9 +4,11 @@ import styled from 'styled-components';
 import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
 
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
-import followType from '@atoms/following-list';
-import selectedUserType from '@atoms/chat-selected-users';
+import followState from '@atoms/following-list';
+import selectedUserState from '@atoms/chat-selected-users';
 import roomViewState from '@atoms/room-view-type';
+import userState from '@atoms/user';
+import roomDoucumentIdState from '@atoms/room-document-id';
 import { BackgroundWrapper } from '@common/modal';
 import UserCardList from '@components/common/user-card-list';
 import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
@@ -14,7 +16,8 @@ import { findUsersById } from '@api/index';
 import Scroll from '@styles/scrollbar-style';
 import { slideYFromTo } from '@src/assets/styles/keyframe';
 import DefaultButton from '@src/components/common/default-button';
-
+import useChatSocket from '@utils/chat-socket';
+import { makeDateToHourMinute } from '@utils/index';
 const ModalBox = styled.div`
   position: absolute;
   width: 50%;
@@ -28,7 +31,7 @@ const ModalBox = styled.div`
   box-shadow: rgb(0 0 0 / 55%) 0px 10px 25px;
   z-index: 990;
   opacity: 1;
-  
+
   animation-duration: 0.5s;
   animation-timing-function: ease-out;
   animation-name: ${slideYFromTo(300, 0)};
@@ -121,13 +124,16 @@ const SelectUserComponent = styled.div`
 
 function FollowerSelectModal() {
   const setIsOpenRoomModal = useSetRecoilState(isOpenRoomModalState);
-  const followingList = useRecoilValue(followType);
-  const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserType);
+  const followingList = useRecoilValue(followState);
+  const user = useRecoilValue(userState);
+  const roomDocumentId = useRecoilValue(roomDoucumentIdState);
+  const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserState);
   const setRoomView = useSetRecoilState(roomViewState);
   const [allUserList, setAllUserList] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
   const inputBarRef = useRef(null);
   const selectedUserDivRef = useRef(null);
+  const chatSocket = useChatSocket();
 
   const addSelectedUser = (e: any) => {
     const userCardDiv = e.target.closest('.userCard');
@@ -166,7 +172,18 @@ function FollowerSelectModal() {
 
 
   const submitEventHandler = () => {
-    //지정한 친구들에게 채팅 메세지 보내는 요청 추가 해줄것.
+    const inviteInfo = {
+      participants: selectedUsers,
+      message: `${user.userName}님이 노가리 방으로 초대했습니다!`,
+      userInfo: {
+        userDocumentId: user.userDocumentId,
+        userName: user.userName,
+        profileUrl: user.profileUrl,
+      },
+      roomDocumentId,
+      date: makeDateToHourMinute(new Date()),
+    }
+    chatSocket.emit('chat:inviteRoom', inviteInfo);
     setRoomView('inRoomView');
     setIsOpenRoomModal(false);
   }
