@@ -21,6 +21,9 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
+    @media (min-width: 1025px) {
+      height: 100vh;
+    }
     font-family: 'Nunito';
     font-weight: normal;
     font-style: normal;
