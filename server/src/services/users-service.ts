@@ -293,6 +293,22 @@ class UserService {
       return false;
     }
   }
+
+  async addActivityTypeFollow(userDocumentId: string, targetUserDocumentId: string) {
+    try {
+      const newActivity = {
+        type: 'follow',
+        clickDocumentId: userDocumentId,
+        from: userDocumentId,
+        date: new Date(),
+        isChecked: false,
+      };
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: newActivity } });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 export default new UserService();
