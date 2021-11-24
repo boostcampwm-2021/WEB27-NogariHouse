@@ -38,14 +38,15 @@ export default {
     };
   },
 
-  setEvent: (title:string, participants:object, date:Date, description:string) => {
+  setEvent: async (title:string, participants:object, date:Date, description:string) => {
     const newEvent = new Events({
       title,
       participants,
       date: new Date(date),
       description,
     });
-    return newEvent.save();
+    await newEvent.save();
+    return newEvent._id;
   },
 
   searchEvent: async (keyword: string, count: number) => {

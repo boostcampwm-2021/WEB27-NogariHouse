@@ -31,7 +31,7 @@ export default (app: Router) => {
       const activityAddResult = await usersService.addActivityTypeEvent(userDocumentId, eventDocumentId);
 
       if (!activityAddResult) res.status(400).json({ ok: false });
-      res.status(200).send('success!');
+      else res.status(200).send('success!');
     } catch (error) {
       console.error(error);
     }

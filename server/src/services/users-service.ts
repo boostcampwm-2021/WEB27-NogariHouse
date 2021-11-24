@@ -2,7 +2,8 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users, { IUserTypesModel, IActivity, IUsers } from '@models/users';
+import Users, { IUserTypesModel, IActivity } from '@models/users';
+import Events from '@models/events';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
@@ -322,6 +323,26 @@ class UserService {
       };
       await Promise.all(user!.followers.map(async (userId: string) => {
         await Users.findByIdAndUpdate(userId, { $push: { activity: newActivity } });
+        return true;
+      }));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async addActivityTypeEvent(userDocumentId: string, eventDocumentId: string) {
+    try {
+      const event = await Events.findById(eventDocumentId, ['participants']);
+      const newActivity = {
+        type: 'event',
+        clickDocumentId: eventDocumentId,
+        from: userDocumentId,
+        date: new Date(),
+        isChecked: false,
+      };
+      await Promise.all(event!.participants.map(async (userId: string) => {
+        await Users.findOneAndUpdate({ userId }, { $push: { activity: newActivity } });
         return true;
       }));
       return true;
