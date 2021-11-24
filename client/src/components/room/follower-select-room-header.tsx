@@ -28,7 +28,7 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
   const submitEventHandler = () => {
     const inviteInfo = {
       participants: selectedUsers,
-      message: `${user.userName}님이 노가리 방으로 초대했습니다!`,
+      message: `${user.userName}님이 노가리 방으로 초대했습니다! \n 메세지를 눌러 참여하세요!`,
       userInfo: {
         userDocumentId: user.userDocumentId,
         userName: user.userName,
