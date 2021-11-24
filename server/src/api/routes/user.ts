@@ -1,16 +1,12 @@
 import {
   Router, Request, Response,
 } from 'express';
-import multer from 'multer';
 
 import usersService from '@services/users-service';
 import authJWT from '@middlewares/auth';
+import imageUpload from '@middlewares/image-upload';
 
 const userRouter = Router();
-
-const upload = multer({
-  dest: 'uploads/',
-});
 
 export default (app: Router) => {
   app.use('/user', userRouter);
@@ -153,10 +149,14 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.post('/profile-image', upload.single('profileImage'), async (req: Request, res: Response) => {
+  userRouter.post('/profile-image', imageUpload.single('profileImage'), async (req: Request, res: Response) => {
     const { userDocumentId } = req.body;
-
-    console.log(userDocumentId);
-    console.log(req.file);
+    const { location } = req.file as any;
+    try {
+      const result = await usersService.updateUserProfileUrl(userDocumentId, location);
+      res.json({ ok: result, newProfileUrl: location });
+    } catch (e) {
+      res.json({ ok: false });
+    }
   });
 };

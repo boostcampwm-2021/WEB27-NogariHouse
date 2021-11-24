@@ -9,7 +9,6 @@ export const ChatRoomsLayout = styled.div`
   height: 100%;
 
   overflow: hidden;
-  position: relative;
 
   ${ScrollBarStyle};
 `;
@@ -21,18 +20,20 @@ export const ChatHeaderStyle = styled.div`
   height: 80px;
 
   position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
 
   p {
-    width: 250px;
+    width: auto;
 
     position: absolute;
-    top: 25px;
     left: 50%;
     transform: translateX(-50%);
 
-    font-family: 'Nunito';
     font-weight: Bold;
-    font-size: 32px;
+    font-size: min(4vw,28px);
+    text-align: center;
 
     margin: 0px;
   }
@@ -40,7 +41,7 @@ export const ChatHeaderStyle = styled.div`
 
 export const ChattingLog = styled.div`
   width: 100%;
-  height: 520px;
+  height: calc(97% - 150px);
 
-  ${ScrollBarStyle};
+  overflow-y: scroll;
 `;

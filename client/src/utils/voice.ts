@@ -66,7 +66,7 @@ export default class SoundMeter {
           this.pitchShifterProcessor.connect(this.context.destination);
         }else { 
           this.mic.connect(this.script);
-          this.script.connect(this.pitchShifterProcessor);
+          this.script.connect(this.context.destination);
         }
         if (typeof callback !== 'undefined') {
           callback(null);

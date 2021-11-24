@@ -4,16 +4,14 @@ import styled from 'styled-components';
 import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
 
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
-import followType from '@atoms/following-list';
-import selectedUserType from '@atoms/chat-selected-users';
-import roomViewState from '@atoms/room-view-type';
-import { BackgroundWrapper } from '@common/modal';
+import followState from '@atoms/following-list';
 import UserCardList from '@components/common/user-card-list';
 import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
+import { BackgroundWrapper } from '@common/modal';
 import { findUsersByIdList } from '@api/index';
-import Scroll from '@styles/scrollbar-style';
-import { slideYFromTo } from '@src/assets/styles/keyframe';
-import DefaultButton from '@src/components/common/default-button';
+import { hiddenScroll } from '@styles/scrollbar-style';
+import { slideYFromTo } from '@styles/keyframe';
+import { IUser } from '@interfaces/index';
 
 const ModalBox = styled.div`
   position: absolute;
@@ -28,7 +26,7 @@ const ModalBox = styled.div`
   box-shadow: rgb(0 0 0 / 55%) 0px 10px 25px;
   z-index: 990;
   opacity: 1;
-  
+
   animation-duration: 0.5s;
   animation-timing-function: ease-out;
   animation-name: ${slideYFromTo(300, 0)};
@@ -45,7 +43,7 @@ const Layout = styled.div`
   overflow: hidden;
   position: relative;
 
-  ${Scroll};
+  ${hiddenScroll}
 `;
 
 const SelectDiv = styled.div`
@@ -121,9 +119,8 @@ const SelectUserComponent = styled.div`
 
 function FollowerSelectModal() {
   const setIsOpenRoomModal = useSetRecoilState(isOpenRoomModalState);
-  const followingList = useRecoilValue(followType);
-  const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserType);
-  const setRoomView = useSetRecoilState(roomViewState);
+  const followingList = useRecoilValue(followState);
+  const [selectedUsers, setSelectedUsers] = useState<Array<IUser>>([]);
   const [allUserList, setAllUserList] = useState([]);
   const [filteredUserList, setFilteredUserList] = useState([]);
   const inputBarRef = useRef(null);
@@ -164,19 +161,12 @@ function FollowerSelectModal() {
 
   }, [selectedUsers]);
 
-
-  const submitEventHandler = () => {
-    //지정한 친구들에게 채팅 메세지 보내는 요청 추가 해줄것.
-    setRoomView('inRoomView');
-    setIsOpenRoomModal(false);
-  }
-
   return (
     <>
       <BackgroundWrapper onClick={() => setIsOpenRoomModal(false)} />
       <ModalBox>
+      <FollowerSelectRoomHeader onClick={() => setIsOpenRoomModal(false)} selectedUsers={selectedUsers} />
         <Layout>
-          <FollowerSelectRoomHeader onClick={() => setIsOpenRoomModal(false)} />
           <SelectDiv>
             <p>ADD : </p>
             <SelectInputBar ref={inputBarRef} onChange={searchUser} />
@@ -189,9 +179,6 @@ function FollowerSelectModal() {
             ))}
           </SelectedUserDiv>
           <UserCardList cardType="others" userList={filteredUserList} clickEvent={addSelectedUser} />
-          <DefaultButton buttonType="thirdly" size="small" onClick={submitEventHandler}>
-            🎉 Let&apos;s Go
-          </DefaultButton>
         </Layout>
       </ModalBox>
     </>

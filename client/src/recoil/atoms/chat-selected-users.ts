@@ -1,12 +1,7 @@
 import { atom } from 'recoil';
+import { IUser } from '@interfaces/index';
 
-interface user {
-  userDocumentId: string,
-  userName: string,
-  profileUrl: string,
-}
-
-export default atom<user[]>({
+export default atom<IUser[]>({
   key: 'chatSelectedUsers', // 해당 atom의 고유 key
   default: [],
 });
