@@ -32,7 +32,6 @@ const ImageLayout = styled.img`
 `;
 
 const UserNameSpan = styled.span`
-  font-size: 16px;
   font-weight: bold;
 `;
 
