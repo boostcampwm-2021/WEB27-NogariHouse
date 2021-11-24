@@ -13,10 +13,11 @@ export default (app: Router) => {
 
   activityRouter.get('/', async (req: Request, res: Response) => {
     const { userDocumentId } = req.body;
+    const { count } = req.query;
     try {
       const user = await usersService.findUserByDocumentId(userDocumentId);
       const activityList = user!.activity;
-      const items = await usersService.makeItemToActivityInterface(activityList);
+      const items = await usersService.makeItemToActivityInterface(activityList, Number(count));
       res.json({ ok: true, items });
     } catch (e) {
       console.error(e);

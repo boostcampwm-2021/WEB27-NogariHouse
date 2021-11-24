@@ -195,8 +195,8 @@ class UserService {
     };
   }
 
-  async makeItemToActivityInterface(activityList: Array<IActivity>) {
-    const newActivityList = await Promise.all(activityList.map(async (activity: IActivity) => {
+  async makeItemToActivityInterface(activityList: Array<IActivity>, count: number) {
+    const newActivityList = await Promise.all(activityList.reverse().slice(count, count + 10).map(async (activity: IActivity) => {
       const detailFrom = await this.findUserByDocumentId(activity.from);
       const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
       return { ...activity, from: newFrom };
