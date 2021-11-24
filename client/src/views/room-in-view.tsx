@@ -1,6 +1,4 @@
-import React, {
-  useEffect, useState, RefObject,
-} from 'react';
+import React, { useEffect, useState, RefObject } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
 import { FiPlus, FiMic, FiMicOff } from 'react-icons/fi';
 
@@ -38,9 +36,7 @@ function InRoomModal() {
   useEffect(() => {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
-        if (!res) {
-          setRoomView('notFoundRoomView');
-        }
+        if (!res) setRoomView('notFoundRoomView');
         setRoomInfo(res);
       });
 

@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState, useRef } from 'react';
-import styled from 'styled-components';
 import { useRecoilValue, useRecoilState } from 'recoil';
 
 import NewChatRoomHeader from '@src/components/chat/chat-new-header';
@@ -9,75 +8,9 @@ import UserCardList from '@components/common/user-card-list';
 import { findUsersByIdList } from '@api/index';
 import followType from '@atoms/following-list';
 import selectedUserType from '@atoms/chat-selected-users';
-
-const SelectDiv = styled.div`
-  width: 90%;
-  height: 50px;
-
-  position: relative;
-
-  p {
-    position: absolute;
-    margin: 15px 20px 0px 30px;
-
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  &::-webkit-scrollbar {
-    width: 5px;
-    height: 8px;
-    background: #ffffff;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    background-color: #DCD9CD;
-
-    &:hover {
-      background-color: #CECABB;
-    }
-  }
-`;
-
-const SelectInputBar = styled.input`
-  position: absolute;
-  top: 11px;
-  left: 90px;
-
-  width: 300px;
-  height: 30px;
-
-  border: none;
-  font-size: 18px;
-  font-family: 'Nunito';
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const SelectedUserDiv = styled.div`
-  margin: 0% 15% 0% 15%;
-
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const SelectUserComponent = styled.div`
-  margin: 0px 10px 5px 0px;
-  padding: 0px 10px;
-  background-color: #F1F0E4;
-  border-radius: 30px;
-
-  line-height: 30px;
-  font-family: 'Nunito';
-  color: #819C88;
-
-  cursor: default;
-`;
+import {
+  SelectDiv, SelectInputBar, SelectedUserDiv, SelectUserComponent,
+} from '@common/select';
 
 function ChatRoomsNewView() {
   const followingList = useRecoilValue(followType);

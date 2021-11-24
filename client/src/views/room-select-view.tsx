@@ -27,10 +27,6 @@ const CheckboxLayout = styled.div`
   width: 100%;
 `;
 
-const ModeButton = styled(RoomTypeCheckBox)`
- display: inline;
-`;
-
 function SelectModeRoomModal() {
   const [modeType, setModeType] = useState<string>('known');
   const setViewAnonymous = useSetRecoilState(viewAnonymous);
@@ -53,12 +49,12 @@ function SelectModeRoomModal() {
   return (
     <>
       <ModalLayout>
-        <h2> Please select the room mode. </h2>
+        <h2> Select the visiting mode </h2>
         <CheckboxLayout>
             {/* eslint-disable-next-line react/jsx-no-bind */}
-            <ModeButton checkBoxName="known" onClick={typeHandler.bind(null, 'known')} roomType={modeType} />
+            <RoomTypeCheckBox checkBoxName="known" onClick={typeHandler.bind(null, 'known')} roomType={modeType} />
             {/* eslint-disable-next-line react/jsx-no-bind */}
-            <ModeButton checkBoxName="unknown" onClick={typeHandler.bind(null, 'unknown')} roomType={modeType} />
+            <RoomTypeCheckBox checkBoxName="unknown" onClick={typeHandler.bind(null, 'unknown')} roomType={modeType} />
         </CheckboxLayout>
         <ButtonLayout>
           <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler}>

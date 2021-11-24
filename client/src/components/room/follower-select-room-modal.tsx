@@ -1,37 +1,19 @@
 /* eslint-disable */
 import React, { useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
-import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
+import { useSetRecoilState, useRecoilValue } from 'recoil';
 
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import followState from '@atoms/following-list';
 import UserCardList from '@components/common/user-card-list';
 import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
-import { BackgroundWrapper } from '@common/modal';
+import { BackgroundWrapper, ModalBox } from '@common/modal';
+import {
+  SelectDiv, SelectInputBar, SelectedUserDiv, SelectUserComponent,
+} from '@common/select';
 import { findUsersByIdList } from '@api/index';
 import { hiddenScroll } from '@styles/scrollbar-style';
-import { slideYFromTo } from '@styles/keyframe';
 import { IUser } from '@interfaces/index';
-
-const ModalBox = styled.div`
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  top: 20%;
-  display: flex;
-  flex-direction: column;
-  background-color: #F1F0E4;
-  border-radius: 32px;
-  margin-left: 25%;
-  box-shadow: rgb(0 0 0 / 55%) 0px 10px 25px;
-  z-index: 990;
-  opacity: 1;
-
-  animation-duration: 0.5s;
-  animation-timing-function: ease-out;
-  animation-name: ${slideYFromTo(300, 0)};
-  animation-fill-mode: forward;
-`;
 
 const Layout = styled.div`
   background-color: #F1F0E4;
@@ -46,75 +28,19 @@ const Layout = styled.div`
   ${hiddenScroll}
 `;
 
-const SelectDiv = styled.div`
-  width: 90%;
-  height: 50px;
-
-  position: relative;
-
-  p {
-    position: absolute;
-    margin: 15px 20px 0px 30px;
-
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  &::-webkit-scrollbar {
-    width: 5px;
-    height: 8px;
-    background: #ffffff;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    background-color: #DCD9CD;
-
-    &:hover {
-      background-color: #CECABB;
-    }
-  }
+const CustomModalBox = styled(ModalBox)`
+  width: calc(50% + 112px);
+  padding: 0;
 `;
 
-const SelectInputBar = styled.input`
-  position: absolute;
-  top: 11px;
-  left: 90px;
-
-  width: 300px;
-  height: 30px;
-
-  border: none;
-  font-size: 18px;
-  font-family: 'Nunito';
-
+const CustomSelectInputBar = styled(SelectInputBar)`
   background-color: #F1F0E4;
-
-  &:focus {
-    outline: none;
-  }
+  font-size: min(4vw, 18px);
+  height: min(6vw, 30px);
 `;
 
-const SelectedUserDiv = styled.div`
-  margin: 0% 15% 0% 15%;
-
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const SelectUserComponent = styled.div`
-  margin: 0px 10px 5px 0px;
-  padding: 0px 10px;
-  background-color: #F1F0E4;
-  border-radius: 30px;
-
-  line-height: 30px;
-  font-family: 'Nunito';
-  color: #819C88;
-
-  cursor: default;
+const CustomInputTitle = styled.p`
+  font-size: min(4vw, 20px) !important;
 `;
 
 function FollowerSelectModal() {
@@ -164,12 +90,12 @@ function FollowerSelectModal() {
   return (
     <>
       <BackgroundWrapper onClick={() => setIsOpenRoomModal(false)} />
-      <ModalBox>
+      <CustomModalBox>
       <FollowerSelectRoomHeader onClick={() => setIsOpenRoomModal(false)} selectedUsers={selectedUsers} />
         <Layout>
           <SelectDiv>
-            <p>ADD : </p>
-            <SelectInputBar ref={inputBarRef} onChange={searchUser} />
+            <CustomInputTitle>ADD : </CustomInputTitle>
+            <CustomSelectInputBar ref={inputBarRef} onChange={searchUser} />
           </SelectDiv>
           <SelectedUserDiv ref={selectedUserDivRef}>
             {selectedUsers.map((user: any) => (
@@ -180,7 +106,7 @@ function FollowerSelectModal() {
           </SelectedUserDiv>
           <UserCardList cardType="others" userList={filteredUserList} clickEvent={addSelectedUser} />
         </Layout>
-      </ModalBox>
+      </CustomModalBox>
     </>
   );
 }
