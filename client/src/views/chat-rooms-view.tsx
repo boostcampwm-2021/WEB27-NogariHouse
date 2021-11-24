@@ -80,6 +80,10 @@ function ChatRoomsViews() {
     if (!socket) return;
     socket.on('chat:alertMsg', setNewRooms);
     socket.on('chat:makeChat', newChatRooms);
+    return () => {
+      socket.off('chat:alertMsg');
+      socket.off('chat:makeChat');
+    };
   }, [socket]);
 
   if (loading) return (<LoadingSpinner />);
