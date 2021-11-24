@@ -2,7 +2,7 @@
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users, { IUserTypesModel, IActivity } from '@models/users';
+import Users, { IUserTypesModel, IActivity, IUsers } from '@models/users';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
@@ -286,9 +286,9 @@ class UserService {
 
   async isActivityChecked(userDocumentId: string) {
     try {
-      const user = await Users.findOne({ _id: userDocumentId }, ['activity']);
-      if (!user || !user.activity) return false;
-      return user!.activity.findIndex((activity) => !activity.isChecked) > -1;
+      const { activity } : any = await Users.findOne({ _id: userDocumentId }, ['activity']);
+      if (!activity) return false;
+      return activity.some((item: IActivity) => !item.isChecked);
     } catch (e) {
       return false;
     }
