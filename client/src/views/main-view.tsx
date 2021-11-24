@@ -65,7 +65,7 @@ const ActiveFollowingLayout = styled.div`
 `;
 
 const MainSectionLayout = styled.div`
-  @media (min-width: 1024px) {
+  @media (min-width: 1025px) {
     min-width: 500px;
   }
   position: relative;
@@ -112,7 +112,7 @@ const ActiveFollowingFooter = styled.footer`
   flex-direction: row-reverse;
   align-items: center;
   width: 100%;
-  @media (min-width: 1024px) {
+  @media (min-width: 1025px) {
     display: none;
   }
 `;
