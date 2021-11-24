@@ -309,6 +309,26 @@ class UserService {
       return false;
     }
   }
+
+  async addActivityTypeRoom(userDocumentId: string, roomDocumentId: string) {
+    try {
+      const user = await Users.findById(userDocumentId, ['followers']);
+      const newActivity = {
+        type: 'room',
+        clickDocumentId: roomDocumentId,
+        from: userDocumentId,
+        date: new Date(),
+        isChecked: false,
+      };
+      await Promise.all(user!.followers.map(async (userId: string) => {
+        await Users.findByIdAndUpdate(userId, { $push: { activity: newActivity } });
+        return true;
+      }));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 export default new UserService();
