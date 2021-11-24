@@ -7,7 +7,8 @@ const useOutsideClick = (ref: any) => {
 
   useEffect(() => {
     function handleClickOutside(event:any):void {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
+      if (ref.current && !ref.current.contains(event.target as Node)
+        && !event.target.closest('.open-room-button')) {
         setIsOpenRoom(false);
       }
     }

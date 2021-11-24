@@ -30,6 +30,7 @@ const CustomDefaultHeader = styled.nav`
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
 `;
 
 const MenuIconsLayout = styled.nav`
@@ -153,7 +154,7 @@ function DefaultHeader() {
           <OpenMenuButton onClick={() => { setIsOpenMenu(!isOpenMenu); }}>
             <HiMenu size="48" />
           </OpenMenuButton>
-          <OpenRoomStateButton onClick={() => { setIsOpenRoom(!isOpenRoom); }}>
+          <OpenRoomStateButton className="open-room-button" onClick={() => { setIsOpenRoom(!isOpenRoom); }}>
             <HiTable size="48" />
           </OpenRoomStateButton>
         </ResponsiveMenuIconsLayout>
