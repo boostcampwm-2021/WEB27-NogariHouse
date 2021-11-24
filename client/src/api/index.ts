@@ -67,6 +67,7 @@ export const postRoomInfo = async (roomInfo: Object) => {
 
 export const deleteRoom = (roomDocumentId: string) => fetch(`${process.env.REACT_APP_API_URL}/api/room/${roomDocumentId}`, {
   method: 'DELETE',
+  credentials: 'include',
 });
 
 export const postEvent = async (eventInfo: Object) => {
