@@ -174,6 +174,11 @@ function DefaultHeader() {
 
   useEffect(() => {
     getUnReadMsgCount().then((res) => setUnReadMsgCount(res.unReadMsgCount));
+    chatSocket.emit('chat:viewJoin', user.userDocumentId);
+    chatSocket.on('chat:updateCount', () => setUnReadMsgCount((oldCount) => oldCount + 1));
+    return () => {
+      chatSocket.off('chat:updateCount');
+    };
   }, [chatSocket]);
 
   useEffect(() => {

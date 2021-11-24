@@ -78,7 +78,6 @@ function ChatRoomsViews() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.emit('chat:viewJoin', userDocumentId);
     socket.on('chat:alertMsg', setNewRooms);
     socket.on('chat:makeChat', newChatRooms);
   }, [socket]);
