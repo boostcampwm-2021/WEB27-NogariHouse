@@ -17,7 +17,7 @@ export const SelectDiv = styled.div`
   &::-webkit-scrollbar {
     width: 5px;
     height: 8px;
-    background: #ffffff;
+    background: #fff;
   }
 
   &::-webkit-scrollbar-thumb {

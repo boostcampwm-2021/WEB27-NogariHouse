@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import ScrollBarStyle from '@styles/scrollbar-style';
 
 export const ChatRoomsLayout = styled.div`
-  background-color: #FFFFFF;
+  background-color: #fff;
   border-radius: 30px;
 
   width: 100%;

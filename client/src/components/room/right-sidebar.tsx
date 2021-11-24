@@ -13,7 +13,7 @@ const RoomModalLayout = styled.div`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  background-color: #ffffff;
+  background-color: #fff;
   border-radius: 30px;
   width: 100%;
   height: 100%;

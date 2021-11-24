@@ -17,7 +17,7 @@ interface chatUserCardProps {
 type ProfileProps = { length: number };
 
 const ChatUserCardLayout = styled.div`
-  background-color: #FFFFFF;
+  background-color: #fff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   border-radius: 30px;
   margin-bottom: 10px;
