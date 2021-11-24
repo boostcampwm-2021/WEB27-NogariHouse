@@ -1,11 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { slideXFromTo } from '@src/assets/styles/keyframe';
 import { BackgroundWrapper } from '@common/modal';
 
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
+import isOpenRoomState from '@atoms/is-open-room';
 import userState from '@atoms/user';
 
 const MenuModalBox = styled.div`
@@ -25,6 +26,11 @@ const MenuModalBox = styled.div`
   animation-name: ${slideXFromTo(-300, 0)};
   animation-fill-mode: forward;
    ;
+`;
+
+const StyledLinkListLayout = styled.div`
+  display: flex;
+  flex-direction: column;
 `;
 
 const ProfileBox = styled.div`
@@ -94,11 +100,16 @@ const StyledLink = styled(Link)`
 function SliderMenu() {
   const user = useRecoilValue(userState);
   const [isOpenMenu, setIsOpenMenu] = useRecoilState(isOpenSliderMenuState);
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
+  const clickHandler = () => {
+    setIsOpenMenu(!isOpenMenu);
+    setIsOpenRoom(false);
+  };
   return (
     <>
-      <BackgroundWrapper />
+      <BackgroundWrapper onClick={() => setIsOpenMenu(!isOpenMenu)} />
       <MenuModalBox state={isOpenMenu}>
-        <div>
+        <StyledLinkListLayout onClick={clickHandler}>
           <StyledLink to={`/profile/${user.userId}`}>
             <ProfileBox>
               <ImageLayout src={user.profileUrl} alt="사용자" />
@@ -128,7 +139,7 @@ function SliderMenu() {
           <StyledLink to="/event">
             <LinkMenu>Event</LinkMenu>
           </StyledLink>
-        </div>
+        </StyledLinkListLayout>
 
         <button type="button" onClick={() => setIsOpenMenu(!isOpenMenu)}>close</button>
       </MenuModalBox>
