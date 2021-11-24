@@ -283,6 +283,16 @@ class UserService {
       return false;
     }
   }
+
+  async isActivityChecked(userDocumentId: string) {
+    try {
+      const user = await Users.findOne({ _id: userDocumentId }, ['activity']);
+      if (!user || !user.activity) return false;
+      return user!.activity.findIndex((activity) => !activity.isChecked) > -1;
+    } catch (e) {
+      return false;
+    }
+  }
 }
 
 export default new UserService();

@@ -11,6 +11,17 @@ export default (app: Router) => {
   app.use('/activity', activityRouter);
   activityRouter.use(authJWT);
 
+  activityRouter.get('/isActivityChecked', async (req: Request, res: Response) => {
+    const { userDocumentId } = req.body;
+    try {
+      const isActivityChecked = await usersService.isActivityChecked(userDocumentId);
+      res.json({ ok: true, isActivityChecked });
+    } catch (e) {
+      console.log(e);
+      res.json({ ok: false });
+    }
+  });
+
   activityRouter.get('/', async (req: Request, res: Response) => {
     const { userDocumentId } = req.body;
     const { count } = req.query;

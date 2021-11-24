@@ -325,18 +325,21 @@ export const getRandomRoomDocumentId = async () => {
   }
 };
 
-export const deleteRefreshToken = async (userDocumentId: string) => {
+export const getIsActivityChecked = async () => {
   try {
-    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signout`, {
-      method: 'post',
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/activity/isActivityChecked`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userDocumentId }),
+      credentials: 'include',
     });
-    response = await response.json();
-    return response;
+
+    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+
+    const json = await response.json();
+    return json;
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };

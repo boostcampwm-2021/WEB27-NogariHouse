@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import {
@@ -22,6 +22,8 @@ import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import SliderMenu from '@common/menu-modal';
 import { IconAndLink } from '@interfaces/index';
+import { getIsActivityChecked } from '@api/index';
+import useChatSocket from '@utils/chat-socket';
 
 const CustomDefaultHeader = styled.nav`
   width: 100%;
@@ -120,13 +122,25 @@ const ImageLayout = styled.img`
     overflow: hidden;
 `;
 
+const ActiveDot = styled.div`
+  position: absolute;
+  right: 10%;
+
+  background-color: red;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+`;
+
 function DefaultHeader() {
   const user = useRecoilValue(userState);
   const setNowFetching = useSetRecoilState(nowFetchingState);
   const resetNowItemsList = useResetRecoilState(nowItemsListState);
   const [isOpenMenu, setIsOpenMenu] = useRecoilState(isOpenSliderMenuState);
   const [isOpenRoom, setIsOpenRoom] = useRecoilState(isOpenRoomState);
+  const [isActivityChecked, setActivityChecked] = useState(false);
   const setNowCount = useSetRecoilState(nowCountState);
+  const chatSocket = useChatSocket();
 
   const leftSideIcons: IconAndLink[] = [
     { Component: HiSearch, link: '/search', key: 'search' },
@@ -135,8 +149,22 @@ function DefaultHeader() {
   const rightSideIcons: IconAndLink[] = [
     { Component: HiOutlineMail, link: '/invite', key: 'invite' },
     { Component: HiOutlineCalendar, link: '/event', key: 'event' },
-    { Component: HiOutlineBell, link: '/activity', key: 'activity' },
   ];
+
+  useEffect(() => {
+    getIsActivityChecked().then((res) => {
+      if (res.isActivityChecked) setActivityChecked(true);
+      else setActivityChecked(false);
+    });
+  });
+
+  useEffect(() => {
+    if (!chatSocket) return;
+    chatSocket.on('user:getActivity', () => setActivityChecked(true));
+    return () => {
+      chatSocket.emit('user:headerLeave');
+    };
+  }, [chatSocket]);
 
   return (
     <>
@@ -157,7 +185,12 @@ function DefaultHeader() {
           </IconContainer>
           <IconContainer>
             {rightSideIcons.map(makeIconToLink)}
+            <Link to="/activity" style={{ position: 'relative' }}>
+              {isActivityChecked ? <ActiveDot /> : ''}
+              <HiOutlineBell size={48} color="black" />
+            </Link>
             <HiOutlineLogout size="48" onClick={signOutHandler} />
+            <Link to={`/profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
           </IconContainer>
         </MenuIconsLayout>
       </CustomDefaultHeader>
