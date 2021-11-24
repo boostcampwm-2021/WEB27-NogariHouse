@@ -1,5 +1,5 @@
 /* eslint-disable react/no-array-index-key */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
 import styled from 'styled-components';
 import {
@@ -78,13 +78,15 @@ const NotificationButton = styled.button`
 
 function Toast() {
   const [toastList, setToastList] = useRecoilState(toastListState);
-
+  const [isStop, setStop] = useState(false);
   const deleteToast = (id: number) => {
     const newToastList = toastList.filter((toast) => (toast.id !== id));
     setToastList(newToastList);
   };
 
   useEffect(() => {
+    if (isStop) return;
+
     const interval = setInterval(() => {
       if (toastList.length) {
         deleteToast(toastList[0].id as number);
@@ -94,7 +96,7 @@ function Toast() {
     return () => {
       clearInterval(interval);
     };
-  }, [toastList]);
+  }, [toastList, isStop]);
 
   const TypeWithIcon = {
     success: { component: MdCheckCircle, color: '#5cb85c' },
@@ -110,7 +112,7 @@ function Toast() {
           const Icon : IconType = TypeWithIcon[toastItem.type].component;
           const backgroundColor = TypeWithIcon[toastItem.type].color;
           return (
-            <Notification key={i} style={{ backgroundColor }}>
+            <Notification key={i} style={{ backgroundColor }} onMouseOver={() => setStop(true)} onMouseOut={() => setStop(false)}>
               {/* eslint-disable-next-line react/jsx-no-bind */}
               <NotificationButton onClick={deleteToast.bind(null, toastItem.id as number)}>X</NotificationButton>
               <NotificationContentLayout>
