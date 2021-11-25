@@ -6,6 +6,8 @@ import Users, { IUserTypesModel, IActivity } from '@models/users';
 import Events from '@models/events';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
+import { activeUser } from '@src/sockets/user';
+import { userNamespace } from '@src/sockets';
 
 interface ISignupUserInfo {
   loginType: string,
@@ -198,7 +200,7 @@ class UserService {
 
   async getActivityList(userDocumentId: string, count: number) {
     const user = await Users.findById(userDocumentId, ['activity']);
-    const newActivityList = await Promise.all(user!.activity.reverse().slice(count, count + 10).map(async (activity: IActivity) => {
+    const newActivityList = await Promise.all(user!.activity.slice(count, count + 10).map(async (activity: IActivity) => {
       const detailFrom = await this.findUserByDocumentId(activity.from);
       const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
       return { ...activity, from: newFrom };
@@ -306,7 +308,8 @@ class UserService {
         date: new Date(),
         isChecked: false,
       };
-      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: newActivity } });
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: { $each: [newActivity], $position: 0 } } });
+      this.emitToUserGetActivity(targetUserDocumentId);
       return true;
     } catch (e) {
       return false;
@@ -318,13 +321,14 @@ class UserService {
       const user = await Users.findById(userDocumentId, ['followers']);
       const newActivity = {
         type: 'room',
-        clickDocumentId: roomDocumentId,
+        clickDocumentId: String(roomDocumentId),
         from: userDocumentId,
         date: new Date(),
         isChecked: false,
       };
-      await Promise.all(user!.followers.map(async (userId: string) => {
-        await Users.findByIdAndUpdate(userId, { $push: { activity: newActivity } });
+      await Promise.all(user!.followers.map(async (userDocId: string) => {
+        await Users.findByIdAndUpdate(userDocId, { $push: { activity: { $each: [newActivity], $position: 0 } } });
+        this.emitToUserGetActivity(userDocId);
         return true;
       }));
       return true;
@@ -338,19 +342,26 @@ class UserService {
       const event = await Events.findById(eventDocumentId, ['participants']);
       const newActivity = {
         type: 'event',
-        clickDocumentId: eventDocumentId,
+        clickDocumentId: String(eventDocumentId),
         from: userDocumentId,
         date: new Date(),
         isChecked: false,
       };
       await Promise.all(event!.participants.map(async (userId: string) => {
-        await Users.findOneAndUpdate({ userId }, { $push: { activity: newActivity } });
+        const user = await Users.findOneAndUpdate({ userId }, { $push: { activity: { $each: [newActivity], $position: 0 } } });
+        const userDocId = user!._id;
+        this.emitToUserGetActivity(String(userDocId));
         return true;
       }));
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  emitToUserGetActivity(userDocumentId: string) {
+    const socketUser = activeUser.get(userDocumentId);
+    if (socketUser) userNamespace.to(socketUser.socketId).emit('user:getActivity');
   }
 }
 

@@ -188,7 +188,7 @@ function DefaultHeader() {
     if (!userSocket) return;
     userSocket.on('user:getActivity', () => setActivityChecked(true));
     return () => {
-      userSocket.emit('user:headerLeave');
+      userSocket.off('user:getActivity');
     };
   }, [userSocket]);
 
