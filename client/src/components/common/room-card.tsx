@@ -39,7 +39,7 @@ const RoomCardSecondProfile = styled.div.attrs((props: IProfileProps) => {
   width: 55px;
   height: 55px;
   background-size: 80px;
-  border-radius: 25px;
+  border-radius: 20px;
 
   z-index: 1;
 `;
