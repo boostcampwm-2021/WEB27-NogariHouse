@@ -31,7 +31,6 @@ export interface IUsers {
     password: string | null,
     loginType: 'Oauth' | 'normal',
     description: string,
-    interesting: Array<string>,
     chatRooms: Array<string>,
     myEvents: Array<string>,
     followings: Array<string>,
@@ -73,10 +72,6 @@ const usersSchema = new Schema({
   description: {
     type: String,
     default: '',
-  },
-  interesting: {
-    type: [String],
-    default: [],
   },
   chatRooms: {
     type: [String],

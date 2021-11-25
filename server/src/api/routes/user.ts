@@ -38,6 +38,13 @@ export default (app: Router) => {
       const userDetailInfo = userInfo
         ? usersService.makeUserDetailInterface(userInfo) : res.json({ ok: false });
       res.json({ ok: true, userDetailInfo });
+    } else if (type === 'userIdCheck') {
+      const result = await usersService.findUserByUserId(id);
+      if (result) {
+        res.json({ ok: true });
+      } else {
+        res.json({ ok: false });
+      }
     } else {
       res.json({ ok: false });
     }
@@ -159,6 +166,22 @@ export default (app: Router) => {
       res.json({ ok: result, newProfileUrl: location });
     } catch (e) {
       res.json({ ok: false });
+    }
+  });
+
+  userRouter.post('/invite', authJWT, async (req: Request, res: Response) => {
+    const { userDocumentId, email } = req.body;
+    try {
+      const isUnique: boolean = await usersService.isUniqueEmail(email);
+
+      if (isUnique) {
+        const result = await usersService.sendInviteMail(userDocumentId, email);
+        res.json({ ok: result, isUnique });
+      } else {
+        res.json({ ok: false, isUnique });
+      }
+    } catch (e) {
+      res.json({ ok: false, isUnique: false });
     }
   });
 };

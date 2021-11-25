@@ -5,7 +5,7 @@ import { useRecoilState } from 'recoil';
 import searchTypeState from '@atoms/search-type';
 
 const Box = styled.button`
-  width : 20%;
+  width : 25%;
   height : 100%;
   background-color:${(props : {isSelected : boolean}) => (props.isSelected ? '#FFF' : '#E9E5E5')};
   border-radius: 30px;
@@ -22,7 +22,7 @@ const BoxText = styled.div`
 `;
 
 interface SearchTypeCheckBoxProps{
-    searchBoxName : 'All' | 'People' | 'Clubs' | 'Rooms' | 'Events'
+    searchBoxName : 'All' | 'People' | 'Rooms' | 'Events'
 }
 
 function SearchTypeCheckBox({ searchBoxName } : SearchTypeCheckBoxProps) {

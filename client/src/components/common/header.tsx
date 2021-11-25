@@ -28,7 +28,7 @@ export const HeaderTitleNunito = styled(Link)`
   left: 50%;
   transform: translateX(-50%);
   font-weight: bold;
-  font-size: min(4.4vw, 32px);
+  font-size: min(8vw, 48px);
   text-decoration: none;
   text-align: center;
   color: black;

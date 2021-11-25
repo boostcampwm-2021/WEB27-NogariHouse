@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
@@ -36,7 +36,7 @@ function SignInView() {
     }) => {
     if (json.result) {
       setCookie('accessToken', json.accessToken);
-      history.replace('/');
+      history.go(0);
     } else {
       setToastList({
         type: 'warning',
@@ -57,6 +57,21 @@ function SignInView() {
       .then(checkSigninResponse)
       .catch((err) => console.error(err));
   };
+
+  const keyUpEnter = (e: any) => {
+    if (inputEmailRef.current?.value
+      && inputPasswordRef.current?.value
+      && e.key === 'Enter') {
+      signIn();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('keyup', keyUpEnter);
+    return () => {
+      document.removeEventListener('keyup', keyUpEnter);
+    };
+  }, []);
 
   return (
     <>

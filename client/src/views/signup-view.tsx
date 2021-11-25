@@ -89,11 +89,18 @@ function SignUpView() {
     }
   };
 
+  const keyUpEnter = (e: any) => {
+    if (!isDisabled && e.key === 'Enter') {
+      if (isEmailInputView) onClickEmailNextButton();
+      else onClickVerificationNextButton();
+    }
+  };
+
   return (
     <>
       {loading && <CustomBackgroundWrapper><LoadingSpinner /></CustomBackgroundWrapper>}
       <SignHeader />
-      <SignBody>
+      <SignBody onKeyUp={(e) => keyUpEnter(e)}>
         {isEmailInputView
           ? <SignTitle title="sign up with user email" />
           : <SignTitle title="enter the verification code" />}

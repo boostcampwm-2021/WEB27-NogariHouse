@@ -18,7 +18,7 @@ interface IActiveFollowingUser {
 
 const socketUser = new Map();
 
-const activeUser = new Map();
+export const activeUser = new Map();
 
 export default function userHandler(socket : Socket, namespace : Namespace) {
   const handleUserJoin = ({
@@ -50,10 +50,14 @@ export default function userHandler(socket : Socket, namespace : Namespace) {
   };
 
   const handleUserHands = (targetDocumentId: string) => {
-    const userDocumentId = socketUser.get(socket.id);
-    const userInfo = (activeUser.get(userDocumentId)).info;
-    const targetSocketId = (activeUser.get(targetDocumentId)).socketId;
-    namespace.to(targetSocketId).emit('user:hands', { from: { ...userInfo }, to: targetDocumentId });
+    try {
+      const userDocumentId = socketUser.get(socket.id);
+      const userInfo = (activeUser.get(userDocumentId)).info;
+      const targetSocketId = (activeUser.get(targetDocumentId)).socketId;
+      namespace.to(targetSocketId).emit('user:hands', { from: { ...userInfo }, to: targetDocumentId });
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   socket.on('user:join', handleUserJoin);

@@ -3,6 +3,7 @@ import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 
+import toastListSelector from '@selectors/toast-list';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState from '@atoms/user';
 import roomViewState from '@atoms/room-view-type';
@@ -49,6 +50,7 @@ const TitleInputbarLabel = styled.label`
 // 룸 생성 모달
 function RoomModal() {
   const user = useRecoilValue(userTypeState);
+  const setToastList = useSetRecoilState(toastListSelector);
   const setRoomView = useSetRecoilState(roomViewState);
   const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
   const setIsOpenModal = useSetRecoilState(isOpenRoomModalState);
@@ -70,9 +72,23 @@ function RoomModal() {
         setRoomDocumentId(roomDocumentId);
         if (roomType === 'closed') setIsOpenModal(true);
         else if (isAnonymous) setRoomView('selectModeView');
-        else setRoomView('inRoomView');
+        else {
+          setRoomView('inRoomView');
+          setToastList({
+            type: 'success',
+            title: '방 생성',
+            description: '성공적으로 방이 생성됐습니다!',
+          });
+        }
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        setToastList({
+          type: 'danger',
+          title: '방 생성',
+          description: '방 생성을 실패했습니다',
+        });
+        console.error(err);
+      });
   };
 
   const inputHandler = () => {
