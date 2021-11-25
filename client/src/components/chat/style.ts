@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import ScrollBarStyle from '@styles/scrollbar-style';
+import { whiteScroll } from '@styles/scrollbar-style';
 
 export const ChatRoomsLayout = styled.div`
   background-color: #FFFFFF;
@@ -9,8 +9,6 @@ export const ChatRoomsLayout = styled.div`
   height: 100%;
 
   overflow: hidden;
-
-  ${ScrollBarStyle};
 `;
 
 export const ChatHeaderStyle = styled.div`
@@ -43,5 +41,15 @@ export const ChattingLog = styled.div`
   width: 100%;
   height: calc(97% - 150px);
 
-  overflow-y: scroll;
+  ${whiteScroll};
+`;
+
+export const ChatUserCardWrap = styled.div`
+  height: calc(100% - 80px);
+  ${whiteScroll};
+`;
+
+export const NewChatRoomBody = styled.div`
+  height: calc(100% - 140px);
+  ${whiteScroll};
 `;

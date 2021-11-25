@@ -1,13 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import styled from 'styled-components';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
 import useChatSocket from '@utils/chat-socket';
 import { postChatRoom } from '@api/index';
-import selectedUserType from '@atoms/chat-selected-users';
-import userType from '@atoms/user';
+import userState from '@atoms/user';
 
 const ChatNewHeaderWrap = styled.div`
   display: flex;
@@ -51,9 +48,8 @@ const BtnStyle = styled.button`
   }
 `;
 
-const DoneBtn = () => {
-  const [selectedUserList, setSelectedUserList] = useRecoilState(selectedUserType);
-  const user = useRecoilValue(userType);
+const DoneBtn = ({ selectedUserList }: any) => {
+  const user = useRecoilValue(userState);
   const history = useHistory();
   const chatSocket = useChatSocket();
 
@@ -62,12 +58,11 @@ const DoneBtn = () => {
     postChatRoom([...selectedUserList.map((selectedUser: any) => selectedUser.userDocumentId), user.userDocumentId])
       .then((res: any) => {
         history.push({
-          pathname: `/chat-rooms/${res.chatRoomId}`,
+          pathname: `/chat-rooms/${res.chatDocumentId}`,
           state: { participantsInfo: selectedUserList },
         });
-        setSelectedUserList([]);
         chatSocket.emit('chat:makeChat', {
-          chatDocumentId: res.chatRoomId,
+          chatDocumentId: res.chatDocumentId,
           participantsInfo: [...selectedUserList, { userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl }],
         });
       });
@@ -79,24 +74,22 @@ const DoneBtn = () => {
 };
 
 const CancelBtn = () => {
-  const [selectedUserList, setSelectedUserList] = useRecoilState(selectedUserType);
   const history = useHistory();
 
   const cancelEvent = () => {
-    setSelectedUserList([]);
     history.push({ pathname: '/chat-rooms' });
   };
 
   return (<BtnStyle onClick={cancelEvent}>Cancel</BtnStyle>);
 };
 
-export default function NewChatRoomHeader() {
+export default function NewChatRoomHeader({ selectedUserList }: any) {
   return (
     <ChatNewHeaderWrap>
       <ChatNewHeader>
         <CancelBtn />
         <p>NEW MESSAGE</p>
-        <DoneBtn />
+        <DoneBtn selectedUserList={selectedUserList} />
       </ChatNewHeader>
     </ChatNewHeaderWrap>
 
