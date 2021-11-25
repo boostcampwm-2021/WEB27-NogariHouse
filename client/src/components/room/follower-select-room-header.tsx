@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { IoClose } from 'react-icons/io5';
 
 import userState from '@atoms/user';
 import roomViewState from '@atoms/room-view-type';
@@ -9,57 +8,10 @@ import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import roomDoucumentIdState from '@atoms/room-document-id';
 import { makeDateToHourMinute } from '@utils/index';
 import useChatSocket from '@utils/chat-socket';
+import { NewHeaderWrap, NewHeader, BtnStyle } from '@components/chat/style';
 
-const HeaderStyle = styled.div`
-
-  width: 100%;
-  height: 80px;
-
-  position: relative;
-
-  p {
-    width: 250px;
-
-    position: absolute;
-    top: 25px;
-    left: 50%;
-    transform: translateX(-50%);
-
-    font-family: 'Nunito';
-    font-weight: Bold;
-    font-size: 32px;
-
-    margin: 0px;
-  }
-`;
-
-const BtnStyle = css`
-  position: absolute;
-  transform: translateY(23px);
-
-  font-size: 20px;
-
-  border: none;
-`;
-
-const CanCelBtnStyle = styled(IoClose)`
-  left: 5%;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  ${BtnStyle};
-`;
-
-const DoneBtnStyle = styled.button`
-  right: 5%;
-  background-color: #F1F0E4;
-  &:hover {
-    cursor: pointer;
-  }
-
-  ${BtnStyle};
+const CustomNewHeaderWrap = styled(NewHeaderWrap)`
+  background-color: transparent;
 `;
 
 export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any) {
@@ -76,7 +28,7 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
   const submitEventHandler = () => {
     const inviteInfo = {
       participants: selectedUsers,
-      message: `${user.userName}님이 노가리 방으로 초대했습니다!`,
+      message: `${user.userName}님이 노가리 방으로 초대했습니다! \n 메세지를 눌러 참여하세요!`,
       userInfo: {
         userDocumentId: user.userDocumentId,
         userName: user.userName,
@@ -91,10 +43,12 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
   };
 
   return (
-    <HeaderStyle>
-      <CanCelBtnStyle size={40} onClick={cancelEvent} />
-      <p>START A ROOM</p>
-      <DoneBtnStyle onClick={submitEventHandler}>Done</DoneBtnStyle>
-    </HeaderStyle>
+    <CustomNewHeaderWrap>
+      <NewHeader>
+        <BtnStyle onClick={cancelEvent}>Cancel</BtnStyle>
+        <p>START A ROOM</p>
+        <BtnStyle onClick={submitEventHandler}>Done</BtnStyle>
+      </NewHeader>
+    </CustomNewHeaderWrap>
   );
 }

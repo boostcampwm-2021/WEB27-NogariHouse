@@ -8,7 +8,7 @@ import DefaultButton from '@common/default-button';
 import useIsFollowingRef from '@hooks/useIsFollowingRef';
 import LoadingSpinner from './loading-spinner';
 
-interface UserCardProps {
+interface IUserCardProps {
   cardType: 'follow' | 'me' | 'others';
   userData: {
     _id: string,
@@ -20,7 +20,7 @@ interface UserCardProps {
   },
 }
 
-interface sizeProps {
+interface ISizeProps {
   sizeType : 'follow' |'me' |'others'
 }
 
@@ -37,7 +37,7 @@ const UserCardLayout = styled.div`
   border-radius: 30px;
   margin-left: 0.8%;
   width: 99%;
-  height: ${(props: sizeProps) => sizes[props.sizeType].cardLayoutSize}px;
+  height: ${(props: ISizeProps) => sizes[props.sizeType].cardLayoutSize}px;
   color: black;
   text-decoration: none;
 
@@ -68,23 +68,23 @@ const UserDescLayout = styled.div`
 
 const UserName = styled.div`
   font-weight: bold;
-  font-size: ${(props: sizeProps) => sizes[props.sizeType].userNameSize}px;
+  font-size: ${(props: ISizeProps) => sizes[props.sizeType].userNameSize}px;
   margin-bottom:3px;
   user-select: none;
 `;
 
 const UserId = styled.div`
-  font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
+  font-size: ${(props: ISizeProps) => sizes[props.sizeType].descriptionSize}px;
   margin-bottom:3px;
   user-select: none;
 `;
 
 const UserDescription = styled.div`
-  font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
+  font-size: ${(props: ISizeProps) => sizes[props.sizeType].descriptionSize}px;
   user-select: none;
 `;
 
-export default function UserCard({ cardType, userData }: UserCardProps) {
+export default function UserCard({ cardType, userData }: IUserCardProps) {
   const [loading, setLoading] = useState(false);
   const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, userData.isFollow);
   const history = useHistory();

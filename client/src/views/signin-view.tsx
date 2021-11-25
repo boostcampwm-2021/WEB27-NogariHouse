@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 
+import toastListSelector from '@selectors/toast-list';
 import SignHeader from '@components/sign/sign-header';
 import SignTitle from '@components/sign/sign-title';
 import SignBody from '@components/sign/sign-body';
@@ -14,6 +16,7 @@ function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const [isDisabled, setIsDisabled] = useState(true);
+  const setToastList = useSetRecoilState(toastListSelector);
   const [cookies, setCookie] = useCookies(['accessToken']);
   const history = useHistory();
 
@@ -35,7 +38,11 @@ function SignInView() {
       setCookie('accessToken', json.accessToken);
       history.replace('/');
     } else {
-      alert('로그인 정보를 확인하세요.');
+      setToastList({
+        type: 'warning',
+        title: '로그인 에러',
+        description: '로그인 정보를 확인하세요',
+      });
     }
   };
 

@@ -1,15 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IconType } from 'react-icons';
-import { Cookies } from 'react-cookie';
 
-interface IconAndLink {
-    Component:IconType,
-    key: string | number,
-    link: string,
-    size?: number,
-    color?: string,
-  }
+import { IconAndLink } from '@interfaces/index';
+import { Cookies } from 'react-cookie';
 
 interface Params {
   [key: string]: any

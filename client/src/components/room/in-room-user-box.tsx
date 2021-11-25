@@ -1,11 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, {
-  Ref, RefObject, useEffect, useRef, useState,
-} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   FiMic, FiMicOff,
 } from 'react-icons/fi';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 
 import { getUserInfo } from '@api/index';
@@ -41,7 +38,7 @@ export function InRoomOtherUserBox({
     if (!ref.current || !isMicOn) return;
     const soundMeter = new SoundMeter(audioCtxRef.current);
     let meterRefresh: any = null;
-    soundMeter.connectToSource(isAnonymous as boolean, stream as MediaStream, (e: any) => {
+    soundMeter.connectToSource(isAnonymous as boolean, stream as MediaStream, () => {
       meterRefresh = setInterval(() => {
         const num = Number(soundMeter.instant.toFixed(2));
         if (num > 0.02 && ref) {

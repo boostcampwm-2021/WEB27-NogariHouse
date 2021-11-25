@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { IconType } from 'react-icons';
 import {
   HiOutlinePaperAirplane,
   HiSearch,
@@ -22,6 +21,7 @@ import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import SliderMenu from '@common/menu-modal';
+import { IconAndLink } from '@interfaces/index';
 
 const CustomDefaultHeader = styled.nav`
   width: 100%;
@@ -119,14 +119,6 @@ const ImageLayout = styled.img`
     border-radius: 70%;
     overflow: hidden;
 `;
-
-interface IconAndLink {
-  Component:IconType,
-  key: string | number,
-  link: string,
-  size?: number,
-  color?: string,
-}
 
 function DefaultHeader() {
   const user = useRecoilValue(userState);
