@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
+import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import { useCookies } from 'react-cookie';
 
 import Router from '@routes/index';
@@ -12,10 +11,11 @@ import LoadingSpinner from '@common/loading-spinner';
 import { getFollowingsList, getMyInfo } from '@src/api';
 
 function App() {
-  const [user, setUser] = useRecoilState(userState);
+  const setUser = useSetRecoilState(userState);
   const resetUser = useResetRecoilState(userState);
   const setFollowingList = useSetRecoilState(followingListState);
   const [loading, setLoading] = useState(true);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [cookies, setCookie] = useCookies(['accessToken']);
 
   const updateUserState = useCallback(async (json) => {
