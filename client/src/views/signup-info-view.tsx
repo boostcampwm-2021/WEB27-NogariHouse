@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useRef, useState, useEffect,
-} from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useSetRecoilState } from 'recoil';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -64,27 +62,19 @@ function SignupInfoView() {
   };
 
   const keyUpEnter = (e: any) => {
-    console.log(e.key);
-    if (e.key === 'Enter') {
+    if (!isDisabled && e.key === 'Enter') {
       onClickNextButton();
     }
   };
 
-  useEffect(() => {
-    document.addEventListener('keyup', keyUpEnter);
-    return () => {
-      document.removeEventListener('keyup', keyUpEnter);
-    };
-  }, []);
-
   return (
     <>
       <SignHeader />
-      <SignBody>
+      <SignBody onKeyUp={(e) => keyUpEnter(e)}>
         <CustomInputBox>
           <SignTitle title="what’s your password?" />
           <CustomInfoInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
-          <CustomInfoInputBar key="password" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
+          <CustomInfoInputBar key="passwordCheck" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
           <SignTitle title="what’s your full name?" />
           <CustomInfoInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
           <SignTitle title="what’s your id?" />
