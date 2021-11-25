@@ -198,7 +198,7 @@ class UserService {
 
   async getActivityList(userDocumentId: string, count: number) {
     const user = await Users.findById(userDocumentId, ['activity']);
-    const newActivityList = await Promise.all(user!.activity.reverse().slice(count, count + 10).map(async (activity: IActivity) => {
+    const newActivityList = await Promise.all(user!.activity.slice(count, count + 10).map(async (activity: IActivity) => {
       const detailFrom = await this.findUserByDocumentId(activity.from);
       const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
       return { ...activity, from: newFrom };
@@ -306,7 +306,7 @@ class UserService {
         date: new Date(),
         isChecked: false,
       };
-      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: newActivity } });
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: { $each: [newActivity], $position: 0 } } });
       return true;
     } catch (e) {
       return false;
@@ -324,7 +324,7 @@ class UserService {
         isChecked: false,
       };
       await Promise.all(user!.followers.map(async (userId: string) => {
-        await Users.findByIdAndUpdate(userId, { $push: { activity: newActivity } });
+        await Users.findByIdAndUpdate(userId, { $push: { activity: { $each: [newActivity], $position: 0 } } });
         return true;
       }));
       return true;
@@ -344,7 +344,7 @@ class UserService {
         isChecked: false,
       };
       await Promise.all(event!.participants.map(async (userId: string) => {
-        await Users.findOneAndUpdate({ userId }, { $push: { activity: newActivity } });
+        await Users.findOneAndUpdate({ userId }, { $push: { activity: { $each: [newActivity], $position: 0 } } });
         return true;
       }));
       return true;
