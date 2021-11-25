@@ -45,6 +45,9 @@ function InviteView({ history }: RouteComponentProps) {
     const { isUnique } = await fetch(`${process.env.REACT_APP_API_URL}/api/user/invite`, {
       method: 'POST',
       credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify({ email: inputEmailValue }),
     }).then((res) => res.json()) as { isUnique: boolean };
     if (isUnique) {
