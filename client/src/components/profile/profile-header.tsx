@@ -16,7 +16,7 @@ const IconContainer = styled.div`
   justify-content: space-between;
 
   svg:not(:last-child) {
-    margin-right: 30px;
+    margin-right: min(2vw,30px);
   }
 
   svg:hover {
