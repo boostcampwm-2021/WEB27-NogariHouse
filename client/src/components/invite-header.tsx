@@ -2,7 +2,7 @@ import React from 'react';
 import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
-import { CustomtHeader, HeaderTitleNunito } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 
 interface IconAndLink {
@@ -18,7 +18,9 @@ function InviteHeader() {
 
   return (
     <CustomtHeader>
-      {makeIconToLink(Icon)}
+      <CustomMenuIconsLayout>
+        {makeIconToLink(Icon)}
+      </CustomMenuIconsLayout>
       <HeaderTitleNunito to="/invite">INVITE</HeaderTitleNunito>
       <div />
     </CustomtHeader>

@@ -1,24 +1,30 @@
 import React from 'react';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import styled from 'styled-components';
+import { HiHome } from 'react-icons/hi';
+import { RouteComponentProps } from 'react-router-dom';
 
-import { CustomtHeader, HeaderTitleNunito } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
+import { makeIconToLink } from '@utils/index';
+import { IconType } from 'react-icons';
 
-const LogoTitle = styled(Link)`
-  font-family: "Bangers";
-  font-size: 32px;
-  text-decoration: none;
-  color: black;
-  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-`;
+interface IconAndLink {
+  Component:IconType,
+  key: string | number,
+  link: string,
+  size?: number,
+  color?: string,
+}
 
 function FollowingHeader({ history, location }: RouteComponentProps) {
+  const Icon: IconAndLink = { Component: HiHome, link: '/', key: 'main' };
+
   return (
     <CustomtHeader>
-      <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
       <HeaderTitleNunito to={location.pathname}>FOLLOWING</HeaderTitleNunito>
-      <LogoTitle to="/">NOGARIHOUSE</LogoTitle>
+      <CustomMenuIconsLayout>
+        <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
+        {makeIconToLink(Icon)}
+      </CustomMenuIconsLayout>
     </CustomtHeader>
   );
 }

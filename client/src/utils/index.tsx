@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { IconType } from 'react-icons';
+import { Cookies } from 'react-cookie';
 
 interface IconAndLink {
     Component:IconType,
@@ -47,3 +48,14 @@ export function bindTrailingArgs(fn: any, ...boundArgs: any[]) {
 }
 
 export const isEmptyArray = (array: any[]) => !array.length;
+
+const cookies = new Cookies();
+
+const removeAccessToken = async () => {
+  cookies.remove('accessToken');
+};
+
+export const signOutHandler = async () => {
+  removeAccessToken();
+  window.location.reload();
+};
