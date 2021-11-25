@@ -15,7 +15,10 @@ const NotFoundViewLayout = styled.div`
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  height: 70%;
+  height: 100%;
+
+  border-radius: 30px;
+  background-color: #fff;
 `;
 
 function NotFoundChatView() {
