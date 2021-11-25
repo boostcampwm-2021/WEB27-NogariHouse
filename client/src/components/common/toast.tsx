@@ -93,7 +93,7 @@ function Toast() {
       if (toastList.length) {
         deleteToast(toastList[0].id as number);
       }
-    }, 1000);
+    }, 1500);
 
     return () => {
       clearInterval(interval);
