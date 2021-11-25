@@ -123,7 +123,7 @@ const makeParticipantsInfoToUserNames = (acc: IUserName[], participant: Particip
   return acc;
 };
 
-const userNameList = (userNames: IUserName[]) => userNames.map((user) => <span key={user.key}>{user.name}</span>);
+const userNameList = (userNames: IUserName[]) => userNames.map((user, idx) => <span key={idx}>{user.name}</span>);
 
 const ProfileStyleArray = [RoomCardFirstProfile, RoomCardSecondProfile];
 
@@ -138,6 +138,7 @@ export default function RoomCard({
 } : RoomCardProps) {
 
   const userNames = participantsInfo.reduce(makeParticipantsInfoToUserNames, []);
+  console.log(participantsInfo);
 
   if (isEmptyArray(participantsInfo)) {
     deleteRoom(_id);
