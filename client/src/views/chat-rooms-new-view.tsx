@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState, useRef } from 'react';
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 
 import NewChatRoomHeader from '@src/components/chat/chat-new-header';
 import { ChatRoomsLayout, NewChatRoomBody } from '@components/chat/style';

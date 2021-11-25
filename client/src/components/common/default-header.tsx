@@ -219,7 +219,6 @@ function DefaultHeader() {
               <HiOutlineBell size={48} color="black" />
             </Link>
             <HiOutlineLogout size="48" onClick={signOutHandler} />
-            <Link to={`/profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
           </IconContainer>
         </MenuIconsLayout>
       </CustomDefaultHeader>
