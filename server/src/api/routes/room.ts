@@ -1,28 +1,28 @@
 import {
   Router, Request, Response,
 } from 'express';
+
 import RoomService from '@services/rooms-service';
+import authJWT from '@middlewares/auth';
+import usersService from '@services/users-service';
 
 const roomRouter = Router();
 
-interface Query {
-  title: string,
-  type: string,
-  userId: string,
-  isAnonymous: boolean
-}
-
 export default (app: Router) => {
   app.use('/room', roomRouter);
+  roomRouter.use(authJWT);
 
   roomRouter.post('/', async (req: Request, res: Response) => {
     try {
       const {
-        title, type, isAnonymous,
-      } = req.body as unknown as Query;
+        title, type, isAnonymous, userDocumentId,
+      } = req.body;
 
       const roomId = await RoomService.setRoom(title, type, isAnonymous);
-      res.status(200).json(roomId);
+      const activityAddResult = await usersService.addActivityTypeRoom(userDocumentId, roomId);
+
+      if (!activityAddResult) res.status(400).json({ ok: false });
+      else res.status(200).json(roomId);
     } catch (error) {
       console.error(error);
     }

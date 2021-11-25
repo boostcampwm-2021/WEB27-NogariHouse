@@ -1,10 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 
 import React, { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
 import userState from '@atoms/user';
+import unReadMsgCountState from '@atoms/not-read-msg';
 import ChatRoomListHeader from '@components/chat/chat-list-header';
 import ChatUserCard from '@components/chat/chat-user-card';
 import { ChatRoomsLayout, ChatUserCardWrap } from '@components/chat/style';
@@ -28,8 +29,10 @@ function ChatRoomsViews() {
   const { userDocumentId } = useRecoilValue(userState);
   const history = useHistory();
   const socket = useChatSocket();
+  const [unReadMsgCount, setUnReadMsgCount] = useRecoilState(unReadMsgCountState);
 
-  const clickEvent = (chatDocumentId: string, participantsInfo: Array<IUser>) => {
+  const chatUserCardClickEvent = (chatDocumentId: string, participantsInfo: Array<IUser>, unCheckedMsg: number) => {
+    setUnReadMsgCount(unReadMsgCount - unCheckedMsg);
     history.push({
       pathname: `/chat-rooms/${chatDocumentId}`,
       state: { participantsInfo },
@@ -75,9 +78,12 @@ function ChatRoomsViews() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.emit('chat:viewJoin', userDocumentId);
     socket.on('chat:alertMsg', setNewRooms);
     socket.on('chat:makeChat', newChatRooms);
+    return () => {
+      socket.off('chat:alertMsg');
+      socket.off('chat:makeChat');
+    };
   }, [socket]);
 
   if (loading) return (<LoadingSpinner />);
@@ -90,7 +96,7 @@ function ChatRoomsViews() {
           return (
             <ChatUserCard
               key={chatRoom.chatDocumentId}
-              clickEvent={() => clickEvent(chatRoom.chatDocumentId, chatRoom.participants)}
+              clickEvent={() => chatUserCardClickEvent(chatRoom.chatDocumentId, chatRoom.participants, chatRoom.unCheckedMsg)}
               participantsInfo={chatRoom.participants}
               lastMsg={chatRoom.lastMsg}
               recentActive={date.getDate() === (new Date()).getDate() ? makeDateToHourMinute(date) : makeDateToMonthDate(date)}

@@ -1,11 +1,14 @@
 import { Router, Request, Response } from 'express';
 
 import eventsService from '@services/events-service';
+import usersService from '@services/users-service';
+import authJWT from '@middlewares/auth';
 
 const eventRouter = Router();
 
 export default (app: Router) => {
   app.use('/event', eventRouter);
+  eventRouter.use(authJWT);
 
   eventRouter.get('/', async (req:Request, res:Response) => {
     const { count } = req.query;
@@ -21,12 +24,14 @@ export default (app: Router) => {
   eventRouter.post('/', async (req: Request, res: Response) => {
     try {
       const {
-        title, participants, date, description,
+        title, participants, date, description, userDocumentId,
       } = req.body;
 
-      eventsService.setEvent(title, participants, date, description);
+      const eventDocumentId = await eventsService.setEvent(title, participants, date, description);
+      const activityAddResult = await usersService.addActivityTypeEvent(userDocumentId, eventDocumentId);
 
-      res.status(200).send('success!');
+      if (!activityAddResult) res.status(400).json({ ok: false });
+      else res.status(200).send('success!');
     } catch (error) {
       console.error(error);
     }

@@ -25,7 +25,9 @@ const useFetchItems = <T extends {}>(apiPath : string, nowItemType: string)
     if (nowFetching) {
       const fetchItems = async () => {
         try {
-          const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api${apiPath}?count=${nowCount}`)
+          const newItemsList = await fetch(`${process.env.REACT_APP_API_URL}/api${apiPath}?count=${nowCount}`, {
+            credentials: 'include',
+          })
             .then((res) => res.json())
             .then((json) => json.items);
           setNowItemsList([...nowItemsList, ...newItemsList]);

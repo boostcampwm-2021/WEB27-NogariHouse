@@ -125,6 +125,7 @@ function ChatRoomDetailView() {
     });
     return () => {
       chatSocket.emit('chat:leave', chatDocumentId);
+      chatSocket.off('chat:sendMsg');
     };
   }, [chatSocket]);
 

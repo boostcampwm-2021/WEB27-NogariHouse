@@ -48,7 +48,9 @@ export default (app: Router) => {
     let result: boolean;
 
     if (type === 'follow') {
-      result = await usersService.followUser(userDocumentId, targetUserDocumentId);
+      [result] = await Promise.all(
+        [usersService.followUser(userDocumentId, targetUserDocumentId), usersService.addActivityTypeFollow(userDocumentId, targetUserDocumentId)],
+      );
       res.json({ ok: result });
     } else if (type === 'unfollow') {
       result = await usersService.unfollowUser(userDocumentId, targetUserDocumentId);

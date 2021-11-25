@@ -80,6 +80,10 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
     });
   };
 
+  const updateCountHandler = (participants: Array<string>) => {
+    participants.forEach((userDocumentId: string) => socket.to(userDocumentId).emit('chat:updateCount'));
+  };
+
   socket.on('chat:roomJoin', chatRoomJoinHandler);
   socket.on('chat:viewJoin', chatViewJoinHandler);
   socket.on('chat:sendMsg', sendMsgHandler);
@@ -87,4 +91,5 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
   socket.on('chat:alertMsg', alertMsgHandler);
   socket.on('chat:makeChat', makeChatHandler);
   socket.on('chat:inviteRoom', inviteRoomHandler);
+  socket.on('chat:updateCount', updateCountHandler);
 }
