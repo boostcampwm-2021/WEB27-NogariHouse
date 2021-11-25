@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { IconAndLink } from '@interfaces/index';
+import { Cookies } from 'react-cookie';
 
 interface Params {
   [key: string]: any
@@ -40,3 +41,14 @@ export function bindTrailingArgs(fn: any, ...boundArgs: any[]) {
 }
 
 export const isEmptyArray = (array: any[]) => !array.length;
+
+const cookies = new Cookies();
+
+const removeAccessToken = async () => {
+  cookies.remove('accessToken');
+};
+
+export const signOutHandler = async () => {
+  removeAccessToken();
+  window.location.reload();
+};

@@ -1,7 +1,7 @@
 import React from 'react';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
-import { CustomtHeader, HeaderTitleNunito } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 import { IconAndLink } from '@interfaces/index';
 
@@ -10,7 +10,9 @@ function ActivityHeader() {
 
   return (
     <CustomtHeader>
-      {makeIconToLink(Icon)}
+      <CustomMenuIconsLayout>
+        {makeIconToLink(Icon)}
+      </CustomMenuIconsLayout>
       <HeaderTitleNunito to="/activity">ACTIVITY</HeaderTitleNunito>
       <div />
     </CustomtHeader>

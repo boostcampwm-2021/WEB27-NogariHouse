@@ -20,7 +20,7 @@ interface UserCardProps {
 
 const makeUserToCard = ({ cardType, userList }: UserCardProps) => (
   userList.map((user) => (
-    <div key={user._id} className="userCard" data-id={user._id} data-userId={user.userId} data-username={user.userName}>
+    <div key={user._id} className="userCard" data-id={user._id} data-userid={user.userId} data-username={user.userName}>
       <UserCard
       // eslint-disable-next-line no-underscore-dangle
         key={user._id}

@@ -324,3 +324,19 @@ export const getRandomRoomDocumentId = async () => {
     console.error(error);
   }
 };
+
+export const deleteRefreshToken = async (userDocumentId: string) => {
+  try {
+    let response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signout`, {
+      method: 'post',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userDocumentId }),
+    });
+    response = await response.json();
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+};

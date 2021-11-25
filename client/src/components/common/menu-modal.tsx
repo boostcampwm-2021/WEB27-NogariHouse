@@ -1,12 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Link } from 'react-router-dom';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { slideXFromTo } from '@src/assets/styles/keyframe';
 import { BackgroundWrapper } from '@common/modal';
+import { HiOutlineLogout } from 'react-icons/hi';
 
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
+import isOpenRoomState from '@atoms/is-open-room';
+import isOpenActiveFollowingModalState from '@atoms/is-open-active-following-modal';
 import userState from '@atoms/user';
+import { signOutHandler } from '@utils/index';
 
 const MenuModalBox = styled.div`
   position: fixed;
@@ -27,6 +31,19 @@ const MenuModalBox = styled.div`
    ;
 `;
 
+const StyledLinkListLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const MenuFooter = styled.footer`
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  width: 100%;
+  border-top: 1px solid #B6B6B6;
+`;
+
 const ProfileBox = styled.div`
   width: 100%-20px;
   display: flex;
@@ -40,6 +57,7 @@ const ProfileBox = styled.div`
   cursor: default;
   background-color: #eeebe4e4;
   box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  cursor: pointer;
   }
 `;
 
@@ -77,7 +95,7 @@ const LinkMenu = styled.div`
   border-bottom: 1px solid #e6e6e6;
 
   &:hover {
-  cursor: default;
+  cursor: pointer;
   background-color: #eeebe4e4;
   box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
   }
@@ -91,14 +109,83 @@ const StyledLink = styled(Link)`
     }
 `;
 
+const SignOutButton = styled.button`
+  display: flex;
+  align-items: center;
+  background: inherit ;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+  cursor:pointer;
+  margin: 10px 10px 10px 0;
+`;
+
+const StyledButton = styled.button`
+  background: inherit ;
+  border:none;
+  box-shadow:none;
+  border-radius:0;
+  padding:0;
+  overflow:visible;
+
+  width: 100% - 10px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  color: black;
+  border-bottom: 1px solid #e6e6e6;
+
+  &:hover {
+  cursor: pointer;
+  background-color: #eeebe4e4;
+  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  }
+`;
+
+const SignOutText = styled.div`
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 10px;
+`;
+
+interface ILinkList {
+  key: string,
+  text: string,
+  link: string,
+}
+
 function SliderMenu() {
   const user = useRecoilValue(userState);
   const [isOpenMenu, setIsOpenMenu] = useRecoilState(isOpenSliderMenuState);
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
+  const setisOpenActiveFollowingModal = useSetRecoilState(isOpenActiveFollowingModalState);
+  const clickHandler = () => {
+    setIsOpenMenu(!isOpenMenu);
+    setIsOpenRoom(false);
+  };
+
+  const makeLinkListToStyledLink = (list: ILinkList) => (
+    <StyledLink to={list.link} key={list.key}>
+      <LinkMenu>{list.text}</LinkMenu>
+    </StyledLink>
+  );
+
+  const linkList:ILinkList[] = [
+    { text: 'Search', link: '/search', key: 'search' },
+    { text: 'Message', link: '/chat-rooms', key: 'chat-rooms' },
+    { text: 'Invite', link: '/invite', key: 'invite' },
+    { text: 'Activity', link: '/activity', key: 'activity' },
+    { text: 'Event', link: '/event', key: 'event' },
+  ];
+
   return (
     <>
-      <BackgroundWrapper />
+      <BackgroundWrapper onClick={() => setIsOpenMenu(!isOpenMenu)} />
       <MenuModalBox state={isOpenMenu}>
-        <div>
+        <StyledLinkListLayout onClick={clickHandler}>
           <StyledLink to={`/profile/${user.userId}`}>
             <ProfileBox>
               <ImageLayout src={user.profileUrl} alt="사용자" />
@@ -113,24 +200,17 @@ function SliderMenu() {
               </ProfileInfo>
             </ProfileBox>
           </StyledLink>
-          <StyledLink to="/search">
-            <LinkMenu>Search</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/chat-rooms">
-            <LinkMenu>Message</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/invite">
-            <LinkMenu>Invite</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/activity">
-            <LinkMenu>Activity</LinkMenu>
-          </StyledLink>
-          <StyledLink to="/event">
-            <LinkMenu>Event</LinkMenu>
-          </StyledLink>
-        </div>
-
-        <button type="button" onClick={() => setIsOpenMenu(!isOpenMenu)}>close</button>
+          {linkList.map(makeLinkListToStyledLink)}
+          <StyledButton onClick={() => setisOpenActiveFollowingModal(true)}>
+            Active Following List
+          </StyledButton>
+        </StyledLinkListLayout>
+        <MenuFooter>
+          <SignOutButton onClick={signOutHandler}>
+            <SignOutText>Sign Out</SignOutText>
+            <HiOutlineLogout size="35" />
+          </SignOutButton>
+        </MenuFooter>
       </MenuModalBox>
     </>
   );

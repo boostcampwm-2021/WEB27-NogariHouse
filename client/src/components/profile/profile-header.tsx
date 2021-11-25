@@ -7,7 +7,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import { isOpenShareModalState } from '@atoms/is-open-modal';
 import userState from '@atoms/user';
-import { CustomtHeader, HeaderTitleNunito } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
 import { makeIconToLink } from '@utils/index';
 import { IconAndLink } from '@interfaces/index';
 
@@ -35,14 +35,17 @@ function ProfileHeader({ match, history, location }: RouteComponentProps<{id: st
   return (
     <>
       <CustomtHeader>
-        <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
         <HeaderTitleNunito to={location.pathname}>
           Profile
         </HeaderTitleNunito>
-        <IconContainer>
-          <HiShare onClick={changeModalState} size={48} />
-          {(match.params.id === user.userId) && makeIconToLink(SettingIcon)}
-        </IconContainer>
+        <CustomMenuIconsLayout>
+          <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
+
+          <IconContainer>
+            <HiShare onClick={changeModalState} size={48} />
+            {(match.params.id === user.userId) && makeIconToLink(SettingIcon)}
+          </IconContainer>
+        </CustomMenuIconsLayout>
       </CustomtHeader>
     </>
   );
