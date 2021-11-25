@@ -128,9 +128,9 @@ const ActiveDot = styled.div`
   position: absolute;
   right: 10%;
 
-  background-color: red;
-  width: 10px;
-  height: 10px;
+  background-color: #e97171;
+  width: 15px;
+  height: 15px;
   border-radius: 10px;
 `;
 
@@ -142,7 +142,7 @@ const MsgCount = styled.div`
 
   border-radius: 20px;
   right: 1%;
-  background-color: red;
+  background-color: #e97171;
 
   font-size: 12px;
   color: white;
