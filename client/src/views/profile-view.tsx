@@ -1,4 +1,4 @@
-/* eslint-disable no-underscore-dangle, max-len */
+/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -34,7 +34,7 @@ const LargeProfileImageBox = styled.img`
   border-radius: 30%;
 
   &:hover{
-    cursor: pointer;
+    cursor: ${(props: {isMine:boolean}) => (props.isMine && 'pointer')};
   };
 `;
 
@@ -108,7 +108,10 @@ function ProfileView({ match }: RouteComponentProps<{id: string}>) {
   useEffect(() => {
     setLoading(true);
     const getUserDetail = async () => {
-      const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`).then((res) => res.json());
+      const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`, {
+        method: 'get',
+        credentials: 'include',
+      }).then((res) => res.json());
       if (result.ok) {
         userDetailInfo.current = result.userDetailInfo;
         isFollowingRef.current = followingList.includes(result.userDetailInfo._id);
@@ -117,7 +120,7 @@ function ProfileView({ match }: RouteComponentProps<{id: string}>) {
     };
 
     getUserDetail();
-  }, [isFollowingRef.current, profileId]);
+  }, [isFollowingRef.current, profileId, user]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -131,7 +134,8 @@ function ProfileView({ match }: RouteComponentProps<{id: string}>) {
       <ImageAndFollowButtonDiv>
         <LargeProfileImageBox
           src={userDetailInfo.current.profileUrl}
-          onClick={() => setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}
+          isMine={user.userId === profileId}
+          onClick={() => user.userId === profileId && setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}
         />
         {user.userId !== profileId
         && (

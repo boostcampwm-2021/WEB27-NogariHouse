@@ -18,24 +18,24 @@ const sizes = {
 
 const buttonTypes = {
   follow: {
-    color: '#FFFFFF',
+    color: '#fff',
     fontColor: '#586A9A',
   },
   following: {
     color: '#586A9A',
-    fontColor: '#FFFFFF',
+    fontColor: '#fff',
   },
   secondary: {
     color: '#4A6970',
-    fontColor: '#FFFFFF',
+    fontColor: '#fff',
   },
   active: {
     color: '#58964F',
-    fontColor: '#FFFFFF',
+    fontColor: '#fff',
   },
   thirdly: {
     color: '#9AACA1',
-    fontColor: '#FFFFFF',
+    fontColor: '#fff',
   },
 };
 

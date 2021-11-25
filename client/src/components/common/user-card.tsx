@@ -1,8 +1,4 @@
-/* eslint-disable react/no-unused-prop-types */
-/* eslint-disable react/destructuring-assignment */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
-/* eslint-disable no-unused-expressions */
 import React, { MouseEvent, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,7 +8,7 @@ import DefaultButton from '@common/default-button';
 import useIsFollowingRef from '@hooks/useIsFollowingRef';
 import LoadingSpinner from './loading-spinner';
 
-interface UserCardProps {
+interface IUserCardProps {
   cardType: 'follow' | 'me' | 'others';
   userData: {
     _id: string,
@@ -24,7 +20,7 @@ interface UserCardProps {
   },
 }
 
-interface sizeProps {
+interface ISizeProps {
   sizeType : 'follow' |'me' |'others'
 }
 
@@ -41,7 +37,7 @@ const UserCardLayout = styled.div`
   border-radius: 30px;
   margin-left: 0.8%;
   width: 99%;
-  height: ${(props: sizeProps) => sizes[props.sizeType].cardLayoutSize}px;
+  height: ${(props: ISizeProps) => sizes[props.sizeType].cardLayoutSize}px;
   color: black;
   text-decoration: none;
 
@@ -72,54 +68,54 @@ const UserDescLayout = styled.div`
 
 const UserName = styled.div`
   font-weight: bold;
-  font-size: ${(props: sizeProps) => sizes[props.sizeType].userNameSize}px;
+  font-size: ${(props: ISizeProps) => sizes[props.sizeType].userNameSize}px;
   margin-bottom:3px;
   user-select: none;
 `;
 
 const UserId = styled.div`
-  font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
+  font-size: ${(props: ISizeProps) => sizes[props.sizeType].descriptionSize}px;
   margin-bottom:3px;
   user-select: none;
 `;
 
 const UserDescription = styled.div`
-  font-size: ${(props: sizeProps) => sizes[props.sizeType].descriptionSize}px;
+  font-size: ${(props: ISizeProps) => sizes[props.sizeType].descriptionSize}px;
   user-select: none;
 `;
 
-export default function UserCard(props: UserCardProps) {
+export default function UserCard({ cardType, userData }: IUserCardProps) {
   const [loading, setLoading] = useState(false);
-  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, props.userData.isFollow);
+  const [isFollowingRef, fetchFollow] = useIsFollowingRef(setLoading, userData.isFollow);
   const history = useHistory();
 
   return (
-    <UserCardLayout onClick={() => props.cardType !== 'others' && history.push(`/profile/${props.userData.userId}`)} sizeType={props.cardType}>
+    <UserCardLayout onClick={() => cardType !== 'others' && history.push(`/profile/${userData.userId}`)} sizeType={cardType}>
       <UserInfoLayout>
         <UserImageLayout>
-          <UserImage src={props.userData.profileUrl} size={props.cardType === 'others' ? 'others' : 'default'} />
+          <UserImage src={userData.profileUrl} size={cardType === 'others' ? 'others' : 'default'} />
         </UserImageLayout>
         <UserDescLayout>
-          <UserName sizeType={props.cardType}>
-            {props.userData.userName}
+          <UserName sizeType={cardType}>
+            {userData.userName}
           </UserName>
-          <UserId sizeType={props.cardType}>
-            {props.userData.userId}
+          <UserId sizeType={cardType}>
+            {userData.userId}
           </UserId>
-          <UserDescription sizeType={props.cardType}>
-            {props.userData.description}
+          <UserDescription sizeType={cardType}>
+            {userData.description}
           </UserDescription>
         </UserDescLayout>
       </UserInfoLayout>
       {loading && <LoadingSpinner />}
-      {props.cardType === 'follow'
+      {cardType === 'follow'
         && (
           <DefaultButton
             buttonType={isFollowingRef.current ? 'following' : 'follow'}
             size="small"
             font="Nunito"
             isDisabled={false}
-            onClick={(e: MouseEvent) => { e.stopPropagation(); fetchFollow(isFollowingRef.current as boolean, props.userData._id); }}
+            onClick={(e: MouseEvent) => { e.stopPropagation(); fetchFollow(isFollowingRef.current as boolean, userData._id); }}
           >
             {isFollowingRef.current ? 'following' : 'follow'}
           </DefaultButton>

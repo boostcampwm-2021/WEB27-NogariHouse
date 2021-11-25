@@ -1,10 +1,11 @@
-/* eslint-disable max-len */
 import React, {
   MouseEvent, useCallback, useRef, useState,
 } from 'react';
 import styled from 'styled-components';
+import { useSetRecoilState } from 'recoil';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import toastListSelector from '@selectors/toast-list';
 import SignHeader from '@components/sign/sign-header';
 import SignTitle from '@components/sign/sign-title';
 import SignBody from '@components/sign/sign-body';
@@ -40,6 +41,7 @@ function SignupInfoView() {
   const inputPasswordCheckRef = useRef<HTMLInputElement>(null);
   const inputFullNameRef = useRef<HTMLInputElement>(null);
   const inputIdRef = useRef<HTMLInputElement>(null);
+  const setToastList = useSetRecoilState(toastListSelector);
   const [isDisabled, setIsDisabled] = useState(true);
   const history = useHistory();
   const location = useLocation();
@@ -75,7 +77,11 @@ function SignupInfoView() {
       postSignUpUserInfo(userInfo)
         .then(() => { history.replace('/'); });
     } else {
-      alert('비밀번호를 확인해주세요');
+      setToastList({
+        type: 'warning',
+        title: '로그인 에러',
+        description: '비밀번호를 확인해주세요',
+      });
     }
   };
 

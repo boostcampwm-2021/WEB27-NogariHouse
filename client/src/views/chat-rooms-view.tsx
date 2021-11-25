@@ -1,28 +1,23 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
+
 import React, { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
 import userState from '@atoms/user';
+import unReadMsgCountState from '@atoms/not-read-msg';
 import ChatRoomListHeader from '@components/chat/chat-list-header';
 import ChatUserCard from '@components/chat/chat-user-card';
-import { ChatRoomsLayout } from '@components/chat/style';
+import { ChatRoomsLayout, ChatUserCardWrap } from '@components/chat/style';
 import LoadingSpinner from '@common/loading-spinner';
 import { getChatRooms } from '@api/index';
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
 import useChatSocket from '@src/utils/chat-socket';
-
-interface IChatUserType {
-  userDocumentId: string,
-  userName: string,
-  profileUrl: string,
-}
+import { IUser } from '@interfaces/index';
 
 interface IChatRoom {
   chatDocumentId: string,
-  participants: Array<IChatUserType>,
+  participants: Array<IUser>,
   lastMsg: string,
   recentActive: Date,
   unCheckedMsg: number,
@@ -34,8 +29,10 @@ function ChatRoomsViews() {
   const { userDocumentId } = useRecoilValue(userState);
   const history = useHistory();
   const socket = useChatSocket();
+  const [unReadMsgCount, setUnReadMsgCount] = useRecoilState(unReadMsgCountState);
 
-  const clickEvent = (chatDocumentId: string, participantsInfo: Array<IChatUserType>) => {
+  const chatUserCardClickEvent = (chatDocumentId: string, participantsInfo: Array<IUser>, unCheckedMsg: number) => {
+    setUnReadMsgCount(unReadMsgCount - unCheckedMsg);
     history.push({
       pathname: `/chat-rooms/${chatDocumentId}`,
       state: { participantsInfo },
@@ -64,6 +61,13 @@ function ChatRoomsViews() {
     });
   };
 
+  const newChatRooms = (payload: any) => {
+    const { chatDocumentId, participantsInfo } = payload;
+    setChatRooms((oldRooms: any) => [{
+      chatDocumentId, participants: participantsInfo, lastMsg: '', recentActive: new Date(), unCheckedMsg: 0,
+    }, ...oldRooms]);
+  };
+
   useEffect(() => {
     getChatRooms(userDocumentId)
       .then((res: any) => {
@@ -74,29 +78,33 @@ function ChatRoomsViews() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.emit('chat:viewJoin', userDocumentId);
     socket.on('chat:alertMsg', setNewRooms);
+    socket.on('chat:makeChat', newChatRooms);
+    return () => {
+      socket.off('chat:alertMsg');
+      socket.off('chat:makeChat');
+    };
   }, [socket]);
 
   if (loading) return (<LoadingSpinner />);
   return (
     <ChatRoomsLayout>
       <ChatRoomListHeader />
-      {chatRooms?.map((chatRoom: IChatRoom) => {
-        const date = new Date(chatRoom.recentActive);
-        return (
-          <ChatUserCard
-            key={chatRoom.chatDocumentId}
-            clickEvent={
-        () => clickEvent(chatRoom.chatDocumentId, chatRoom.participants)
-        }
-            participantsInfo={chatRoom.participants}
-            lastMsg={chatRoom.lastMsg}
-            recentActive={date.getDate() === (new Date()).getDate() ? makeDateToHourMinute(date) : makeDateToMonthDate(date)}
-            unCheckedMsg={chatRoom.unCheckedMsg}
-          />
-        );
-      })}
+      <ChatUserCardWrap>
+        {chatRooms?.map((chatRoom: IChatRoom) => {
+          const date = new Date(chatRoom.recentActive);
+          return (
+            <ChatUserCard
+              key={chatRoom.chatDocumentId}
+              clickEvent={() => chatUserCardClickEvent(chatRoom.chatDocumentId, chatRoom.participants, chatRoom.unCheckedMsg)}
+              participantsInfo={chatRoom.participants}
+              lastMsg={chatRoom.lastMsg}
+              recentActive={date.getDate() === (new Date()).getDate() ? makeDateToHourMinute(date) : makeDateToMonthDate(date)}
+              unCheckedMsg={chatRoom.unCheckedMsg}
+            />
+          );
+        })}
+      </ChatUserCardWrap>
     </ChatRoomsLayout>
   );
 }

@@ -1,17 +1,9 @@
 import React from 'react';
-import { IconType } from 'react-icons';
 import { MdOutlineArrowBackIos, MdPersonPin } from 'react-icons/md';
 
-import { CustomtHeader, HeaderTitleNunito } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
 import { makeIconToLink } from '@utils/index';
-
-interface IconAndLink {
-  Component:IconType,
-  key: string | number,
-  link: string,
-  size?: number,
-  color?: string,
-}
+import { IconAndLink } from '@interfaces/index';
 
 function SearchHeader() {
   const Icons: IconAndLink[] = [
@@ -21,8 +13,10 @@ function SearchHeader() {
 
   return (
     <CustomtHeader>
-      {Icons.map(makeIconToLink)}
-      <HeaderTitleNunito>Explore</HeaderTitleNunito>
+      <CustomMenuIconsLayout>
+        {Icons.map(makeIconToLink)}
+      </CustomMenuIconsLayout>
+      <HeaderTitleNunito to="/search">Explore</HeaderTitleNunito>
     </CustomtHeader>
   );
 }

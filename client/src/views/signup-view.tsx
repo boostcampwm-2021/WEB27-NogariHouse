@@ -1,8 +1,9 @@
-/* eslint-disable max-len */
 import React, { useCallback, useRef, useState } from 'react';
+import { useSetRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
+import toastListSelector from '@selectors/toast-list';
 import SignHeader from '@components/sign/sign-header';
 import { BackgroundWrapper } from '@common/modal';
 import LoadingSpinner from '@common/loading-spinner';
@@ -21,6 +22,7 @@ function SignUpView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputVerificationRef = useRef<HTMLInputElement>(null);
   const verificationNumberRef = useRef<string>();
+  const setToastList = useSetRecoilState(toastListSelector);
   const [isEmailInputView, setIsEmailInputView] = useState(true);
   const [isDisabled, setIsDisabled] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -50,7 +52,11 @@ function SignUpView() {
       setIsEmailInputView(false);
     } else {
       setLoading(false);
-      alert('이미 존재하는 이메일입니다');
+      setToastList({
+        type: 'warning',
+        title: '로그인 에러',
+        description: '이미 존재하는 이메일입니다',
+      });
     }
   };
 
@@ -61,7 +67,11 @@ function SignUpView() {
       setLoading(true);
       fetchPostMail(inputEmailValue);
     } else {
-      alert('올바른 이메일을 입력해주세요');
+      setToastList({
+        type: 'warning',
+        title: '로그인 에러',
+        description: '올바른 이메일을 입력해주세요',
+      });
     }
   };
 
@@ -71,7 +81,11 @@ function SignUpView() {
     if (inputVerificationValue === (verificationNumberRef.current?.toString())) {
       history.replace('/signup/info', { email: emailState.current });
     } else {
-      alert('인증번호를 확인하세요.');
+      setToastList({
+        type: 'warning',
+        title: '로그인 에러',
+        description: '인증번호를 확인하세요.',
+      });
     }
   };
 
@@ -85,10 +99,31 @@ function SignUpView() {
           : <SignTitle title="enter the verification code" />}
         <CustomInputBox>
           {isEmailInputView
-            ? <CustomInputBar key="text" ref={inputEmailRef} onChange={inputOnChange} type="text" placeholder="E-mail Address" />
-            : <CustomInputBar key="verification" ref={inputVerificationRef} onChange={inputOnChange} type="verification" placeholder="Verification code" />}
+            ? (
+              <CustomInputBar
+                key="text"
+                ref={inputEmailRef}
+                onChange={inputOnChange}
+                type="text"
+                placeholder="E-mail Address"
+              />
+            )
+            : (
+              <CustomInputBar
+                key="verification"
+                ref={inputVerificationRef}
+                onChange={inputOnChange}
+                type="verification"
+                placeholder="Verification code"
+              />
+            )}
         </CustomInputBox>
-        <DefaultButton buttonType="secondary" size="medium" onClick={isEmailInputView ? onClickEmailNextButton : onClickVerificationNextButton} isDisabled={isDisabled}>
+        <DefaultButton
+          buttonType="secondary"
+          size="medium"
+          onClick={isEmailInputView ? onClickEmailNextButton : onClickVerificationNextButton}
+          isDisabled={isDisabled}
+        >
           NEXT
         </DefaultButton>
       </SignBody>

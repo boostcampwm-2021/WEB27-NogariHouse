@@ -1,3 +1,11 @@
+import { IconType } from 'react-icons';
+
+export interface IUser {
+  userDocumentId: string,
+  userName: string,
+  profileUrl: string,
+}
+
 export interface IUserForCard{
   _id: string,
   userName: string,
@@ -31,4 +39,12 @@ export interface IUserDetail {
   followers: string[],
   joinDate: string,
   profileUrl: string
+}
+
+export interface IconAndLink {
+  Component:IconType,
+  key: string | number,
+  link: string,
+  size?: number,
+  color?: string,
 }

@@ -1,39 +1,17 @@
 /* eslint-disable */
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import styled from 'styled-components';
-import { useSetRecoilState, useRecoilValue, useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
-import followType from '@atoms/following-list';
-import selectedUserType from '@atoms/chat-selected-users';
-import roomViewState from '@atoms/room-view-type';
-import { BackgroundWrapper } from '@common/modal';
 import UserCardList from '@components/common/user-card-list';
 import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
-import { findUsersById } from '@api/index';
-import Scroll from '@styles/scrollbar-style';
-import { slideYFromTo } from '@src/assets/styles/keyframe';
-import DefaultButton from '@src/components/common/default-button';
-
-const ModalBox = styled.div`
-  position: absolute;
-  width: 50%;
-  height: 50%;
-  top: 20%;
-  display: flex;
-  flex-direction: column;
-  background-color: #F1F0E4;
-  border-radius: 32px;
-  margin-left: 25%;
-  box-shadow: rgb(0 0 0 / 55%) 0px 10px 25px;
-  z-index: 990;
-  opacity: 1;
-  
-  animation-duration: 0.5s;
-  animation-timing-function: ease-out;
-  animation-name: ${slideYFromTo(300, 0)};
-  animation-fill-mode: forward;
-`;
+import { BackgroundWrapper, ModalBox } from '@common/modal';
+import {
+  SelectDiv, SelectInputBar, SelectedUserDiv, SelectUserComponent,
+} from '@common/select';
+import { hiddenScroll } from '@styles/scrollbar-style';
+import useSelectUser from '@src/hooks/useSelectUser';
 
 const Layout = styled.div`
   background-color: #F1F0E4;
@@ -45,143 +23,40 @@ const Layout = styled.div`
   overflow: hidden;
   position: relative;
 
-  ${Scroll};
+  ${hiddenScroll}
 `;
 
-const SelectDiv = styled.div`
-  width: 90%;
-  height: 50px;
-
-  position: relative;
-
-  p {
-    position: absolute;
-    margin: 15px 20px 0px 30px;
-
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  &::-webkit-scrollbar {
-    width: 5px;
-    height: 8px;
-    background: #ffffff;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 8px;
-    background-color: #DCD9CD;
-
-    &:hover {
-      background-color: #CECABB;
-    }
-  }
+const CustomModalBox = styled(ModalBox)`
+  width: calc(50% + 112px);
+  padding: 0;
 `;
 
-const SelectInputBar = styled.input`
-  position: absolute;
-  top: 11px;
-  left: 90px;
-
-  width: 300px;
-  height: 30px;
-
-  border: none;
-  font-size: 18px;
-  font-family: 'Nunito';
-
+const CustomSelectInputBar = styled(SelectInputBar)`
   background-color: #F1F0E4;
-
-  &:focus {
-    outline: none;
-  }
+  font-size: min(4vw, 18px);
+  height: min(6vw, 30px);
 `;
 
-const SelectedUserDiv = styled.div`
-  margin: 0% 15% 0% 15%;
-
-
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-`;
-
-const SelectUserComponent = styled.div`
-  margin: 0px 10px 5px 0px;
-  padding: 0px 10px;
-  background-color: #F1F0E4;
-  border-radius: 30px;
-
-  line-height: 30px;
-  font-family: 'Nunito';
-  color: #819C88;
-
-  cursor: default;
+const CustomInputTitle = styled.p`
+  font-size: min(4vw, 20px) !important;
 `;
 
 function FollowerSelectModal() {
   const setIsOpenRoomModal = useSetRecoilState(isOpenRoomModalState);
-  const followingList = useRecoilValue(followType);
-  const [selectedUsers, setSelectedUsers] = useRecoilState(selectedUserType);
-  const setRoomView = useSetRecoilState(roomViewState);
-  const [allUserList, setAllUserList] = useState([]);
-  const [filteredUserList, setFilteredUserList] = useState([]);
-  const inputBarRef = useRef(null);
-  const selectedUserDivRef = useRef(null);
-
-  const addSelectedUser = (e: any) => {
-    const userCardDiv = e.target.closest('.userCard');
-    const profileUrl = userCardDiv.querySelector('img');
-    if (!userCardDiv || !profileUrl) return;
-    const userName = userCardDiv?.getAttribute('data-username');
-    (inputBarRef!.current as any).value = '';
-    setSelectedUsers([...selectedUsers, { userDocumentId: userCardDiv?.getAttribute('data-id'), userName, profileUrl: profileUrl.getAttribute('src') }]);
-  };
-
-  const deleteUser = (e: any) => {
-    setSelectedUsers(selectedUsers.filter((user: any) => user.userDocumentId !== e.target.getAttribute('data-id')));
-    (inputBarRef!.current as any).value = '';
-  };
-
-  const searchUser = () => {
-    const searchWord = (inputBarRef.current as any).value;
-    const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
-    setFilteredUserList(allUserList
-      .filter((user: any) => (user.userId.indexOf(searchWord) > -1 || user.userName.indexOf(searchWord) > -1) && selectedUserIds.indexOf(user._id) === -1));
-  };
-
-  useEffect(() => {
-    findUsersById(followingList).then((res: any) => {
-      const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
-      setAllUserList(res.userList);
-      setFilteredUserList(res.userList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
-    });
-  }, [followingList]);
-
-  useEffect(() => {
-    const selectedUserIds = selectedUsers.map((user: any) => user.userDocumentId);
-    setFilteredUserList(allUserList.filter((user: any) => selectedUserIds.indexOf(user._id) === -1));
-
-  }, [selectedUsers]);
-
-
-  const submitEventHandler = () => {
-    //지정한 친구들에게 채팅 메세지 보내는 요청 추가 해줄것.
-    setRoomView('inRoomView');
-    setIsOpenRoomModal(false);
-  }
+  const inputBarRef = useRef<HTMLInputElement>(null);
+  const [selectedUsers, filteredUserList, searchUser, deleteUser, addSelectedUser] = useSelectUser(inputBarRef);
 
   return (
     <>
       <BackgroundWrapper onClick={() => setIsOpenRoomModal(false)} />
-      <ModalBox>
+      <CustomModalBox>
+      <FollowerSelectRoomHeader onClick={() => setIsOpenRoomModal(false)} selectedUsers={selectedUsers} />
         <Layout>
-          <FollowerSelectRoomHeader onClick={() => setIsOpenRoomModal(false)} />
           <SelectDiv>
-            <p>ADD : </p>
-            <SelectInputBar ref={inputBarRef} onChange={searchUser} />
+            <CustomInputTitle>ADD : </CustomInputTitle>
+            <CustomSelectInputBar ref={inputBarRef} onChange={searchUser} />
           </SelectDiv>
-          <SelectedUserDiv ref={selectedUserDivRef}>
+          <SelectedUserDiv>
             {selectedUsers.map((user: any) => (
               <SelectUserComponent key={user.userDocumentId} data-id={user.userDocumentId} onClick={deleteUser}>
                 {user.userName}
@@ -189,11 +64,8 @@ function FollowerSelectModal() {
             ))}
           </SelectedUserDiv>
           <UserCardList cardType="others" userList={filteredUserList} clickEvent={addSelectedUser} />
-          <DefaultButton buttonType="thirdly" size="small" onClick={submitEventHandler}>
-            🎉 Let&apos;s Go
-          </DefaultButton>
         </Layout>
-      </ModalBox>
+      </CustomModalBox>
     </>
   );
 }

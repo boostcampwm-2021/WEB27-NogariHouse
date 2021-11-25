@@ -1,80 +1,54 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-len */
-import styled, { css } from 'styled-components';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
-import { ChatHeaderStyle } from '@components/chat/style';
+import useChatSocket from '@utils/chat-socket';
 import { postChatRoom } from '@api/index';
-import selectedUserType from '@atoms/chat-selected-users';
-import userType from '@atoms/user';
+import userState from '@atoms/user';
+import { NewHeaderWrap, NewHeader, BtnStyle } from './style';
 
-const BtnStyle = css`
-  position: absolute;
-  transform: translateY(30px);
-
-  font-size: 20px;
-
-  background-color: transparent;
-  border: none;
-
-  &:hover {
-    filter: invert(88%) sepia(1%) saturate(4121%) hue-rotate(12deg) brightness(62%) contrast(79%);
-  }
-`;
-
-const CanCelBtnStyle = styled.button`
-  left: 5%;
-  color: #58964F;
-  ${BtnStyle};
-`;
-
-const DoneBtnStyle = styled.button`
-  right: 5%;
-  color: #58964F;
-  ${BtnStyle};
-`;
-
-const DoneBtn = () => {
-  const [selectedUserList, setSelectedUserList] = useRecoilState(selectedUserType);
-  const user = useRecoilValue(userType);
+const DoneBtn = ({ selectedUserList }: any) => {
+  const user = useRecoilValue(userState);
   const history = useHistory();
+  const chatSocket = useChatSocket();
 
   const makeChatRoom = () => {
     if (selectedUserList.length === 0) return;
     postChatRoom([...selectedUserList.map((selectedUser: any) => selectedUser.userDocumentId), user.userDocumentId])
       .then((res: any) => {
         history.push({
-          pathname: `/chat-rooms/${res.chatRoomId}`,
+          pathname: `/chat-rooms/${res.chatDocumentId}`,
           state: { participantsInfo: selectedUserList },
         });
-        setSelectedUserList([]);
+        chatSocket.emit('chat:makeChat', {
+          chatDocumentId: res.chatDocumentId,
+          participantsInfo: [...selectedUserList, { userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl }],
+        });
       });
   };
 
   return (
-    <DoneBtnStyle onClick={makeChatRoom}>Done</DoneBtnStyle>
+    <BtnStyle onClick={makeChatRoom}>Done</BtnStyle>
   );
 };
 
 const CancelBtn = () => {
-  const [selectedUserList, setSelectedUserList] = useRecoilState(selectedUserType);
   const history = useHistory();
 
   const cancelEvent = () => {
-    setSelectedUserList([]);
     history.push({ pathname: '/chat-rooms' });
   };
 
-  return (<CanCelBtnStyle onClick={cancelEvent}>Cancel</CanCelBtnStyle>);
+  return (<BtnStyle onClick={cancelEvent}>Cancel</BtnStyle>);
 };
 
-export default function NewChatRoomHeader() {
+export default function NewChatRoomHeader({ selectedUserList }: any) {
   return (
-    <ChatHeaderStyle>
-      <CancelBtn />
-      <p>NEW MESSAGE</p>
-      <DoneBtn />
-    </ChatHeaderStyle>
+    <NewHeaderWrap>
+      <NewHeader>
+        <CancelBtn />
+        <p>NEW MESSAGE</p>
+        <DoneBtn selectedUserList={selectedUserList} />
+      </NewHeader>
+    </NewHeaderWrap>
   );
 }

@@ -19,3 +19,33 @@ export default css`
   }
   overflow-y: scroll;
 `;
+
+export const hiddenScroll = css`
+  overflow-y: scroll;
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const whiteScroll = css`
+&::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background: #f1f0e4;
+}
+&::-webkit-scrollbar-thumb {
+  border-radius: 8px;
+  background-color: #DCD9CD;
+
+  &:hover {
+    background-color: #CECABB;
+  }
+}
+&::-webkit-scrollbar-track {
+  background: #FFFFFF;
+}
+overflow-y: scroll;
+`;

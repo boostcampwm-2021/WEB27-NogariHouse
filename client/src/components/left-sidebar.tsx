@@ -1,25 +1,30 @@
-/* eslint-disable consistent-return */
-/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {
-  MouseEvent, useEffect, useRef, useState,
+  MouseEvent, useEffect, useState,
 } from 'react';
 import styled from 'styled-components';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 
+import followingListState from '@atoms/following-list';
+import userState from '@atoms/user';
 import ActiveFollowingCard from '@common/active-following-card';
-import { io, Socket } from 'socket.io-client';
-import { useRecoilValue } from 'recoil';
-import followingListState from '@src/recoil/atoms/following-list';
-import userState from '@src/recoil/atoms/user';
+import { IToast } from '@atoms/toast-list';
+import toastListSelector from '@selectors/toast-list';
+import useUserSocket from '@utils/user-socket';
 
 const ActiveFollowingListWrapper = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  @media (max-width: 1024px){
+    width: 80%;
+    margin-top: 20px;
+  };
 `;
 
 const ExceptionMessage = styled.div`
   position: relative;
-  top: 30vh;
   margin: auto;
   color: #a8a59b;
   font-size: 18px;
@@ -37,8 +42,8 @@ interface IActiveFollowingUser {
 function LeftSideBar() {
   const user = useRecoilValue(userState);
   const followingList = useRecoilValue(followingListState);
+  const setToastList = useSetRecoilState(toastListSelector);
   const [activeFollowingList, setActiveFollowingList] = useState<IActiveFollowingUser[]>([]);
-  const userSocketRef = useRef<Socket | null>(null);
 
   const setFirstFollowingList = (firstActiveFollowingList: IActiveFollowingUser[]) => {
     setActiveFollowingList(() => firstActiveFollowingList);
@@ -57,32 +62,41 @@ function LeftSideBar() {
 
   useEffect(() => {
     if (!user.isLoggedIn) return;
-    userSocketRef.current = io(`${process.env.REACT_APP_SOCKET_URL}/user`);
+    const userSocket = useUserSocket();
 
-    userSocketRef.current.on('user:firstFollowingList', (firstActiveFollowingList) => {
+    userSocket.on('user:firstFollowingList', (firstActiveFollowingList) => {
       setFirstFollowingList(firstActiveFollowingList);
     });
-    userSocketRef.current.on('user:newActiveUser', (newActiveUserData) => {
+    userSocket.on('user:newActiveUser', (newActiveUserData) => {
       const newDocumentId = newActiveUserData.userDocumentId;
       if (followingList.includes(newDocumentId)) addNewActiveFollowing(newActiveUserData);
     });
-    userSocketRef.current.on('user:newLeaveUser', (leaveUserDocumentId) => {
+    userSocket.on('user:newLeaveUser', (leaveUserDocumentId) => {
       deleteLeaveActiveFollowing(leaveUserDocumentId);
     });
-    userSocketRef.current.on('user:hands', (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
-      if (handsData.to === user.userDocumentId) alert(`${handsData.from.userName}님이 손을 흔들었습니다.`);
-    });
-
-    return () => {
-      if (userSocketRef.current) {
-        userSocketRef.current.disconnect();
+    userSocket.on('user:hands', (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
+      if (handsData.to === user.userDocumentId) {
+        const newToast: IToast = {
+          type: 'info',
+          title: '반가운 인사',
+          description: `${handsData.from.userName}님이 손을 흔들었습니다!`,
+        };
+        setToastList(newToast);
       }
-    };
+    });
   }, [user]);
 
+  useEffect(() => () => {
+    const userSocket = useUserSocket();
+    if (userSocket) {
+      userSocket.disconnect();
+    }
+  }, []);
+
   useEffect(() => {
-    if (userSocketRef.current) {
-      userSocketRef.current.emit('user:join', {
+    const userSocket = useUserSocket();
+    if (userSocket) {
+      userSocket.emit('user:join', {
         ...user, followingList,
       });
     }
@@ -90,7 +104,7 @@ function LeftSideBar() {
 
   const onClickHands = (userDocumentId: string) => (e: MouseEvent) => {
     e.stopPropagation();
-    userSocketRef.current?.emit('user:hands', userDocumentId);
+    useUserSocket().emit('user:hands', userDocumentId);
   };
 
   return (

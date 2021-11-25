@@ -46,7 +46,10 @@ function SearchView() {
   const resetItemList = useResetRecoilState(nowItemsListState);
   const followingList = useRecoilValue(followingListState);
   const searchInfoRef = useRef({ keyword: 'recent', option: 'all' });
-  const [nowItemsList, nowItemType] = useFetchItems<any>(`/search/${searchInfoRef.current.option}/${searchInfoRef.current.keyword || 'recent'}`, searchInfoRef.current.keyword);
+  const [nowItemsList, nowItemType] = useFetchItems<any>(
+    `/search/${searchInfoRef.current.option}/${searchInfoRef.current.keyword || 'recent'}`,
+    searchInfoRef.current.keyword,
+  );
   const setNowCount = useSetRecoilState(nowCountState);
 
   const setEventModal = useSetEventModal();
@@ -104,14 +107,12 @@ function SearchView() {
     }
 
     if (item.type === 'room') {
-      // eslint-disable-next-line max-len
       return <ItemDiv key={item._id} onClick={roomCardClickHandler}>{makeRoomToCard(item)}</ItemDiv>;
     }
 
     return <div />;
   };
 
-  // eslint-disable-next-line consistent-return
   const showList = () => {
     if (searchInfoRef.current.option !== searchType.toLocaleLowerCase()) {
       return <LoadingSpinner />;

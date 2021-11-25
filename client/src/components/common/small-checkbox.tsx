@@ -3,12 +3,13 @@ import styled from 'styled-components';
 
 export interface CheckBoxProps {
   checked: boolean,
-  onChange: (event: FormEvent) => void;
+  onChange: (event: FormEvent) => void,
+  roomType?: string,
 }
 
-interface SmallCheckboxProps extends CheckBoxProps{
-  id?: string;
-  isDisabled?: boolean;
+interface ISmallCheckboxProps extends CheckBoxProps{
+  id?: string,
+  isDisabled?: boolean,
 }
 
 const CheckBox = styled.input`
@@ -44,7 +45,7 @@ const CheckBox = styled.input`
 
 function SmallCheckbox({
   id, isDisabled, onChange, checked,
-}: SmallCheckboxProps) {
+}: ISmallCheckboxProps) {
   return (
     <CheckBox type="checkbox" id={id} disabled={isDisabled} checked={checked} onChange={onChange} />
   );

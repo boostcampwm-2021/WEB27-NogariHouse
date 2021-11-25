@@ -1,6 +1,4 @@
-import React, {
-  useEffect, useState, RefObject,
-} from 'react';
+import React, { useEffect, useState, RefObject } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
 import { FiPlus, FiMic, FiMicOff } from 'react-icons/fi';
 
@@ -38,9 +36,7 @@ function InRoomModal() {
   useEffect(() => {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
-        if (!res) {
-          setRoomView('notFoundRoomView');
-        }
+        if (!res) setRoomView('notFoundRoomView');
         setRoomInfo(res);
       });
 
@@ -92,25 +88,34 @@ function InRoomModal() {
         <TitleDiv><span>{roomInfo?.title}</span></TitleDiv>
       </InRoomHeader>
       <InRoomUserList>
-        {/* eslint-disable-next-line max-len */}
-        <InRoomUserBox ref={myVideoRef as RefObject<HTMLVideoElement>} key={user.userDocumentId} stream={myStreamRef.current as MediaStream} userDocumentId={user.userDocumentId} isMicOn={isMic} isAnonymous />
+        <InRoomUserBox
+          ref={myVideoRef as RefObject<HTMLVideoElement>}
+          key={user.userDocumentId}
+          stream={myStreamRef.current as MediaStream}
+          userDocumentId={user.userDocumentId}
+          isMicOn={isMic}
+          isAnonymous
+        />
         {participants.map(({
           userDocumentId, stream, mic, isAnonymous,
-        // eslint-disable-next-line max-len
-        }: any) => <InRoomOtherUserBox key={userDocumentId} stream={stream} userDocumentId={userDocumentId} isMicOn={mic} isAnonymous={isAnonymous} />)}
-
+        }: any) => (
+          <InRoomOtherUserBox
+            key={userDocumentId}
+            stream={stream}
+            userDocumentId={userDocumentId}
+            isMicOn={mic}
+            isAnonymous={isAnonymous}
+          />
+        ))}
       </InRoomUserList>
       <InRoomFooter>
         <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
-        <FooterBtnDiv><FiPlus onClick={() => setIsOpenModal(true)} /></FooterBtnDiv>
-        <FooterBtnDiv>
-          {isMic
-            ? <FiMic onClick={() => micToggle(false)} />
-            : <FiMicOff onClick={() => micToggle(true)} />}
+        <FooterBtnDiv onClick={() => setIsOpenModal(true)}><FiPlus /></FooterBtnDiv>
+        <FooterBtnDiv onClick={() => micToggle(!isMic)}>
+          {isMic ? <FiMic /> : <FiMicOff /> }
         </FooterBtnDiv>
       </InRoomFooter>
     </>
   );
 }
-
 export default InRoomModal;

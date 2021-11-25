@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import styled from 'styled-components';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
@@ -8,22 +7,20 @@ import React from 'react';
 
 const BackBtn = styled.div`
   position: absolute;
-
-  top: 50%;
-  transform: translateY(-50%);
   left: 5%;
 `;
 
 const ParticipantsDiv = styled.div`
-  position: relative;
+  position: absolute;
+  left:50%;
+  transform: translateX(-50%);
   width: 50%;
   height: 100%;
 
-  left: 50%;
-  transform: translateX(-50%);
-
   display: flex;
   flex-direction: column;
+
+  overflow: hidden;
 `;
 
 const ParticipantsProfileDiv = styled.div`
@@ -54,8 +51,13 @@ const ParticipantsName = styled.div`
 
   width: 100%;
   height: 20px;
+  margin: 0px;
 
   text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  white-space: nowrap;
 `;
 
 export default React.memo(({ participantsInfo }: any) => {

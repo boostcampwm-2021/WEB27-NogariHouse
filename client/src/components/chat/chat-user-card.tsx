@@ -1,34 +1,27 @@
-/* eslint-disable consistent-return */
-/* eslint-disable max-len */
 import styled from 'styled-components';
-
-interface Participants{
-  userDocumentId: string,
-  userName: string,
-  profileUrl: string
-}
+import { IUser } from '@interfaces/index';
 
 interface chatUserCardProps {
-  participantsInfo: Array<Participants>,
+  participantsInfo: Array<IUser>,
   lastMsg: string,
   clickEvent(): void,
   recentActive: string,
   unCheckedMsg: number,
 }
 
-type ProfileProps = { profileUrl: string, length: number };
+type ProfileProps = { length: number };
 
 const ChatUserCardLayout = styled.div`
-  background-color: #FFFFFF;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  background-color: #fff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
   border-radius: 30px;
-  margin-left: 0.8%;
   margin-bottom: 10px;
-  width: 99%;
+  width: 100%;
   height: 120px;
 
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   position: relative;
 
   &:hover {
@@ -38,45 +31,51 @@ const ChatUserCardLayout = styled.div`
 
 const ChatUserCardProfileDiv = styled.div`
   width: 100px;
-  height: 100px;
-  padding: 10px;
+  min-width: 100px;
+  margin-right: 10px;
+  display : flex;
+  align-items : center;
+  justify-content: center;
+
 
   position: relative;
 `;
 
-const ChatUserCardFirstProfile = styled.div.attrs((props: ProfileProps) => ({ style: { background: `center / contain no-repeat url(${props.profileUrl})` } }))`
+const ChatUserCardFirstProfile = styled.img`
   position: absolute;
 
-  width: ${(props: ProfileProps) => (props.length === 1 ? 75 : 60)}%;
-  height: ${(props: ProfileProps) => (props.length === 1 ? 75 : 60)}%;
+  width: ${(props: ProfileProps) => (props.length === 1 ? 75 : 60)}px;
+  height: ${(props: ProfileProps) => (props.length === 1 ? 75 : 60)}px;
+  ${(props: ProfileProps) => {
+    if (props.length > 1) return 'top: 15px; left: 10px;';
+  }}
 
-  border-radius: 25px;
+  border-radius: 20px;
 
-  background-size: ${(props: ProfileProps) => (props.length === 1 ? 120 : 100)}px;
   z-index: 2;
 `;
 
-const ChatUserCardSecondProfile = styled.div.attrs((props: ProfileProps) => {
-  if (props.length === 1) return;
-  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
-})`
+const ChatUserCardSecondProfile = styled.img`
   position: absolute;
   top: 50px;
   left: 40px;
 
-  width: 50%;
-  height: 50%;
-  background-size: 50%;
-  border-radius: 30px;
+  width: 50px;
+  height: 50px;
+  border-radius: 20px;
 
   z-index: 1;
 `;
 
 const ChatUserCardInfo = styled.div`
+  width: calc(100% - 180px);
   min-width: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
   p{
     margin: 0px 0px 10px 0px;
-    transform: translate(10px, 25px);
 
     overflow: hidden;
     text-overflow: ellipsis;
@@ -85,38 +84,39 @@ const ChatUserCardInfo = styled.div`
 `;
 
 const UserNameInfo = styled.p`
-  width: 200px;
-  font-family: "Nunito";
-  font-size: 24px;
+  font-size: min(4.8vw,24px);
   font-weight: bold;
 `;
 
 const LastChatMsg = styled.p`
-  width: 300px;
-  font-family: "Nunito";
-  font-size: 20px;
+  font-size: min(4vw, 20px);
 `;
 
 const ExInfoDiv = styled.div`
-  margin-left: 20px;
-  position: absolute;
-  right: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 80px;
+  min-width:80px;
+
+  margin-right: 15px;
 
   p {
     margin: 5px 0px 10px 0px;
-    transform: translateY(25px);
-    font-size: 20px;
-    font-family: "Nunito";
+    font-size: min(4vw, 20px);
   }
 `;
 
-const UnCheckMsg = styled.p`
-  width: 25px;
-  height: 25px;
+const UnCheckMsg = styled.div`
+  width: min(4vw, 25px);
+  height: min(4vw, 25px);
+  font-size: min(2.5vw, 16px);
   background-color: #C4CDC0;
 
   border-radius: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ChatUserCard = ({
@@ -126,16 +126,16 @@ const ChatUserCard = ({
   return (
     <ChatUserCardLayout onClick={clickEvent}>
       <ChatUserCardProfileDiv>
-        <ChatUserCardFirstProfile profileUrl={participantsInfo[0].profileUrl} length={participantsInfo.length} />
-        {participantsInfo.length > 1 && <ChatUserCardSecondProfile profileUrl={participantsInfo[1].profileUrl} length={participantsInfo.length} /> }
+        <ChatUserCardFirstProfile src={participantsInfo[0].profileUrl} length={participantsInfo.length} />
+        {participantsInfo.length > 1 && <ChatUserCardSecondProfile src={participantsInfo[1].profileUrl} /> }
       </ChatUserCardProfileDiv>
       <ChatUserCardInfo>
         <UserNameInfo>{userNames}</UserNameInfo>
         <LastChatMsg>{lastMsg}</LastChatMsg>
       </ChatUserCardInfo>
       <ExInfoDiv>
-        <p style={{ color: '#C4CDC0' }}>{recentActive}</p>
-        {unCheckedMsg > 0 ? <UnCheckMsg>{unCheckedMsg}</UnCheckMsg> : ''}
+        <p style={{ color: '#C4CDC0', width: 'max-content' }}>{recentActive}</p>
+        {unCheckedMsg > 0 ? <UnCheckMsg><span>{unCheckedMsg}</span></UnCheckMsg> : <UnCheckMsg style={{ visibility: 'hidden' }} />}
       </ExInfoDiv>
     </ChatUserCardLayout>
   );

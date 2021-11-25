@@ -1,6 +1,4 @@
-/* eslint-disable class-methods-use-this */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable max-len */
 import Rooms from '@models/rooms';
 import Users from '@models/users';
 
@@ -11,7 +9,6 @@ class RoomService {
     instance = this;
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async addParticipant(roomDocumentId: string, userDocumentId: string, socketId: string, isAnonymous: boolean) {
     await Rooms.findOneAndUpdate({ _id: roomDocumentId }, {
       $push: {
@@ -52,7 +49,6 @@ class RoomService {
     await Rooms.updateOne({ _id: roomDocumentId, 'participants.userDocumentId': userDocumentId }, { $set: { 'participants.$.mic': isMicOn } });
   }
 
-  // eslint-disable-next-line consistent-return
   async get10Rooms(count: number) {
     try {
       const rooms = await Rooms.find({ type: 'public' }, ['title', 'isAnonymous', 'participants'], { skip: count, limit: 3 });
@@ -86,7 +82,6 @@ class RoomService {
     });
   }
 
-  // eslint-disable-next-line consistent-return
   async searchRooms(keyword: string, count: number) {
     try {
       const query = new RegExp(keyword, 'i');
@@ -106,6 +101,17 @@ class RoomService {
       return roomsInfo;
     } catch (e) {
       console.error(e);
+    }
+  }
+
+  // eslint-disable-next-line consistent-return
+  async getRandomRoomDocumentId() {
+    try {
+      const rooms = await Rooms.find({ type: 'public', isAnonymous: true });
+      const index = Math.floor(Math.random() * rooms.length);
+      return rooms[index]._id.toString();
+    } catch (error) {
+      console.error(error);
     }
   }
 }

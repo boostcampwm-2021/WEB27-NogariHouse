@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-interface SignTitleProps {
+type TSignTitleProps = {
   title: string;
 }
 
@@ -14,7 +14,7 @@ const TitleDiv = styled.div`
 
 function SignTitle({
   title,
-}: SignTitleProps) {
+}: TSignTitleProps) {
   return (
     <TitleDiv>{ title }</TitleDiv>
   );

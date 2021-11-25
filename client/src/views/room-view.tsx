@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable no-underscore-dangle */
 import React, {
   MouseEvent, useEffect, useState,

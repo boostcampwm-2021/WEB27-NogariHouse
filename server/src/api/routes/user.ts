@@ -1,16 +1,12 @@
 import {
   Router, Request, Response,
 } from 'express';
-import multer from 'multer';
 
 import usersService from '@services/users-service';
 import authJWT from '@middlewares/auth';
+import imageUpload from '@middlewares/image-upload';
 
 const userRouter = Router();
-
-const upload = multer({
-  dest: 'uploads/',
-});
 
 export default (app: Router) => {
   app.use('/user', userRouter);
@@ -52,7 +48,9 @@ export default (app: Router) => {
     let result: boolean;
 
     if (type === 'follow') {
-      result = await usersService.followUser(userDocumentId, targetUserDocumentId);
+      [result] = await Promise.all(
+        [usersService.followUser(userDocumentId, targetUserDocumentId), usersService.addActivityTypeFollow(userDocumentId, targetUserDocumentId)],
+      );
       res.json({ ok: result });
     } else if (type === 'unfollow') {
       result = await usersService.unfollowUser(userDocumentId, targetUserDocumentId);
@@ -77,7 +75,7 @@ export default (app: Router) => {
       const { userId } = req.params;
       const { count } = req.query;
       const documentIdOffollowingList = await usersService.getFollowingsList(userId, Number(count));
-      const followingList = await usersService.findUsersById(documentIdOffollowingList!.followings);
+      const followingList = await usersService.findUsersByIdList(documentIdOffollowingList!.followings);
       res.status(200).json({
         result: true,
         items: followingList,
@@ -92,7 +90,7 @@ export default (app: Router) => {
       const { userId } = req.params;
       const { count } = req.query;
       const documentIdOfFollowerList = await usersService.getFollowersList(userId, Number(count));
-      const followerList = await usersService.findUsersById(documentIdOfFollowerList!.followers);
+      const followerList = await usersService.findUsersByIdList(documentIdOfFollowerList!.followers);
       res.status(200).json({
         result: true,
         items: followerList,
@@ -145,7 +143,7 @@ export default (app: Router) => {
   userRouter.post('/info', async (req: Request, res: Response) => {
     const userDocumentIdList = req.body;
     try {
-      const userList = (await usersService.findUsersById(userDocumentIdList.userList))
+      const userList = (await usersService.findUsersByIdList(userDocumentIdList.userList))
         ?.map(usersService.makeItemToUserInterface);
       res.json({ ok: true, userList });
     } catch (e) {
@@ -153,10 +151,14 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.post('/profile-image', upload.single('profileImage'), async (req: Request, res: Response) => {
+  userRouter.post('/profile-image', imageUpload.single('profileImage'), async (req: Request, res: Response) => {
     const { userDocumentId } = req.body;
-
-    console.log(userDocumentId);
-    console.log(req.file);
+    const { location } = req.file as any;
+    try {
+      const result = await usersService.updateUserProfileUrl(userDocumentId, location);
+      res.json({ ok: result, newProfileUrl: location });
+    } catch (e) {
+      res.json({ ok: false });
+    }
   });
 };

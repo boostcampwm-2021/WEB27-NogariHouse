@@ -1,12 +1,9 @@
-/* eslint-disable max-len */
-/* eslint-disable no-console */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable class-methods-use-this */
-/* eslint-disable consistent-return */
 import nodemailer from 'nodemailer';
 import jwt from 'jsonwebtoken';
 
-import Users, { IUserTypesModel } from '@models/users';
+import Users, { IUserTypesModel, IActivity } from '@models/users';
+import Events from '@models/events';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
 
@@ -199,6 +196,17 @@ class UserService {
     };
   }
 
+  async getActivityList(userDocumentId: string, count: number) {
+    const user = await Users.findById(userDocumentId, ['activity']);
+    const newActivityList = await Promise.all(user!.activity.reverse().slice(count, count + 10).map(async (activity: IActivity) => {
+      const detailFrom = await this.findUserByDocumentId(activity.from);
+      const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
+      return { ...activity, from: newFrom };
+    }));
+    await Users.findByIdAndUpdate(userDocumentId, { activity: user!.activity.map((el) => ({ ...el, isChecked: true })) });
+    return newActivityList;
+  }
+
   async searchUsers(keyword: string, count: number) {
     try {
       const query = new RegExp(keyword, 'i');
@@ -238,7 +246,7 @@ class UserService {
     }
   }
 
-  async findUsersById(documentIdList: Array<string>) {
+  async findUsersByIdList(documentIdList: Array<string>) {
     try {
       const participantsInfo = Users.find({ _id: { $in: documentIdList } });
       return participantsInfo;
@@ -266,6 +274,81 @@ class UserService {
       return true;
     } catch (e) {
       console.error(e);
+      return false;
+    }
+  }
+
+  async updateUserProfileUrl(userDocumentId: string, profileUrl: string) {
+    try {
+      await Users.updateOne({ _id: userDocumentId }, { profileUrl });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async isActivityChecked(userDocumentId: string) {
+    try {
+      const { activity } : any = await Users.findOne({ _id: userDocumentId }, ['activity']);
+      if (!activity) return false;
+      return activity.some((item: IActivity) => !item.isChecked);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async addActivityTypeFollow(userDocumentId: string, targetUserDocumentId: string) {
+    try {
+      const newActivity = {
+        type: 'follow',
+        clickDocumentId: userDocumentId,
+        from: userDocumentId,
+        date: new Date(),
+        isChecked: false,
+      };
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: newActivity } });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async addActivityTypeRoom(userDocumentId: string, roomDocumentId: string) {
+    try {
+      const user = await Users.findById(userDocumentId, ['followers']);
+      const newActivity = {
+        type: 'room',
+        clickDocumentId: roomDocumentId,
+        from: userDocumentId,
+        date: new Date(),
+        isChecked: false,
+      };
+      await Promise.all(user!.followers.map(async (userId: string) => {
+        await Users.findByIdAndUpdate(userId, { $push: { activity: newActivity } });
+        return true;
+      }));
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  async addActivityTypeEvent(userDocumentId: string, eventDocumentId: string) {
+    try {
+      const event = await Events.findById(eventDocumentId, ['participants']);
+      const newActivity = {
+        type: 'event',
+        clickDocumentId: eventDocumentId,
+        from: userDocumentId,
+        date: new Date(),
+        isChecked: false,
+      };
+      await Promise.all(event!.participants.map(async (userId: string) => {
+        await Users.findOneAndUpdate({ userId }, { $push: { activity: newActivity } });
+        return true;
+      }));
+      return true;
+    } catch (e) {
       return false;
     }
   }

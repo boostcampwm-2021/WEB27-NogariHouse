@@ -9,7 +9,11 @@ export interface IUser {
 }
 
 export interface IActivity {
-    // 추가 설정 필요
+  type: 'follow' | 'event' | 'room',
+  clickDocumentId: string,
+  from: string,
+  date: Date,
+  isChecked: boolean,
 }
 
 export interface IRecentSearch {
@@ -101,6 +105,10 @@ const usersSchema = new Schema({
   joinDate: {
     type: Date,
     default: new Date(),
+  },
+  activity: {
+    type: [Object],
+    default: [],
   },
 });
 

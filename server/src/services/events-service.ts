@@ -1,11 +1,14 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 import Events, { IEventsTypesModel } from '@models/events';
+import usersService from './users-service';
 
 export default {
   get10EventItems: async (count : number) => {
     try {
-      const items = await Events.find({}).sort({ date: 1 }).skip(count).limit(10);
+      const items = await Events.find({ date: { $gte: new Date() } })
+        .sort({ date: 1 })
+        .skip(count)
+        .limit(10);
       return items;
     } catch (e) {
       console.error(e);
@@ -22,29 +25,28 @@ export default {
     }
   },
 
-  makeItemToEventInterface: (item : IEventsTypesModel & {_id: number}) => (
-    {
+  makeItemToEventInterface: async (item : IEventsTypesModel & {_id: number}) => {
+    const participantsList = await Promise.all(item.participants
+      .map(async (userId) => usersService.findUserByUserId(userId)));
+    return {
       key: item._id,
       time: String(item.date),
       title: item.title,
-      participants: item.participants,
+      participants: participantsList,
       description: item.description,
       type: 'event',
-    }),
-
-  makeDateToHour: (stringDate : string):string => {
-    const date = new Date(stringDate);
-    return `${((date.getHours).toString()).padStart(2, '0')}:${((date.getMinutes).toString()).padStart(2, '0')}`;
+    };
   },
 
-  setEvent: (title:string, participants:object, date:Date, description:string) => {
+  setEvent: async (title:string, participants:object, date:Date, description:string) => {
     const newEvent = new Events({
       title,
       participants,
-      date,
+      date: new Date(date),
       description,
     });
-    return newEvent.save();
+    await newEvent.save();
+    return newEvent._id;
   },
 
   searchEvent: async (keyword: string, count: number) => {

@@ -1,13 +1,9 @@
+/* eslint-disable prefer-destructuring */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-return-await */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
-/* eslint-disable max-len */
-/* eslint-disable array-callback-return */
-/* eslint-disable class-methods-use-this */
-// import Chats from '@models/chats';
 import Users from '@models/users';
-import Chats from '@models/chats';
+import Chats, { IUnReadMsg } from '@models/chats';
 
 let instance: any = null;
 
@@ -47,8 +43,8 @@ class ChatService {
   }
 
   async makeChatRoom(participants: Array<string>) {
-    const chatRoom = await Chats.findOne({ participants }, ['participants']);
-    if (chatRoom) return chatRoom._id;
+    const chatRoom = await Chats.findOne({ participants }, ['participants', 'unReadMsg']);
+    if (chatRoom) return { chatRoom, chatDocumentId: chatRoom._id, isNew: false };
 
     const unReadMsg = participants.map((userDocumentId: string) => ({ userDocumentId, count: 0 }));
     const newChatRoom = new Chats({ participants, unReadMsg });
@@ -56,7 +52,7 @@ class ChatService {
 
     participants.forEach(async (userDocumentId) => await Users.findOneAndUpdate({ _id: userDocumentId }, { $push: { chatRooms: newChatRoom._id } }));
 
-    return newChatRoom._id;
+    return { chatRoom, chatDocumentId: newChatRoom._id, isNew: true };
   }
 
   async getChattingLog(chatDocumentId: string) {
@@ -78,6 +74,19 @@ class ChatService {
   async setUnCheckedMsg(chatDocumentId: string, userDocumentId: string) {
     await Chats.findOneAndUpdate({ _id: chatDocumentId, 'unReadMsg.userDocumentId': userDocumentId },
       { $set: { 'unReadMsg.$.count': 0 } });
+  }
+
+  async getUnReadMsgCount(userDocumentId: string) {
+    const { chatRooms } :any = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
+    let unReadMsgCount = 0;
+
+    await Promise.all(chatRooms.map(async (chatDocumentId: string) => {
+      const { unReadMsg } : any = await Chats.findOne({ _id: chatDocumentId }, ['unReadMsg']);
+      const count: number = unReadMsg[unReadMsg.findIndex((item: IUnReadMsg) => item.userDocumentId === userDocumentId)].count;
+      unReadMsgCount += count;
+      return count;
+    }));
+    return unReadMsgCount;
   }
 }
 

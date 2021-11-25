@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
-interface userImageProps {
+interface IUserImageProps {
   src: string,
   size: 'default' | 'others'
 }
@@ -13,14 +12,14 @@ const sizes = {
 };
 
 const ImageLayout = styled.img`
-  width: ${(props:userImageProps) => (sizes[props.size].widthSize)}px;
-  height: ${(props:userImageProps) => (sizes[props.size].heightSize)}px;;
+  width: ${(props:IUserImageProps) => (sizes[props.size].widthSize)}px;
+  height: ${(props:IUserImageProps) => (sizes[props.size].heightSize)}px;;
   border-radius: 30%;
   overflow: hidden;
   background-color: #6F8A87;
 `;
 
-function UserImage(props : userImageProps) {
+function UserImage(props : IUserImageProps) {
   return (
     // eslint-disable-next-line react/destructuring-assignment
     <ImageLayout src={props.src} size={props.size} />
