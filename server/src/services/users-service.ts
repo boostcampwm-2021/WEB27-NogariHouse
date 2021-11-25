@@ -6,6 +6,8 @@ import Users, { IUserTypesModel, IActivity } from '@models/users';
 import Events from '@models/events';
 import RefreshTokens from '@models/refresh-token';
 import jwtUtils from '@utils/jwt-util';
+import { activeUser } from '@src/sockets/user';
+import { userNamespace } from '@src/sockets';
 
 interface ISignupUserInfo {
   loginType: string,
@@ -153,11 +155,49 @@ class UserService {
     await transporter.sendMail({
       from: 'hyunee169@gmail.com',
       to: email,
-      subject: '인증번호입니다.',
-      text: VerificationNumber,
+      subject: '노가리하우스 인증번호입니다',
+      html: `
+      <h1>인증번호<h1>
+      <h3>아래의 인증번호를 회원가입 화면에 입력해주세요</h3>
+      <h2>${VerificationNumber}</h2>
+      `,
     });
 
     return VerificationNumber;
+  }
+
+  async sendInviteMail(userDocumentId: string, email: string) {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      port: 587,
+      host: 'smtp.gmail.com',
+      secure: false,
+      requireTLS: true,
+      auth: {
+        user: 'hyunee169@gmail.com',
+        pass: process.env.GMAIL_PASS,
+      },
+    });
+
+    const user = await Users.findById(userDocumentId);
+    const inviteLink = 'https://nogarihouse.nemne.dev/signup';
+
+    await transporter.sendMail({
+      from: 'hyunee169@gmail.com',
+      to: email,
+      subject: '노가리하우스로 초대합니다.',
+      html: `
+      <h1>${user!.userName}님이 노가리 하우스로 초대하셨습니다.</h1>
+      
+      <div><a href=${inviteLink}>🐟 Nogari House 바로가기 🐟</a></div>
+      
+      <div>언제 어디서나 편하게 노가리를 깔 수 있는곳! 노가리 하우스🏖로 놀러오세요</div>
+      <div>다양한 주제로 다양한 사람들과 노라기를 깔 수 있습니다! 🎤</div>
+      <div>아직 나의 목소리를 공개하기 수줍다고요? 그럼 익명 음성 채팅 기능을 활용해보세요! 😎</div>
+      <div>클럽하우*는 모바일만 지원이 됐죠? 노가리 하우스는 웹에서도 지원이 됩니다! 🛠️</div>
+      <div>만약 이번에 만난 사람들과 더 노가릴 까고 싶다면? 팔로우 하세요! 🙌</div>
+      <div>가입하기 귀찮으시다고요? 그럼 SNS를 통해 간단히 회원가입해보세요!🤝</div>`,
+    });
   }
 
   makeItemToUserInterface(
@@ -197,7 +237,7 @@ class UserService {
 
   async getActivityList(userDocumentId: string, count: number) {
     const user = await Users.findById(userDocumentId, ['activity']);
-    const newActivityList = await Promise.all(user!.activity.reverse().slice(count, count + 10).map(async (activity: IActivity) => {
+    const newActivityList = await Promise.all(user!.activity.slice(count, count + 10).map(async (activity: IActivity) => {
       const detailFrom = await this.findUserByDocumentId(activity.from);
       const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
       return { ...activity, from: newFrom };
@@ -305,7 +345,8 @@ class UserService {
         date: new Date(),
         isChecked: false,
       };
-      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: newActivity } });
+      await Users.findByIdAndUpdate(targetUserDocumentId, { $push: { activity: { $each: [newActivity], $position: 0 } } });
+      this.emitToUserGetActivity(targetUserDocumentId);
       return true;
     } catch (e) {
       return false;
@@ -317,13 +358,14 @@ class UserService {
       const user = await Users.findById(userDocumentId, ['followers']);
       const newActivity = {
         type: 'room',
-        clickDocumentId: roomDocumentId,
+        clickDocumentId: String(roomDocumentId),
         from: userDocumentId,
         date: new Date(),
         isChecked: false,
       };
-      await Promise.all(user!.followers.map(async (userId: string) => {
-        await Users.findByIdAndUpdate(userId, { $push: { activity: newActivity } });
+      await Promise.all(user!.followers.map(async (userDocId: string) => {
+        await Users.findByIdAndUpdate(userDocId, { $push: { activity: { $each: [newActivity], $position: 0 } } });
+        this.emitToUserGetActivity(userDocId);
         return true;
       }));
       return true;
@@ -337,19 +379,26 @@ class UserService {
       const event = await Events.findById(eventDocumentId, ['participants']);
       const newActivity = {
         type: 'event',
-        clickDocumentId: eventDocumentId,
+        clickDocumentId: String(eventDocumentId),
         from: userDocumentId,
         date: new Date(),
         isChecked: false,
       };
       await Promise.all(event!.participants.map(async (userId: string) => {
-        await Users.findOneAndUpdate({ userId }, { $push: { activity: newActivity } });
+        const user = await Users.findOneAndUpdate({ userId }, { $push: { activity: { $each: [newActivity], $position: 0 } } });
+        const userDocId = user!._id;
+        this.emitToUserGetActivity(String(userDocId));
         return true;
       }));
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  emitToUserGetActivity(userDocumentId: string) {
+    const socketUser = activeUser.get(userDocumentId);
+    if (socketUser) userNamespace.to(socketUser.socketId).emit('user:getActivity');
   }
 }
 

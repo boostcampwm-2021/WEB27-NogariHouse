@@ -26,10 +26,10 @@ interface IChatRoom {
 function ChatRoomsViews() {
   const [loading, setLoading] = useState(true);
   const [chatRooms, setChatRooms] = useState<Array<IChatRoom>>([]);
+  const [unReadMsgCount, setUnReadMsgCount] = useRecoilState(unReadMsgCountState);
   const { userDocumentId } = useRecoilValue(userState);
   const history = useHistory();
   const socket = useChatSocket();
-  const [unReadMsgCount, setUnReadMsgCount] = useRecoilState(unReadMsgCountState);
 
   const chatUserCardClickEvent = (chatDocumentId: string, participantsInfo: Array<IUser>, unCheckedMsg: number) => {
     setUnReadMsgCount(unReadMsgCount - unCheckedMsg);

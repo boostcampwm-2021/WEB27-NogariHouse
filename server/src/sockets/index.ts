@@ -8,7 +8,7 @@ const server = new Server({
 });
 
 const roomNamespace = server.of('/room');
-const userNamespace = server.of('/user');
+export const userNamespace = server.of('/user');
 const chatNamespace = server.of('/chat');
 
 roomNamespace.on('connection', (socket: Socket) => roomHandler(socket, roomNamespace));

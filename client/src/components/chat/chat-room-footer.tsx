@@ -57,6 +57,8 @@ export default function ChatRoomFooter({
     const message = messageInputRef.current.value;
     messageInputRef.current.value = '';
 
+    if (message.trim() === '') return;
+
     chatSocket?.emit('chat:sendMsg', {
       userDocumentId: user.userDocumentId,
       userName: user.userName,

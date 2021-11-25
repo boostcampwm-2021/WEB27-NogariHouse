@@ -1,15 +1,13 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable no-return-assign */
 import styled from 'styled-components';
-import { FiMoreHorizontal } from 'react-icons/fi';
 import { BiMessageSquareAdd } from 'react-icons/bi';
+import { Link } from 'react-router-dom';
 
 import { ChatHeaderStyle } from '@components/chat/style';
-import { makeIconToLink } from '@utils/index';
 
 const ChatHeaderBtnDiv = styled.div`
-  margin-right: 15px;
+  margin-right: 10%;
   svg{
     margin: 0px 10px;
 
@@ -20,21 +18,14 @@ const ChatHeaderBtnDiv = styled.div`
   }
 `;
 
-const chatRoomHeaderBtns = [
-  {
-    Component: BiMessageSquareAdd, link: '/chat-rooms/new', key: 'newChat', size: 32,
-  },
-  {
-    Component: FiMoreHorizontal, link: '/chat-rooms/new', key: 'selector', size: 32,
-  },
-];
-
 export default function ChatRoomListHeader() {
   return (
     <ChatHeaderStyle>
       <p>BACK CHANNEL</p>
       <ChatHeaderBtnDiv>
-        {chatRoomHeaderBtns.map(makeIconToLink)}
+        <Link to="/chat-rooms/new">
+          <BiMessageSquareAdd size={32} color="black" />
+        </Link>
       </ChatHeaderBtnDiv>
     </ChatHeaderStyle>
   );

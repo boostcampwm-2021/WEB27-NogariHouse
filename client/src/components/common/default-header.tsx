@@ -147,6 +147,7 @@ const MsgCount = styled.div`
   font-size: 12px;
   color: white;
 `;
+
 function DefaultHeader() {
   const user = useRecoilValue(userState);
   const setNowFetching = useSetRecoilState(nowFetchingState);
@@ -177,7 +178,9 @@ function DefaultHeader() {
   useEffect(() => {
     getUnReadMsgCount().then((res: any) => setUnReadMsgCount(res.unReadMsgCount));
     chatSocket.emit('chat:viewJoin', user.userDocumentId);
-    chatSocket.on('chat:updateCount', () => setUnReadMsgCount((oldCount) => oldCount + 1));
+    chatSocket.on('chat:updateCount', () => {
+      if (!window.location.pathname.includes('/chat-rooms/')) setUnReadMsgCount((oldCount) => oldCount + 1);
+    });
     return () => {
       chatSocket.off('chat:updateCount');
     };
@@ -187,7 +190,7 @@ function DefaultHeader() {
     if (!userSocket) return;
     userSocket.on('user:getActivity', () => setActivityChecked(true));
     return () => {
-      userSocket.emit('user:headerLeave');
+      userSocket.off('user:getActivity');
     };
   }, [userSocket]);
 
@@ -222,7 +225,7 @@ function DefaultHeader() {
           </IconContainer>
         </MenuIconsLayout>
       </CustomDefaultHeader>
-      {isOpenMenu && <SliderMenu />}
+      {isOpenMenu && <SliderMenu isActivityChecked={isActivityChecked} unReadMsgCount={unReadMsgCount} />}
     </>
   );
 }
