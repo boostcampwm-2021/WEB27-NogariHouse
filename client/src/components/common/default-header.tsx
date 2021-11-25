@@ -147,6 +147,7 @@ const MsgCount = styled.div`
   font-size: 12px;
   color: white;
 `;
+
 function DefaultHeader() {
   const user = useRecoilValue(userState);
   const setNowFetching = useSetRecoilState(nowFetchingState);
@@ -222,7 +223,7 @@ function DefaultHeader() {
           </IconContainer>
         </MenuIconsLayout>
       </CustomDefaultHeader>
-      {isOpenMenu && <SliderMenu />}
+      {isOpenMenu && <SliderMenu isActivityChecked={isActivityChecked} unReadMsgCount={unReadMsgCount} />}
     </>
   );
 }

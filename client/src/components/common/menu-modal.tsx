@@ -54,10 +54,10 @@ const ProfileBox = styled.div`
   border-bottom: 1px solid #B6B6B6;
 
   &:hover {
-  cursor: default;
-  background-color: #eeebe4e4;
-  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
-  cursor: pointer;
+    cursor: default;
+    background-color: #eeebe4e4;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+    cursor: pointer;
   }
 `;
 
@@ -95,9 +95,9 @@ const LinkMenu = styled.div`
   border-bottom: 1px solid #e6e6e6;
 
   &:hover {
-  cursor: pointer;
-  background-color: #eeebe4e4;
-  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+    cursor: pointer;
+    background-color: #eeebe4e4;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
   }
 `;
 
@@ -139,9 +139,9 @@ const StyledButton = styled.button`
   border-bottom: 1px solid #e6e6e6;
 
   &:hover {
-  cursor: pointer;
-  background-color: #eeebe4e4;
-  box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+    cursor: pointer;
+    background-color: #eeebe4e4;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
   }
 `;
 
@@ -151,13 +151,57 @@ const SignOutText = styled.div`
   margin-right: 10px;
 `;
 
+const MenuWrap = styled(Link)`
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  text-decoration: none;
+  border-bottom: 1px solid #e6e6e6;
+
+    &:focus, &:hover, &:visited, &:link, &:active {
+      text-decoration: none;
+  }
+
+  &:hover {
+    cursor: pointer;
+    background-color: #eeebe4e4;
+    box-shadow: 0px 2px 4px rgb(0 0 0 / 25%);
+  }
+`;
+
+const ActiveDot = styled.div`
+  position: absolute;
+  right: 10%;
+
+  background-color: red;
+  width: 10px;
+  height: 10px;
+  border-radius: 10px;
+`;
+
+const MsgCount = styled.div`
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 20px;
+  right: 8%;
+  background-color: red;
+
+  font-size: 12px;
+  color: white;
+`;
+
 interface ILinkList {
   key: string,
   text: string,
   link: string,
 }
 
-function SliderMenu() {
+function SliderMenu({ isActivityChecked, unReadMsgCount }: any) {
   const user = useRecoilValue(userState);
   const [isOpenMenu, setIsOpenMenu] = useRecoilState(isOpenSliderMenuState);
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
@@ -167,11 +211,29 @@ function SliderMenu() {
     setIsOpenRoom(false);
   };
 
-  const makeLinkListToStyledLink = (list: ILinkList) => (
-    <StyledLink to={list.link} key={list.key}>
-      <LinkMenu>{list.text}</LinkMenu>
-    </StyledLink>
-  );
+  const makeLinkListToStyledLink = (list: ILinkList) => {
+    if (list.key === 'chat-rooms') {
+      return (
+        <MenuWrap to={list.link} key={list.key}>
+          <LinkMenu>{list.text}</LinkMenu>
+          {unReadMsgCount > 0 ? <MsgCount><span style={{ margin: '5px' }}>{unReadMsgCount > 99 ? '99+' : unReadMsgCount}</span></MsgCount> : ''}
+        </MenuWrap>
+      );
+    }
+    if (list.key === 'activity') {
+      return (
+        <MenuWrap to={list.link} key={list.key}>
+          <LinkMenu>{list.text}</LinkMenu>
+          {isActivityChecked ? <ActiveDot /> : ''}
+        </MenuWrap>
+      );
+    }
+    return (
+      <StyledLink to={list.link} key={list.key}>
+        <LinkMenu>{list.text}</LinkMenu>
+      </StyledLink>
+    );
+  };
 
   const linkList:ILinkList[] = [
     { text: 'Search', link: '/search', key: 'search' },
@@ -191,7 +253,7 @@ function SliderMenu() {
               <ImageLayout src={user.profileUrl} alt="사용자" />
               <ProfileInfo>
                 <ProfileUserName>
-                  { user.userName}
+                  {user.userName}
                 </ProfileUserName>
                 <ProfileUserId>
                   @
