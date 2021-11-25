@@ -113,6 +113,10 @@ export const UserBox = styled.video`
   border-radius: 30%;
   overflow: hidden;
   background-color: #6F8A87;
+
+  &[poster] {
+    object-fit: cover;
+  }
 `;
 
 export const ButtonLayout = styled.div`
