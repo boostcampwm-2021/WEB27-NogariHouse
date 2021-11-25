@@ -11,11 +11,13 @@ import { toastXFromTo } from '@styles/keyframe';
 import { IconType } from 'react-icons';
 
 const NotificationContainer = styled.div`
-  font-size: 14px;
   position: fixed;
-
   top: 12px;
   right: 12px;
+  
+  font-size: 14px;
+
+  z-index: 10;
 `;
 
 const Notification = styled.div`
