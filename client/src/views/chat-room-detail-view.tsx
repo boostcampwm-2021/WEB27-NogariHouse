@@ -15,6 +15,7 @@ import userState from '@atoms/user';
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
 import useChatSocket from '@src/utils/chat-socket';
+import isOpenRoomState from '@atoms/is-open-room';
 import { chatReducer, initialState } from '@components/chat/reducer';
 import NotFoundChatView from '@src/views/chat-not-found-view';
 
@@ -88,6 +89,7 @@ function ChatRoomDetailView() {
   const user = useRecoilValue(userState);
   const chattingLogDiv = useRef<HTMLDivElement>(null);
   const chatSocket = useChatSocket();
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
   const [chatState, dispatch] = useReducer(chatReducer, initialState);
 
   const addChattingLog = (chatLog: any) => {
@@ -98,6 +100,7 @@ function ChatRoomDetailView() {
     if (!linkTo) return;
     setRoomDocumentId(linkTo);
     setRoomView('inRoomView');
+    setIsOpenRoom(true);
   };
 
   useEffect(() => {
