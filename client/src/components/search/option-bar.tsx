@@ -9,7 +9,6 @@ function OptionBar() {
       <SearchCategoryLayout>
         <SearchTypeCheckBox searchBoxName="All" />
         <SearchTypeCheckBox searchBoxName="People" />
-        <SearchTypeCheckBox searchBoxName="Clubs" />
         <SearchTypeCheckBox searchBoxName="Rooms" />
         <SearchTypeCheckBox searchBoxName="Events" />
       </SearchCategoryLayout>
