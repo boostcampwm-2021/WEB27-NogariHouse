@@ -13,7 +13,6 @@ interface ISignupUserInfo {
   password: string,
   userName: string,
   userEmail: string,
-  interesting: string[]
 }
 
 let instance: any = null;
