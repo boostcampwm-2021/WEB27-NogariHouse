@@ -7,14 +7,9 @@ import styled from 'styled-components';
 
 import toastListSelector from '@selectors/toast-list';
 import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
-import { BackgroundWrapper } from '@common/modal';
 import DefaultButton from '@common/default-button';
 import LoadingSpinner from '@src/components/common/loading-spinner';
 import { testEmailValidation } from '@src/utils';
-
-const CustomBackgroundWrapper = styled(BackgroundWrapper)`
-  opacity: 0.4;
-`;
 
 const InviteBody = styled.div`
   position: relative;
@@ -64,7 +59,7 @@ function InviteView({ history }: RouteComponentProps) {
       setLoading(false);
       setToastList({
         type: 'warning',
-        title: '초대 에러',
+        title: '초대장 에러',
         description: '이미 존재하는 이메일입니다',
       });
     }
@@ -79,36 +74,34 @@ function InviteView({ history }: RouteComponentProps) {
     } else {
       setToastList({
         type: 'warning',
-        title: '초대 오류',
+        title: '초대장 에러',
         description: '올바른 형식의 이메일을 입력해주세요',
       });
     }
   };
 
   return (
-    <>
-      {loading && <CustomBackgroundWrapper><LoadingSpinner /></CustomBackgroundWrapper>}
-      <InviteBody>
-        <InputTitle> enter the email to invite </InputTitle>
-        <CustomInputBox>
-          <CustomInputBar
-            key="text"
-            ref={inputEmailRef}
-            onChange={inputOnChange}
-            type="text"
-            placeholder="E-mail Address"
-          />
-        </CustomInputBox>
-        <DefaultButton
-          buttonType="secondary"
-          size="medium"
-          onClick={onClickInviteButton}
-          isDisabled={isDisabled}
-        >
-          NEXT
-        </DefaultButton>
-      </InviteBody>
-    </>
+    <InviteBody>
+      {loading && <LoadingSpinner />}
+      <InputTitle> enter the email to invite </InputTitle>
+      <CustomInputBox>
+        <CustomInputBar
+          key="text"
+          ref={inputEmailRef}
+          onChange={inputOnChange}
+          type="text"
+          placeholder="E-mail Address"
+        />
+      </CustomInputBox>
+      <DefaultButton
+        buttonType="secondary"
+        size="medium"
+        onClick={onClickInviteButton}
+        isDisabled={isDisabled}
+      >
+        NEXT
+      </DefaultButton>
+    </InviteBody>
   );
 }
 
