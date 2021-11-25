@@ -379,7 +379,7 @@ export const getUnReadMsgCount = async () => {
 
 export const getUserExistenceByUserId = async (userId: string) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${userId}?type=userId`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${userId}?type=userIdCheck`, {
       method: 'get',
       credentials: 'include',
       headers: {
@@ -387,10 +387,9 @@ export const getUserExistenceByUserId = async (userId: string) => {
       },
     });
 
-    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
-
-    return true;
+    const result = await response.json();
+    return result.ok;
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
 };

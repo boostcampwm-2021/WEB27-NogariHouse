@@ -38,6 +38,13 @@ export default (app: Router) => {
       const userDetailInfo = userInfo
         ? usersService.makeUserDetailInterface(userInfo) : res.json({ ok: false });
       res.json({ ok: true, userDetailInfo });
+    } else if (type === 'userIdCheck') {
+      const result = await usersService.findUserByUserId(id);
+      if (result) {
+        res.json({ ok: true });
+      } else {
+        res.json({ ok: false });
+      }
     } else {
       res.json({ ok: false });
     }
