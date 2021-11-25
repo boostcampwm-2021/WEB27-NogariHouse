@@ -15,7 +15,7 @@ const RoomCardProfileDiv = styled.div`
 `;
 
 const RoomCardFirstProfile = styled.div.attrs((props: IProfileProps) => {
-  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
+  return { style: { background: `center / cover no-repeat url(${props.profileUrl})` } };
 })`
   position: absolute;
 
@@ -30,7 +30,7 @@ const RoomCardFirstProfile = styled.div.attrs((props: IProfileProps) => {
 
 const RoomCardSecondProfile = styled.div.attrs((props: IProfileProps) => {
   if (props.length === 1) return ;
-  return { style: { background: `center / contain no-repeat url(${props.profileUrl})` } };
+  return { style: { background: `center / cover no-repeat url(${props.profileUrl})` } };
 })`
   position: absolute;
   top: 50px;
@@ -39,7 +39,7 @@ const RoomCardSecondProfile = styled.div.attrs((props: IProfileProps) => {
   width: 55px;
   height: 55px;
   background-size: 80px;
-  border-radius: 25px;
+  border-radius: 20px;
 
   z-index: 1;
 `;

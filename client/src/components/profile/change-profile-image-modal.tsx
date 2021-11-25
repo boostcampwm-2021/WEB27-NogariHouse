@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 
+import toastListSelector from '@selectors/toast-list';
 import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import userState from '@atoms/user';
@@ -56,6 +57,7 @@ function ShareModal() {
   const [isOpenChangeProfileImageModal,
     setIsOpenChangeProfileImageModalState] = useRecoilState(isOpenChangeProfileImageModalState);
   const [user, setUser] = useRecoilState(userState);
+  const setToastList = useSetRecoilState(toastListSelector);
   const [previewImageURL, setPreviewImageURL] = useState(user.profileUrl);
   const [potentialProfileImage, setPotentialProfileImage] = useState<any>(null);
 
@@ -78,6 +80,11 @@ function ShareModal() {
       const { newProfileUrl } = response;
       setUser({ ...user, profileUrl: newProfileUrl });
       setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal);
+      setToastList({
+        type: 'success',
+        title: '프로필 설정',
+        description: '지정한 이미지로 변경이 완료됐습니다',
+      });
     }
   };
 

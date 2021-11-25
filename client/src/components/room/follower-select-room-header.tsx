@@ -2,6 +2,7 @@
 import styled from 'styled-components';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 
+import toastListSelector from '@selectors/toast-list';
 import userState from '@atoms/user';
 import roomViewState from '@atoms/room-view-type';
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
@@ -15,6 +16,7 @@ const CustomNewHeaderWrap = styled(NewHeaderWrap)`
 `;
 
 export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any) {
+  const setToastList = useSetRecoilState(toastListSelector);
   const setIsOpenRoomModal = useSetRecoilState(isOpenRoomModalState);
   const setRoomView = useSetRecoilState(roomViewState);
   const roomDocumentId = useRecoilValue(roomDoucumentIdState);
@@ -38,6 +40,11 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
       date: makeDateToHourMinute(new Date()),
     };
     chatSocket.emit('chat:inviteRoom', inviteInfo);
+    setToastList({
+      type: 'success',
+      title: '방 초대',
+      description: '초대 메세지를 보냈습니다!',
+    });
     setRoomView('inRoomView');
     setIsOpenRoomModal(false);
   };

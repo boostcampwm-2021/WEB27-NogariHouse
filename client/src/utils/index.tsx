@@ -50,5 +50,5 @@ const removeAccessToken = async () => {
 
 export const signOutHandler = async () => {
   removeAccessToken();
-  window.location.reload();
+  window.location.replace('/');
 };
