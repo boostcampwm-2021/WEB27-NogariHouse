@@ -138,7 +138,6 @@ export default function RoomCard({
 } : RoomCardProps) {
 
   const userNames = participantsInfo.reduce(makeParticipantsInfoToUserNames, []);
-  console.log(participantsInfo);
 
   if (isEmptyArray(participantsInfo)) {
     deleteRoom(_id);
