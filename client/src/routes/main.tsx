@@ -12,7 +12,6 @@ import FollowingView from '@views/following-view';
 import InviteView from '@views/invite-view';
 import ProfileSettingView from '@views/profile-settings-view';
 import ProfileView from '@views/profile-view';
-import RecentSearchView from '@views/recent-search-view';
 import SearchView from '@src/views/search-view';
 import RoomView from '@src/views/room-view';
 import PrivateRoute from '@routes/custom/private-route';
@@ -30,7 +29,6 @@ function MainRouter() {
       <PrivateRoute exact path="/following/:id" component={FollowingView} />
       <PrivateRoute exact path="/invite" component={InviteView} />
       <PrivateRoute exact path="/search" component={SearchView} />
-      <PrivateRoute exact path="/search/recent" component={RecentSearchView} />
       <PrivateRoute exact path="/settings" component={ProfileSettingView} />
       <PrivateRoute exact path="/profile/:id" component={ProfileView} />
     </Switch>

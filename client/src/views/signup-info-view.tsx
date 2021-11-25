@@ -1,6 +1,4 @@
-import React, {
-  MouseEvent, useCallback, useRef, useState,
-} from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useSetRecoilState } from 'recoil';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -11,21 +9,7 @@ import SignTitle from '@components/sign/sign-title';
 import SignBody from '@components/sign/sign-body';
 import DefaultButton from '@common/default-button';
 import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
-import InterestItem from '@common/interest-item';
-import { postSignUpUserInfo } from '@src/api';
-
-const InterestItemWarapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  div {
-    margin-right: 10px;
-    margin-bottom: 5%;
-  }
-  margin-top: 5%;
-  margin-right: -5%;
-`;
+import { postSignUpUserInfo, getUserExistenceByUserId } from '@src/api';
 
 const CustomInfoInputBar = styled(CustomInputBar)`
   font-size: min(5vw, 30px);
@@ -41,12 +25,11 @@ function SignupInfoView() {
   const inputPasswordCheckRef = useRef<HTMLInputElement>(null);
   const inputFullNameRef = useRef<HTMLInputElement>(null);
   const inputIdRef = useRef<HTMLInputElement>(null);
+
   const setToastList = useSetRecoilState(toastListSelector);
   const [isDisabled, setIsDisabled] = useState(true);
   const history = useHistory();
   const location = useLocation();
-
-  const selectedItems = new Set();
 
   const inputOnChange = useCallback(() => {
     if (inputPasswordRef.current?.value && inputPasswordCheckRef.current?.value && inputFullNameRef.current?.value && inputIdRef.current?.value) {
@@ -56,65 +39,77 @@ function SignupInfoView() {
     }
   }, []);
 
-  const onClickInterestItem = (e: MouseEvent) => {
-    const interestName = e.currentTarget?.textContent?.slice(2);
-    if (typeof interestName === 'string') selectedItems.add(interestName);
+  const checkPasswordValidity = () => inputPasswordRef.current?.value.length as number >= 6
+    && inputPasswordRef.current?.value.length as number <= 16;
+  const checkPassword = () => inputPasswordRef.current?.value === inputPasswordCheckRef.current?.value;
+  const checkUserId = async () => {
+    const result = await getUserExistenceByUserId(inputIdRef.current?.value as string);
+    return result;
   };
 
-  const checkPassword = () => inputPasswordRef.current?.value === inputPasswordCheckRef.current?.value;
-
-  const onClickNextButton = () => {
-    if (checkPassword()) {
-      const userInfo = {
-        loginType: 'normal',
-        userId: inputIdRef.current?.value as string,
-        password: inputPasswordRef.current?.value as string,
-        userName: inputFullNameRef.current?.value as string,
-        userEmail: (location.state as {email: string}).email,
-        interesting: Array.from(selectedItems),
-      };
-
-      postSignUpUserInfo(userInfo)
-        .then(() => { history.replace('/'); });
-    } else {
+  const onClickNextButton = async () => {
+    if (!checkPasswordValidity()) {
       setToastList({
         type: 'warning',
-        title: '로그인 에러',
-        description: '비밀번호를 확인해주세요',
+        title: '비밀번호 에러',
+        description: '비밀번호는 6자 이상 16자 이하입니다.',
       });
+
+      return;
+    }
+
+    if (!checkPassword()) {
+      setToastList({
+        type: 'warning',
+        title: '비밀번호 일치 에러',
+        description: '비밀번호가 일치하지 않습니다.',
+      });
+
+      return;
+    }
+
+    const result = await checkUserId();
+
+    if (result) {
+      setToastList({
+        type: 'warning',
+        title: '아이디 중복 에러',
+        description: '이미 존재하는 아이디입니다.',
+      });
+
+      return;
+    }
+
+    const userInfo = {
+      loginType: 'normal',
+      userId: inputIdRef.current?.value as string,
+      password: inputPasswordRef.current?.value as string,
+      userName: inputFullNameRef.current?.value as string,
+      userEmail: (location.state as {email: string}).email,
+    };
+
+    postSignUpUserInfo(userInfo)
+      .then(() => { history.replace('/'); });
+  };
+
+  const keyUpEnter = (e: any) => {
+    if (!isDisabled && e.key === 'Enter') {
+      onClickNextButton();
     }
   };
 
   return (
     <>
       <SignHeader />
-      <SignBody>
+      <SignBody onKeyUp={(e) => keyUpEnter(e)}>
         <CustomInputBox>
           <SignTitle title="what’s your password?" />
           <CustomInfoInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
-          <CustomInfoInputBar key="password" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
+          <CustomInfoInputBar key="passwordCheck" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
           <SignTitle title="what’s your full name?" />
           <CustomInfoInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
           <SignTitle title="what’s your id?" />
           <CustomInfoInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
-          <SignTitle title="what’s your interests?" />
-          <InterestItemWarapper>
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-            <InterestItem onClick={onClickInterestItem} text="🐟노가리" />
-          </InterestItemWarapper>
           <DefaultButton buttonType="secondary" size="medium" onClick={onClickNextButton} isDisabled={isDisabled}>NEXT</DefaultButton>
           <Padding />
         </CustomInputBox>

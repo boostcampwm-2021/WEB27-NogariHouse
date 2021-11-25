@@ -376,3 +376,20 @@ export const getUnReadMsgCount = async () => {
     console.log(error);
   }
 };
+
+export const getUserExistenceByUserId = async (userId: string) => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${userId}?type=userIdCheck`, {
+      method: 'get',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const result = await response.json();
+    return result.ok;
+  } catch (error) {
+    console.log(error);
+  }
+};
