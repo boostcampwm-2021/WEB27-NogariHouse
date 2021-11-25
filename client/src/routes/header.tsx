@@ -1,5 +1,5 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch } from 'react-router-dom';
 
 import ActivityHeader from '@components/activity-header';
 import DefaultHeader from '@common/default-header';
@@ -10,20 +10,21 @@ import SearchHeader from '@components/search/search-header';
 import ProfileHeader from '@components/profile/profile-header';
 import FollowingHeader from '@components/profile/following-header';
 import FollowersHeader from '@components/profile/followers-header';
+import PrivateRoute from '@routes/custom/private-route';
 
 function HeaderRouter() {
   return (
     <Switch>
-      <Route exact path="/" component={DefaultHeader} />
-      <Route exact path="/search" component={SearchHeader} />
-      <Route exact path="/search/recent" component={RecentSearchHeader} />
-      <Route exact path="/activity" component={ActivityHeader} />
-      <Route exact path="/event" component={EventHeader} />
-      <Route exact path="/invite" component={InviteHeader} />
-      <Route exact path="/profile/:id" component={ProfileHeader} />
-      <Route exact path="/following/:id" component={FollowingHeader} />
-      <Route exact path="/followers/:id" component={FollowersHeader} />
-      <Route path="/" component={DefaultHeader} />
+      <PrivateRoute exact path="/" component={DefaultHeader} />
+      <PrivateRoute exact path="/search" component={SearchHeader} />
+      <PrivateRoute exact path="/search/recent" component={RecentSearchHeader} />
+      <PrivateRoute exact path="/activity" component={ActivityHeader} />
+      <PrivateRoute exact path="/event" component={EventHeader} />
+      <PrivateRoute exact path="/invite" component={InviteHeader} />
+      <PrivateRoute exact path="/profile/:id" component={ProfileHeader} />
+      <PrivateRoute exact path="/following/:id" component={FollowingHeader} />
+      <PrivateRoute exact path="/followers/:id" component={FollowersHeader} />
+      <PrivateRoute path="/" component={DefaultHeader} />
     </Switch>
   );
 }

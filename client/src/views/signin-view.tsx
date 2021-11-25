@@ -36,7 +36,7 @@ function SignInView() {
     }) => {
     if (json.result) {
       setCookie('accessToken', json.accessToken);
-      history.replace('/');
+      history.go(0);
     } else {
       setToastList({
         type: 'warning',

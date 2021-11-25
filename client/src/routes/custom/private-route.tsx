@@ -13,7 +13,7 @@ function PrivateRoute({ component: Component, ...rest }: any) {
         isAuthenticated.isLoggedIn
           // eslint-disable-next-line react/jsx-props-no-spreading
           ? (<Component {...props} />)
-          : (<Redirect to="/" />)
+          : (<Redirect to="/signin" />)
       )}
       // eslint-disable-next-line react/jsx-props-no-spreading
       {...rest}
