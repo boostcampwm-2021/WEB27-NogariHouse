@@ -161,4 +161,20 @@ export default (app: Router) => {
       res.json({ ok: false });
     }
   });
+
+  userRouter.post('/invite', authJWT, async (req: Request, res: Response) => {
+    const { userDocumentId, email } = req.body;
+    try {
+      const isUnique: boolean = await usersService.isUniqueEmail(email);
+
+      if (isUnique) {
+        const result = await usersService.sendInviteMail(userDocumentId, email);
+        res.json({ ok: result, isUnique });
+      } else {
+        res.json({ ok: false, isUnique });
+      }
+    } catch (e) {
+      res.json({ ok: false, isUnique: false });
+    }
+  });
 };
