@@ -18,7 +18,7 @@ interface IActiveFollowingUser {
 
 const socketUser = new Map();
 
-const activeUser = new Map();
+export const activeUser = new Map();
 
 export default function userHandler(socket : Socket, namespace : Namespace) {
   const handleUserJoin = ({
