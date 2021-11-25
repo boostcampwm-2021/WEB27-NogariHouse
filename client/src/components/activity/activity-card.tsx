@@ -1,8 +1,14 @@
 /* eslint-disable object-curly-newline */
 import React from 'react';
 import styled from 'styled-components';
+import { useHistory } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
 
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
+import roomDocumentIdState from '@atoms/room-document-id';
+import roomViewState from '@atoms/room-view-type';
+import anonymousState from '@atoms/anonymous';
+import isOpenRoomState from '@atoms/is-open-room';
 
 const ActivityCardLayout = styled.div`
   display: flex;
@@ -81,14 +87,27 @@ const mapping = {
   event: '님이 등록한 이벤트에 초대되셨습니다 !',
 };
 
-const activityClickEvent = (type: string, clickDocumentId: string) => {
-  alert(`${type}, ${clickDocumentId}`);
-};
-
 function ActivityCard({ type, clickDocumentId, from, date }: ActivityCardProps) {
+  const history = useHistory();
+  const setRoomView = useSetRecoilState(roomViewState);
+  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+  const setIsAnonymous = useSetRecoilState(anonymousState);
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
+
+  const activityClickEvent = () => {
+    if (type === 'follow') {
+      history.push(`/profile/${from.userId}`);
+    } else if (type === 'room') {
+      setIsAnonymous(false);
+      setRoomDocumentId(clickDocumentId);
+      setRoomView('inRoomView');
+      setIsOpenRoom(true);
+    }
+  };
+
   const time = new Date(date);
   return (
-    <ActivityCardLayout onClick={() => activityClickEvent(type, clickDocumentId)}>
+    <ActivityCardLayout onClick={activityClickEvent}>
       <LeftSide>
         <ImageLayout src={from.profileUrl} />
         <DiscriptionSpan>
