@@ -22,8 +22,7 @@ const PreviewProfileImage = styled.img`
   width: 150px;
   height: 150px;
   min-height: 150px;
-  object-fit: contain;
-  margin: 20px;
+  object-fit: cover;
   border-radius: 30px;
   border: 0.1px solid #b8b8b8;
 
@@ -48,9 +47,13 @@ const ButtonsLayout = styled.div`
 `;
 
 const CustomInput = styled.input`
-  padding:0;
-  margin-bottom: 20px;
-  width : 200px;
+  display: none;
+
+  & + label {
+      width: 200x;
+      height: 200px;
+      cursor: pointer;
+  }
 `;
 
 function ShareModal() {
@@ -95,9 +98,12 @@ function ShareModal() {
       />
       <ModalBox>
         <ChangePofileImageLayout>
-          <PreviewProfileImage src={previewImageURL} />
+          <h2>Change your photo</h2>
           <CustomForm>
-            <CustomInput type="file" accept="image/gif, image/jpeg, image/png" onChange={inputOnChange} />
+            <CustomInput id="c2" type="file" accept="image/gif, image/jpeg, image/png" onChange={inputOnChange} />
+            <label htmlFor={'c2' as string}>
+              <PreviewProfileImage src={previewImageURL} />
+            </label>
             <ButtonsLayout>
               <DefaultButton buttonType="secondary" size="medium" onClick={() => changeImageHandler()}>Change</DefaultButton>
               <DefaultButton buttonType="thirdly" size="medium" onClick={() => setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal)}>
