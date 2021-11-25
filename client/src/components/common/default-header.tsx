@@ -145,8 +145,8 @@ const MsgCount = styled.div`
   background-color: red;
 
   font-size: 12px;
+  color: white;
 `;
-
 function DefaultHeader() {
   const user = useRecoilValue(userState);
   const setNowFetching = useSetRecoilState(nowFetchingState);
