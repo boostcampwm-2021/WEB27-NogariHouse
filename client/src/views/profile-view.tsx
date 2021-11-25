@@ -52,23 +52,21 @@ const UserIdDiv = styled.div`
 const FollowBox = styled.div`
   position:relative;
   display: flex;
-  justify-content: space-between;
   align-items:center;
-
-  width: 80%;
-  margin-top: 10px;
+  width: 100%;
 `;
 
 const FollowBoxDiv = styled(Link)`
   display: flex;
   color: black;
   text-decoration: none;
+  margin: 20px 20px 20px 0;
 `;
 
 const FollowNumberDiv = styled.div`
   font-size: 28px;
   font-weight: 600;
-  margin-right: 20px;
+  margin-right: 10px;
 `;
 
 const FollowTextDiv = styled.div`
