@@ -34,7 +34,11 @@ function EventHeader() {
     <>
       <CustomtHeader>
 
-        <HeaderTitleNunito to="/event" onClick={() => { resetNowItemsList(); setNowCount(0); setNowFetching(true); }}>
+        <HeaderTitleNunito
+          to="/event"
+          style={{ fontSize: 'min(5vw, 32px)' }}
+          onClick={() => { resetNowItemsList(); setNowCount(0); setNowFetching(true); }}
+        >
           UPCOMING FOR EVERYONE
         </HeaderTitleNunito>
         <CustomMenuIconsLayout>
