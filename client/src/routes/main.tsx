@@ -12,7 +12,6 @@ import FollowingView from '@views/following-view';
 import InviteView from '@views/invite-view';
 import ProfileSettingView from '@views/profile-settings-view';
 import ProfileView from '@views/profile-view';
-import RecentSearchView from '@views/recent-search-view';
 import SearchView from '@src/views/search-view';
 import RoomView from '@src/views/room-view';
 
@@ -29,7 +28,6 @@ function MainRouter() {
       <Route exact path="/following/:id" component={FollowingView} />
       <Route exact path="/invite" component={InviteView} />
       <Route exact path="/search" component={SearchView} />
-      <Route exact path="/search/recent" component={RecentSearchView} />
       <Route exact path="/settings" component={ProfileSettingView} />
       <Route exact path="/profile/:id" component={ProfileView} />
     </Switch>
