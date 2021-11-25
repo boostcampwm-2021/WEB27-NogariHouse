@@ -13,9 +13,9 @@ export default (app: Router) => {
     try {
       const { participants } = req.body;
       participants.sort();
-      const { chatDocumentId } = await chatService.makeChatRoom(participants);
+      const { chatDocumentId, isNew } = await chatService.makeChatRoom(participants);
 
-      res.status(200).json({ chatDocumentId });
+      res.status(200).json({ chatDocumentId, isNew });
     } catch (error) {
       res.json({ ok: false });
     }

@@ -19,10 +19,12 @@ const DoneBtn = ({ selectedUserList }: any) => {
           pathname: `/chat-rooms/${res.chatDocumentId}`,
           state: { participantsInfo: selectedUserList },
         });
-        chatSocket.emit('chat:makeChat', {
-          chatDocumentId: res.chatDocumentId,
-          participantsInfo: [...selectedUserList, { userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl }],
-        });
+        if (res.isNew) {
+          chatSocket.emit('chat:makeChat', {
+            chatDocumentId: res.chatDocumentId,
+            participantsInfo: [...selectedUserList, { userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl }],
+          });
+        }
       });
   };
 
