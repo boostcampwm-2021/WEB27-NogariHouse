@@ -9,7 +9,7 @@ import SignTitle from '@components/sign/sign-title';
 import SignBody from '@components/sign/sign-body';
 import DefaultButton from '@common/default-button';
 import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
-import { postSignUpUserInfo } from '@src/api';
+import { postSignUpUserInfo, getUserExistenceByUserId } from '@src/api';
 
 const CustomInfoInputBar = styled(CustomInputBar)`
   font-size: min(5vw, 30px);
@@ -25,6 +25,7 @@ function SignupInfoView() {
   const inputPasswordCheckRef = useRef<HTMLInputElement>(null);
   const inputFullNameRef = useRef<HTMLInputElement>(null);
   const inputIdRef = useRef<HTMLInputElement>(null);
+
   const setToastList = useSetRecoilState(toastListSelector);
   const [isDisabled, setIsDisabled] = useState(true);
   const history = useHistory();
@@ -38,27 +39,57 @@ function SignupInfoView() {
     }
   }, []);
 
+  const checkPasswordValidity = () => inputPasswordRef.current?.value.length as number >= 6
+    && inputPasswordRef.current?.value.length as number <= 16;
   const checkPassword = () => inputPasswordRef.current?.value === inputPasswordCheckRef.current?.value;
+  const checkUserId = async () => {
+    const result = await getUserExistenceByUserId(inputIdRef.current?.value as string);
+    return result;
+  };
 
-  const onClickNextButton = () => {
-    if (checkPassword()) {
-      const userInfo = {
-        loginType: 'normal',
-        userId: inputIdRef.current?.value as string,
-        password: inputPasswordRef.current?.value as string,
-        userName: inputFullNameRef.current?.value as string,
-        userEmail: (location.state as {email: string}).email,
-      };
-
-      postSignUpUserInfo(userInfo)
-        .then(() => { history.replace('/'); });
-    } else {
+  const onClickNextButton = async () => {
+    if (!checkPasswordValidity()) {
       setToastList({
         type: 'warning',
-        title: '로그인 에러',
-        description: '비밀번호를 확인해주세요',
+        title: '비밀번호 에러',
+        description: '비밀번호는 6자 이상 16자 이하입니다.',
       });
+
+      return;
     }
+
+    if (!checkPassword()) {
+      setToastList({
+        type: 'warning',
+        title: '비밀번호 일치 에러',
+        description: '비밀번호가 일치하지 않습니다.',
+      });
+
+      return;
+    }
+
+    const result = await checkUserId();
+
+    if (result) {
+      setToastList({
+        type: 'warning',
+        title: '아이디 중복 에러',
+        description: '이미 존재하는 아이디입니다.',
+      });
+
+      return;
+    }
+
+    const userInfo = {
+      loginType: 'normal',
+      userId: inputIdRef.current?.value as string,
+      password: inputPasswordRef.current?.value as string,
+      userName: inputFullNameRef.current?.value as string,
+      userEmail: (location.state as {email: string}).email,
+    };
+
+    postSignUpUserInfo(userInfo)
+      .then(() => { history.replace('/'); });
   };
 
   const keyUpEnter = (e: any) => {
