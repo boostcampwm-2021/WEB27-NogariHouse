@@ -16,6 +16,7 @@ import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
 import useChatSocket from '@src/utils/chat-socket';
 import { chatReducer, initialState } from '@components/chat/reducer';
+import NotFoundChatView from '@src/views/chat-not-found-view';
 
 type urlParams = { chatDocumentId: string };
 
@@ -85,7 +86,7 @@ function ChatRoomDetailView() {
   const { chatDocumentId } = useParams<urlParams>();
   const location = useLocation<any>();
   const user = useRecoilValue(userState);
-  const chattingLogDiv = useRef(null);
+  const chattingLogDiv = useRef<HTMLDivElement>(null);
   const chatSocket = useChatSocket();
   const [chatState, dispatch] = useReducer(chatReducer, initialState);
 
@@ -100,11 +101,12 @@ function ChatRoomDetailView() {
   };
 
   useEffect(() => {
+    if (!chattingLogDiv.current) return;
     getChattingLog(chatDocumentId)
       .then((res: any) => {
         setUnCheckedMsg0(chatDocumentId, user.userDocumentId);
         dispatch({ type: 'UPDATE', payload: { responseChattingLog: res.chattingLog, participantsInfo: location.state.participantsInfo, user } });
-        (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
+        chattingLogDiv.current!.scrollTop = chattingLogDiv.current!.scrollHeight - chattingLogDiv.current!.clientHeight;
       });
     return () => {
       setUnCheckedMsg0(chatDocumentId, user.userDocumentId).then(() => {
@@ -114,7 +116,8 @@ function ChatRoomDetailView() {
   }, [chatDocumentId]);
 
   useEffect(() => {
-    (chattingLogDiv as any).current.scrollTop = (chattingLogDiv as any).current.scrollHeight - (chattingLogDiv as any).current.clientHeight;
+    if (!chattingLogDiv.current) return;
+    chattingLogDiv.current.scrollTop = chattingLogDiv.current.scrollHeight - chattingLogDiv.current.clientHeight;
   }, [chatState.chattingLog]);
 
   useEffect(() => {
@@ -128,6 +131,10 @@ function ChatRoomDetailView() {
       chatSocket.off('chat:sendMsg');
     };
   }, [chatSocket]);
+
+  if (!location.state) {
+    return (<NotFoundChatView />);
+  }
 
   return (
     <ChatRoomsLayout>
