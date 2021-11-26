@@ -12,21 +12,21 @@ import styled from 'styled-components';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
 import searchTypeState from '@atoms/search-type';
 import OptionBar from '@components/search/option-bar';
-import {
-  SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection, ItemDiv,
-} from '@components/search/style';
-import LoadingSpinner from '@common/loading-spinner';
-import useSetEventModal from '@hooks/useSetEventModal';
-import { makeEventToCard } from '@views/event-view';
-import { makeRoomToCard } from '@views/room-view';
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import followingListState from '@atoms/following-list';
 import userState from '@atoms/user';
+import {
+  SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection, ItemDiv,
+} from '@components/search/style';
+import LoadingSpinner from '@common/loading-spinner';
 import UserCard from '@common/user-card';
-import useItemFecthObserver from '@src/hooks/useItemFetchObserver';
-import useFetchItems from '@src/hooks/useFetchItems';
-import { IUserForCard } from '@src/interfaces';
+import useSetEventModal from '@hooks/useSetEventModal';
+import useItemFecthObserver from '@hooks/useItemFetchObserver';
+import useFetchItems from '@hooks/useFetchItems';
+import { makeUserObjectIncludedIsFollow } from '@utils/index';
+import { makeEventToCard } from '@views/event-view';
+import { makeRoomToCard } from '@views/room-view';
 
 const ObserverBlock = styled.div`
   position: relative;
@@ -46,13 +46,13 @@ function SearchView() {
   const resetItemList = useResetRecoilState(nowItemsListState);
   const followingList = useRecoilValue(followingListState);
   const searchInfoRef = useRef({ keyword: 'recent', option: 'all' });
-  const [nowItemsList, nowItemType] = useFetchItems<any>(
+  const [nowItemsList] = useFetchItems<any>(
     `/search/${searchInfoRef.current.option}/${searchInfoRef.current.keyword || 'recent'}`,
     searchInfoRef.current.keyword,
   );
   const setNowCount = useSetRecoilState(nowCountState);
-
   const setEventModal = useSetEventModal();
+  const debounceTimeoutIDRef = useRef<NodeJS.Timeout>();
 
   const searchRequestHandler = () => {
     searchInfoRef.current.keyword = inputKeywordRef.current?.value as string;
@@ -62,17 +62,12 @@ function SearchView() {
     setNowFetching(true);
   };
 
-  useEffect(() => {
-    searchRequestHandler();
-  }, [searchType]);
-
-  useEffect(() => {
-    if (nowItemsList && (nowItemType === 'recent' || nowItemType === inputKeywordRef.current?.value)) {
-      setLoading(false);
-    } else {
-      setLoading(true);
-    }
-  }, []);
+  const onChangeHandler = () => {
+    if (debounceTimeoutIDRef.current) clearTimeout(debounceTimeoutIDRef.current);
+    debounceTimeoutIDRef.current = setTimeout(() => {
+      searchRequestHandler();
+    }, 200);
+  };
 
   const roomCardClickHandler = (e: MouseEvent) => {
     const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
@@ -82,11 +77,6 @@ function SearchView() {
     else console.error('no room-id');
   };
 
-  const makeUserObjectIncludedIsFollow = (userItem: Required<IUserForCard>): IUserForCard => ({
-    ...userItem,
-    isFollow: !!followingList.includes(userItem._id),
-  });
-
   const makeItemToCardForm = (item: any) => {
     if (item.type === 'event') {
       return <ItemDiv key={item.key} onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
@@ -94,16 +84,9 @@ function SearchView() {
 
     if (item.type === 'user') {
       if (item._id === user.userDocumentId) return '';
-      const newUserItemForm = makeUserObjectIncludedIsFollow(item);
+      const newUserItemForm = makeUserObjectIncludedIsFollow(item, followingList);
 
-      return (
-        <UserCard
-          // eslint-disable-next-line no-underscore-dangle
-          key={newUserItemForm._id}
-          cardType="follow"
-          userData={newUserItemForm}
-        />
-      );
+      return <UserCard key={newUserItemForm._id} cardType="follow" userData={newUserItemForm} />;
     }
 
     if (item.type === 'room') {
@@ -113,25 +96,22 @@ function SearchView() {
     return <div />;
   };
 
-  const showList = () => {
-    if (searchInfoRef.current.option !== searchType.toLocaleLowerCase()) {
-      return <LoadingSpinner />;
-    }
+  useEffect(() => {
+    searchRequestHandler();
+  }, [searchType]);
 
-    return <>{nowItemsList.map(makeItemToCardForm)}</>;
-  };
+  useEffect(() => {
+    setLoading(false);
+  }, []);
 
   return (
     <SearchViewLayout>
       <SearchBarLayout>
-        <SearchInput ref={inputKeywordRef} placeholder="🔍 Search ClubHouse" onChange={searchRequestHandler} onKeyUp={searchRequestHandler} />
-        {/* 너무 빨리 입력하는 경우 놓치게되어서 onChange, onKeyup을 둘 다 달았습니다..  */}
+        <SearchInput ref={inputKeywordRef} placeholder="🔍 Search ClubHouse" onChange={onChangeHandler} />
         <OptionBar />
       </SearchBarLayout>
       <SearchScrollSection>
-        {loading
-          ? <LoadingSpinner />
-          : showList()}
+        {!loading && <>{nowItemsList.map(makeItemToCardForm)}</>}
         <ObserverBlock ref={targetRef}>
           {nowFetching && <LoadingSpinner />}
         </ObserverBlock>
