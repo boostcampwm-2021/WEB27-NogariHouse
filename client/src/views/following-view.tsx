@@ -7,22 +7,18 @@ import useFetchItems from '@src/hooks/useFetchItems';
 import followingListState from '@atoms/following-list';
 import UserCard from '@common/user-card';
 import userState from '@atoms/user';
-import { IUserForCard } from '@src/interfaces';
+import { IUserForCard } from '@interfaces/index';
+import { makeUserObjectIncludedIsFollow } from '@utils/index';
 
 function FollowingView({ match }: any) {
   const userId = match.params.id;
   const [nowItemList, nowItemType] = useFetchItems<Required<IUserForCard>>(`/user/followings/${userId}`, 'followings');
   const [loading, setLoading] = useState(true);
-  const myFollowingList = useRecoilValue(followingListState);
+  const followingList = useRecoilValue(followingListState);
   const user = useRecoilValue(userState);
 
-  const makeUserObjectIncludedIsFollow = (userItem: Required<IUserForCard>): IUserForCard => ({
-    ...userItem,
-    isFollow: !!myFollowingList.includes(userItem._id),
-  });
-
   const makeItemToCardForm = (item: Required<IUserForCard>) => {
-    const newUserItemForm = makeUserObjectIncludedIsFollow(item);
+    const newUserItemForm = makeUserObjectIncludedIsFollow(item, followingList);
     if (newUserItemForm._id === user.userDocumentId) {
       return (
         <UserCard
