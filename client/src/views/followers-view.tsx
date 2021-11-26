@@ -9,7 +9,7 @@ import followingListState from '@atoms/following-list';
 import UserCard from '@common/user-card';
 import userState from '@atoms/user';
 import { IUserForCard } from '@src/interfaces';
-import { makeUserObjectIncludedIsFollow } from '@src/utils';
+import { makeUserObjectIncludedIsFollow } from '@utils/item';
 
 function FollowerView({ match }: RouteComponentProps<{id: string}>) {
   const userId = match.params.id;

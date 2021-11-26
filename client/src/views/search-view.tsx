@@ -24,7 +24,7 @@ import UserCard from '@common/user-card';
 import useSetEventModal from '@hooks/useSetEventModal';
 import useItemFecthObserver from '@hooks/useItemFetchObserver';
 import useFetchItems from '@hooks/useFetchItems';
-import { makeUserObjectIncludedIsFollow } from '@utils/index';
+import { makeUserObjectIncludedIsFollow } from '@utils/item';
 import { makeEventToCard } from '@views/event-view';
 import { makeRoomToCard } from '@views/room-view';
 
@@ -77,13 +77,13 @@ function SearchView() {
     else console.error('no room-id');
   };
 
-  const makeItemToCardForm = (item: any) => {
+  const makeItemToCardForm = (item: any): JSX.Element => {
     if (item.type === 'event') {
       return <ItemDiv key={item.key} onClick={setEventModal}>{makeEventToCard(item)}</ItemDiv>;
     }
 
     if (item.type === 'user') {
-      if (item._id === user.userDocumentId) return '';
+      if (item._id === user.userDocumentId) return <></>;
       const newUserItemForm = makeUserObjectIncludedIsFollow(item, followingList);
 
       return <UserCard key={newUserItemForm._id} cardType="follow" userData={newUserItemForm} />;

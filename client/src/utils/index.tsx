@@ -1,8 +1,7 @@
-/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { IconAndLink, IUserForCard } from '@interfaces/index';
+import { IconAndLink } from '@interfaces/index';
 import { Cookies } from 'react-cookie';
 
 interface Params {
@@ -53,8 +52,3 @@ export const signOutHandler = async () => {
   removeAccessToken();
   window.location.replace('/');
 };
-
-export const makeUserObjectIncludedIsFollow = (userItem: Required<IUserForCard>, followingList: string[]): IUserForCard => ({
-  ...userItem,
-  isFollow: !!followingList.includes(userItem._id),
-});

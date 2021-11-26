@@ -8,7 +8,7 @@ import followingListState from '@atoms/following-list';
 import UserCard from '@common/user-card';
 import userState from '@atoms/user';
 import { IUserForCard } from '@interfaces/index';
-import { makeUserObjectIncludedIsFollow } from '@utils/index';
+import { makeUserObjectIncludedIsFollow } from '@src/utils/item';
 
 function FollowingView({ match }: any) {
   const userId = match.params.id;
