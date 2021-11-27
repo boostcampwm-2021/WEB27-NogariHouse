@@ -9,6 +9,7 @@ const TitleDiv = styled.div`
   width: max-content;
   font-size: min(6vw, 60px);
   text-align: center;
+  margin-bottom: 10px;
   
 `;
 
