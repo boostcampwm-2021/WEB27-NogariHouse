@@ -66,9 +66,9 @@ function SignupInfoView() {
       return;
     }
 
-    const result = await checkUserId();
+    const isExistedId = await checkUserId();
 
-    if (result) {
+    if (isExistedId) {
       setToastList({
         type: 'warning',
         title: '아이디 중복 에러',
