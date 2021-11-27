@@ -100,11 +100,11 @@ function SignUpView() {
     <>
       {loading && <CustomBackgroundWrapper><LoadingSpinner /></CustomBackgroundWrapper>}
       <SignHeader />
-      <SignBody onKeyUp={(e) => keyUpEnter(e)}>
+      <SignBody>
         {isEmailInputView
           ? <SignTitle title="sign up with user email" />
           : <SignTitle title="enter the verification code" />}
-        <CustomInputBox>
+        <CustomInputBox onKeyUp={(e) => keyUpEnter(e)}>
           {isEmailInputView
             ? (
               <CustomInputBar
