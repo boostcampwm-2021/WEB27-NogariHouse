@@ -1,5 +1,28 @@
 /* eslint-disable */
 
+/*
+
+용어 정리
+BaseAudioContext vs AudioContext => BaseAudioContext가 AudioContext의 조상
+
+AudioParam 인터페이스는 오디오 관련 매개 변수를 나타냄 => GainNode.gain이 AudioParam
+AudioParam은 특정 값으로 설정하거나 변경 가능 & 특정 시간에 특정 패턴을 따르도록 할 수 있음
+
+BaseAudioContext.createGain => GainNode 생성
+
+GainNode => 음량의 변경을 나타냄, 출력되기 전에 입력 데이터에 주어진 음량 조정을 할 수 있음. GainNode.gain을 통해 변경
+
+createBufferSource => 데이터를 넣거나 AudioBufferSourceNode를 통해 재생될 수 잇는 새로운 빈 AudioBuffer 생성
+
+AudioBuffer => 로우 데이터를 메모리상에 두고 사용 45초 이하의 오디오 정보를 가지고 있다.
+sample: 특정시간에 출력되는 사운드에 대응하는 float32 값
+frame: 특정시간에 출력되는 각 channel의 사우드에 대응하는 Sample 집합 (frame = sample/channel)
+sample Rate: 초당 출력되는 Frame의 수 (Hz)
+
+setTargetAtTime => 특정 시간에 특정 패턴을 따르도록 할 수 있음
+
+*/
+
 var delayTime = 0.100;
 var fadeTime = 0.050;
 var bufferTime = 0.100;
@@ -140,8 +163,6 @@ function createDelayTimeBuffer(context, activeTime, fadeTime, shiftUp) {
   const buffer = context.createBuffer(1, length, context.sampleRate);
   const p = buffer.getChannelData(0);
 
-  console.log(`createDelayTimeBuffer() length = ${length}`);
-
   // 1st part of cycle
   for (var i = 0; i < length1; ++i) {
     if (shiftUp)
@@ -165,8 +186,6 @@ function createFadeBuffer(context, activeTime, fadeTime) {
     var length = length1 + length2;
     var buffer = context.createBuffer(1, length, context.sampleRate);
     var p = buffer.getChannelData(0);
-    
-    console.log("createFadeBuffer() length = " + length);
     
     var fadeLength = fadeTime * context.sampleRate;
 
