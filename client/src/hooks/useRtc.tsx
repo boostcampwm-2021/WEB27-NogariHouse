@@ -108,7 +108,7 @@ export const useRtc = <T extends IRTC>(): [
   Socket | undefined,
   MutableRefObject<MediaStream | null>
 ] => {
-  const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
+  const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection | null}>({});
   const [participants, setParticipants] = useState<Array<T>>([]);
   const isAnonymous = useRecoilValue(anonymousState);
   const roomDocumentId = useRecoilValue(roomDocumentIdState);
@@ -169,16 +169,23 @@ export const useRtc = <T extends IRTC>(): [
     });
 
     socket.on('room:leave', async (socketId: string) => {
-      peerConnectionsRef.current[socketId].close();
+      peerConnectionsRef.current[socketId]!.close();
+      peerConnectionsRef.current[socketId] = null;
       delete peerConnectionsRef.current[socketId];
       setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.socketId !== socketId));
     });
 
     return () => {
-      participants.forEach((participant) => {
-        if (!peerConnectionsRef.current[participant.userDocumentId]) return;
-        peerConnectionsRef.current[participant.userDocumentId].close();
-        delete peerConnectionsRef.current[participant.userDocumentId];
+      setParticipants((oldParticipants) => {
+        oldParticipants.forEach((participant) => {
+          if (!peerConnectionsRef.current[participant.socketId as string]) return;
+          peerConnectionsRef.current[participant.userDocumentId]!.close();
+          peerConnectionsRef.current[participant.userDocumentId]!.onicecandidate = null;
+          peerConnectionsRef.current[participant.userDocumentId]!.ontrack = null;
+          peerConnectionsRef.current[participant.userDocumentId] = null;
+          delete peerConnectionsRef.current[participant.userDocumentId];
+        });
+        return [];
       });
 
           myStreamRef.current!.getTracks()
