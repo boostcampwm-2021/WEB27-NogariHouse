@@ -59,7 +59,7 @@ class ChatService {
   async getChattingLog(chatDocumentId: string, count: number) {
     const chattingLog = await Chats.findOne({ _id: chatDocumentId }, ['chattingLog']);
     const size = chattingLog!.chattingLog.length;
-    if (count >= Math.floor(size / 10) * 10 + 10) return { chattingLog: [] };
+    if (count >= size) return { chattingLog: [] };
     if (Math.floor(size / 10) === Math.floor(count / 10)) return { chattingLog: chattingLog!.chattingLog.slice(0, size % 10).reverse() };
     return { chattingLog: chattingLog!.chattingLog.slice(size - count - 10, size - count).reverse() };
   }

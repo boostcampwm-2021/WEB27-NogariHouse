@@ -98,7 +98,6 @@ function ChatRoomDetailView() {
   const chatSocket = useChatSocket();
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
   const [chatState, dispatch] = useReducer(chatReducer, initialState);
-  const [count, setCount] = useState(0);
   const targetRef = useRef<HTMLDivElement>(null);
   const [nowFetching, setNowFetching] = useState(true);
   let previousY = 0;
@@ -133,10 +132,9 @@ function ChatRoomDetailView() {
 
   useEffect(() => {
     if (nowFetching) {
-      getChattingLog(chatDocumentId, count)
+      getChattingLog(chatDocumentId, chatState.chattingLog.length)
         .then((res: any) => {
           setNowFetching(false);
-          setCount((oldCount) => oldCount + 10);
           dispatch({ type: 'UPDATE', payload: { responseChattingLog: res.chattingLog, participantsInfo: location.state.participantsInfo, user } });
         });
     }
