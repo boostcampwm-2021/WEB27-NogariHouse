@@ -10,7 +10,7 @@ import {
 import EventModal from '@components/event/event-modal';
 import EventRegisterModal from '@components/event/event-register-modal';
 import ShareModal from '@components/profile/share-modal';
-import FollowerSelectModal from '@src/components/room/follower-select-room-modal';
+import FollowerSelectModal from '@src/components/room/modal/follower-select';
 import ChangeProfileImageModal from '@components/profile/change-profile-image-modal';
 
 function BodyModal() {

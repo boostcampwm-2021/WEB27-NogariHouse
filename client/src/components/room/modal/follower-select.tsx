@@ -5,7 +5,7 @@ import { useSetRecoilState } from 'recoil';
 
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import UserCardList from '@components/common/user-card-list';
-import FollowerSelectRoomHeader from '@components/room/follower-select-room-header';
+import FollowerSelectRoomHeader from '@src/components/room/modal/follower-select-header';
 import { BackgroundWrapper, ModalBox } from '@common/modal';
 import {
   SelectDiv, SelectInputBar, SelectedUserDiv, SelectUserComponent,
