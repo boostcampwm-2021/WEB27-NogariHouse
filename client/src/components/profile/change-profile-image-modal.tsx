@@ -1,14 +1,16 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 
+import followingListState from '@atoms/following-list';
 import toastListSelector from '@selectors/toast-list';
 import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import userState from '@atoms/user';
 import DefaultButton from '@common/default-button';
 import { changeProfileImage } from '@src/api';
+import useUserSocket from '@utils/user-socket';
 
 const ChangePofileImageLayout = styled.div`
   width: 100%;
@@ -63,6 +65,7 @@ function ShareModal() {
   const setToastList = useSetRecoilState(toastListSelector);
   const [previewImageURL, setPreviewImageURL] = useState(user.profileUrl);
   const [potentialProfileImage, setPotentialProfileImage] = useState<any>(null);
+  const followingList = useRecoilValue(followingListState);
 
   const inputOnChange = (e : any) => {
     if (e.target.files[0]) {
@@ -81,13 +84,19 @@ function ShareModal() {
       // eslint-disable-next-line max-len
       const response = await changeProfileImage(user.userDocumentId, formData) as any;
       const { newProfileUrl } = response;
-      setUser({ ...user, profileUrl: newProfileUrl });
+      setUser((oldUser) => ({ ...oldUser, profileUrl: newProfileUrl }));
       setIsOpenChangeProfileImageModalState(!isOpenChangeProfileImageModal);
       setToastList({
         type: 'success',
         title: '프로필 설정',
         description: '지정한 이미지로 변경이 완료됐습니다',
       });
+      const userSocket = useUserSocket();
+      if (userSocket) {
+        userSocket.emit('user:join', {
+          ...user, profileUrl: newProfileUrl, followingList,
+        });
+      }
     }
   };
 
