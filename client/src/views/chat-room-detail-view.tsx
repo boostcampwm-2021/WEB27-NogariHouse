@@ -132,6 +132,7 @@ function ChatRoomDetailView() {
   };
 
   useEffect(() => {
+    if (!location.state) return;
     if (nowFetching) {
       getChattingLog(chatDocumentId, chatState.chattingLog.length)
         .then((res: any) => {
