@@ -1,3 +1,5 @@
+import Jungle from './jungle.js';
+
 /* eslint-disable */
 export default class SoundMeter {
     context: any;
@@ -62,8 +64,18 @@ export default class SoundMeter {
       try {
         this.mic = this.context.createMediaStreamSource(stream);
         if(isAnonymous) {
+          let pitchChangeEffect = new Jungle( this.context );
+          let compressor = this.context.createDynamicsCompressor();
+          this.mic.connect(pitchChangeEffect.input);
+          pitchChangeEffect.output.connect(compressor);
+          pitchChangeEffect.setPitchOffset(1.9);
+  
           this.mic.connect(this.pitchShifterProcessor);
-          this.pitchShifterProcessor.connect(this.context.destination);
+          // this.pitchShifterProcessor.connect(this.context.destination);
+
+          // this.pitchShifterProcessor.connect(compressor);
+          
+          compressor.connect(this.context.destination);
         }else { 
           this.mic.connect(this.script);
           this.script.connect(this.context.destination);
