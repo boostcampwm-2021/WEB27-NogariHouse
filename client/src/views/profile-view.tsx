@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import followingListState from '@atoms/following-list';
 import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import userState from '@atoms/user';
+import { getUserDetail } from '@api/user';
 import LoadingSpinner from '@common/loading-spinner';
 import DefaultButton from '@common/default-button';
 import useIsFollowingRef from '@hooks/useIsFollowingRef';
@@ -105,19 +106,16 @@ function ProfileView({ match }: RouteComponentProps<{id: string}>) {
 
   useEffect(() => {
     setLoading(true);
-    const getUserDetail = async () => {
-      const result = await fetch(`${process.env.REACT_APP_API_URL}/api/user/${profileId}?type=userId`, {
-        method: 'get',
-        credentials: 'include',
-      }).then((res) => res.json());
-      if (result.ok) {
-        userDetailInfo.current = result.userDetailInfo;
-        isFollowingRef.current = followingList.includes(result.userDetailInfo._id);
+    const fetchUserDetail = async () => {
+      const json = await getUserDetail(profileId);
+      if (json && json.ok) {
+        userDetailInfo.current = json.userDetailInfo;
+        isFollowingRef.current = followingList.includes(json.userDetailInfo!._id);
       }
       setLoading(false);
     };
 
-    getUserDetail();
+    fetchUserDetail();
   }, [isFollowingRef.current, profileId, user]);
 
   if (loading) {

@@ -15,7 +15,7 @@ import { signOutHandler } from '@utils/index';
 const MenuModalBox = styled.div`
   position: fixed;
   width: 300px;
-  height: 100vh;
+  height: -webkit-fill-available;
   top: 0px;
   display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'hidden')};
   flex-direction: column;

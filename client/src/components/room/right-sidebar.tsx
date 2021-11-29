@@ -22,6 +22,10 @@ const RoomModalLayout = styled.div`
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   position: relative;
 
+  @media (max-width: 1024px){
+    height: -webkit-fill-available;
+  };
+
 `;
 
 function RightSideBar() {
