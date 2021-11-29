@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -36,9 +36,9 @@ function SelectModeRoomModal() {
     setModeType(mode);
   };
 
-  const submitButtonHandler = useCallback(() => {
+  const submitButtonHandler = () => {
     setViewAnonymous(modeType);
-  }, []);
+  };
 
   const clickGotoEvent = () => {
     setRoomView('createRoomView');
