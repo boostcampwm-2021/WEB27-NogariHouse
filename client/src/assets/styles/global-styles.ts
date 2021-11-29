@@ -30,8 +30,8 @@ const GlobalStyle = createGlobalStyle`
     font-size: 16px;
     background-color: #F1F0E4;
     width: 100vw;
-    height: 100vh;
-    max-height: -webkit-fill-available;
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
     min-width: 320px;
     user-select: none;
     overflow: hidden;

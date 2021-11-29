@@ -21,6 +21,15 @@ const InviteBody = styled.div`
   height: 100%;
 `;
 
+const InviteInputLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width:100%;
+`;
+
 const InputTitle = styled.div`
   width: max-content;
   font-size: min(6vw, 40px);
@@ -86,16 +95,18 @@ function InviteView({ history }: RouteComponentProps) {
   return (
     <InviteBody>
       {loading && <LoadingSpinner />}
-      <InputTitle> enter the email to invite </InputTitle>
-      <CustomInputBox>
-        <CustomInputBar
-          key="text"
-          ref={inputEmailRef}
-          onChange={inputOnChange}
-          type="text"
-          placeholder="E-mail Address"
-        />
-      </CustomInputBox>
+      <InviteInputLayout>
+        <InputTitle> Enter the email to invite </InputTitle>
+        <CustomInputBox>
+          <CustomInputBar
+            key="text"
+            ref={inputEmailRef}
+            onChange={inputOnChange}
+            type="text"
+            placeholder="E-mail Address"
+          />
+        </CustomInputBox>
+      </InviteInputLayout>
       <DefaultButton
         buttonType="secondary"
         size="medium"

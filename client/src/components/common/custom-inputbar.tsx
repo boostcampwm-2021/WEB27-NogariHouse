@@ -9,7 +9,7 @@ export const CustomInputBar = styled.input`
   &:focus {
     outline: none;
   }
-  margin: 10px;
+  margin: 10px 0;
   padding: 0 30px;
   border-radius: 10px;
   box-shadow: 0 2px 2px 0 #d6d6d6;
@@ -21,5 +21,21 @@ export const CustomInputBox = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 60%;
-  margin: 20px;
+`;
+
+export const InputLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  height: 100%;
+  width: 100%;
+`;
+
+export const CustomInputBoxLayout = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-bottom : 30px;
 `;

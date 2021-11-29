@@ -8,16 +8,14 @@ import SignHeader from '@components/sign/sign-header';
 import SignTitle from '@components/sign/sign-title';
 import SignBody from '@components/sign/sign-body';
 import DefaultButton from '@common/default-button';
-import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
+import {
+  CustomInputBox, CustomInputBar, InputLayout, CustomInputBoxLayout,
+} from '@common/custom-inputbar';
 import { postSignUpUserInfo, getUserExistenceByUserId } from '@src/api';
 
 const CustomInfoInputBar = styled(CustomInputBar)`
   font-size: min(5vw, 30px);
   width: 70%;
-`;
-
-const Padding = styled.div`
-  padding: 20px;
 `;
 
 function SignupInfoView() {
@@ -68,9 +66,9 @@ function SignupInfoView() {
       return;
     }
 
-    const result = await checkUserId();
+    const isExistedId = await checkUserId();
 
-    if (result) {
+    if (isExistedId) {
       setToastList({
         type: 'warning',
         title: '아이디 중복 에러',
@@ -101,18 +99,31 @@ function SignupInfoView() {
   return (
     <>
       <SignHeader />
-      <SignBody onKeyUp={(e) => keyUpEnter(e)}>
-        <CustomInputBox>
-          <SignTitle title="what’s your password?" />
-          <CustomInfoInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
-          <CustomInfoInputBar key="passwordCheck" ref={inputPasswordCheckRef} onChange={inputOnChange} type="password" placeholder="Password Check" />
-          <SignTitle title="what’s your full name?" />
-          <CustomInfoInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
-          <SignTitle title="what’s your id?" />
-          <CustomInfoInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
+      <SignBody>
+        <InputLayout>
+          <CustomInputBox onKeyUp={(e) => keyUpEnter(e)}>
+            <CustomInputBoxLayout>
+              <SignTitle title="what’s your password?" />
+              <CustomInfoInputBar key="password" ref={inputPasswordRef} onChange={inputOnChange} type="password" placeholder="Password" />
+              <CustomInfoInputBar
+                key="passwordCheck"
+                ref={inputPasswordCheckRef}
+                onChange={inputOnChange}
+                type="password"
+                placeholder="Password Check"
+              />
+            </CustomInputBoxLayout>
+            <CustomInputBoxLayout>
+              <SignTitle title="what’s your full name?" />
+              <CustomInfoInputBar key="fullName" ref={inputFullNameRef} onChange={inputOnChange} type="text" placeholder="Full name" />
+            </CustomInputBoxLayout>
+            <CustomInputBoxLayout>
+              <SignTitle title="what’s your id?" />
+              <CustomInfoInputBar key="id" ref={inputIdRef} onChange={inputOnChange} type="text" placeholder="Nick name" />
+            </CustomInputBoxLayout>
+          </CustomInputBox>
           <DefaultButton buttonType="secondary" size="medium" onClick={onClickNextButton} isDisabled={isDisabled}>NEXT</DefaultButton>
-          <Padding />
-        </CustomInputBox>
+        </InputLayout>
       </SignBody>
     </>
   );

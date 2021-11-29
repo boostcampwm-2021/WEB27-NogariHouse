@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { HiChevronDoubleLeft } from 'react-icons/hi';
 import styled from 'styled-components';
 
@@ -97,17 +97,19 @@ const CloseButton = styled.button`
 `;
 
 function MainView() {
-  const isOpenRoom = useRecoilValue(isOpenRoomState);
+  const [isOpenRoom, setIsOpenRoom] = useRecoilState(isOpenRoomState);
   const [isOpenActiveFollowingModal, setIsOpenActiveFollowingModal] = useRecoilState(isOpenActiveFollowingModalState);
   const RightSideBarLayoutRef = useRef<HTMLDivElement>(null);
+  const LeftSideBarLayoutRef = useRef<HTMLDivElement>(null);
 
-  useOutsideClick(RightSideBarLayoutRef);
+  useOutsideClick(RightSideBarLayoutRef, setIsOpenRoom);
+  useOutsideClick(LeftSideBarLayoutRef, setIsOpenActiveFollowingModal);
 
   return (
     <>
       <HeaderRouter />
       <SectionLayout>
-        <ActiveFollowingLayout state={isOpenActiveFollowingModal} onClick={() => setIsOpenActiveFollowingModal(false)}>
+        <ActiveFollowingLayout state={isOpenActiveFollowingModal} ref={LeftSideBarLayoutRef}>
           <LeftSideBar />
           <ActiveFollowingFooter>
             <CloseButton onClick={() => setIsOpenActiveFollowingModal(false)}>
