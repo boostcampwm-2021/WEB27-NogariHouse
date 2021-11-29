@@ -14,10 +14,9 @@ export function chatReducer(state: any, action: any): any {
 
   switch (type) {
     case 'ADD_CHATTING_LOG': {
-      const { chatLog, chattingLogDiv } = payload;
+      const { chatLog } = payload;
       const newChattingLog = deepCopy(state.chattingLog);
       newChattingLog.unshift(chatLog);
-      chattingLogDiv.scrollTop = chattingLogDiv.scrollHeight - chattingLogDiv.clientHeight;
 
       return { ...state, chattingLog: newChattingLog };
     }

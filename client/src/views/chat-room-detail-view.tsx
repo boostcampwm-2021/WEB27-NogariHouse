@@ -104,7 +104,8 @@ function ChatRoomDetailView() {
   let previousRatio = 0;
 
   const addChattingLog = (chatLog: any) => {
-    dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog, chattingLogDiv: chattingLogDiv.current } });
+    dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog } });
+    chattingLogDiv.current!.scrollTop = chattingLogDiv.current!.scrollHeight - chattingLogDiv.current!.clientHeight;
   };
 
   const onIntersect = async (entries: IntersectionObserverEntry[]) => {
