@@ -265,10 +265,10 @@ export const getMyInfo = async () => {
   }
 };
 
-export const getChattingLog = async (chatDocumentId: string) => {
+export const getChattingLog = async (chatDocumentId: string, count: number) => {
   try {
     let response = await fetch(
-      `${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log/${chatDocumentId}`,
+      `${process.env.REACT_APP_API_URL}/api/chat-rooms/chat-log/${chatDocumentId}?count=${count}`,
       {
         method: 'get',
         credentials: 'include',

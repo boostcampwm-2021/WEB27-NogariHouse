@@ -55,6 +55,7 @@ export default function ChatRoomFooter({
   const sendEvent = async () => {
     if (!messageInputRef.current) return;
     const message = messageInputRef.current.value;
+    const nowDate = new Date();
     messageInputRef.current.value = '';
 
     if (message.trim() === '') return;
@@ -64,8 +65,9 @@ export default function ChatRoomFooter({
       userName: user.userName,
       profileUrl: user.profileUrl,
       message,
-      date: makeDateToHourMinute(new Date()),
+      date: makeDateToHourMinute(nowDate),
       chatDocumentId,
+      key: `${nowDate.getTime()}_${user.userDocumentId}`,
     });
     chatSocket?.emit('chat:alertMsg', { participants, chatDocumentId });
     chatSocket?.emit('chat:updateCount', participants);

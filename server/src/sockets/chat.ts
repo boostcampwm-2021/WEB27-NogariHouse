@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable array-callback-return */
 /* eslint-disable prefer-destructuring */
 import { Socket, Namespace } from 'socket.io';
@@ -10,13 +11,13 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
 
   const sendMsgHandler = async (payload: any) => {
     const {
-      userDocumentId, userName, profileUrl, message, chatDocumentId, date,
+      userDocumentId, userName, profileUrl, message, chatDocumentId, date, key,
     } = payload;
     const chattingLog = { date: new Date(), userDocumentId, message };
     await chatService.addChattingLog(chattingLog, chatDocumentId, userDocumentId);
 
     socket.to(chatDocumentId).emit('chat:sendMsg', {
-      userDocumentId, userName, profileUrl, message, date,
+      userDocumentId, userName, profileUrl, message, date, key,
     });
   };
 
@@ -45,7 +46,7 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
   const inviteRoomHandler = (payload: any) => {
     const {
       // eslint-disable-next-line no-unused-vars
-      participants, message, roomDocumentId, userInfo, date,
+      participants, message, roomDocumentId, userInfo, date, key,
     } = payload;
     participants.forEach(async (participant: any) => {
       const { chatRoom, chatDocumentId, isNew } = await chatService.makeChatRoom([participant.userDocumentId, userInfo.userDocumentId].sort());
@@ -57,7 +58,7 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
       }, chatDocumentId, userInfo.userDocumentId);
 
       namespace.to(chatDocumentId.toString()).emit('chat:sendMsg', {
-        userDocumentId: userInfo.userDocumentId, userName: userInfo.userName, profileUrl: userInfo.profileUrl, message, date, linkTo: roomDocumentId,
+        userDocumentId: userInfo.userDocumentId, userName: userInfo.userName, profileUrl: userInfo.profileUrl, message, date, linkTo: roomDocumentId, key,
       });
 
       if (isNew) {

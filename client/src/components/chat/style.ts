@@ -41,6 +41,9 @@ export const ChattingLog = styled.div`
   width: 100%;
   height: calc(97% - 150px);
 
+  display: flex;
+  flex-direction: column-reverse;
+
   ${whiteScroll};
 `;
 

@@ -14,9 +14,10 @@ export function chatReducer(state: any, action: any): any {
 
   switch (type) {
     case 'ADD_CHATTING_LOG': {
-      const { chatLog } = payload;
+      const { chatLog, chattingLogDiv } = payload;
       const newChattingLog = deepCopy(state.chattingLog);
-      newChattingLog.push(chatLog);
+      newChattingLog.unshift(chatLog);
+      chattingLogDiv.scrollTop = chattingLogDiv.scrollHeight - chattingLogDiv.clientHeight;
 
       return { ...state, chattingLog: newChattingLog };
     }
@@ -27,6 +28,7 @@ export function chatReducer(state: any, action: any): any {
       const newChattingLog = responseChattingLog.map((chat: any) => {
         if (chat.userDocumentId === user.userDocumentId) {
           return ({
+            key: `${new Date(chat.date).getTime()}_${chat.userDocumentId}`,
             message: chat.message,
             userDocumentId: chat.userDocumentId,
             profileUrl: user.profileUrl,
@@ -38,6 +40,7 @@ export function chatReducer(state: any, action: any): any {
 
         const userData = participantsInfo.filter((userInfo: any) => userInfo.userDocumentId === chat.userDocumentId);
         return ({
+          key: `${new Date(chat.date).getTime()}_${chat.userDocumentId}`,
           message: chat.message,
           userDocumentId: chat.userDocumentId,
           profileUrl: userData[0].profileUrl,
@@ -47,7 +50,7 @@ export function chatReducer(state: any, action: any): any {
         });
       });
 
-      return { ...state, chattingLog: newChattingLog };
+      return { ...state, chattingLog: state.chattingLog.concat(newChattingLog) };
     }
 
     default:
