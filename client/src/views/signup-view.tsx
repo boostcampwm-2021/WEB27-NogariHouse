@@ -10,7 +10,7 @@ import LoadingSpinner from '@common/loading-spinner';
 import SignTitle from '@components/sign/sign-title';
 import SignBody from '@components/sign/sign-body';
 import DefaultButton from '@common/default-button';
-import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
+import { CustomInputBox, CustomInputBar, CustomInputBoxLayout } from '@common/custom-inputbar';
 import { testEmailValidation } from '@utils/index';
 import { postCheckMail } from '@src/api';
 
@@ -100,30 +100,32 @@ function SignUpView() {
     <>
       {loading && <CustomBackgroundWrapper><LoadingSpinner /></CustomBackgroundWrapper>}
       <SignHeader />
-      <SignBody onKeyUp={(e) => keyUpEnter(e)}>
+      <SignBody>
         {isEmailInputView
           ? <SignTitle title="sign up with user email" />
           : <SignTitle title="enter the verification code" />}
-        <CustomInputBox>
-          {isEmailInputView
-            ? (
-              <CustomInputBar
-                key="text"
-                ref={inputEmailRef}
-                onChange={inputOnChange}
-                type="text"
-                placeholder="E-mail Address"
-              />
-            )
-            : (
-              <CustomInputBar
-                key="verification"
-                ref={inputVerificationRef}
-                onChange={inputOnChange}
-                type="verification"
-                placeholder="Verification code"
-              />
-            )}
+        <CustomInputBox onKeyUp={(e) => keyUpEnter(e)}>
+          <CustomInputBoxLayout>
+            {isEmailInputView
+              ? (
+                <CustomInputBar
+                  key="text"
+                  ref={inputEmailRef}
+                  onChange={inputOnChange}
+                  type="text"
+                  placeholder="E-mail Address"
+                />
+              )
+              : (
+                <CustomInputBar
+                  key="verification"
+                  ref={inputVerificationRef}
+                  onChange={inputOnChange}
+                  type="verification"
+                  placeholder="Verification code"
+                />
+              )}
+          </CustomInputBoxLayout>
         </CustomInputBox>
         <DefaultButton
           buttonType="secondary"
