@@ -1,5 +1,4 @@
-/* eslint-disable */
-
+/* eslint-disable no-plusplus */
 /*
 
 용어 정리
@@ -23,9 +22,68 @@ setTargetAtTime => 특정 시간에 특정 패턴을 따르도록 할 수 있음
 
 */
 
-var delayTime = 0.100;
-var fadeTime = 0.050;
-var bufferTime = 0.100;
+function createDelayTimeBuffer(context, activeTime, fadeTime, shiftUp) {
+  const length1 = activeTime * context.sampleRate;
+  const length2 = (activeTime - 2 * fadeTime) * context.sampleRate;
+  const length = length1 + length2;
+  const buffer = context.createBuffer(1, length, context.sampleRate);
+  const p = buffer.getChannelData(0);
+
+  // 1st part of cycle
+  for (let i = 0; i < length1; ++i) {
+    if (shiftUp) {
+      p[i] = (length1 - i) / length; // This line does shift-up transpose
+    } else {
+      p[i] = i / length1; // This line does shift-down transpose
+    }
+  }
+
+  // 2nd part
+  for (let i = length1; i < length; ++i) {
+    p[i] = 0;
+  }
+
+  return buffer;
+}
+
+function createFadeBuffer(context, activeTime, fadeTime) {
+  const length1 = activeTime * context.sampleRate;
+  const length2 = (activeTime - 2 * fadeTime) * context.sampleRate;
+  const length = length1 + length2;
+  const buffer = context.createBuffer(1, length, context.sampleRate);
+  const p = buffer.getChannelData(0);
+
+  const fadeLength = fadeTime * context.sampleRate;
+
+  const fadeIndex1 = fadeLength;
+  const fadeIndex2 = length1 - fadeLength;
+
+  // 1st part of cycle
+  for (let i = 0; i < length1; ++i) {
+    let value;
+
+    if (i < fadeIndex1) {
+      value = Math.sqrt(i / fadeLength);
+    } else if (i >= fadeIndex2) {
+      value = Math.sqrt(1 - (i - fadeIndex2) / fadeLength);
+    } else {
+      value = 1;
+    }
+
+    p[i] = value;
+  }
+
+  // 2nd part
+  for (let i = length1; i < length; ++i) {
+    p[i] = 0;
+  }
+
+  return buffer;
+}
+
+const delayTime = 0.100;
+const fadeTime = 0.050;
+const bufferTime = 0.100;
 
 export default function Jungle(context) {
   this.context = context;
@@ -131,9 +189,9 @@ export default function Jungle(context) {
 }
 
 // eslint-disable-next-line func-names
-Jungle.prototype.setDelay = function (delayTime) {
-  this.modGain1.gain.setTargetAtTime(0.5 * delayTime, 0, 0.010);
-  this.modGain2.gain.setTargetAtTime(0.5 * delayTime, 0, 0.010);
+Jungle.prototype.setDelay = function (delayTimeVal) {
+  this.modGain1.gain.setTargetAtTime(0.5 * delayTimeVal, 0, 0.010);
+  this.modGain2.gain.setTargetAtTime(0.5 * delayTimeVal, 0, 0.010);
 };
 
 let previousPitch = -1;
@@ -155,63 +213,3 @@ Jungle.prototype.setPitchOffset = function (mult) {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   previousPitch = mult;
 };
-
-function createDelayTimeBuffer(context, activeTime, fadeTime, shiftUp) {
-  const length1 = activeTime * context.sampleRate;
-  const length2 = (activeTime - 2 * fadeTime) * context.sampleRate;
-  const length = length1 + length2;
-  const buffer = context.createBuffer(1, length, context.sampleRate);
-  const p = buffer.getChannelData(0);
-
-  // 1st part of cycle
-  for (var i = 0; i < length1; ++i) {
-    if (shiftUp)
-    // This line does shift-up transpose
-    { p[i] = (length1 - i) / length; } else
-    // This line does shift-down transpose
-    { p[i] = i / length1; }
-  }
-
-  // 2nd part
-  for (var i = length1; i < length; ++i) {
-    p[i] = 0;
-  }
-
-  return buffer;
-}
-
-function createFadeBuffer(context, activeTime, fadeTime) {
-    var length1 = activeTime * context.sampleRate;
-    var length2 = (activeTime - 2*fadeTime) * context.sampleRate;
-    var length = length1 + length2;
-    var buffer = context.createBuffer(1, length, context.sampleRate);
-    var p = buffer.getChannelData(0);
-    
-    var fadeLength = fadeTime * context.sampleRate;
-
-    var fadeIndex1 = fadeLength;
-    var fadeIndex2 = length1 - fadeLength;
-    
-    // 1st part of cycle
-    for (var i = 0; i < length1; ++i) {
-        var value;
-        
-        if (i < fadeIndex1) {
-            value = Math.sqrt(i / fadeLength);
-        } else if (i >= fadeIndex2) {
-            value = Math.sqrt(1 - (i - fadeIndex2) / fadeLength);
-        } else {
-            value = 1;
-        }
-        
-        p[i] = value;
-    }
-
-    // 2nd part
-    for (var i = length1; i < length; ++i) {
-        p[i] = 0;
-    }
-    
-    
-    return buffer;
-}

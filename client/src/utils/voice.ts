@@ -1,4 +1,4 @@
-import Jungle from './jungle.js';
+import Jungle from '@utils/jungle';
 
 /* eslint-disable */
 export default class SoundMeter {
@@ -68,13 +68,7 @@ export default class SoundMeter {
           let compressor = this.context.createDynamicsCompressor();
           this.mic.connect(pitchChangeEffect.input);
           pitchChangeEffect.output.connect(compressor);
-          pitchChangeEffect.setPitchOffset(1.9);
-  
-          this.mic.connect(this.pitchShifterProcessor);
-          // this.pitchShifterProcessor.connect(this.context.destination);
-
-          // this.pitchShifterProcessor.connect(compressor);
-          
+          pitchChangeEffect.setPitchOffset(0.7);          
           compressor.connect(this.context.destination);
         }else { 
           this.mic.connect(this.script);
