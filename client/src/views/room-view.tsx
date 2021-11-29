@@ -3,7 +3,7 @@ import React, {
   MouseEvent, useEffect, useState,
 } from 'react';
 import styled from 'styled-components';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState, useRecoilState } from 'recoil';
 
 import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
@@ -50,20 +50,24 @@ function RoomView() {
   const nowFetching = useRecoilValue(nowFetchingState);
   const [targetRef] = useItemFecthObserver(loading);
   const setRoomView = useSetRecoilState(roomViewType);
-  const setRoomDocumentId = useSetRecoilState(roomDocumentIdState);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [roomDocumentId, setRoomDocumentId] = useRecoilState(roomDocumentIdState);
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
 
   const roomCardClickHandler = (e: MouseEvent) => {
     const RoomCardDiv = (e.target as HTMLDivElement).closest('.RoomCard');
-    const roomDocumentId = RoomCardDiv?.getAttribute('data-id');
+    const roomCardDocumentId = RoomCardDiv?.getAttribute('data-id');
     const isAnonymous = (RoomCardDiv?.getAttribute('data-anonymous') === 'true');
+    if (roomDocumentId) return;
+
     if (isAnonymous) {
       setRoomView('selectModeView');
+      setRoomDocumentId(roomCardDocumentId as string);
     } else {
       setRoomView('inRoomView');
+      setRoomDocumentId(roomCardDocumentId as string);
     }
 
-    setRoomDocumentId(roomDocumentId as string);
     setIsOpenRoom(true);
   };
 

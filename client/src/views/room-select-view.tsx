@@ -1,5 +1,4 @@
-/* eslint-disable  */
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
@@ -34,27 +33,27 @@ function SelectModeRoomModal() {
   const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
 
   const typeHandler = (mode: string) => {
-    setModeType(mode)
-  }
+    setModeType(mode);
+  };
 
-  const submitButtonHandler = () => {
+  const submitButtonHandler = useCallback(() => {
     setViewAnonymous(modeType);
-  }
+  }, []);
 
   const clickGotoEvent = () => {
     setRoomView('createRoomView');
     resetRoomDocumentId();
-  }
+  };
 
   return (
     <>
       <ModalLayout>
         <h2> Select the visiting mode </h2>
         <CheckboxLayout>
-            {/* eslint-disable-next-line react/jsx-no-bind */}
-            <RoomTypeCheckBox checkBoxName="known" onClick={typeHandler.bind(null, 'known')} roomType={modeType} />
-            {/* eslint-disable-next-line react/jsx-no-bind */}
-            <RoomTypeCheckBox checkBoxName="unknown" onClick={typeHandler.bind(null, 'unknown')} roomType={modeType} />
+          {/* eslint-disable-next-line react/jsx-no-bind */}
+          <RoomTypeCheckBox checkBoxName="known" onClick={typeHandler.bind(null, 'known')} roomType={modeType} />
+          {/* eslint-disable-next-line react/jsx-no-bind */}
+          <RoomTypeCheckBox checkBoxName="unknown" onClick={typeHandler.bind(null, 'unknown')} roomType={modeType} />
         </CheckboxLayout>
         <ButtonLayout>
           <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler}>
