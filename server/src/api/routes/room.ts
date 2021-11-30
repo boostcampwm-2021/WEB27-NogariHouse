@@ -19,10 +19,16 @@ export default (app: Router) => {
       } = req.body;
 
       const roomId = await RoomService.setRoom(title, type, isAnonymous);
-      const activityAddResult = await activityService.addActivityTypeRoom(userDocumentId, roomId);
 
-      if (!activityAddResult) res.status(400).json({ ok: false });
-      else res.status(200).json(roomId);
+      if (type === 'public') {
+        const activityAddResult = await activityService.addActivityTypeRoom(userDocumentId, roomId);
+        if (!activityAddResult) {
+          res.status(400).json({ ok: false });
+          return;
+        }
+      }
+
+      res.status(200).json(roomId);
     } catch (error) {
       console.error(error);
     }
