@@ -90,7 +90,7 @@ function RoomModal() {
       <AnonymousCheckBox checked={isAnonymous} onChange={checkboxHandler} roomType={roomType} text="Allow anonymous ?" />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
-        <TitleInputbar ref={inputRef} onChange={inputHandler} />
+        <TitleInputbar ref={inputRef} onChange={inputHandler} data-testid="TitleInputbar" />
       </CustomTitleForm>
       <ButtonLayout>
         <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
