@@ -11,12 +11,12 @@ export const SectionLayout = styled.div`
 `;
 
 export const ActiveFollowingLayout = styled.div`
-  height: 80%;
+  height: 100%;
   min-width: 280px;
   width: 20vw;
   margin: 10px;
 
-  @media (min-width: 769px) {
+  @media (min-width: 1025px) {
     height: 80%;
   }
 
@@ -39,11 +39,15 @@ export const MainSectionLayout = styled.div`
     height: 80%;
   }
 
+  @media (max-width: 768px){
+    heigth: calc(100% - 100px);
+  }
+
   @media (min-width: 1025px) {
     min-width: 500px;
   }
+
   position: relative;
-  height: 100%;
   width: 100%;
   min-width: 320px;
   margin: 10px;
@@ -63,7 +67,7 @@ export const RoomLayout = styled.div`
     display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};
     z-index: 100;
     width: 99vw;
-    height: calc(100% - 96px);
+    height: calc(100% - 100px);
     margin-left: 0.5vw;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
