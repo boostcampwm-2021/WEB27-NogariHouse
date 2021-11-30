@@ -8,7 +8,7 @@ import followingListState from '@atoms/following-list';
 import BodyModal from '@components/body-modal';
 import Toast from '@components/common/toast';
 import LoadingSpinner from '@common/loading-spinner';
-import { getFollowingsList, getMyInfo } from '@src/api';
+import { getFollowingsList, getMyInfo } from '@api/user';
 
 function App() {
   const setUser = useSetRecoilState(userState);

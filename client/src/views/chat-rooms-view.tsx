@@ -10,7 +10,7 @@ import ChatRoomListHeader from '@components/chat/chat-list-header';
 import ChatUserCard from '@components/chat/chat-user-card';
 import { ChatRoomsLayout, ChatUserCardWrap } from '@components/chat/style';
 import LoadingSpinner from '@common/loading-spinner';
-import { getChatRooms } from '@api/index';
+import { getChatRooms } from '@api/chat';
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
 import useChatSocket from '@src/utils/chat-socket';
 import { IUser } from '@interfaces/index';

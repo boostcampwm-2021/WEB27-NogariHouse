@@ -6,7 +6,7 @@ import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 import toastListSelector from '@selectors/toast-list';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
-import { postEvent } from '@api/index';
+import postEvent from '@api/event';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
 import EventSelectUserDropdown from './event-select-uesr-dropdown';
 
@@ -87,8 +87,8 @@ const CustomInputDiv = styled.div`
   width: 80%;
   margin: 5px;
   overflow-x: scroll;
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
     }

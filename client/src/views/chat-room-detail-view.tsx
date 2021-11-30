@@ -7,7 +7,7 @@ import { useParams, useLocation } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import styled from 'styled-components';
 
-import { getChattingLog, setUnCheckedMsg0 } from '@api/index';
+import { getChattingLog, setUnCheckedMsg0 } from '@api/chat';
 import { ChatRoomsLayout, ChattingLog } from '@components/chat/style';
 import ChatRoomHeader from '@components/chat/chat-room-header';
 import ChatRoomFooter from '@components/chat/chat-room-footer';

@@ -9,7 +9,7 @@ import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@common/modal';
 import userState from '@atoms/user';
 import DefaultButton from '@common/default-button';
-import { changeProfileImage } from '@src/api';
+import { changeProfileImage } from '@api/user';
 import useUserSocket from '@utils/user-socket';
 
 const ChangePofileImageLayout = styled.div`

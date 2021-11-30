@@ -12,7 +12,7 @@ import SignBody from '@components/sign/sign-body';
 import DefaultButton from '@common/default-button';
 import { CustomInputBox, CustomInputBar, CustomInputBoxLayout } from '@common/custom-inputbar';
 import { testEmailValidation } from '@utils/index';
-import { postCheckMail } from '@src/api';
+import { postCheckMail } from '@api/user';
 
 const CustomBackgroundWrapper = styled(BackgroundWrapper)`
   opacity: 0.4;

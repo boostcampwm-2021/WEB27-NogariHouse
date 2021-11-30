@@ -3,7 +3,7 @@ import { useEffect, useState, RefObject } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import followState from '@atoms/following-list';
-import { findUsersByIdList } from '@api/index';
+import { findUsersByIdList } from '@api/user';
 import { IUser } from '@interfaces/index';
 
 const useSelectUser = (inputBarRef: RefObject<HTMLInputElement>): any => {

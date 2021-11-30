@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import followingListState from '@atoms/following-list';
 import UserCardList from '@components/common/user-card-list';
-import { findUsersByIdList } from '@api/index';
+import { findUsersByIdList } from '@api/user';
 import { IUserForCard } from '@interfaces/index';
 import LoadingSpinner from '@common/loading-spinner';
 
@@ -22,8 +22,8 @@ const DropDownWrapper = styled.div`
   overflow-y: scroll;
   background-color: #F1F0E4;
   border-radius: 30px;
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
     }

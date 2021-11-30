@@ -11,7 +11,7 @@ import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/room-type-check-box';
 import AnonymousCheckBox from '@components/room/anonymous-checkbox';
-import { getRandomRoomDocumentId, postRoomInfo } from '@api/index';
+import { getRandomRoomDocumentId, postRoomInfo } from '@api/room';
 import { ButtonLayout } from '../components/room/style';
 
 const CustomTitleForm = styled.div`

@@ -2,7 +2,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { deleteRoom } from '@api/index';
+import { deleteRoom } from '@api/room';
 import { isEmptyArray } from '@utils/index';
 import { Participants, RoomCardProps } from '@interfaces/index';
 

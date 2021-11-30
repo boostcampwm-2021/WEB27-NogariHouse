@@ -8,7 +8,7 @@ import isOpenRoomState from '@atoms/is-open-room';
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-room-user-box';
-import { getRoomInfo } from '@api/index';
+import { getRoomInfo } from '@api/room';
 import { useRtc, IRTC } from '@hooks/useRtc';
 import {
   InRoomHeader, TitleDiv, InRoomFooter, InRoomUserList, FooterBtnDiv,

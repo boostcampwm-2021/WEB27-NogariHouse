@@ -2,7 +2,7 @@ import { useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
 import useChatSocket from '@utils/chat-socket';
-import { postChatRoom } from '@api/index';
+import { postChatRoom } from '@api/chat';
 import userState from '@atoms/user';
 import { NewHeaderWrap, NewHeader, BtnStyle } from './style';
 

@@ -5,7 +5,7 @@ import {
 import { useRecoilState } from 'recoil';
 import { Link } from 'react-router-dom';
 
-import { getUserInfo } from '@api/index';
+import { getUserInfo } from '@api/user';
 import SoundMeter from '@src/utils/voice';
 import anonymousState from '@atoms/anonymous';
 import {

@@ -11,7 +11,7 @@ import DefaultButton from '@common/default-button';
 import {
   CustomInputBox, CustomInputBar, InputLayout, CustomInputBoxLayout,
 } from '@common/custom-inputbar';
-import { postSignUpUserInfo, getUserExistenceByUserId } from '@src/api';
+import { postSignUpUserInfo, getUserExistenceByUserId } from '@api/user';
 
 const CustomInfoInputBar = styled(CustomInputBar)`
   font-size: min(5vw, 30px);

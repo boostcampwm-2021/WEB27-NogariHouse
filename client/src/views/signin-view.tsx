@@ -10,7 +10,7 @@ import SignTitle from '@components/sign/sign-title';
 import SignBody from '@components/sign/sign-body';
 import DefaultButton from '@common/default-button';
 import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
-import { postSignIn } from '@api/index';
+import { postSignIn } from '@api/user';
 
 function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
@@ -53,8 +53,7 @@ function SignInView() {
     };
 
     postSignIn(loginInfo)
-      .then((res) => res!.json())
-      .then(checkSigninResponse)
+      .then((json) => json && checkSigninResponse(json))
       .catch((err) => console.error(err));
   };
 
