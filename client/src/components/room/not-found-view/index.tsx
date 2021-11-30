@@ -2,14 +2,17 @@ import { useSetRecoilState } from 'recoil';
 
 import roomViewType from '@src/recoil/atoms/room-view-type';
 import DefaultButton from '@common/default-button';
+import isOpenRoomState from '@atoms/is-open-room';
 import NotFoundGif from '@images/not-found.gif';
 import NotFoundImg from './style';
 
 function NotFoundRoomModal() {
   const setRoomView = useSetRecoilState(roomViewType);
+  const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
 
   const leaveHandler = () => {
     setRoomView('createRoomView');
+    setIsOpenRoom(false);
   };
 
   return (

@@ -37,12 +37,11 @@ function InRoomModal() {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
         if (!res) setRoomView('notFoundRoomView');
-        setRoomInfo(res);
+        else setRoomInfo(res);
       });
 
     return () => {
       resetRoomDocumentId();
-      setIsOpenRoom(false);
     };
   }, []);
 
@@ -83,6 +82,11 @@ function InRoomModal() {
       .forEach((track: MediaStreamTrack) => (track.enabled = !track.enabled));
   };
 
+  const leaveRoomEvent = () => {
+    setRoomView('createRoomView');
+    setIsOpenRoom(false);
+  };
+
   return (
     <>
       <InRoomHeader>
@@ -110,7 +114,7 @@ function InRoomModal() {
         ))}
       </InRoomUserList>
       <InRoomFooter>
-        <DefaultButton buttonType="active" size="small" onClick={() => setRoomView('createRoomView')}> Leave a Quietly </DefaultButton>
+        <DefaultButton buttonType="active" size="small" onClick={leaveRoomEvent}> Leave a Quietly </DefaultButton>
         <FooterBtnDiv onClick={() => setIsOpenModal(true)}><FiPlus /></FooterBtnDiv>
         <FooterBtnDiv onClick={() => micToggle(!isMic)}>
           {isMic ? <FiMic /> : <FiMicOff /> }

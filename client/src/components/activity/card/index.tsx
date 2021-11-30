@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable object-curly-newline */
 import React from 'react';
 import { useHistory } from 'react-router-dom';
