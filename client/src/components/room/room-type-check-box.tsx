@@ -14,6 +14,10 @@ const Box = styled.button`
   justify-content: space-evenly;
   align-items: center;
   border:none;
+
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 const BoxText = styled.div`

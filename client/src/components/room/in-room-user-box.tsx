@@ -8,7 +8,9 @@ import { Link } from 'react-router-dom';
 import { getUserInfo } from '@api/index';
 import SoundMeter from '@src/utils/voice';
 import anonymousState from '@atoms/anonymous';
-import { InRoomUserBoxStyle, InRoomUserMicDiv, UserBox } from './style';
+import {
+  InRoomUserBoxStyle, InRoomUserMicDiv, UserBox, Video,
+} from './style';
 
 export interface IParticipant {
     userDocumentId: string,
@@ -22,6 +24,7 @@ export function InRoomOtherUserBox({
 }: IParticipant) {
   const [userInfo, setUserInfo] = useState<any>();
   const ref = useRef<HTMLVideoElement>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
   const audioCtxRef = useRef(new (window.AudioContext)());
 
   useEffect(() => {
@@ -42,9 +45,9 @@ export function InRoomOtherUserBox({
       meterRefresh = setInterval(() => {
         const num = Number(soundMeter.instant.toFixed(2));
         if (num > 0.02 && ref) {
-          ref.current!.style.border = '2px solid #58964F';
+          imageRef.current!.style.border = '2px solid #58964F';
         } else {
-          ref.current!.style.border = 'none';
+          imageRef.current!.style.border = 'none';
         }
       }, 500);
     });
@@ -58,29 +61,19 @@ export function InRoomOtherUserBox({
 
   return (
     <InRoomUserBoxStyle>
+      <Video
+        ref={ref}
+        autoPlay
+        playsInline
+        muted={isAnonymous}
+      />
       {isAnonymous
         ? (
-          <UserBox
-            ref={ref}
-            poster={isAnonymous
-              ? process.env.REACT_APP_DEFAULT_USER_IMAGE
-              : userInfo?.profileUrl}
-            autoPlay
-            playsInline
-            muted={isAnonymous}
-          />
+          <UserBox ref={imageRef} src={process.env.REACT_APP_DEFAULT_USER_IMAGE} />
         )
         : (
           <Link to={`/profile/${userInfo?.userId}`}>
-            <UserBox
-              ref={ref}
-              poster={isAnonymous
-                ? process.env.REACT_APP_DEFAULT_USER_IMAGE
-                : userInfo?.profileUrl}
-              autoPlay
-              playsInline
-              muted={isAnonymous}
-            />
+            <UserBox ref={imageRef} src={userInfo?.profileUrl} />
           </Link>
         )}
       <InRoomUserMicDiv>
@@ -96,7 +89,8 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
     const [isAnonymous, setIsAnonymous] = useRecoilState(anonymousState);
     const [userInfo, setUserInfo] = useState<any>();
     const audioCtxRef = useRef(new (window.AudioContext || (window as any).webkitAudioContext)());
-    const myRef = useRef<any>(ref);
+    const myVideoRef = useRef<any>(ref);
+    const myImageRef = useRef<HTMLImageElement>(null);
 
     useEffect(() => {
       getUserInfo(props.userDocumentId)
@@ -114,16 +108,16 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
       soundMeter.connectToSource(false, props.stream, () => {
         meterRefresh = setInterval(() => {
           const num = Number(soundMeter.instant.toFixed(2));
-          if (num > 0.02 && myRef.current) {
-            myRef.current.style.border = '2px solid #58964F';
+          if (num > 0.02 && myImageRef.current) {
+            myImageRef.current.style.border = '2px solid #58964F';
           } else {
-            myRef.current.style.border = 'none';
+            myImageRef.current!.style.border = 'none';
           }
         }, 500);
       });
 
       return () => {
-        if (myRef.current) myRef.current.style.border = 'none';
+        if (myImageRef.current) myImageRef.current.style.border = 'none';
         clearInterval(meterRefresh);
         soundMeter.stop();
       };
@@ -131,29 +125,19 @@ export const InRoomUserBox = React.forwardRef<HTMLVideoElement, IParticipant>(
 
     return (
       <InRoomUserBoxStyle>
+        <Video
+          ref={myVideoRef}
+          autoPlay
+          muted
+          playsInline
+        />
         { isAnonymous
           ? (
-            <UserBox
-              ref={myRef}
-              poster={isAnonymous
-                ? process.env.REACT_APP_DEFAULT_USER_IMAGE
-                : userInfo?.profileUrl}
-              autoPlay
-              muted
-              playsInline
-            />
+            <UserBox ref={myImageRef} src={process.env.REACT_APP_DEFAULT_USER_IMAGE} />
           )
           : (
             <Link to={`/profile/${userInfo?.userId}`}>
-              <UserBox
-                ref={myRef}
-                poster={isAnonymous
-                  ? process.env.REACT_APP_DEFAULT_USER_IMAGE
-                  : userInfo?.profileUrl}
-                autoPlay
-                muted
-                playsInline
-              />
+              <UserBox ref={myImageRef} src={userInfo?.profileUrl} />
             </Link>
           )}
         <InRoomUserMicDiv>

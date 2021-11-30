@@ -19,7 +19,9 @@ const Text = styled.span`
   margin-left: 4px;
 `;
 
-function AnonymousCheckBox({ checked, onChange, roomType }: CheckBoxProps) {
+function AnonymousCheckBox({
+  checked, onChange, roomType, text,
+}: CheckBoxProps) {
   const smallCheckboxLayoutRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -32,7 +34,7 @@ function AnonymousCheckBox({ checked, onChange, roomType }: CheckBoxProps) {
       <SmallCheckbox id="c1" checked={checked} onChange={onChange} />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label htmlFor={'c1' as string}>
-        <Text>Allow anonymous ?</Text>
+        <Text>{text}</Text>
       </label>
     </AnonymousCheckBoxLayout>
   );

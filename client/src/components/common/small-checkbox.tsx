@@ -5,6 +5,7 @@ export interface CheckBoxProps {
   checked: boolean,
   onChange: (event: FormEvent) => void,
   roomType?: string,
+  text?: string,
 }
 
 interface ISmallCheckboxProps extends CheckBoxProps{
