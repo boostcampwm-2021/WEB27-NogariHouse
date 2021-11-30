@@ -8,7 +8,7 @@ export const NotificationContainer = styled.div`
 
   font-size: 14px;
 
-  z-index: 10;
+  z-index: 1000;
 `;
 
 export const Notification = styled.div`
