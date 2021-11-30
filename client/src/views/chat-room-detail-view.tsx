@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable react/no-unused-prop-types */
 import React, {
-  useEffect, useRef, useReducer,
+  useEffect, useRef, useReducer, useState,
 } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
@@ -18,6 +18,7 @@ import useChatSocket from '@src/utils/chat-socket';
 import isOpenRoomState from '@atoms/is-open-room';
 import { chatReducer, initialState } from '@components/chat/reducer';
 import NotFoundChatView from '@src/views/chat-not-found-view';
+import LoadingSpinner from '@common/loading-spinner';
 
 type urlParams = { chatDocumentId: string };
 
@@ -72,6 +73,12 @@ const DateDiv = styled.div`
   margin: 5px;
 `;
 
+const ObserverBlock = styled.div`
+  position: relative;
+  width: 100%;
+  min-height: 50px;
+`;
+
 interface IChattingLog {
   message: string,
   profileUrl: string,
@@ -91,9 +98,30 @@ function ChatRoomDetailView() {
   const chatSocket = useChatSocket();
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
   const [chatState, dispatch] = useReducer(chatReducer, initialState);
+  const targetRef = useRef<HTMLDivElement>(null);
+  const [nowFetching, setNowFetching] = useState(true);
+  let previousY = 0;
+  let previousRatio = 0;
 
   const addChattingLog = (chatLog: any) => {
     dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog } });
+    chattingLogDiv.current!.scrollTop = chattingLogDiv.current!.scrollHeight - chattingLogDiv.current!.clientHeight;
+  };
+
+  const onIntersect = async (entries: IntersectionObserverEntry[]) => {
+    entries.forEach((entry) => {
+      const currentY = entry.boundingClientRect.y;
+      const currentRatio = entry.intersectionRatio;
+      const { isIntersecting } = entry;
+
+      if (currentY > previousY && isIntersecting) {
+        if (currentRatio > previousRatio && !nowFetching) {
+          setNowFetching(true);
+        }
+      }
+      previousY = currentY;
+      previousRatio = currentRatio;
+    });
   };
 
   const moveToLink = (linkTo: string) => {
@@ -104,24 +132,25 @@ function ChatRoomDetailView() {
   };
 
   useEffect(() => {
-    if (!chattingLogDiv.current) return;
-    getChattingLog(chatDocumentId)
-      .then((res: any) => {
-        setUnCheckedMsg0(chatDocumentId, user.userDocumentId);
-        dispatch({ type: 'UPDATE', payload: { responseChattingLog: res.chattingLog, participantsInfo: location.state.participantsInfo, user } });
-        chattingLogDiv.current!.scrollTop = chattingLogDiv.current!.scrollHeight - chattingLogDiv.current!.clientHeight;
-      });
+    if (!location.state) return;
+    if (nowFetching) {
+      getChattingLog(chatDocumentId, chatState.chattingLog.length)
+        .then((res: any) => {
+          setNowFetching(false);
+          dispatch({ type: 'UPDATE', payload: { responseChattingLog: res.chattingLog, participantsInfo: location.state.participantsInfo, user } });
+        });
+    }
+  }, [nowFetching]);
+
+  useEffect(() => {
+    setUnCheckedMsg0(chatDocumentId, user.userDocumentId);
+
     return () => {
       setUnCheckedMsg0(chatDocumentId, user.userDocumentId).then(() => {
 
       });
     };
-  }, [chatDocumentId]);
-
-  useEffect(() => {
-    if (!chattingLogDiv.current) return;
-    chattingLogDiv.current.scrollTop = chattingLogDiv.current.scrollHeight - chattingLogDiv.current.clientHeight;
-  }, [chatState.chattingLog]);
+  }, []);
 
   useEffect(() => {
     if (!chatSocket) return;
@@ -130,14 +159,25 @@ function ChatRoomDetailView() {
       dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog: payload } });
     });
     return () => {
-      chatSocket.emit('chat:leave', chatDocumentId);
       chatSocket.off('chat:sendMsg');
+      chatSocket.emit('chat:leave', chatDocumentId);
     };
   }, [chatSocket]);
 
   if (!location.state) {
     return (<NotFoundChatView />);
   }
+
+  useEffect(() => {
+    let observer: IntersectionObserver;
+    if (targetRef.current) {
+      observer = new IntersectionObserver(onIntersect, {
+        threshold: 0.5,
+      });
+      observer.observe(targetRef.current);
+    }
+    return () => observer?.disconnect();
+  }, [targetRef.current]);
 
   return (
     <ChatRoomsLayout>
@@ -157,6 +197,9 @@ function ChatRoomDetailView() {
             <DateDiv><span>{date}</span></DateDiv>
           </Chat>
         ))}
+        <ObserverBlock ref={targetRef}>
+          {nowFetching && <LoadingSpinner />}
+        </ObserverBlock>
       </ChattingLog>
       <ChatRoomFooter
         addChattingLog={addChattingLog}

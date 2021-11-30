@@ -47,8 +47,9 @@ export default (app: Router) => {
   chatRouter.get('/chat-log/:chatDocumentId', async (req: Request, res: Response) => {
     try {
       const { chatDocumentId } = req.params;
+      const { count } = req.query;
 
-      const chattingLog = await chatService.getChattingLog(chatDocumentId);
+      const chattingLog = await chatService.getChattingLog(chatDocumentId, Number(count));
 
       res.status(200).json(chattingLog);
     } catch (e) {
