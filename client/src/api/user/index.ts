@@ -21,7 +21,7 @@ export const postSignIn = async (loginInfo: Object) => {
     const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signin`,
       postOption(loginInfo));
 
-    if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
+    if (!response.ok) return { result: false };
 
     const json: { accessToken?: string, result: boolean, msg: string } = await response.json();
 
