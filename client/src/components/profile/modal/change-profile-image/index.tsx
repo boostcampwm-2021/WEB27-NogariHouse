@@ -8,6 +8,7 @@ import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import { ModalBox, BackgroundWrapper } from '@styles/modal';
 import userState from '@atoms/user';
 import DefaultButton from '@common/default-button';
+import userSocketMessage from '@constants/socket-message/user';
 import { changeProfileImage } from '@api/user';
 import useUserSocket from '@utils/user-socket';
 import {
@@ -49,7 +50,7 @@ function ShareModal() {
       });
       const userSocket = useUserSocket();
       if (userSocket) {
-        userSocket.emit('user:join', {
+        userSocket.emit(userSocketMessage.join, {
           ...user, profileUrl: newProfileUrl, followingList,
         });
       }

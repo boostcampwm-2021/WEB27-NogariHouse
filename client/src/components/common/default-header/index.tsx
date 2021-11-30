@@ -17,6 +17,7 @@ import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import SliderMenu from '@common/menu-modal';
 import chatSocketMessage from '@constants/socket-message/chat';
+import userSocketMessage from '@constants/socket-message/user';
 import { IconAndLink } from '@interfaces/index';
 import { getUnReadMsgCount } from '@api/chat';
 import getIsActivityChecked from '@api/activity';
@@ -71,9 +72,9 @@ function DefaultHeader() {
 
   useEffect(() => {
     if (!userSocket) return;
-    userSocket.on('user:getActivity', () => setActivityChecked(true));
+    userSocket.on(userSocketMessage.getActivity, () => setActivityChecked(true));
     return () => {
-      userSocket.off('user:getActivity');
+      userSocket.off(userSocketMessage.getActivity);
     };
   }, [userSocket]);
 
