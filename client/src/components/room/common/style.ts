@@ -12,5 +12,5 @@ export const ButtonLayout = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
   align-items: center;
-  height: 30%;
+  height: 200px;
 `;
