@@ -43,11 +43,16 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
     });
   };
 
+  const updateCountHandler = (participants: Array<string>) => {
+    participants.forEach((userDocumentId: string) => socket.to(userDocumentId).emit('chat:updateCount'));
+  };
+
   const inviteRoomHandler = (payload: any) => {
     const {
       // eslint-disable-next-line no-unused-vars
       participants, message, roomDocumentId, userInfo, date, key,
     } = payload;
+    updateCountHandler(participants.map((participant: any) => participant.userDocumentId));
     participants.forEach(async (participant: any) => {
       const { chatRoom, chatDocumentId, isNew } = await chatService.makeChatRoom([participant.userDocumentId, userInfo.userDocumentId].sort());
       await chatService.addChattingLog({
@@ -81,10 +86,6 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
       });
       await chatService.setUnCheckedMsg(chatDocumentId, userInfo.userDocumentId);
     });
-  };
-
-  const updateCountHandler = (participants: Array<string>) => {
-    participants.forEach((userDocumentId: string) => socket.to(userDocumentId).emit('chat:updateCount'));
   };
 
   socket.on('chat:roomJoin', chatRoomJoinHandler);
