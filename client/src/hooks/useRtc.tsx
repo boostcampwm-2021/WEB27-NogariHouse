@@ -26,16 +26,12 @@ export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObje
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const getLocalStream = useCallback(async () => {
-    try {
-      myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      if (myVideoRef.current) myVideoRef.current.srcObject = myStreamRef.current;
+    myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    if (myVideoRef.current) myVideoRef.current.srcObject = myStreamRef.current;
       myStreamRef.current!
         .getAudioTracks()
         // eslint-disable-next-line
         .forEach((track: MediaStreamTrack) => (track.enabled = !track.enabled));
-    } catch (e) {
-      console.error(e);
-    }
   }, []);
 
   return [myStreamRef, myVideoRef, getLocalStream];
@@ -150,7 +146,6 @@ export const useRtc = <T extends IRTC>(): [
     init();
 
     socket.on('room:join', async (participantsInfo: Array<T>) => {
-      console.log('participantsInfo', participantsInfo);
       participantsInfo.forEach(async (participant: T) => {
         if (!myStreamRef.current) return;
         const peerConnection = setPeerConnection(participant, socket);
