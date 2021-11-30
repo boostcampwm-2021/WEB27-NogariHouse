@@ -107,7 +107,7 @@ function SearchView() {
   return (
     <SearchViewLayout>
       <SearchBarLayout>
-        <SearchInput ref={inputKeywordRef} placeholder="🔍 Search ClubHouse" onChange={onChangeHandler} />
+        <SearchInput ref={inputKeywordRef} placeholder="🔍 Search NogariHouse" onChange={onChangeHandler} />
         <OptionBar />
       </SearchBarLayout>
       <SearchScrollSection>
