@@ -39,7 +39,7 @@ function InRoomModal() {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
         if (!res) setRoomView('notFoundRoomView');
-        else if (res.participants.length > 6) {
+        else if (res.participants.length > 5) {
           setRoomView('createRoomView');
           setToastList({
             type: 'danger',
