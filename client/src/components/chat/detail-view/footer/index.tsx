@@ -30,7 +30,7 @@ export default function ChatRoomFooter({
       key: `${nowDate.getTime()}_${user.userDocumentId}`,
     });
     chatSocket?.emit('chat:alertMsg', { participants, chatDocumentId });
-    chatSocket?.emit('chat:updateCount', participants);
+    chatSocket?.emit('chat:updateCount', participants, chatDocumentId);
     addChattingLog({
       userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),
     });
