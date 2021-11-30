@@ -118,7 +118,7 @@ function RoomModal() {
         {/* eslint-disable-next-line react/jsx-no-bind */}
         <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeHandler.bind(null, 'closed')} roomType={roomType} />
       </CheckboxLayout>
-      <AnonymousCheckBox checked={isAnonymous} onChange={checkboxHandler} roomType={roomType} />
+      <AnonymousCheckBox checked={isAnonymous} onChange={checkboxHandler} roomType={roomType} text="Allow anonymous ?" />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputHandler} />

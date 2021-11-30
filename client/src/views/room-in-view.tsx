@@ -14,7 +14,7 @@ import {
   InRoomHeader, TitleDiv, InRoomFooter, InRoomUserList, FooterBtnDiv,
 } from '@components/room/style';
 
-export interface IRooms extends Document{
+export interface IRooms {
   title: string,
   type: string,
   isAnonymous: boolean,
@@ -70,6 +70,7 @@ function InRoomModal() {
 
     return () => {
       isMount = false;
+      socket?.off('room:mic');
     };
   }, [socket, participants]);
 

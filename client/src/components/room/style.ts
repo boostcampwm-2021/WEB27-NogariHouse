@@ -106,7 +106,7 @@ export const InRoomUserMicDiv = styled.div`
   }
 `;
 
-export const UserBox = styled.video`
+export const UserBox = styled.img`
   width: 60px;
   min-width: 48px;
   height: 60px;
@@ -117,6 +117,10 @@ export const UserBox = styled.video`
   &[poster] {
     object-fit: cover;
   }
+`;
+
+export const Video = styled.video`
+  display: none;
 `;
 
 export const ButtonLayout = styled.div`
