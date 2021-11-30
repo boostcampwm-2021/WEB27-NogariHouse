@@ -57,7 +57,7 @@ export const MainSectionLayout = styled.div`
 export const RoomLayout = styled.div`
   @media (min-width: 769px) {
     width: 40vw;
-    height: 600px;
+    height: 80%;
     min-width: 320px;
     margin: 10px;
   }
