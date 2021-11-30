@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 
 import roomViewType from '@atoms/room-view-type';
-import RoomModal from '@src/views/room-new-view';
-import InRoomModal from '@src/views/room-in-view';
-import NotFoundRoomModal from '@src/views/room-not-found-view';
-import SelectModeRoomModal from '@src/views/room-select-view';
+import RoomModal from '@components/room/new-view';
+import InRoomModal from '@components/room/in-view';
+import NotFoundRoomModal from '@components/room/not-found-view';
+import SelectModeRoomModal from '@components/room/select-view';
 
 const RoomModalLayout = styled.div`
   display: flex;

@@ -2,17 +2,17 @@
 import React from 'react';
 import { Switch } from 'react-router-dom';
 
-import ActivityView from '@views/activity-view';
+import ActivityView from '@components/activity';
 import ChatRoomDetailView from '@views/chat-room-detail-view';
 import ChatRoomsNewView from '@views/chat-rooms-new-view';
 import ChatRoomsView from '@views/chat-rooms-view';
-import EventView from '@views/event-view';
+import EventView from '@components/event';
 import FollowersView from '@views/followers-view';
 import FollowingView from '@views/following-view';
-import InviteView from '@views/invite-view';
+import InviteView from '@components/invite';
 import ProfileSettingView from '@views/profile-settings-view';
 import ProfileView from '@views/profile-view';
-import SearchView from '@src/views/search-view';
+import SearchView from '@components/search';
 import RoomView from '@src/views/room-view';
 import PrivateRoute from '@routes/custom/private-route';
 

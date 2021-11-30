@@ -9,9 +9,9 @@ import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import roomDoucumentIdState from '@atoms/room-document-id';
 import { makeDateToHourMinute } from '@utils/index';
 import useChatSocket from '@utils/chat-socket';
-import { NewHeaderWrap, NewHeader, BtnStyle } from '@components/chat/style';
+import { SelectHeaderWrap, SelectHeader, BtnStyle } from '@common/select-view/style';
 
-const CustomNewHeaderWrap = styled(NewHeaderWrap)`
+const CustomNewHeaderWrap = styled(SelectHeaderWrap)`
   background-color: transparent;
 `;
 
@@ -53,11 +53,11 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
 
   return (
     <CustomNewHeaderWrap>
-      <NewHeader>
+      <SelectHeader>
         <BtnStyle onClick={cancelEvent}>Cancel</BtnStyle>
         <p>START A ROOM</p>
         <BtnStyle onClick={submitEventHandler}>Done</BtnStyle>
-      </NewHeader>
+      </SelectHeader>
     </CustomNewHeaderWrap>
   );
 }
