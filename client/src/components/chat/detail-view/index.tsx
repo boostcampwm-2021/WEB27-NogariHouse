@@ -71,8 +71,8 @@ function ChatRoomDetailView() {
 
   const moveToLink = (linkTo: string) => {
     if (!linkTo) return;
-    setRoomDocumentId(linkTo);
     setRoomView('inRoomView');
+    setRoomDocumentId(linkTo);
     setIsOpenRoom(true);
   };
 
