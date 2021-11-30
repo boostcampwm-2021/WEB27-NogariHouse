@@ -1,7 +1,6 @@
 /* eslint-disable prefer-destructuring */
-/* eslint-disable no-return-assign */
 /* eslint-disable no-return-await */
-/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-return-assign */
 import Users from '@models/users';
 import Chats, { IUnReadMsg } from '@models/chats';
 
@@ -52,12 +51,15 @@ class ChatService {
 
     participants.forEach(async (userDocumentId) => await Users.findOneAndUpdate({ _id: userDocumentId }, { $push: { chatRooms: newChatRoom._id } }));
 
-    return { chatRoom, chatDocumentId: newChatRoom._id, isNew: true };
+    return { chatRoom: newChatRoom, chatDocumentId: newChatRoom._id, isNew: true };
   }
 
-  async getChattingLog(chatDocumentId: string) {
+  async getChattingLog(chatDocumentId: string, count: number) {
     const chattingLog = await Chats.findOne({ _id: chatDocumentId }, ['chattingLog']);
-    return chattingLog;
+    const size = chattingLog!.chattingLog.length;
+    if (count >= size) return { chattingLog: [] };
+    if (Math.floor(size / 10) === Math.floor(count / 10)) return { chattingLog: chattingLog!.chattingLog.slice(0, size % 10).reverse() };
+    return { chattingLog: chattingLog!.chattingLog.slice(size - count - 10, size - count).reverse() };
   }
 
   async addChattingLog(chattingLog: any, chatDocumentId: string, userDocumentId: string) {

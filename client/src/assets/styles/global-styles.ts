@@ -20,21 +20,24 @@ const GlobalStyle = createGlobalStyle`
     src: url(${Nunito});
   }
 
-  body {
-    @media (min-width: 1025px) {
-      height: 100vh;
-    }
+  html, body {
     font-family: 'Nunito';
     font-weight: normal;
     font-style: normal;
     font-size: 16px;
     background-color: #F1F0E4;
     width: 100vw;
-    min-height: 100vh;
-    min-height: -webkit-fill-available;
+    height: 100vh;
+    max-height: -webkit-fill-available;
     min-width: 320px;
     user-select: none;
     overflow: hidden;
+  }
+
+  #root {
+    position: relative;
+    height: 100vh;
+    max-height: -webkit-fill-available;
   }
 `;
 

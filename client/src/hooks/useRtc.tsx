@@ -1,7 +1,7 @@
 import {
   MutableRefObject, RefObject, useCallback, useRef, useEffect, useState, Dispatch,
 } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Socket } from 'socket.io-client';
 
 import useSocket from '@src/hooks/useSocket';
@@ -9,6 +9,8 @@ import { bindTrailingArgs } from '@src/utils';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState, { IUser } from '@atoms/user';
 import anonymousState from '@atoms/anonymous';
+import roomViewState from '@atoms/room-view-type';
+import toastListSelector from '@selectors/toast-list';
 
 export interface IRTC {
   socketId?: string,
@@ -24,16 +26,12 @@ export const useLocalStream = (): [MutableRefObject<MediaStream | null>, RefObje
   const myVideoRef = useRef<HTMLVideoElement | null>(null);
 
   const getLocalStream = useCallback(async () => {
-    try {
-      myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-      if (myVideoRef.current) myVideoRef.current.srcObject = myStreamRef.current;
+    myStreamRef.current = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+    if (myVideoRef.current) myVideoRef.current.srcObject = myStreamRef.current;
       myStreamRef.current!
         .getAudioTracks()
         // eslint-disable-next-line
         .forEach((track: MediaStreamTrack) => (track.enabled = !track.enabled));
-    } catch (e) {
-      console.error(e);
-    }
   }, []);
 
   return [myStreamRef, myVideoRef, getLocalStream];
@@ -108,7 +106,7 @@ export const useRtc = <T extends IRTC>(): [
   Socket | undefined,
   MutableRefObject<MediaStream | null>
 ] => {
-  const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection }>({});
+  const peerConnectionsRef = useRef<{ [socketId: string]: RTCPeerConnection | null}>({});
   const [participants, setParticipants] = useState<Array<T>>([]);
   const isAnonymous = useRecoilValue(anonymousState);
   const roomDocumentId = useRecoilValue(roomDocumentIdState);
@@ -116,14 +114,33 @@ export const useRtc = <T extends IRTC>(): [
   const socket = useSocket('/room');
   const [myStreamRef, myVideoRef, getLocalStream] = useLocalStream();
   const setPeerConnection = useSetPeerConnection(setParticipants, myStreamRef);
+  const setRoomView = useSetRecoilState(roomViewState);
+  const setToastList = useSetRecoilState(toastListSelector);
+
   useEffect(() => {
     if (!socket) return;
 
     const init = async () => {
-      await getLocalStream();
-      socket.emit('room:join', {
-        roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
-      });
+      try {
+        await getLocalStream();
+        if (!myStreamRef.current) throw new Error('NOT_ALLOW_MIC');
+        socket.emit('room:join', {
+          roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
+        });
+        setToastList({
+          type: 'success',
+          title: '방 생성',
+          description: '성공적으로 방이 생성됐습니다!',
+        });
+      } catch (error) {
+        console.error(error);
+        setToastList({
+          type: 'danger',
+          title: '장치 허용',
+          description: '마이크를 허용하지 않을 경우 방에 참가할 수 없습니다.',
+        });
+        setRoomView('createRoomView');
+      }
     };
 
     init();
@@ -169,22 +186,29 @@ export const useRtc = <T extends IRTC>(): [
     });
 
     socket.on('room:leave', async (socketId: string) => {
-      peerConnectionsRef.current[socketId].close();
+      peerConnectionsRef.current[socketId]!.close();
+      peerConnectionsRef.current[socketId] = null;
       delete peerConnectionsRef.current[socketId];
       setParticipants((oldParticipants) => oldParticipants?.filter((participant) => participant.socketId !== socketId));
     });
 
     return () => {
-      participants.forEach((participant) => {
-        if (!peerConnectionsRef.current[participant.userDocumentId]) return;
-        peerConnectionsRef.current[participant.userDocumentId].close();
-        delete peerConnectionsRef.current[participant.userDocumentId];
+      setParticipants((oldParticipants) => {
+        oldParticipants.forEach((participant) => {
+          if (!peerConnectionsRef.current[participant.socketId as string]) return;
+          peerConnectionsRef.current[participant.userDocumentId]!.close();
+          peerConnectionsRef.current[participant.userDocumentId]!.onicecandidate = null;
+          peerConnectionsRef.current[participant.userDocumentId]!.ontrack = null;
+          peerConnectionsRef.current[participant.userDocumentId] = null;
+          delete peerConnectionsRef.current[participant.userDocumentId];
+        });
+        return [];
       });
 
-          myStreamRef.current!.getTracks()
-            .forEach((track: MediaStreamTrack) => {
-              track.stop();
-            });
+      myStreamRef.current?.getTracks()
+        .forEach((track: MediaStreamTrack) => {
+          track.stop();
+        });
     };
   }, [socket, setPeerConnection]);
 

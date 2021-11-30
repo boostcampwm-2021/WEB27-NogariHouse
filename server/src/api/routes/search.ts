@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 
 import eventsService from '@src/services/events-service';
 import roomsService from '@src/services/rooms-service';
-import usersService from '@src/services/users-service';
+import usersService from '@src/services/user/user-service';
 
 const searchRouter = Router();
 

@@ -3,7 +3,7 @@ import {
 } from 'express';
 
 import authJWT from '@middlewares/auth';
-import usersService from '@services/users-service';
+import activityService from '@services/user/activity-service';
 
 const activityRouter = Router();
 
@@ -14,7 +14,7 @@ export default (app: Router) => {
   activityRouter.get('/isActivityChecked', async (req: Request, res: Response) => {
     const { userDocumentId } = req.body;
     try {
-      const isActivityChecked = await usersService.isActivityChecked(userDocumentId);
+      const isActivityChecked = await activityService.isActivityChecked(userDocumentId);
       res.json({ ok: true, isActivityChecked });
     } catch (e) {
       console.log(e);
@@ -26,7 +26,7 @@ export default (app: Router) => {
     const { userDocumentId } = req.body;
     const { count } = req.query;
     try {
-      const items = await usersService.getActivityList(userDocumentId, Number(count));
+      const items = await activityService.getActivityList(userDocumentId, Number(count));
       res.json({ ok: true, items });
     } catch (e) {
       console.error(e);

@@ -22,7 +22,8 @@
         "import/no-unresolved": 1,
         "max-len": ["error", { "code": 150 }],
         "consistent-return": 0,
-        "class-methods-use-this": 0
+        "class-methods-use-this": 0,
+        "no-underscore-dangle": 0
     },
     "settings": {
         "import/resolver": {

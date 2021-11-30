@@ -33,17 +33,6 @@ export const SearchInput = styled.input`
   &:focus {outline:none;}
 `;
 
-export const SearchCategoryLayout = styled.div`
-  width: 100%;
-  height: 48px;
-  border: none;
-  border-radius: 30px;
-  background-color: #E9E5E5;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 export const SearchScrollSection = styled.div`
   width: 100%;
   height: 70vh;
@@ -61,4 +50,10 @@ export const ItemDiv = styled.div`
   div + div {
   margin-bottom: 10px;
   }
+`;
+
+export const ObserverBlock = styled.div`
+  position: relative;
+  width: 100%;
+  height: 100px;
 `;

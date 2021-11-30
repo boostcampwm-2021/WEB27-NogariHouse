@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 
 import eventsService from '@services/events-service';
-import usersService from '@services/users-service';
+import activityService from '@services/user/activity-service';
 import authJWT from '@middlewares/auth';
 
 const eventRouter = Router();
@@ -28,7 +28,7 @@ export default (app: Router) => {
       } = req.body;
 
       const eventDocumentId = await eventsService.setEvent(title, participants, date, description);
-      const activityAddResult = await usersService.addActivityTypeEvent(userDocumentId, eventDocumentId);
+      const activityAddResult = await activityService.addActivityTypeEvent(userDocumentId, eventDocumentId);
 
       if (!activityAddResult) res.status(400).json({ ok: false });
       else res.status(200).send('success!');

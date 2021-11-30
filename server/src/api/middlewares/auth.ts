@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
 import jwtUtils from '@utils/jwt-util';
-import usersService from '@services/users-service';
+import authService from '@services/user/auth-service';
 
 const authJWT = async (req:Request, res:Response, next:NextFunction) => {
   const { accessToken } = req.cookies;
@@ -12,7 +12,7 @@ const authJWT = async (req:Request, res:Response, next:NextFunction) => {
       req.body.userDocumentId = result.id;
       next();
     } else {
-      const refreshResult = await usersService.tokenRefresh(accessToken);
+      const refreshResult = await authService.tokenRefresh(accessToken);
       if (!refreshResult.ok) {
         res.status(401).json({
           ok: false,
