@@ -7,6 +7,7 @@ import userState from '@atoms/user';
 import roomViewState from '@atoms/room-view-type';
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import roomDoucumentIdState from '@atoms/room-document-id';
+import chatSocketMessage from '@constants/socket-message/chat';
 import { makeDateToHourMinute } from '@utils/index';
 import useChatSocket from '@utils/chat-socket';
 import { SelectHeaderWrap, SelectHeader, BtnStyle } from '@src/assets/styles/select-view-style';
@@ -41,7 +42,7 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
       date: makeDateToHourMinute(nowDate),
       key: `${nowDate.getTime()}_${user.userDocumentId}`,
     };
-    chatSocket.emit('chat:inviteRoom', inviteInfo);
+    chatSocket.emit(chatSocketMessage.emit.inviteRoom, inviteInfo);
     setToastList({
       type: 'success',
       title: '방 초대',

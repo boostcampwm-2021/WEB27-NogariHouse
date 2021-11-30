@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom';
 import useChatSocket from '@utils/chat-socket';
 import { postChatRoom } from '@api/chat';
 import userState from '@atoms/user';
+import chatSocketMessage from '@constants/socket-message/chat';
 import { SelectHeaderWrap, SelectHeader, BtnStyle } from '@src/assets/styles/select-view-style';
 
 const DoneBtn = ({ selectedUserList }: any) => {
@@ -20,7 +21,7 @@ const DoneBtn = ({ selectedUserList }: any) => {
           state: { participantsInfo: selectedUserList },
         });
         if (res.isNew) {
-          chatSocket.emit('chat:makeChat', {
+          chatSocket.emit(chatSocketMessage.emit.makeChat, {
             chatDocumentId: res.chatDocumentId,
             participantsInfo: [...selectedUserList, { userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl }],
           });
