@@ -84,7 +84,7 @@ class RoomService {
   async searchRooms(keyword: string, count: number) {
     try {
       const query = new RegExp(keyword, 'i');
-      const res = await Rooms.find({ title: query }).sort({ date: 1 }).skip(count).limit(10);
+      const res = await Rooms.find({ title: query, type: 'public' }).sort({ date: 1 }).skip(count).limit(10);
 
       const roomsInfo = await Promise.all((res).map(async ({
         _id, title, isAnonymous, participants,
