@@ -21,7 +21,7 @@ const DoneBtn = ({ selectedUserList }: any) => {
           state: { participantsInfo: selectedUserList },
         });
         if (res.isNew) {
-          chatSocket.emit(chatSocketMessage.emit.makeChat, {
+          chatSocket.emit(chatSocketMessage.makeChat, {
             chatDocumentId: res.chatDocumentId,
             participantsInfo: [...selectedUserList, { userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl }],
           });

@@ -100,13 +100,13 @@ function ChatRoomDetailView() {
 
   useEffect(() => {
     if (!chatSocket) return;
-    chatSocket.emit(chatSocketMessage.emit.roomJoin, chatDocumentId);
-    chatSocket.on(chatSocketMessage.on.sendMsg, (payload: any) => {
+    chatSocket.emit(chatSocketMessage.roomJoin, chatDocumentId);
+    chatSocket.on(chatSocketMessage.sendMsg, (payload: any) => {
       dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog: payload } });
     });
     return () => {
-      chatSocket.off(chatSocketMessage.on.sendMsg);
-      chatSocket.emit(chatSocketMessage.emit.leave, chatDocumentId);
+      chatSocket.off(chatSocketMessage.sendMsg);
+      chatSocket.emit(chatSocketMessage.leave, chatDocumentId);
     };
   }, [chatSocket]);
 

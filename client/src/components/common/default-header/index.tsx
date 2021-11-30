@@ -61,12 +61,12 @@ function DefaultHeader() {
 
   useEffect(() => {
     getUnReadMsgCount().then((res: any) => setUnReadMsgCount(res.unReadMsgCount));
-    chatSocket.emit(chatSocketMessage.emit.viewJoin, user.userDocumentId);
-    chatSocket.on(chatSocketMessage.on.updateCount, () => {
+    chatSocket.emit(chatSocketMessage.viewJoin, user.userDocumentId);
+    chatSocket.on(chatSocketMessage.updateCount, () => {
       if (!window.location.pathname.includes('/chat-rooms/')) setUnReadMsgCount((oldCount) => oldCount + 1);
     });
     return () => {
-      chatSocket.off(chatSocketMessage.on.updateCount);
+      chatSocket.off(chatSocketMessage.updateCount);
     };
   }, [chatSocket]);
 

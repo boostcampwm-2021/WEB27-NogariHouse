@@ -42,7 +42,7 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
       date: makeDateToHourMinute(nowDate),
       key: `${nowDate.getTime()}_${user.userDocumentId}`,
     };
-    chatSocket.emit(chatSocketMessage.emit.inviteRoom, inviteInfo);
+    chatSocket.emit(chatSocketMessage.inviteRoom, inviteInfo);
     setToastList({
       type: 'success',
       title: '방 초대',
