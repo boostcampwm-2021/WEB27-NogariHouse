@@ -11,13 +11,13 @@ export const SectionLayout = styled.div`
 `;
 
 export const ActiveFollowingLayout = styled.div`
-  height: 100%;
+  height: 80%;
   min-width: 280px;
   width: 20vw;
   margin: 10px;
 
   @media (min-width: 769px) {
-    height: calc(100%-96px);
+    height: 80%;
   }
 
   @media (max-width: 1024px) {
@@ -36,7 +36,7 @@ export const ActiveFollowingLayout = styled.div`
 
 export const MainSectionLayout = styled.div`
   @media (min-width: 769px) {
-    height: calc(100%-96px);
+    height: 80%;
   }
 
   @media (min-width: 1025px) {
@@ -53,7 +53,7 @@ export const MainSectionLayout = styled.div`
 export const RoomLayout = styled.div`
   @media (min-width: 769px) {
     width: 40vw;
-    height: 600px;
+    height: 80%;
     min-width: 320px;
     margin: 10px;
   }
