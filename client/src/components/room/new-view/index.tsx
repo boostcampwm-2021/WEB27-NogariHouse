@@ -43,11 +43,6 @@ function RoomModal() {
         else if (isAnonymous) setRoomView('selectModeView');
         else {
           setRoomView('inRoomView');
-          setToastList({
-            type: 'success',
-            title: '방 생성',
-            description: '성공적으로 방이 생성됐습니다!',
-          });
         }
       })
       .catch((err) => {

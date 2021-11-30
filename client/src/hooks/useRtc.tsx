@@ -1,7 +1,7 @@
 import {
   MutableRefObject, RefObject, useCallback, useRef, useEffect, useState, Dispatch,
 } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { Socket } from 'socket.io-client';
 
 import useSocket from '@src/hooks/useSocket';
@@ -9,6 +9,8 @@ import { bindTrailingArgs } from '@src/utils';
 import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState, { IUser } from '@atoms/user';
 import anonymousState from '@atoms/anonymous';
+import roomViewState from '@atoms/room-view-type';
+import toastListSelector from '@selectors/toast-list';
 
 export interface IRTC {
   socketId?: string,
@@ -116,19 +118,39 @@ export const useRtc = <T extends IRTC>(): [
   const socket = useSocket('/room');
   const [myStreamRef, myVideoRef, getLocalStream] = useLocalStream();
   const setPeerConnection = useSetPeerConnection(setParticipants, myStreamRef);
+  const setRoomView = useSetRecoilState(roomViewState);
+  const setToastList = useSetRecoilState(toastListSelector);
+
   useEffect(() => {
     if (!socket) return;
 
     const init = async () => {
-      await getLocalStream();
-      socket.emit('room:join', {
-        roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
-      });
+      try {
+        await getLocalStream();
+        if (!myStreamRef.current) throw new Error('NOT_ALLOW_MIC');
+        socket.emit('room:join', {
+          roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
+        });
+        setToastList({
+          type: 'success',
+          title: '방 생성',
+          description: '성공적으로 방이 생성됐습니다!',
+        });
+      } catch (error) {
+        console.error(error);
+        setToastList({
+          type: 'danger',
+          title: '장치 허용',
+          description: '마이크를 허용하지 않을 경우 방에 참가할 수 없습니다.',
+        });
+        setRoomView('createRoomView');
+      }
     };
 
     init();
 
     socket.on('room:join', async (participantsInfo: Array<T>) => {
+      console.log('participantsInfo', participantsInfo);
       participantsInfo.forEach(async (participant: T) => {
         if (!myStreamRef.current) return;
         const peerConnection = setPeerConnection(participant, socket);
@@ -188,10 +210,10 @@ export const useRtc = <T extends IRTC>(): [
         return [];
       });
 
-          myStreamRef.current!.getTracks()
-            .forEach((track: MediaStreamTrack) => {
-              track.stop();
-            });
+      myStreamRef.current?.getTracks()
+        .forEach((track: MediaStreamTrack) => {
+          track.stop();
+        });
     };
   }, [socket, setPeerConnection]);
 
