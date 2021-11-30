@@ -4,7 +4,7 @@ import {
 
 import RoomService from '@services/rooms-service';
 import authJWT from '@middlewares/auth';
-import usersService from '@services/users-service';
+import activityService from '@services/user/activity-service';
 
 const roomRouter = Router();
 
@@ -19,7 +19,7 @@ export default (app: Router) => {
       } = req.body;
 
       const roomId = await RoomService.setRoom(title, type, isAnonymous);
-      const activityAddResult = await usersService.addActivityTypeRoom(userDocumentId, roomId);
+      const activityAddResult = await activityService.addActivityTypeRoom(userDocumentId, roomId);
 
       if (!activityAddResult) res.status(400).json({ ok: false });
       else res.status(200).json(roomId);

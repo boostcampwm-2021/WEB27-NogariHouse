@@ -4,7 +4,7 @@ import { activeUser } from '@src/sockets/user';
 import { userNamespace } from '@src/sockets';
 
 let instance: any = null;
-class UserService {
+class ActivityService {
   constructor() {
     if (instance) return instance;
     instance = this;
@@ -13,7 +13,7 @@ class UserService {
   async getActivityList(userDocumentId: string, count: number) {
     const user = await Users.findById(userDocumentId, ['activity']);
     const newActivityList = await Promise.all(user!.activity.slice(count, count + 10).map(async (activity: IActivity) => {
-      const detailFrom = await this.findUserByDocumentId(activity.from);
+      const detailFrom = await Users.findById(activity.from);
       const newFrom = { userId: detailFrom!.userId, userName: detailFrom!.userName, profileUrl: detailFrom!.profileUrl };
       return { ...activity, from: newFrom };
     }));
@@ -97,4 +97,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+export default new ActivityService();

@@ -1,5 +1,5 @@
 import Events, { IEventsTypesModel } from '@models/events';
-import usersService from './users-service';
+import userService from '@services/user/user-service';
 
 export default {
   get10EventItems: async (count : number) => {
@@ -14,19 +14,9 @@ export default {
     }
   },
 
-  // myEvent 구현시 해당 함수에서 추가적으로 구현해서 사용하실건지 아니면 따로 함수를 만들어주실건지 ...
-  get10EventItemsFromUser: async (userDocumentId: string, count : number) => {
-    try {
-      const items = await Events.find().skip(count).limit(10);
-      return items;
-    } catch (e) {
-      console.error(e);
-    }
-  },
-
   makeItemToEventInterface: async (item : IEventsTypesModel & {_id: number}) => {
     const participantsList = await Promise.all(item.participants
-      .map(async (userId) => usersService.findUserByUserId(userId)));
+      .map(async (userId) => userService.findUserByUserId(userId)));
     return {
       key: item._id,
       time: String(item.date),

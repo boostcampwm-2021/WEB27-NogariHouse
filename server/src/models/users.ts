@@ -16,14 +16,6 @@ export interface IActivity {
   isChecked: boolean,
 }
 
-export interface IRecentSearch {
-    // 추가 설정 필요
-}
-
-export interface IRecentListenTo extends IUser{
-    userId: string,
-}
-
 export interface IUsers {
     userName: string,
     userId: string,
@@ -32,13 +24,10 @@ export interface IUsers {
     loginType: 'Oauth' | 'normal',
     description: string,
     chatRooms: Array<string>,
-    myEvents: Array<string>,
     followings: Array<string>,
     followers: Array<string>,
     joinDate: Date,
     activity: Array<IActivity>,
-    recentSearch: Array<IRecentSearch>,
-    recentListenTo: Array<IRecentListenTo>,
     profileUrl: string
 }
 
@@ -77,20 +66,12 @@ const usersSchema = new Schema({
     type: [String],
     default: [],
   },
-  myEvent: {
-    type: [String],
-    default: [],
-  },
   followings: {
     type: [String],
     default: [],
   },
   followers: {
     type: [String],
-    default: [],
-  },
-  recentSearch: {
-    type: [Object],
     default: [],
   },
   profileUrl: {
@@ -130,7 +111,7 @@ usersSchema.pre('insertMany', async (next: any, docs: any) => {
   }
 });
 
-usersSchema.methods.checkPassword = function (guess) {
+usersSchema.methods.checkPassword = function (guess: string) {
   return bcrypt.compareSync(guess, this.password);
 };
 
