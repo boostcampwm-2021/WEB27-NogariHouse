@@ -1,19 +1,17 @@
-/* eslint-disable import/no-unresolved */
 import React from 'react';
 import { Switch } from 'react-router-dom';
 
 import ActivityView from '@components/activity';
-import ChatRoomDetailView from '@views/chat-room-detail-view';
-import ChatRoomsNewView from '@views/chat-rooms-new-view';
-import ChatRoomsView from '@views/chat-rooms-view';
+import ChatRoomDetailView from '@components/chat/detail-view';
+import ChatRoomsNewView from '@components/chat/new-view';
+import ChatRoomsView from '@components/chat/main-view';
 import EventView from '@components/event';
-import FollowersView from '@views/followers-view';
-import FollowingView from '@views/following-view';
+import FollowersView from '@components/profile/followers-view';
+import FollowingView from '@components/profile/following-view';
 import InviteView from '@components/invite';
-import ProfileSettingView from '@views/profile-settings-view';
-import ProfileView from '@views/profile-view';
+import ProfileView from '@components/profile';
 import SearchView from '@components/search';
-import RoomView from '@src/views/room-view';
+import RoomView from '@components/main/room-view';
 import PrivateRoute from '@routes/custom/private-route';
 
 function MainRouter() {
@@ -29,7 +27,6 @@ function MainRouter() {
       <PrivateRoute exact path="/following/:id" component={FollowingView} />
       <PrivateRoute exact path="/invite" component={InviteView} />
       <PrivateRoute exact path="/search" component={SearchView} />
-      <PrivateRoute exact path="/settings" component={ProfileSettingView} />
       <PrivateRoute exact path="/profile/:id" component={ProfileView} />
     </Switch>
   );

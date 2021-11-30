@@ -3,7 +3,7 @@ import { useRecoilState, useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 import toastListSelector from '@selectors/toast-list';
-import { BackgroundWrapper } from '@common/modal';
+import { BackgroundWrapper } from '@styles/modal';
 import postEvent from '@api/event';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
 import EventSelectUserDropdown from './select-uesr-dropdown';

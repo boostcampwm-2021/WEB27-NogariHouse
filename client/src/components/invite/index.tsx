@@ -5,10 +5,10 @@ import { RouteComponentProps } from 'react-router-dom';
 import { useSetRecoilState } from 'recoil';
 
 import toastListSelector from '@selectors/toast-list';
-import { CustomInputBox, CustomInputBar } from '@common/custom-inputbar';
+import { CustomInputBox, CustomInputBar } from '@styles/custom-inputbar';
 import DefaultButton from '@common/default-button';
-import LoadingSpinner from '@src/components/common/loading-spinner';
-import { testEmailValidation } from '@src/utils';
+import LoadingSpinner from '@styles/loading-spinner';
+import { testEmailValidation } from '@utils/index';
 import { InviteBody, InviteInputLayout, InputTitle } from './style';
 
 function InviteView({ history }: RouteComponentProps) {

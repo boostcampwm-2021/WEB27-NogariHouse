@@ -1,11 +1,10 @@
-/* eslint-disable  */
 import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
-import LoadingSpinner from '@common/loading-spinner';
+import LoadingSpinner from '@styles/loading-spinner';
 import useFetchItems from '@hooks/useFetchItems';
 import followingListState from '@atoms/following-list';
-import UserCard from '@common/user-card';
+import UserCard from '@common/user/card';
 import userState from '@atoms/user';
 import { IUserForCard } from '@interfaces/index';
 import { makeUserObjectIncludedIsFollow } from '@utils/item';
@@ -22,7 +21,6 @@ function FollowingView({ match }: any) {
     if (newUserItemForm._id === user.userDocumentId) {
       return (
         <UserCard
-      // eslint-disable-next-line no-underscore-dangle
           key={newUserItemForm._id}
           cardType="me"
           userData={newUserItemForm}
@@ -32,11 +30,10 @@ function FollowingView({ match }: any) {
 
     return (
       <UserCard
-          // eslint-disable-next-line no-underscore-dangle
         key={newUserItemForm._id}
         cardType="follow"
         userData={newUserItemForm}
-        />
+      />
     );
   };
 

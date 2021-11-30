@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import Users, { IActivity } from '@models/users';
 import Events from '@models/events';
 import { activeUser } from '@src/sockets/user';

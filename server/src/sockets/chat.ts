@@ -65,12 +65,14 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
         socket.to(participant.userDocumentId).emit('chat:makeChat', { chatDocumentId, participantsInfo: [userInfo] });
         namespace.to(userInfo.userDocumentId).emit('chat:makeChat', { chatDocumentId, participantsInfo: [participant] });
       }
+
       socket.to(participant.userDocumentId).emit('chat:alertMsg', {
         chatDocumentId,
         lastMsg: message,
         recentActive: new Date(),
         unCheckedMsg: chatRoom!.unReadMsg[chatRoom!.unReadMsg.findIndex((user: any) => user.userDocumentId === participant.userDocumentId)].count + 1,
       });
+
       namespace.to(userInfo.userDocumentId).emit('chat:alertMsg', {
         chatDocumentId,
         lastMsg: message,

@@ -9,7 +9,7 @@ import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import roomDoucumentIdState from '@atoms/room-document-id';
 import { makeDateToHourMinute } from '@utils/index';
 import useChatSocket from '@utils/chat-socket';
-import { SelectHeaderWrap, SelectHeader, BtnStyle } from '@common/select-view/style';
+import { SelectHeaderWrap, SelectHeader, BtnStyle } from '@src/assets/styles/select-view-style';
 
 const CustomNewHeaderWrap = styled(SelectHeaderWrap)`
   background-color: transparent;

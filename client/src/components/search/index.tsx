@@ -1,13 +1,9 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 import React, {
   useRef, useEffect, useState, MouseEvent,
 } from 'react';
 import {
   useRecoilState, useRecoilValue, useResetRecoilState, useSetRecoilState,
 } from 'recoil';
-import styled from 'styled-components';
 
 import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
 import searchTypeState from '@atoms/search-type';
@@ -16,14 +12,14 @@ import roomViewType from '@atoms/room-view-type';
 import roomDocumentIdState from '@atoms/room-document-id';
 import followingListState from '@atoms/following-list';
 import userState from '@atoms/user';
-import LoadingSpinner from '@common/loading-spinner';
-import UserCard from '@common/user-card';
+import LoadingSpinner from '@styles/loading-spinner';
+import UserCard from '@common/user/card';
 import useSetEventModal from '@hooks/useSetEventModal';
 import useItemFecthObserver from '@hooks/useItemFetchObserver';
 import useFetchItems from '@hooks/useFetchItems';
 import { makeUserObjectIncludedIsFollow } from '@utils/item';
 import { makeEventToCard } from '@components/event/card-list';
-import { makeRoomToCard } from '@views/room-view';
+import { makeRoomToCard } from '@components/main/room-view';
 import {
   SearchViewLayout, SearchBarLayout, SearchInput, SearchScrollSection, ItemDiv, ObserverBlock,
 } from './style';

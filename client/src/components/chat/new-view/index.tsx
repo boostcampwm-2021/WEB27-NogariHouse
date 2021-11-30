@@ -1,11 +1,10 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useRef } from 'react';
 
 import NewChatRoomHeader from '@src/components/chat/new-view/header/chat-new-header';
-import UserCardList from '@components/common/user-card-list';
+import UserCardList from '@components/common/user/card-list';
 import {
   SelectDiv, SelectInputBar, SelectedUserDiv, SelectUserComponent,
-} from '@common/select';
+} from '@styles/select';
 import useSelectUser from '@hooks/useSelectUser';
 import { ChatRoomsLayout } from '@components/chat/style';
 import NewChatRoomBody from './style';

@@ -1,8 +1,6 @@
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-return-await */
-/* eslint-disable max-len */
 /* eslint-disable no-return-assign */
-/* eslint-disable no-underscore-dangle */
 import Users from '@models/users';
 import Chats, { IUnReadMsg } from '@models/chats';
 
@@ -53,7 +51,7 @@ class ChatService {
 
     participants.forEach(async (userDocumentId) => await Users.findOneAndUpdate({ _id: userDocumentId }, { $push: { chatRooms: newChatRoom._id } }));
 
-    return { chatRoom, chatDocumentId: newChatRoom._id, isNew: true };
+    return { chatRoom: newChatRoom, chatDocumentId: newChatRoom._id, isNew: true };
   }
 
   async getChattingLog(chatDocumentId: string, count: number) {

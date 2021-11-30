@@ -3,10 +3,10 @@ import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 
 import followingListState from '@atoms/following-list';
-import UserCardList from '@components/common/user-card-list';
+import UserCardList from '@components/common/user/card-list';
 import { findUsersByIdList } from '@api/user';
 import { IUserForCard } from '@interfaces/index';
-import LoadingSpinner from '@common/loading-spinner';
+import LoadingSpinner from '@styles/loading-spinner';
 
 interface IEventSelectUserDropdownProps {
   setSelectedList: React.Dispatch<React.SetStateAction<string[]>>,

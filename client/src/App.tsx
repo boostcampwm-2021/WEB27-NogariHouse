@@ -1,22 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useResetRecoilState, useSetRecoilState } from 'recoil';
-import { useCookies } from 'react-cookie';
 
 import Router from '@routes/index';
 import userState from '@atoms/user';
 import followingListState from '@atoms/following-list';
-import BodyModal from '@components/body-modal';
-import Toast from '@components/common/toast';
-import LoadingSpinner from '@common/loading-spinner';
+import BodyModal from '@common/body-modal';
+import Toast from '@common/toast';
+import LoadingSpinner from '@styles/loading-spinner';
 import { getFollowingsList, getMyInfo } from '@api/user';
+import { setAccessToken } from '@utils/index';
 
 function App() {
   const setUser = useSetRecoilState(userState);
   const resetUser = useResetRecoilState(userState);
   const setFollowingList = useSetRecoilState(followingListState);
   const [loading, setLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [cookies, setCookie] = useCookies(['accessToken']);
 
   const updateUserState = useCallback(async (json) => {
     const {
@@ -30,7 +28,7 @@ function App() {
       isLoggedIn: true, userDocumentId, profileUrl, userName, userId,
     });
 
-    setCookie('accessToken', accessToken);
+    setAccessToken(accessToken as string);
     setLoading(false);
   }, []);
 

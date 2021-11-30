@@ -3,7 +3,7 @@ import { MdOutlineArrowBackIos } from 'react-icons/md';
 import { HiHome } from 'react-icons/hi';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@styles/header';
 import { makeIconToLink } from '@utils/index';
 import { IconType } from 'react-icons';
 
@@ -15,12 +15,12 @@ interface IconAndLink {
   color?: string,
 }
 
-function FollowingHeader({ history, location }: RouteComponentProps) {
+function FollowHeader({ history, location }: RouteComponentProps) {
   const Icon: IconAndLink = { Component: HiHome, link: '/', key: 'main' };
 
   return (
     <CustomtHeader>
-      <HeaderTitleNunito to={location.pathname}>FOLLOWING</HeaderTitleNunito>
+      <HeaderTitleNunito to={location.pathname}>{location.pathname.includes('following') ? 'FOLLOWING' : 'FOLLOWER' }</HeaderTitleNunito>
       <CustomMenuIconsLayout>
         <MdOutlineArrowBackIos onClick={() => history.goBack()} size={48} />
         {makeIconToLink(Icon)}
@@ -29,4 +29,4 @@ function FollowingHeader({ history, location }: RouteComponentProps) {
   );
 }
 
-export default FollowingHeader;
+export default FollowHeader;

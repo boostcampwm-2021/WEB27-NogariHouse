@@ -1,6 +1,6 @@
 import React from 'react';
 
-import SearchTypeCheckBox from '@components/search/search-type-check-box';
+import SearchTypeCheckBox from '@components/search/type-check-box';
 import SearchCategoryLayout from '@components/search/option-bar/style';
 
 function OptionBar() {

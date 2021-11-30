@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useRef, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { useRecoilValue, useRecoilState } from 'recoil';
@@ -7,7 +6,7 @@ import followingListState from '@atoms/following-list';
 import { isOpenChangeProfileImageModalState } from '@atoms/is-open-modal';
 import userState from '@atoms/user';
 import { getUserDetail } from '@api/user';
-import LoadingSpinner from '@common/loading-spinner';
+import LoadingSpinner from '@styles/loading-spinner';
 import DefaultButton from '@common/default-button';
 import useIsFollowingRef from '@hooks/useIsFollowingRef';
 import { IUserDetail } from '@src/interfaces';

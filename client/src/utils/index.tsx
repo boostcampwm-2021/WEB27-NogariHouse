@@ -43,6 +43,10 @@ export const isEmptyArray = (array: any[]) => !array.length;
 
 const cookies = new Cookies();
 
+export const setAccessToken = async (jwt: string) => {
+  cookies.set('accessToken', jwt);
+};
+
 const removeAccessToken = async () => {
   cookies.remove('accessToken');
 };

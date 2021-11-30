@@ -6,7 +6,7 @@ import { useResetRecoilState, useSetRecoilState } from 'recoil';
 
 import { isOpenEventRegisterModalState } from '@atoms/is-open-modal';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-section-scroll';
-import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@styles/header';
 import { IconAndLink } from '@interfaces/index';
 import { makeIconToLink } from '@utils/index';
 

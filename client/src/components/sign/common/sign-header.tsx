@@ -1,5 +1,5 @@
 import React from 'react';
-import { CustomtHeader, CustomMenuIconsLayout } from '@common/header';
+import { CustomtHeader, CustomMenuIconsLayout } from '@styles/header';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
 import { makeIconToLink } from '@utils/index';

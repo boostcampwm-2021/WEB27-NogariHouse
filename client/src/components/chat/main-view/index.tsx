@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-
 import React, { useEffect, useState } from 'react';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { useHistory } from 'react-router-dom';
@@ -9,7 +7,7 @@ import unReadMsgCountState from '@atoms/not-read-msg';
 import ChatRoomListHeader from '@src/components/chat/main-view/header';
 import ChatUserCard from '@src/components/chat/main-view/chat-card';
 import { ChatRoomsLayout } from '@components/chat/style';
-import LoadingSpinner from '@common/loading-spinner';
+import LoadingSpinner from '@styles/loading-spinner';
 import { getChatRooms } from '@api/chat';
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
 import useChatSocket from '@src/utils/chat-socket';

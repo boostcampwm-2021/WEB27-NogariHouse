@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import Rooms from '@models/rooms';
 import Users from '@models/users';
 

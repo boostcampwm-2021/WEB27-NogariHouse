@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import nodemailer from 'nodemailer';
 
 import Users from '@models/users';
@@ -68,9 +67,9 @@ class EmailService {
       subject: '노가리하우스로 초대합니다.',
       html: `
       <h1>${user!.userName}님이 노가리 하우스로 초대하셨습니다.</h1>
-      
+
       <div><a href=${inviteLink}>🐟 Nogari House 바로가기 🐟</a></div>
-      
+
       <div>언제 어디서나 편하게 노가리를 깔 수 있는곳! 노가리 하우스🏖로 놀러오세요</div>
       <div>다양한 주제로 다양한 사람들과 노라기를 깔 수 있습니다! 🎤</div>
       <div>아직 나의 목소리를 공개하기 수줍다고요? 그럼 익명 음성 채팅 기능을 활용해보세요! 😎</div>

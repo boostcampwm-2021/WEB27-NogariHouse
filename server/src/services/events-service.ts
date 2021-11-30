@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import Events, { IEventsTypesModel } from '@models/events';
 import usersService from './users-service';
 

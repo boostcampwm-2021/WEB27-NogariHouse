@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 import useChatSocket from '@utils/chat-socket';
 import { postChatRoom } from '@api/chat';
 import userState from '@atoms/user';
-import { SelectHeaderWrap, SelectHeader, BtnStyle } from '@common/select-view/style';
+import { SelectHeaderWrap, SelectHeader, BtnStyle } from '@src/assets/styles/select-view-style';
 
 const DoneBtn = ({ selectedUserList }: any) => {
   const user = useRecoilValue(userState);

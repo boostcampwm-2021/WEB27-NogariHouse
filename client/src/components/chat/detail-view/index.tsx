@@ -16,7 +16,7 @@ import roomViewState from '@atoms/room-view-type';
 import useChatSocket from '@src/utils/chat-socket';
 import isOpenRoomState from '@atoms/is-open-room';
 import NotFoundChatView from '@src/components/chat/not-found-view';
-import LoadingSpinner from '@common/loading-spinner';
+import LoadingSpinner from '@styles/loading-spinner';
 import { chatReducer, initialState } from './reducer';
 import {
   Chat, Message, UserProfile, DateDiv, ObserverBlock, ChattingLog,

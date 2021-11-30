@@ -1,12 +1,11 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 
-import LoadingSpinner from '@common/loading-spinner';
+import LoadingSpinner from '@styles/loading-spinner';
 import useFetchItems from '@src/hooks/useFetchItems';
 import followingListState from '@atoms/following-list';
-import UserCard from '@common/user-card';
+import UserCard from '@common/user/card';
 import userState from '@atoms/user';
 import { IUserForCard } from '@src/interfaces';
 import { makeUserObjectIncludedIsFollow } from '@utils/item';

@@ -4,8 +4,8 @@ import { Switch } from 'react-router-dom';
 import ActivityHeader from '@components/activity/header';
 import DefaultHeader from '@common/default-header';
 import EventHeader from '@components/event/header';
-import SearchHeader from '@components/search/search-header';
-import ProfileHeader from '@components/profile/profile-header';
+import SearchHeader from '@components/search/header';
+import ProfileHeader from '@components/profile/header';
 import FollowHeader from '@components/profile/follow-header';
 import PrivateRoute from '@routes/custom/private-route';
 

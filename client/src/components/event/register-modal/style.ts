@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { ModalBox } from '@common/modal';
+import { ModalBox } from '@styles/modal';
 
 export const CustomEventRegisterModal = styled(ModalBox)`
   top: 15vh;

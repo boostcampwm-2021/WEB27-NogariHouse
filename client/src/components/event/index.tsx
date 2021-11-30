@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRecoilValue } from 'recoil';
 
 import { nowFetchingState } from '@atoms/main-section-scroll';
-import LoadingSpinner from '@common/loading-spinner';
+import LoadingSpinner from '@styles/loading-spinner';
 import EventCardList from '@components/event/card-list';
 import useFetchItems from '@hooks/useFetchItems';
 import useItemFecthObserver from '@hooks/useItemFetchObserver';

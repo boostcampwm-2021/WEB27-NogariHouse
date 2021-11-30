@@ -1,7 +1,7 @@
 import React from 'react';
 import { MdOutlineArrowBackIos } from 'react-icons/md';
 
-import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@common/header';
+import { CustomtHeader, HeaderTitleNunito, CustomMenuIconsLayout } from '@styles/header';
 import { makeIconToLink } from '@utils/index';
 import { IconAndLink } from '@interfaces/index';
 

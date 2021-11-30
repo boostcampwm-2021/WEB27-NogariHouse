@@ -4,12 +4,12 @@ import styled from 'styled-components';
 import { useSetRecoilState } from 'recoil';
 
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
-import UserCardList from '@components/common/user-card-list';
+import UserCardList from '@common/user/card-list';
 import FollowerSelectRoomHeader from '@src/components/room/modal/follower-select-header';
-import { BackgroundWrapper, ModalBox } from '@common/modal';
+import { BackgroundWrapper, ModalBox } from '@styles/modal';
 import {
   SelectDiv, SelectInputBar, SelectedUserDiv, SelectUserComponent,
-} from '@common/select';
+} from '@styles/select';
 import { hiddenScroll } from '@styles/scrollbar-style';
 import useSelectUser from '@src/hooks/useSelectUser';
 

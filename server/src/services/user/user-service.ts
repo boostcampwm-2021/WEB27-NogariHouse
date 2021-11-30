@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import Users, { IUserTypesModel } from '@models/users';
 
 let instance: any = null;

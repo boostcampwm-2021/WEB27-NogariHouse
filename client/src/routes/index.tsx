@@ -5,11 +5,11 @@ import {
 import { useRecoilValue } from 'recoil';
 
 import userState from '@atoms/user';
-import MainView from '@views/main-view';
-import SigninView from '@views/signin-view';
-import SignupView from '@views/signup-view';
-import SignupInfoView from '@views/signup-info-view';
-import MainInitView from '@src/views/main-init-view';
+import MainView from '@components/main';
+import SigninView from '@components/sign/signin-view';
+import SignupView from '@components/sign/signup-view';
+import SignupInfoView from '@components/sign/signup-info-view';
+import MainInitView from '@components/main/init';
 import PublicRoute from '@routes/custom/public-route';
 import PrivateRoute from '@routes/custom/private-route';
 

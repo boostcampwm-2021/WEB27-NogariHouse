@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import { IUserForCard } from '@interfaces/index';
 
 export const makeUserObjectIncludedIsFollow = (userItem: Required<IUserForCard>, followingList: string[]): IUserForCard => ({

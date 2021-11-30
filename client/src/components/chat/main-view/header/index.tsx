@@ -1,5 +1,3 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable no-return-assign */
 import { BiMessageSquareAdd } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
 
