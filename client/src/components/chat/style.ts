@@ -9,7 +9,7 @@ export const ChatRoomsLayout = styled.div`
   height: 100%;
 
   @media (max-width : 768px){
-    max-height: calc(100% - 96px);
+    max-height: calc(100% - 100px);
   }
 
   overflow: hidden;

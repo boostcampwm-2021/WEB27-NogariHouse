@@ -40,7 +40,7 @@ export const MainSectionLayout = styled.div`
   }
 
   @media (max-width: 768px){
-    heigth: calc(100%-96px);
+    heigth: calc(100% - 100px);
   }
 
   @media (min-width: 1025px) {
@@ -67,7 +67,7 @@ export const RoomLayout = styled.div`
     display: ${(props: { state : boolean}) => (props.state ? 'flex' : 'none')};
     z-index: 100;
     width: 99vw;
-    height: calc(100% - 96px);
+    height: calc(100% - 100px);
     margin-left: 0.5vw;
     animation-duration: 0.5s;
     animation-timing-function: ease-out;
