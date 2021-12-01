@@ -10,7 +10,7 @@ interface Params {
 export const makeIconToLink = ({
   Component, link, key, size = 48, color = 'black',
 }: IconAndLink) => (
-  <Link to={link} key={key}>
+  <Link to={link} key={key} aria-label={key as string}>
     <Component size={size} color={color} />
   </Link>
 );

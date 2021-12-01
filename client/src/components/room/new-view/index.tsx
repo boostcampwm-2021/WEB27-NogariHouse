@@ -11,6 +11,7 @@ import DefaultButton from '@common/default-button';
 import RoomTypeCheckBox from '@components/room/common/room-type-check-box';
 import AnonymousCheckBox from '@components/room/new-view/anonymous-checkbox';
 import { ButtonLayout } from '@components/room/common/style';
+import toastMessage from '@constants/toast-message';
 import toastListSelector from '@selectors/toast-list';
 import {
   CustomTitleForm, TitleInputbar, CheckboxLayout, TitleInputbarLabel,
@@ -46,11 +47,7 @@ function RoomModal() {
         }
       })
       .catch((err) => {
-        setToastList({
-          type: 'danger',
-          title: '방 생성',
-          description: '방 생성을 실패했습니다',
-        });
+        setToastList(toastMessage.roomCreateDanger());
         console.error(err);
       });
   };
@@ -70,11 +67,7 @@ function RoomModal() {
   const randomlyAssignedHandler = async () => {
     const roomDocumentId = await getRandomRoomDocumentId();
     if (roomDocumentId === 'NO_ROOM') {
-      setToastList({
-        type: 'danger',
-        title: '방 매칭 실패',
-        description: '현재 접속 가능한 익명 허용 방이 없습니다',
-      });
+      setToastList(toastMessage.roomMatchingDanger());
     } else {
       setRoomDocumentId(roomDocumentId);
       setRoomView('selectModeView');

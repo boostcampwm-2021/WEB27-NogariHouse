@@ -12,6 +12,7 @@ import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/roo
 import roomSocketMessage from '@constants/socket-message/room';
 import { getRoomInfo } from '@api/room';
 import { useRtc, IRTC } from '@hooks/useRtc';
+import toastMessage from '@constants/toast-message';
 import {
   InRoomHeader, TitleDiv, InRoomFooter, InRoomUserList, FooterBtnDiv,
 } from './style';
@@ -42,11 +43,7 @@ function InRoomModal() {
         if (!res) setRoomView('notFoundRoomView');
         else if (res.participants.length > 5) {
           setRoomView('createRoomView');
-          setToastList({
-            type: 'danger',
-            title: '방 접속 실패',
-            description: '입장 가능 인원수가 초과되어 입장이 불가능 합니다',
-          });
+          setToastList(toastMessage.roomLimitOverDanger());
         } else setRoomInfo(res);
       });
 

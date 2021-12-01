@@ -1,5 +1,7 @@
 import { Namespace, Socket } from 'socket.io';
 
+import userSocketMessage from '@constants/socket-message/user';
+
 interface IJoinPayload {
     userDocumentId: string,
     userName: string,
@@ -32,12 +34,12 @@ export default function userHandler(socket : Socket, namespace : Namespace) {
       return acc;
     }, []);
 
-    namespace.emit('user:newActiveUser', {
+    namespace.emit(userSocketMessage.newActiveUser, {
       userDocumentId, userName, userId, profileUrl, isActive: true,
     });
     // 기존 접속자들에게 새로운 유저 데이터 보내주기
 
-    namespace.to(socket.id).emit('user:firstFollowingList', activeFollowingList);
+    namespace.to(socket.id).emit(userSocketMessage.firstFollowingList, activeFollowingList);
     // 신규 접속자에게 현재 접속중인 팔로우 리스트 전달
   };
 
@@ -46,7 +48,7 @@ export default function userHandler(socket : Socket, namespace : Namespace) {
     socketUser.delete(socket.id);
     activeUser.delete(userDocumentId);
 
-    namespace.emit('user:newLeaveUser', userDocumentId);
+    namespace.emit(userSocketMessage.newLeaveUser, userDocumentId);
   };
 
   const handleUserHands = (targetDocumentId: string) => {
@@ -54,13 +56,13 @@ export default function userHandler(socket : Socket, namespace : Namespace) {
       const userDocumentId = socketUser.get(socket.id);
       const userInfo = (activeUser.get(userDocumentId)).info;
       const targetSocketId = (activeUser.get(targetDocumentId)).socketId;
-      namespace.to(targetSocketId).emit('user:hands', { from: { ...userInfo }, to: targetDocumentId });
+      namespace.to(targetSocketId).emit(userSocketMessage.hands, { from: { ...userInfo }, to: targetDocumentId });
     } catch (e) {
       console.error(e);
     }
   };
 
-  socket.on('user:join', handleUserJoin);
-  socket.on('user:hands', handleUserHands);
+  socket.on(userSocketMessage.join, handleUserJoin);
+  socket.on(userSocketMessage.hands, handleUserHands);
   socket.on('disconnect', handleUserLeave);
 }

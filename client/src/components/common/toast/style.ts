@@ -24,6 +24,11 @@ export const Notification = styled.div`
 
   height: 50px;
   width: 365px;
+
+  @media (max-width: 768px){
+    width: 250px;
+  }
+  
   color: #fff;
   padding: 20px 15px 10px 10px;
 

@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-expressions */
 import react, { useCallback, useRef } from 'react';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 
 import followingListState from '@src/recoil/atoms/following-list';
 
 const useIsFollowingRef = (setLoading: React.Dispatch<React.SetStateAction<boolean>>, isFollowDafult?: boolean)
   : [react.MutableRefObject<boolean | undefined>, (isFollow: boolean, targetUserDocumentId: string) => void] => {
   const isFollowingRef = useRef<boolean>(isFollowDafult as boolean);
-  const [followingList, setFollowingList] = useRecoilState(followingListState);
+  const setFollowingList = useSetRecoilState(followingListState);
 
   const fetchFollow = useCallback((isFollow: boolean, targetUserDocumentId: string) => {
     setLoading(true);
@@ -27,7 +27,6 @@ const useIsFollowingRef = (setLoading: React.Dispatch<React.SetStateAction<boole
             : setFollowingList((followList) => [...followList, targetUserDocumentId]);
           isFollowingRef.current = !isFollowingRef.current;
         }
-        console.log(followingList);
         setLoading(false);
       });
   }, [isFollowingRef.current]);

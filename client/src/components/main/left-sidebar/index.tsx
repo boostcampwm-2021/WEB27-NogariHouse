@@ -5,7 +5,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 
 import followingListState from '@atoms/following-list';
 import userState from '@atoms/user';
-import { IToast } from '@atoms/toast-list';
+import toastMessage from '@constants/toast-message';
 import userSocketMessage from '@constants/socket-message/user';
 import toastListSelector from '@selectors/toast-list';
 import useUserSocket from '@utils/user-socket';
@@ -57,12 +57,7 @@ function LeftSideBar() {
     });
     userSocket.on(userSocketMessage.hands, (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
       if (handsData.to === user.userDocumentId) {
-        const newToast: IToast = {
-          type: 'info',
-          title: '반가운 인사',
-          description: `${handsData.from.userName}님이 손을 흔들었습니다!`,
-        };
-        setToastList(newToast);
+        setToastList(toastMessage.handsInfo(handsData.from.userName as string));
       }
     });
   }, [user]);

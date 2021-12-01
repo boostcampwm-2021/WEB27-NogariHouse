@@ -123,7 +123,14 @@ type TChangeProfileImage = { ok: boolean, newProfileUrl: string }
 
 export const changeProfileImage = async (userDocumentId: string, formData: FormData) => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/profile-image`, postCredentialsOption(formData));
+    const response = await fetch(
+      `${process.env.REACT_APP_API_URL}/api/user/profile-image`,
+      {
+        method: 'post',
+        credentials: 'include',
+        body: formData,
+      },
+    );
 
     if (!response.ok) throw new Error(`HTTP Error! status: ${response.status}`);
 

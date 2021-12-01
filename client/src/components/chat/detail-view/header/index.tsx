@@ -7,8 +7,18 @@ import {
   BackBtn, ParticipantsDiv, ParticipantsProfileDiv, ParticipantsProfile, ParticipantsName,
 } from './style';
 
-export default React.memo(({ participantsInfo }: any) => {
-  const userNames = participantsInfo.map((user:any) => user.userName).join(', ');
+interface IParticipantInfo {
+  profileUrl: string,
+  userDocumentId: string,
+  userName: string,
+}
+
+interface IHeaderProps {
+  participantsInfo: Array<IParticipantInfo>
+}
+
+export default React.memo(({ participantsInfo }: IHeaderProps) => {
+  const userNames = participantsInfo.map((user: IParticipantInfo) => user.userName).join(', ');
 
   return (
     <ChatHeaderStyle>
@@ -19,7 +29,7 @@ export default React.memo(({ participantsInfo }: any) => {
       </BackBtn>
       <ParticipantsDiv>
         <ParticipantsProfileDiv>
-          {participantsInfo.map((user: any) => (<ParticipantsProfile key={user.userDocumentId} src={user.profileUrl} />))}
+          {participantsInfo.map((user: IParticipantInfo) => (<ParticipantsProfile key={user.userDocumentId} src={user.profileUrl} />))}
         </ParticipantsProfileDiv>
         <ParticipantsName>{userNames}</ParticipantsName>
       </ParticipantsDiv>

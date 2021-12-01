@@ -15,7 +15,8 @@
       "@subscribers/*": [ "src/subscribers/*" ],
       "@types/*": [ "src/types/*" ],
       "@utils/*": [ "src/utils/*" ],
-      "@sockets/*": [ "src/sockets/*" ]
+      "@sockets/*": [ "src/sockets/*" ],
+      "@constants/*": [ "src/constants/*" ],
     },
     "target": "es6",
     // "allowJs": true,

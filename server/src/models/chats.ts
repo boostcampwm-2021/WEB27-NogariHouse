@@ -1,10 +1,10 @@
 import { Schema, Document, model } from 'mongoose';
 
-interface IChattingLog {
+export interface IChattingLog {
   userDocumentId: string,
   message: string,
   date: Date,
-  linkTo: string,
+  linkTo?: string,
 }
 
 export interface IUnReadMsg {

@@ -15,7 +15,6 @@ export const InRoomHeader = styled.div`
 `;
 
 export const TitleDiv = styled.div`
-  font-family: "Nunito";
   font-style: normal;
   font-size: 20px;
 

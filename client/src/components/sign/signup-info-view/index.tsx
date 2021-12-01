@@ -12,6 +12,7 @@ import {
   CustomInputBox, CustomInputBar, InputLayout, CustomInputBoxLayout,
 } from '@styles/custom-inputbar';
 import { postSignUpUserInfo, getUserExistenceByUserId } from '@api/user';
+import toastMessage from '@src/constants/toast-message';
 
 const CustomInfoInputBar = styled(CustomInputBar)`
   font-size: min(5vw, 30px);
@@ -40,43 +41,62 @@ function SignupInfoView() {
   const checkPasswordValidity = () => inputPasswordRef.current?.value.length as number >= 6
     && inputPasswordRef.current?.value.length as number <= 16;
   const checkPassword = () => inputPasswordRef.current?.value === inputPasswordCheckRef.current?.value;
-  const checkUserId = async () => {
+  const checkUserIdLength = () => inputIdRef.current?.value.length as number >= 2
+    && inputIdRef.current?.value.length as number <= 12;
+  const checkUserIdIsExisted = async () => {
     const result = await getUserExistenceByUserId(inputIdRef.current?.value as string);
     return result;
   };
+  const checkUserName = () => inputFullNameRef.current?.value.length as number >= 2
+    && inputFullNameRef.current?.value.length as number <= 12;
 
-  const onClickNextButton = async () => {
+  const checkValidation = async () => {
     if (!checkPasswordValidity()) {
-      setToastList({
-        type: 'warning',
-        title: '비밀번호 에러',
-        description: '비밀번호는 6자 이상 16자 이하입니다.',
-      });
+      setToastList(toastMessage.signupInfoWarning('passLength'));
 
-      return;
+      return false;
     }
 
     if (!checkPassword()) {
-      setToastList({
-        type: 'warning',
-        title: '비밀번호 일치 에러',
-        description: '비밀번호가 일치하지 않습니다.',
-      });
+      setToastList(toastMessage.signupInfoWarning('passMatching'));
 
-      return;
+      return false;
     }
 
-    const isExistedId = await checkUserId();
+    if (!checkUserName()) {
+      setToastList({
+        type: 'warning',
+        title: '이름 길이 제한',
+        description: '이름은 2자 이상 12자 이하입니다.',
+      });
+
+      return false;
+    }
+
+    if (!checkUserIdLength()) {
+      setToastList({
+        type: 'warning',
+        title: '아이디 길이 제한',
+        description: '아이디는 2자 이상 12자 이하입니다.',
+      });
+
+      return false;
+    }
+
+    const isExistedId = await checkUserIdIsExisted();
 
     if (isExistedId) {
-      setToastList({
-        type: 'warning',
-        title: '아이디 중복 에러',
-        description: '이미 존재하는 아이디입니다.',
-      });
+      setToastList(toastMessage.signupInfoWarning('idExist'));
 
-      return;
+      return false;
     }
+
+    return true;
+  };
+
+  const onClickNextButton = async () => {
+    const isValidated = await checkValidation();
+    if (!isValidated) return;
 
     const userInfo = {
       loginType: 'normal',

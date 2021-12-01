@@ -5,6 +5,13 @@
 
 import { deepCopy, makeDateToHourMinute } from '@utils/index';
 
+interface IChatBasicInfo {
+  date: string,
+  userDocumentId: string,
+  message: string,
+  linkTo?: string,
+}
+
 export const initialState = {
   chattingLog: [],
 };
@@ -24,7 +31,7 @@ export function chatReducer(state: any, action: any): any {
     case 'UPDATE': {
       const { responseChattingLog, user, participantsInfo } = payload;
 
-      const newChattingLog = responseChattingLog.map((chat: any) => {
+      const newChattingLog = responseChattingLog.map((chat: IChatBasicInfo) => {
         if (chat.userDocumentId === user.userDocumentId) {
           return ({
             key: `${new Date(chat.date).getTime()}_${chat.userDocumentId}`,
@@ -37,7 +44,7 @@ export function chatReducer(state: any, action: any): any {
           });
         }
 
-        const userData = participantsInfo.filter((userInfo: any) => userInfo.userDocumentId === chat.userDocumentId);
+        const userData = participantsInfo.filter((userInfo: IChatBasicInfo) => userInfo.userDocumentId === chat.userDocumentId);
         return ({
           key: `${new Date(chat.date).getTime()}_${chat.userDocumentId}`,
           message: chat.message,
