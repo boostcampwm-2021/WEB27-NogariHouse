@@ -2,7 +2,6 @@ import React, { useEffect, useState, RefObject } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
 import { FiPlus, FiMic, FiMicOff } from 'react-icons/fi';
 
-import toastListSelector from '@selectors/toast-list';
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
 import isOpenRoomState from '@atoms/is-open-room';
@@ -28,7 +27,6 @@ function InRoomModal() {
   const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
   const setIsOpenModal = useSetRecoilState(isOpenRoomModalState);
-  const setToastList = useSetRecoilState(toastListSelector);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [isMic, setMic] = useState(false);
   const [
@@ -39,14 +37,7 @@ function InRoomModal() {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
         if (!res) setRoomView('notFoundRoomView');
-        else if (res.participants.length > 5) {
-          setRoomView('createRoomView');
-          setToastList({
-            type: 'danger',
-            title: '방 접속 실패',
-            description: '입장 가능 인원수가 초과되어 입장이 불가능 합니다',
-          });
-        } else setRoomInfo(res);
+        else setRoomInfo(res);
       });
 
     return () => {
