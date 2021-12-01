@@ -52,7 +52,7 @@ function SignInView() {
       setToastList({
         type: 'warning',
         title: '로그인 에러',
-        description: '사용 가능한 게스트 계정이 없습니다',
+        description: '게스트 이용이 지연되고 있습니다. 다시 시도해주세요',
       });
     }
   };

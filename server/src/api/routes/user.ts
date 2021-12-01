@@ -128,14 +128,14 @@ export default (app: Router) => {
     }
   });
 
-  userRouter.get('/guest', async (req: Request, res: Response) => {
-    const result = await userService.getGuestInfo();
+  userRouter.get('/signin/guest', async (req: Request, res: Response) => {
+    const result = await authService.getGuestInfo();
     if (result.ok) {
-      const { email, password } = result;
+      const { email, password } = result as { email: string, password: string };
       const authResult = await authService.signIn(email, password);
       if (authResult?.ok) {
         res.status(200).json({
-          accessToken: result.accessToken,
+          accessToken: authResult.accessToken,
           ok: authResult.ok,
         });
       }

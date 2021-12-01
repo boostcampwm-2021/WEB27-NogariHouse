@@ -172,7 +172,7 @@ export const getUserDetail = async (profileId: string) => {
 
 export const getSignInGuest = async () => {
   try {
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/guest`, getOption());
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/signin/guest`, getOption());
 
     const json: {ok: boolean, accessToken?: string} = await response.json();
 
