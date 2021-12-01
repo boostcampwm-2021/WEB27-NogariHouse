@@ -69,8 +69,16 @@ function RoomModal() {
 
   const randomlyAssignedHandler = async () => {
     const roomDocumentId = await getRandomRoomDocumentId();
-    setRoomDocumentId(roomDocumentId);
-    setRoomView('selectModeView');
+    if (roomDocumentId === 'NO_ROOM') {
+      setToastList({
+        type: 'danger',
+        title: '방 매칭 실패',
+        description: '현재 접속 가능한 익명 허용 방이 없습니다',
+      });
+    } else {
+      setRoomDocumentId(roomDocumentId);
+      setRoomView('selectModeView');
+    }
   };
 
   return (
