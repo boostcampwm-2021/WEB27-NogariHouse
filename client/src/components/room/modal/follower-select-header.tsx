@@ -7,6 +7,7 @@ import userState from '@atoms/user';
 import roomViewState from '@atoms/room-view-type';
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import roomDoucumentIdState from '@atoms/room-document-id';
+import toastMessage from '@constants/toast-message';
 import chatSocketMessage from '@constants/socket-message/chat';
 import { makeDateToHourMinute } from '@utils/index';
 import useChatSocket from '@utils/chat-socket';
@@ -43,11 +44,7 @@ export default function FollowerSelectRoomHeader({ onClick, selectedUsers }: any
       key: `${nowDate.getTime()}_${user.userDocumentId}`,
     };
     chatSocket.emit(chatSocketMessage.inviteRoom, inviteInfo);
-    setToastList({
-      type: 'success',
-      title: '방 초대',
-      description: '초대 메세지를 보냈습니다!',
-    });
+    setToastList(toastMessage.roomInviteSuccess);
     setRoomView('inRoomView');
     setIsOpenRoomModal(false);
   };

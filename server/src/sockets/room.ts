@@ -1,5 +1,6 @@
 import { Namespace, Socket } from 'socket.io';
 
+import roomSocketMessage from '@constants/socket-message/room';
 import RoomService from '@services/rooms-service';
 
 interface IUsers {
@@ -22,7 +23,7 @@ export default function RoomHandler(socket : Socket, namespace : Namespace) {
     const participantsInfo = room?.participants
       .filter((participant) => participant.userDocumentId !== userDocumentId);
 
-    namespace.to(socket.id).emit('room:join', participantsInfo);
+    namespace.to(socket.id).emit(roomSocketMessage.join, participantsInfo);
   };
 
   const handleRoomLeave = async () => {
@@ -31,23 +32,23 @@ export default function RoomHandler(socket : Socket, namespace : Namespace) {
     delete users[socket.id];
 
     await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
-    socket.to(roomDocumentId).emit('room:leave', socket.id);
+    socket.to(roomDocumentId).emit(roomSocketMessage.leave, socket.id);
   };
 
   // eslint-disable-next-line no-undef
   const handleRoomOffer = (offer: RTCSessionDescriptionInit, receiveId: string) => {
     const { userDocumentId, isAnonymous } = users[socket.id];
-    socket.to(receiveId).emit('room:offer', offer, userDocumentId, socket.id, isAnonymous);
+    socket.to(receiveId).emit(roomSocketMessage.offer, offer, userDocumentId, socket.id, isAnonymous);
   };
 
   // eslint-disable-next-line no-undef
   const handleRoomAnswer = (answer: RTCSessionDescriptionInit, receiveId: string) => {
-    socket.to(receiveId).emit('room:answer', answer, socket.id);
+    socket.to(receiveId).emit(roomSocketMessage.answer, answer, socket.id);
   };
 
   // eslint-disable-next-line no-undef
   const handleRoomIce = (candidate: RTCIceCandidateInit, receiveId: string) => {
-    socket.to(receiveId).emit('room:ice', { candidate, candidateSendId: socket.id });
+    socket.to(receiveId).emit(roomSocketMessage.ice, { candidate, candidateSendId: socket.id });
   };
 
   const handleMic = async (payload: any) => {
@@ -55,13 +56,13 @@ export default function RoomHandler(socket : Socket, namespace : Namespace) {
     await RoomService.setMic(roomDocumentId, userDocumentId, isMicOn);
 
     const userData = { userDocumentId, isMicOn, socketId: socket.id };
-    socket.to(roomDocumentId).emit('room:mic', { userData });
+    socket.to(roomDocumentId).emit(roomSocketMessage.mic, { userData });
   };
 
-  socket.on('room:join', handleRoomJoin);
-  socket.on('room:offer', handleRoomOffer);
-  socket.on('room:answer', handleRoomAnswer);
-  socket.on('room:ice', handleRoomIce);
+  socket.on(roomSocketMessage.join, handleRoomJoin);
+  socket.on(roomSocketMessage.offer, handleRoomOffer);
+  socket.on(roomSocketMessage.answer, handleRoomAnswer);
+  socket.on(roomSocketMessage.ice, handleRoomIce);
   socket.on('disconnect', handleRoomLeave);
-  socket.on('room:mic', handleMic);
+  socket.on(roomSocketMessage.mic, handleMic);
 }

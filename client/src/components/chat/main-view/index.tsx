@@ -7,6 +7,7 @@ import unReadMsgCountState from '@atoms/not-read-msg';
 import ChatRoomListHeader from '@src/components/chat/main-view/header';
 import ChatUserCard from '@src/components/chat/main-view/chat-card';
 import { ChatRoomsLayout } from '@components/chat/style';
+import chatSocketMessage from '@constants/socket-message/chat';
 import LoadingSpinner from '@styles/loading-spinner';
 import { getChatRooms } from '@api/chat';
 import { makeDateToHourMinute, makeDateToMonthDate } from '@utils/index';
@@ -77,11 +78,11 @@ function ChatRoomsViews() {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on('chat:alertMsg', setNewRooms);
-    socket.on('chat:makeChat', newChatRooms);
+    socket.on(chatSocketMessage.alertMsg, setNewRooms);
+    socket.on(chatSocketMessage.makeChat, newChatRooms);
     return () => {
-      socket.off('chat:alertMsg');
-      socket.off('chat:makeChat');
+      socket.off(chatSocketMessage.alertMsg);
+      socket.off(chatSocketMessage.makeChat);
     };
   }, [socket]);
 

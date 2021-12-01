@@ -12,6 +12,7 @@ import {
   CustomInputBox, CustomInputBar, InputLayout, CustomInputBoxLayout,
 } from '@styles/custom-inputbar';
 import { postSignUpUserInfo, getUserExistenceByUserId } from '@api/user';
+import toastMessage from '@src/constants/toast-message';
 
 const CustomInfoInputBar = styled(CustomInputBar)`
   font-size: min(5vw, 30px);
@@ -47,21 +48,13 @@ function SignupInfoView() {
 
   const onClickNextButton = async () => {
     if (!checkPasswordValidity()) {
-      setToastList({
-        type: 'warning',
-        title: '비밀번호 에러',
-        description: '비밀번호는 6자 이상 16자 이하입니다.',
-      });
+      setToastList(toastMessage.signupInfoWarning('passLength'));
 
       return;
     }
 
     if (!checkPassword()) {
-      setToastList({
-        type: 'warning',
-        title: '비밀번호 일치 에러',
-        description: '비밀번호가 일치하지 않습니다.',
-      });
+      setToastList(toastMessage.signupInfoWarning('passMatching'));
 
       return;
     }
@@ -69,11 +62,7 @@ function SignupInfoView() {
     const isExistedId = await checkUserId();
 
     if (isExistedId) {
-      setToastList({
-        type: 'warning',
-        title: '아이디 중복 에러',
-        description: '이미 존재하는 아이디입니다.',
-      });
+      setToastList(toastMessage.signupInfoWarning('idExist'));
 
       return;
     }

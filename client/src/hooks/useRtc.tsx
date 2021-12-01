@@ -12,6 +12,7 @@ import anonymousState from '@atoms/anonymous';
 import roomViewState from '@atoms/room-view-type';
 import roomSocketMessage from '@constants/socket-message/room';
 import toastListSelector from '@selectors/toast-list';
+import toastMessage from '@src/constants/toast-message';
 
 export interface IRTC {
   socketId?: string,
@@ -128,18 +129,10 @@ export const useRtc = <T extends IRTC>(): [
         socket.emit(roomSocketMessage.join, {
           roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
         });
-        setToastList({
-          type: 'success',
-          title: '방 생성',
-          description: '성공적으로 방이 생성됐습니다!',
-        });
+        setToastList(toastMessage.roomCreateSuccess());
       } catch (error) {
         console.error(error);
-        setToastList({
-          type: 'danger',
-          title: '장치 허용',
-          description: '마이크를 허용하지 않을 경우 방에 참가할 수 없습니다.',
-        });
+        setToastList(toastMessage.roomAllowMicDanger());
         setRoomView('createRoomView');
       }
     };
