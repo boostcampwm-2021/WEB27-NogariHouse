@@ -40,7 +40,7 @@ export const MainSectionLayout = styled.div`
   }
 
   @media (max-width: 768px){
-    heigth: calc(100% - 100px);
+    height: calc(100%-100px);
   }
 
   @media (min-width: 1025px) {
