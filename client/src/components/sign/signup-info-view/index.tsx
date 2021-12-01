@@ -84,7 +84,7 @@ function SignupInfoView() {
       setToastList({
         type: 'warning',
         title: '아이디 길이 제한',
-        description: '아이디 2자 이상 12자 이하입니다.',
+        description: '아이디는 2자 이상 12자 이하입니다.',
       });
 
       return false;
