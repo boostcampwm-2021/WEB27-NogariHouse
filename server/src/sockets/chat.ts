@@ -43,6 +43,10 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
     });
   };
 
+  const updateCountHandler = (participants: Array<string>, chatDocumentId: string) => {
+    participants.forEach((userDocumentId: string) => socket.to(userDocumentId).emit('chat:updateCount', chatDocumentId));
+  };
+
   const inviteRoomHandler = (payload: any) => {
     const {
       // eslint-disable-next-line no-unused-vars
@@ -80,11 +84,8 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
         unCheckedMsg: 0,
       });
       await chatService.setUnCheckedMsg(chatDocumentId, userInfo.userDocumentId);
+      socket.to(participant.userDocumentId).emit('chat:updateCount', chatDocumentId);
     });
-  };
-
-  const updateCountHandler = (participants: Array<string>) => {
-    participants.forEach((userDocumentId: string) => socket.to(userDocumentId).emit('chat:updateCount'));
   };
 
   socket.on('chat:roomJoin', chatRoomJoinHandler);

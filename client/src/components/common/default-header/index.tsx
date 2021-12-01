@@ -62,8 +62,8 @@ function DefaultHeader() {
   useEffect(() => {
     getUnReadMsgCount().then((res: any) => setUnReadMsgCount(res.unReadMsgCount));
     chatSocket.emit(chatSocketMessage.viewJoin, user.userDocumentId);
-    chatSocket.on(chatSocketMessage.updateCount, () => {
-      if (!window.location.pathname.includes('/chat-rooms/')) setUnReadMsgCount((oldCount) => oldCount + 1);
+    chatSocket.on(chatSocketMessage.updateCount, (chatDocumentId) => {
+      if (!window.location.pathname.includes(`${chatDocumentId}`)) setUnReadMsgCount((oldCount) => oldCount + 1);
     });
     return () => {
       chatSocket.off(chatSocketMessage.updateCount);
