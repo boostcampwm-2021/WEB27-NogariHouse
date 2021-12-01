@@ -40,7 +40,7 @@ function SignupInfoView() {
   const checkPasswordValidity = () => inputPasswordRef.current?.value.length as number >= 6
     && inputPasswordRef.current?.value.length as number <= 16;
   const checkPassword = () => inputPasswordRef.current?.value === inputPasswordCheckRef.current?.value;
-  const checkUserId = async () => {
+  const checkUserIdIsExisted = async () => {
     const result = await getUserExistenceByUserId(inputIdRef.current?.value as string);
     return result;
   };
@@ -78,7 +78,7 @@ function SignupInfoView() {
       return;
     }
 
-    const isExistedId = await checkUserId();
+    const isExistedId = await checkUserIdIsExisted();
 
     if (isExistedId) {
       setToastList({
