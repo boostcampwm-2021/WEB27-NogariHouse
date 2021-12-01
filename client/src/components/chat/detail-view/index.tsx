@@ -52,7 +52,7 @@ function ChatRoomDetailView() {
 
   const addChattingLog = (chatLog: IChattingLog) => {
     dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog } });
-    chattingLogDiv.current!.scrollTop = chattingLogDiv.current!.scrollHeight - chattingLogDiv.current!.clientHeight;
+    chattingLogDiv.current!.scrollTop = 0;
   };
 
   const onIntersect = async (entries: IntersectionObserverEntry[]) => {
