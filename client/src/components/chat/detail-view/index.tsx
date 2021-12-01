@@ -15,6 +15,7 @@ import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
 import useChatSocket from '@src/utils/chat-socket';
 import isOpenRoomState from '@atoms/is-open-room';
+import chatSocketMessage from '@constants/socket-message/chat';
 import NotFoundChatView from '@src/components/chat/not-found-view';
 import LoadingSpinner from '@styles/loading-spinner';
 import { chatReducer, initialState } from './reducer';
@@ -99,13 +100,13 @@ function ChatRoomDetailView() {
 
   useEffect(() => {
     if (!chatSocket) return;
-    chatSocket.emit('chat:roomJoin', chatDocumentId);
-    chatSocket.on('chat:sendMsg', (payload: any) => {
+    chatSocket.emit(chatSocketMessage.roomJoin, chatDocumentId);
+    chatSocket.on(chatSocketMessage.sendMsg, (payload: any) => {
       dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog: payload } });
     });
     return () => {
-      chatSocket.off('chat:sendMsg');
-      chatSocket.emit('chat:leave', chatDocumentId);
+      chatSocket.off(chatSocketMessage.sendMsg);
+      chatSocket.emit(chatSocketMessage.leave, chatDocumentId);
     };
   }, [chatSocket]);
 

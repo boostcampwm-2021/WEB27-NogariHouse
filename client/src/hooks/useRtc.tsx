@@ -10,6 +10,7 @@ import roomDocumentIdState from '@atoms/room-document-id';
 import userTypeState, { IUser } from '@atoms/user';
 import anonymousState from '@atoms/anonymous';
 import roomViewState from '@atoms/room-view-type';
+import roomSocketMessage from '@constants/socket-message/room';
 import toastListSelector from '@selectors/toast-list';
 
 export interface IRTC {
@@ -51,7 +52,7 @@ export const useSetPeerConnection = <T extends IRTC>(
 
   const handleIceEvent = ({ candidate }: RTCPeerConnectionIceEvent, payload: { socketId: string, socket: Socket }) => {
     if (!(payload.socket && candidate)) return;
-    payload.socket.emit('room:ice', candidate, payload.socketId);
+    payload.socket.emit(roomSocketMessage.ice, candidate, payload.socketId);
   };
 
   const handleTrackEvent = (data:RTCTrackEvent, payload: { userDocumentId: string, mic: boolean, socketId: string, isAnonymous: boolean }) => {
@@ -124,7 +125,7 @@ export const useRtc = <T extends IRTC>(): [
       try {
         await getLocalStream();
         if (!myStreamRef.current) throw new Error('NOT_ALLOW_MIC');
-        socket.emit('room:join', {
+        socket.emit(roomSocketMessage.join, {
           roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
         });
         setToastList({
@@ -145,7 +146,7 @@ export const useRtc = <T extends IRTC>(): [
 
     init();
 
-    socket.on('room:join', async (participantsInfo: Array<T>) => {
+    socket.on(roomSocketMessage.join, async (participantsInfo: Array<T>) => {
       participantsInfo.forEach(async (participant: T) => {
         if (!myStreamRef.current) return;
         const peerConnection = setPeerConnection(participant, socket);
@@ -154,12 +155,12 @@ export const useRtc = <T extends IRTC>(): [
         const offer = await peerConnection.createOffer();
         peerConnection.setLocalDescription(offer);
 
-        socket.emit('room:offer', offer, participant.socketId);
+        socket.emit(roomSocketMessage.offer, offer, participant.socketId);
       });
     });
 
     // eslint-disable-next-line @typescript-eslint/no-shadow
-    socket.on('room:offer', async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string, isAnonymous: boolean) => {
+    socket.on(roomSocketMessage.offer, async (offer: RTCSessionDescriptionInit, userDocumentId: string, socketId: string, isAnonymous: boolean) => {
       if (!myStreamRef.current) return;
       const participant: any = {
         userDocumentId, socketId, isAnonymous, mic: false,
@@ -170,22 +171,22 @@ export const useRtc = <T extends IRTC>(): [
       await peerConnection.setRemoteDescription(offer);
       const answer = await peerConnection.createAnswer();
       await peerConnection.setLocalDescription(answer);
-      socket.emit('room:answer', answer, socketId);
+      socket.emit(roomSocketMessage.answer, answer, socketId);
     });
 
-    socket.on('room:answer', async (answer: RTCSessionDescriptionInit, socketId: string) => {
+    socket.on(roomSocketMessage.answer, async (answer: RTCSessionDescriptionInit, socketId: string) => {
       const peerConnection = peerConnectionsRef.current[socketId];
       if (!peerConnection) return;
       peerConnection.setRemoteDescription(answer);
     });
 
-    socket.on('room:ice', async (data: { candidate: RTCIceCandidateInit, candidateSendId: string }) => {
+    socket.on(roomSocketMessage.ice, async (data: { candidate: RTCIceCandidateInit, candidateSendId: string }) => {
       const peerConnection = peerConnectionsRef.current[data.candidateSendId];
       if (!peerConnection) return;
       await peerConnection.addIceCandidate(data.candidate);
     });
 
-    socket.on('room:leave', async (socketId: string) => {
+    socket.on(roomSocketMessage.leave, async (socketId: string) => {
       peerConnectionsRef.current[socketId]!.close();
       peerConnectionsRef.current[socketId] = null;
       delete peerConnectionsRef.current[socketId];
