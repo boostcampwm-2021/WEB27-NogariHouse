@@ -33,7 +33,7 @@ function SliderMenu({ isActivityChecked, unReadMsgCount }: any) {
   const makeLinkListToStyledLink = (list: ILinkList) => {
     if (list.key === 'chat-rooms') {
       return (
-        <MenuWrap to={list.link} key={list.key}>
+        <MenuWrap to={list.link} key={list.key} aria-label="chat-rooms">
           <LinkMenu>{list.text}</LinkMenu>
           {unReadMsgCount > 0 ? <MsgCount><span style={{ margin: '5px' }}>{unReadMsgCount > 99 ? '99+' : unReadMsgCount}</span></MsgCount> : ''}
         </MenuWrap>
@@ -41,14 +41,14 @@ function SliderMenu({ isActivityChecked, unReadMsgCount }: any) {
     }
     if (list.key === 'activity') {
       return (
-        <MenuWrap to={list.link} key={list.key}>
+        <MenuWrap to={list.link} key={list.key} aria-label="activity">
           <LinkMenu>{list.text}</LinkMenu>
           {isActivityChecked ? <ActiveDot /> : ''}
         </MenuWrap>
       );
     }
     return (
-      <StyledLink to={list.link} key={list.key}>
+      <StyledLink to={list.link} key={list.key} aria-label={list.key as string}>
         <LinkMenu>{list.text}</LinkMenu>
       </StyledLink>
     );
@@ -67,7 +67,7 @@ function SliderMenu({ isActivityChecked, unReadMsgCount }: any) {
       <BackgroundWrapper onClick={() => setIsOpenMenu(!isOpenMenu)} />
       <MenuModalBox state={isOpenMenu}>
         <StyledLinkListLayout onClick={clickHandler}>
-          <StyledLink to={`/profile/${user.userId}`}>
+          <StyledLink to={`/profile/${user.userId}`} aria-label="profile">
             <ProfileBox>
               <ImageLayout src={user.profileUrl} alt="사용자" />
               <ProfileInfo>
