@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
-import { postSignIn } from '@api/user';
+import { postSignIn, getSignInGuest } from '@api/user';
 import SignHeader from '@components/sign/common/sign-header';
 import SignTitle from '@components/sign/common/sign-title';
 import { SignBody } from '@components/sign/common/style';
@@ -52,6 +52,12 @@ function SignInView() {
       .catch((err) => console.error(err));
   };
 
+  const signInGuest = () => {
+    getSignInGuest()
+      .then((json) => json && checkSigninResponse(json))
+      .catch((err) => console.error(err));
+  };
+
   const keyUpEnter = (e: any) => {
     if (inputEmailRef.current?.value
       && inputPasswordRef.current?.value
@@ -78,6 +84,9 @@ function SignInView() {
         </CustomInputBox>
         <DefaultButton buttonType="secondary" size="medium" onClick={signIn} isDisabled={isDisabled}>
           NEXT
+        </DefaultButton>
+        <DefaultButton buttonType="secondary" size="medium" onClick={signInGuest} isDisabled={false}>
+          Guest MODE
         </DefaultButton>
       </SignBody>
     </>
