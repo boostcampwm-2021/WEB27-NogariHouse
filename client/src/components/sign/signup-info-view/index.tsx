@@ -44,6 +44,8 @@ function SignupInfoView() {
     const result = await getUserExistenceByUserId(inputIdRef.current?.value as string);
     return result;
   };
+  const checkUserName = () => inputFullNameRef.current?.value.length as number >= 2
+    && inputFullNameRef.current?.value.length as number <= 12;
 
   const onClickNextButton = async () => {
     if (!checkPasswordValidity()) {
@@ -61,6 +63,16 @@ function SignupInfoView() {
         type: 'warning',
         title: '비밀번호 일치 에러',
         description: '비밀번호가 일치하지 않습니다.',
+      });
+
+      return;
+    }
+
+    if (!checkUserName()) {
+      setToastList({
+        type: 'warning',
+        title: '이름 길이 제한',
+        description: '이름은 2자 이상 12자 이하입니다.',
       });
 
       return;
