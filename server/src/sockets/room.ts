@@ -7,6 +7,12 @@ interface IUsers {
   [id: string]: any,
 }
 
+interface IHandleMic {
+  roomDocumentId: string,
+  userDocumentId: string,
+  isMicOn: boolean,
+}
+
 const users: IUsers = {};
 
 export default function RoomHandler(socket : Socket, namespace : Namespace) {
@@ -51,7 +57,7 @@ export default function RoomHandler(socket : Socket, namespace : Namespace) {
     socket.to(receiveId).emit(roomSocketMessage.ice, { candidate, candidateSendId: socket.id });
   };
 
-  const handleMic = async (payload: any) => {
+  const handleMic = async (payload: IHandleMic) => {
     const { roomDocumentId, userDocumentId, isMicOn } = payload;
     await RoomService.setMic(roomDocumentId, userDocumentId, isMicOn);
 

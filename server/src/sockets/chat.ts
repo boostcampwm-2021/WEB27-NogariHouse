@@ -2,18 +2,47 @@
 /* eslint-disable prefer-destructuring */
 import { Socket, Namespace } from 'socket.io';
 
+import Chats, { IUnReadMsg } from '@models/chats';
 import chatSocketMessage from '@constants/socket-message/chat';
-import Chats from '@models/chats';
 import chatService from '@services/chat-service';
+
+interface IAlertMsgHandlerProps {
+  participants: Array<string>,
+  chatDocumentId: string,
+}
+
+interface IsendMsgHandler {
+  userDocumentId: string,
+  userName: string,
+  profileUrl: string,
+  message: string,
+  chatDocumentId: string,
+  date: string,
+  key: string,
+}
+
+interface IUserInfo {
+  userDocumentId: string,
+  userName: string,
+  profileUrl: string,
+}
+
+interface IinviteHandlerProps {
+  participants: Array<IUserInfo>,
+  message: string,
+  userInfo: IUserInfo,
+  roomDocumentId: string,
+  date: string,
+  key: string,
+}
 
 export default function chatEventHandler(socket : Socket, namespace: Namespace) {
   const chatRoomJoinHandler = (chatDocumentId: string) => socket.join(chatDocumentId);
   const chatViewJoinHandler = (userDocumentId: string) => socket.join(userDocumentId);
 
-  const sendMsgHandler = async (payload: any) => {
-    const {
-      userDocumentId, userName, profileUrl, message, chatDocumentId, date, key,
-    } = payload;
+  const sendMsgHandler = async ({
+    userDocumentId, userName, profileUrl, message, chatDocumentId, date, key,
+  }: IsendMsgHandler) => {
     const chattingLog = { date: new Date(), userDocumentId, message };
     await chatService.addChattingLog(chattingLog, chatDocumentId, userDocumentId);
 
@@ -26,20 +55,19 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
     socket.leave(chatDocumentId);
   };
 
-  const alertMsgHandler = (payload: any) => {
-    const { participants, chatDocumentId } = payload;
+  const alertMsgHandler = ({ participants, chatDocumentId }: IAlertMsgHandlerProps) => {
     participants.forEach(async (userDocumentId: string) => {
-      const chatInfo : any = await Chats.findOne({ _id: chatDocumentId }, ['lastMsg', 'unReadMsg', 'recentActive']);
-      const count = chatInfo.unReadMsg[chatInfo.unReadMsg.findIndex((user: any) => user.userDocumentId === userDocumentId)].count;
+      const chatInfo = await Chats.findOne({ _id: chatDocumentId }, ['lastMsg', 'unReadMsg', 'recentActive']);
+      const count = chatInfo!.unReadMsg[chatInfo!.unReadMsg.findIndex((user: IUnReadMsg) => user.userDocumentId === userDocumentId)].count;
       socket.to(userDocumentId).emit(chatSocketMessage.alertMsg, {
         chatDocumentId, lastMsg: chatInfo.lastMsg, recentActive: chatInfo.recentActive, unCheckedMsg: count + 1,
       });
     });
   };
 
-  const makeChatHandler = ({ participantsInfo, chatDocumentId }: any) => {
-    participantsInfo.map((user: any) => {
-      const newParticipants = participantsInfo.filter((participant: any) => participant.userDocumentId !== user.userDocumentId);
+  const makeChatHandler = ({ participantsInfo, chatDocumentId }: { participantsInfo: Array<IUserInfo>, chatDocumentId: string }) => {
+    participantsInfo.map((user: IUserInfo) => {
+      const newParticipants = participantsInfo.filter((participant: IUserInfo) => participant.userDocumentId !== user.userDocumentId);
       socket.to(user.userDocumentId).emit(chatSocketMessage.makeChat, { chatDocumentId, participantsInfo: newParticipants });
     });
   };
@@ -48,12 +76,10 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
     participants.forEach((userDocumentId: string) => socket.to(userDocumentId).emit(chatSocketMessage.updateCount, chatDocumentId));
   };
 
-  const inviteRoomHandler = (payload: any) => {
-    const {
-      // eslint-disable-next-line no-unused-vars
-      participants, message, roomDocumentId, userInfo, date, key,
-    } = payload;
-    participants.forEach(async (participant: any) => {
+  const inviteRoomHandler = ({
+    participants, message, roomDocumentId, userInfo, date, key,
+  }: IinviteHandlerProps) => {
+    participants.forEach(async (participant: IUserInfo) => {
       const { chatRoom, chatDocumentId, isNew } = await chatService.makeChatRoom([participant.userDocumentId, userInfo.userDocumentId].sort());
       await chatService.addChattingLog({
         message,
@@ -75,7 +101,7 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
         chatDocumentId,
         lastMsg: message,
         recentActive: new Date(),
-        unCheckedMsg: chatRoom!.unReadMsg[chatRoom!.unReadMsg.findIndex((user: any) => user.userDocumentId === participant.userDocumentId)].count + 1,
+        unCheckedMsg: chatRoom!.unReadMsg[chatRoom!.unReadMsg.findIndex((user: IUnReadMsg) => user.userDocumentId === participant.userDocumentId)].count + 1,
       });
 
       namespace.to(userInfo.userDocumentId).emit(chatSocketMessage.alertMsg, {

@@ -1,8 +1,23 @@
+/* eslint-disable no-throw-literal */
 /* eslint-disable prefer-destructuring */
 /* eslint-disable no-return-await */
 /* eslint-disable no-return-assign */
 import Users from '@models/users';
-import Chats, { IUnReadMsg } from '@models/chats';
+import Chats, { IUnReadMsg, IChattingLog } from '@models/chats';
+
+interface IUserInfo {
+  userDocumentId: string,
+  userName: string,
+  profileUrl: string,
+}
+
+interface IChatInfo {
+  chatDocumentId: string,
+  participants: Array<IUserInfo>,
+  lastMsg: string | undefined,
+  recentActive: Date | undefined,
+  unCheckedMsg: number,
+}
 
 let instance: any = null;
 
@@ -15,9 +30,9 @@ class ChatService {
   async getChatRooms(userDocumentId : string) {
     const chatRoomList = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
 
-    const chatRoomInfoArray = await Promise.all((chatRoomList!.chatRooms).map(async (chatDocumentId: string) => {
+    const chatRoomInfoArray : Array<IChatInfo> = await Promise.all((chatRoomList!.chatRooms).map(async (chatDocumentId: string) => {
       const chatRoomInfo = await Chats.findOne({ _id: chatDocumentId }, ['participants', 'lastMsg', 'recentActive', 'unReadMsg']);
-      const UserInfo : any = [];
+      const UserInfo : Array<IUserInfo> = [];
       await Promise.all((chatRoomInfo)!.participants.map(async (_id) => {
         if (_id === userDocumentId) return;
         const info = await Users.findOne({ _id }, ['userName', 'profileUrl']);
@@ -34,11 +49,17 @@ class ChatService {
       });
     }));
 
-    return chatRoomInfoArray.sort((a: any, b: any) => {
-      if (a.recentActive < b.recentActive) return 1;
-      if (a.recentActive > b.recentActive) return -1;
-      return 0;
-    });
+    try {
+      return chatRoomInfoArray.sort((a, b) => {
+        if (!a.recentActive || !b.recentActive) throw 'undefined exception';
+        if (a.recentActive < b.recentActive) return 1;
+        if (a.recentActive > b.recentActive) return -1;
+        return 0;
+      });
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
   }
 
   async makeChatRoom(participants: Array<string>) {
@@ -62,7 +83,7 @@ class ChatService {
     return { chattingLog: chattingLog!.chattingLog.slice(size - count - 10, size - count).reverse() };
   }
 
-  async addChattingLog(chattingLog: any, chatDocumentId: string, userDocumentId: string) {
+  async addChattingLog(chattingLog: IChattingLog, chatDocumentId: string, userDocumentId: string) {
     const chat = await Chats.findOneAndUpdate({ _id: chatDocumentId }, {
       $push: { chattingLog },
       $set: { recentActive: chattingLog.date, lastMsg: chattingLog.message },
@@ -79,7 +100,7 @@ class ChatService {
   }
 
   async getUnReadMsgCount(userDocumentId: string) {
-    const { chatRooms } :any = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
+    const { chatRooms } : any = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
     let unReadMsgCount = 0;
 
     await Promise.all(chatRooms.map(async (chatDocumentId: string) => {
