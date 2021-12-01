@@ -40,6 +40,8 @@ function SignupInfoView() {
   const checkPasswordValidity = () => inputPasswordRef.current?.value.length as number >= 6
     && inputPasswordRef.current?.value.length as number <= 16;
   const checkPassword = () => inputPasswordRef.current?.value === inputPasswordCheckRef.current?.value;
+  const checkUserIdLength = () => inputIdRef.current?.value.length as number >= 2
+    && inputIdRef.current?.value.length as number <= 12;
   const checkUserIdIsExisted = async () => {
     const result = await getUserExistenceByUserId(inputIdRef.current?.value as string);
     return result;
@@ -47,7 +49,7 @@ function SignupInfoView() {
   const checkUserName = () => inputFullNameRef.current?.value.length as number >= 2
     && inputFullNameRef.current?.value.length as number <= 12;
 
-  const onClickNextButton = async () => {
+  const checkValidation = async () => {
     if (!checkPasswordValidity()) {
       setToastList({
         type: 'warning',
@@ -55,7 +57,7 @@ function SignupInfoView() {
         description: '비밀번호는 6자 이상 16자 이하입니다.',
       });
 
-      return;
+      return false;
     }
 
     if (!checkPassword()) {
@@ -65,7 +67,7 @@ function SignupInfoView() {
         description: '비밀번호가 일치하지 않습니다.',
       });
 
-      return;
+      return false;
     }
 
     if (!checkUserName()) {
@@ -75,7 +77,17 @@ function SignupInfoView() {
         description: '이름은 2자 이상 12자 이하입니다.',
       });
 
-      return;
+      return false;
+    }
+
+    if (!checkUserIdLength()) {
+      setToastList({
+        type: 'warning',
+        title: '아이디 길이 제한',
+        description: '아이디 2자 이상 12자 이하입니다.',
+      });
+
+      return false;
     }
 
     const isExistedId = await checkUserIdIsExisted();
@@ -87,8 +99,15 @@ function SignupInfoView() {
         description: '이미 존재하는 아이디입니다.',
       });
 
-      return;
+      return false;
     }
+
+    return true;
+  };
+
+  const onClickNextButton = async () => {
+    const isValidated = await checkValidation();
+    if (!isValidated) return;
 
     const userInfo = {
       loginType: 'normal',
