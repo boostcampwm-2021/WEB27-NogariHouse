@@ -100,7 +100,6 @@ export const SelectUserComponent = styled.div`
   background-color: #F1F0E4;
   border-radius: 30px;
 
-  font-family: 'Nunito';
   color: #819C88;
 
   cursor: default;
