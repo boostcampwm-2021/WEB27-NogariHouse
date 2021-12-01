@@ -40,7 +40,6 @@ export const SelectInputBar = styled.input`
 
   border: none;
   font-size: 18px;
-  font-family: 'Nunito';
 
   &:focus {
     outline: none;

@@ -40,7 +40,6 @@ export const DescriptionLayout = styled.div`
   display: flex;
   flex-direction : column;
   justify-content: center;
-  font-family: 'Nunito';
 `;
 
 export const UserName = styled.div`
