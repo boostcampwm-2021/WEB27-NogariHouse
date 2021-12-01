@@ -6,6 +6,7 @@ import { useRecoilValue, useSetRecoilState } from 'recoil';
 import followingListState from '@atoms/following-list';
 import userState from '@atoms/user';
 import { IToast } from '@atoms/toast-list';
+import userSocketMessage from '@constants/socket-message/user';
 import toastListSelector from '@selectors/toast-list';
 import useUserSocket from '@utils/user-socket';
 import ActiveFollowingCard from './active-following-card';
@@ -44,17 +45,17 @@ function LeftSideBar() {
     if (!user.isLoggedIn) return;
     const userSocket = useUserSocket();
 
-    userSocket.on('user:firstFollowingList', (firstActiveFollowingList) => {
+    userSocket.on(userSocketMessage.firstFollowingList, (firstActiveFollowingList) => {
       setFirstFollowingList(firstActiveFollowingList);
     });
-    userSocket.on('user:newActiveUser', (newActiveUserData) => {
+    userSocket.on(userSocketMessage.newActiveUser, (newActiveUserData) => {
       const newDocumentId = newActiveUserData.userDocumentId;
       if (followingList.includes(newDocumentId)) addNewActiveFollowing(newActiveUserData);
     });
-    userSocket.on('user:newLeaveUser', (leaveUserDocumentId) => {
+    userSocket.on(userSocketMessage.newLeaveUser, (leaveUserDocumentId) => {
       deleteLeaveActiveFollowing(leaveUserDocumentId);
     });
-    userSocket.on('user:hands', (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
+    userSocket.on(userSocketMessage.hands, (handsData: { from: Partial<IActiveFollowingUser>, to: string }) => {
       if (handsData.to === user.userDocumentId) {
         const newToast: IToast = {
           type: 'info',
@@ -76,7 +77,7 @@ function LeftSideBar() {
   useEffect(() => {
     const userSocket = useUserSocket();
     if (userSocket) {
-      userSocket.emit('user:join', {
+      userSocket.emit(userSocketMessage.join, {
         ...user, followingList,
       });
     }
@@ -84,7 +85,7 @@ function LeftSideBar() {
 
   const onClickHands = (userDocumentId: string) => (e: MouseEvent) => {
     e.stopPropagation();
-    useUserSocket().emit('user:hands', userDocumentId);
+    useUserSocket().emit(userSocketMessage.hands, userDocumentId);
   };
 
   return (

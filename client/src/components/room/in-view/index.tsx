@@ -8,6 +8,7 @@ import isOpenRoomState from '@atoms/is-open-room';
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-view/in-room-user-box';
+import roomSocketMessage from '@constants/socket-message/room';
 import { getRoomInfo } from '@api/room';
 import { useRtc, IRTC } from '@hooks/useRtc';
 import {
@@ -48,7 +49,7 @@ function InRoomModal() {
   useEffect(() => {
     let isMount = true;
 
-    socket?.on('room:mic', ({ userData }: any) => {
+    socket?.on(roomSocketMessage.mic, ({ userData }: any) => {
       if (isMount) {
         const newParticipants = participants.reduce((acc: Array<IRTC>, cur: IRTC) => {
           if (userData.userDocumentId === cur.userDocumentId) {
@@ -69,12 +70,12 @@ function InRoomModal() {
 
     return () => {
       isMount = false;
-      socket?.off('room:mic');
+      socket?.off(roomSocketMessage.mic);
     };
   }, [socket, participants]);
 
   const micToggle = (isMicOn : boolean) => {
-    socket?.emit('room:mic', { roomDocumentId, userDocumentId: user.userDocumentId, isMicOn });
+    socket?.emit(roomSocketMessage.mic, { roomDocumentId, userDocumentId: user.userDocumentId, isMicOn });
     setMic(isMicOn);
     myStreamRef.current!
       .getAudioTracks()

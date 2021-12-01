@@ -5,9 +5,15 @@ type ProfileProps = { length: number };
 export const ChatUserCardLayout = styled.div`
   background-color: #fff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 30px;
+  border-radius: 0 0 30px 30px;
   margin-bottom: 10px;
-  width: 100%;
+  @media (min-width: 769px){
+    width: 100%;
+  }
+  @media (max-width: 768px){
+    width: 98%;
+  }
+  
   height: 120px;
 
   display: flex;

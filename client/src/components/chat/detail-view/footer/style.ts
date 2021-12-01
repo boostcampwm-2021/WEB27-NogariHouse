@@ -1,26 +1,25 @@
 import styled from 'styled-components';
 
 export const ChatRoomFooterStyle = styled.div`
-  position: absolute;
-  bottom: 3%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   width: 99%;
-  height: 50px;
+  height: 70px;
 `;
 
 export const MsgInput = styled.textarea`
-  position: absolute;
-  left: 8%;
+  @media (min-width :1025px){
+    width: 80%;
+  }
 
   width: 70%;
-  height: auto;
-
   border: none;
   border-radius: 10px;
   background-color: #C4C4C4;
-
-  font-family: 'Nunito';
   font-size: 20px;
+  margin-left: 5%;
 
   &:focus {
     outline: 0;
@@ -32,10 +31,7 @@ export const MsgInput = styled.textarea`
 `;
 
 export const SendBtnDiv = styled.div`
-  position: absolute;
-  right: 8%;
-
+  margin-right: 5%;
   width: 32px;
   height: 32px;
-  transform: translateY(10px);
 `;
