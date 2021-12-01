@@ -41,6 +41,22 @@ function SignInView() {
     }
   };
 
+  const checkGuestResponse = (json :
+    {ok: boolean,
+      accessToken?:string,
+    }) => {
+    if (json.ok) {
+      setAccessToken(json.accessToken as string);
+      history.go(0);
+    } else {
+      setToastList({
+        type: 'warning',
+        title: '로그인 에러',
+        description: '사용 가능한 게스트 계정이 없습니다',
+      });
+    }
+  };
+
   const signIn = () => {
     const loginInfo = {
       email: inputEmailRef.current?.value,
@@ -54,7 +70,7 @@ function SignInView() {
 
   const signInGuest = () => {
     getSignInGuest()
-      .then((json) => json && checkSigninResponse(json))
+      .then((json) => json && checkGuestResponse(json))
       .catch((err) => console.error(err));
   };
 

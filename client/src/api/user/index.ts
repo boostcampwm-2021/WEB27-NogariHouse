@@ -1,5 +1,5 @@
 import {
-  getCredentialsOption, postCredentialsOption, postOption,
+  getCredentialsOption, getOption, postCredentialsOption, postOption,
 } from '@api/util';
 import { IUserDetail } from '@src/interfaces';
 
@@ -167,5 +167,17 @@ export const getUserDetail = async (profileId: string) => {
     return json;
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const getSignInGuest = async () => {
+  try {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/user/guest`, getOption());
+
+    const json: {ok: boolean, accessToken?: string} = await response.json();
+
+    return json;
+  } catch (error) {
+    console.error(error);
   }
 };
