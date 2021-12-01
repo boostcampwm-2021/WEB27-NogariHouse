@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable array-callback-return */
 /* eslint-disable prefer-destructuring */
 import { Socket, Namespace } from 'socket.io';
@@ -60,7 +61,7 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
       const chatInfo = await Chats.findOne({ _id: chatDocumentId }, ['lastMsg', 'unReadMsg', 'recentActive']);
       const count = chatInfo!.unReadMsg[chatInfo!.unReadMsg.findIndex((user: IUnReadMsg) => user.userDocumentId === userDocumentId)].count;
       socket.to(userDocumentId).emit(chatSocketMessage.alertMsg, {
-        chatDocumentId, lastMsg: chatInfo.lastMsg, recentActive: chatInfo.recentActive, unCheckedMsg: count + 1,
+        chatDocumentId, lastMsg: chatInfo!.lastMsg, recentActive: chatInfo!.recentActive, unCheckedMsg: count + 1,
       });
     });
   };
