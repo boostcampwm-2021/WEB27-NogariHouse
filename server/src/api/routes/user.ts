@@ -12,6 +12,8 @@ import imageUpload from '@middlewares/image-upload';
 
 const userRouter = Router();
 
+let allowGuest = false;
+
 export default (app: Router) => {
   app.use('/user', userRouter);
 
@@ -203,5 +205,11 @@ export default (app: Router) => {
     } catch (e) {
       res.json({ ok: false, isUnique: false });
     }
+  });
+
+  userRouter.get('/easterEgg/guest', (req: Request, res: Response) => {
+    const { change } = req.query;
+    if (change) allowGuest = !allowGuest;
+    res.json({ allowGuest });
   });
 };

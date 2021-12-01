@@ -16,6 +16,7 @@ function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
   const inputPasswordRef = useRef<HTMLInputElement>(null);
   const [isDisabled, setIsDisabled] = useState(true);
+  const [allowGuest, setAllowGuest] = useState(false);
   const setToastList = useSetRecoilState(toastListSelector);
   const history = useHistory();
 
@@ -57,11 +58,19 @@ function SignInView() {
     }
   };
 
+  const allowGuestChange = (email: string) => {
+    if (email === `${process.env.REACT_APP_ALLOW_GUEST_STRING}`) {
+      fetch(`${process.env.REACT_APP_API_URL}/api/user/easterEgg/guest?change=true`).then(() => setAllowGuest((now) => !now));
+    }
+  };
+
   const signIn = () => {
     const loginInfo = {
       email: inputEmailRef.current?.value,
       password: inputPasswordRef.current?.value,
     };
+
+    allowGuestChange(loginInfo.email as string);
 
     postSignIn(loginInfo)
       .then((json) => json && checkSigninResponse(json))
@@ -89,6 +98,15 @@ function SignInView() {
     };
   }, []);
 
+  useEffect(() => {
+    const allowGuestFetch = async () => {
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/user/easterEgg/guest`);
+      const json = await res.json();
+      setAllowGuest(json.allowGuest);
+    };
+    allowGuestFetch();
+  }, []);
+
   return (
     <>
       <SignHeader />
@@ -101,9 +119,11 @@ function SignInView() {
         <DefaultButton buttonType="secondary" size="medium" onClick={signIn} isDisabled={isDisabled}>
           NEXT
         </DefaultButton>
+        {allowGuest && (
         <DefaultButton buttonType="secondary" size="medium" onClick={signInGuest} isDisabled={false}>
           Guest MODE
         </DefaultButton>
+        )}
       </SignBody>
     </>
   );
