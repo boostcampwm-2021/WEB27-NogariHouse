@@ -128,6 +128,22 @@ export default (app: Router) => {
     }
   });
 
+  userRouter.get('/guest', async (req: Request, res: Response) => {
+    const result = await userService.getGuestInfo();
+    if (result.ok) {
+      const { email, password } = result;
+      const authResult = await authService.signIn(email, password);
+      if (authResult?.ok) {
+        res.status(200).json({
+          accessToken: result.accessToken,
+          ok: authResult.ok,
+        });
+      }
+      return;
+    }
+    res.json({ ok: false });
+  });
+
   userRouter.post('/signup/mail', async (req: Request, res: Response) => {
     const { email } = req.body;
 
