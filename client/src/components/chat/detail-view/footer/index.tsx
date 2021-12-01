@@ -3,6 +3,7 @@ import { FiSend } from 'react-icons/fi';
 import { useRecoilValue } from 'recoil';
 
 import userType from '@atoms/user';
+import chatSocketMessage from '@constants/socket-message/chat';
 import { makeDateToHourMinute } from '@utils/index';
 import { ChatRoomFooterStyle, MsgInput, SendBtnDiv } from './style';
 
@@ -20,7 +21,7 @@ export default function ChatRoomFooter({
 
     if (message.trim() === '') return;
 
-    chatSocket?.emit('chat:sendMsg', {
+    chatSocket?.emit(chatSocketMessage.sendMsg, {
       userDocumentId: user.userDocumentId,
       userName: user.userName,
       profileUrl: user.profileUrl,
@@ -29,8 +30,8 @@ export default function ChatRoomFooter({
       chatDocumentId,
       key: `${nowDate.getTime()}_${user.userDocumentId}`,
     });
-    chatSocket?.emit('chat:alertMsg', { participants, chatDocumentId });
-    chatSocket?.emit('chat:updateCount', participants, chatDocumentId);
+    chatSocket?.emit(chatSocketMessage.alertMsg, { participants, chatDocumentId });
+    chatSocket?.emit(chatSocketMessage.updateCount, participants, chatDocumentId);
     addChattingLog({
       userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),
     });
