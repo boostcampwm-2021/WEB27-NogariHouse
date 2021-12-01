@@ -92,16 +92,16 @@ function DefaultHeader() {
         </ResponsiveMenuIconsLayout>
         <MenuIconsLayout>
           <IconContainer>
-            <Link to={`/profile/${user.userId}`}><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
+            <Link to={`/profile/${user.userId}`} aria-label="profile"><ImageLayout src={user.profileUrl} alt="사용자" /></Link>
             {leftSideIcons.map(makeIconToLink)}
-            <Link to="/chat-rooms" style={{ position: 'relative' }}>
+            <Link to="/chat-rooms" aria-label="chat-room" style={{ position: 'relative' }}>
               {unReadMsgCount > 0 ? <MsgCount><span style={{ margin: '5px' }}>{unReadMsgCount > 99 ? '99+' : unReadMsgCount}</span></MsgCount> : ''}
               <HiOutlinePaperAirplane size={48} color="black" />
             </Link>
           </IconContainer>
           <IconContainer>
             {rightSideIcons.map(makeIconToLink)}
-            <Link to="/activity" style={{ position: 'relative' }}>
+            <Link to="/activity" aria-label="activity" style={{ position: 'relative' }}>
               {isActivityChecked ? <ActiveDot /> : ''}
               <HiOutlineBell size={48} color="black" />
             </Link>
