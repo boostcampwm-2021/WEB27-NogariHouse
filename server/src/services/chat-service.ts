@@ -100,7 +100,7 @@ class ChatService {
   }
 
   async getUnReadMsgCount(userDocumentId: string) {
-    const { chatRooms } : any | null = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
+    const { chatRooms } : any = await Users.findOne({ _id: userDocumentId }, ['chatRooms']);
     let unReadMsgCount = 0;
 
     await Promise.all(chatRooms.map(async (chatDocumentId: string) => {

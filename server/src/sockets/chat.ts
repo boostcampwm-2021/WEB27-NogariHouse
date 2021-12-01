@@ -56,10 +56,10 @@ export default function chatEventHandler(socket : Socket, namespace: Namespace) 
 
   const alertMsgHandler = ({ participants, chatDocumentId }: IAlertMsgHandlerProps) => {
     participants.forEach(async (userDocumentId: string) => {
-      const chatInfo : any = await Chats.findOne({ _id: chatDocumentId }, ['lastMsg', 'unReadMsg', 'recentActive']);
-      const count = chatInfo.unReadMsg[chatInfo.unReadMsg.findIndex((user: IUnReadMsg) => user.userDocumentId === userDocumentId)].count;
+      const chatInfo = await Chats.findOne({ _id: chatDocumentId }, ['lastMsg', 'unReadMsg', 'recentActive']);
+      const count = chatInfo!.unReadMsg[chatInfo!.unReadMsg.findIndex((user: IUnReadMsg) => user.userDocumentId === userDocumentId)].count;
       socket.to(userDocumentId).emit('chat:alertMsg', {
-        chatDocumentId, lastMsg: chatInfo.lastMsg, recentActive: chatInfo.recentActive, unCheckedMsg: count + 1,
+        chatDocumentId, lastMsg: chatInfo!.lastMsg, recentActive: chatInfo!.recentActive, unCheckedMsg: count + 1,
       });
     });
   };
