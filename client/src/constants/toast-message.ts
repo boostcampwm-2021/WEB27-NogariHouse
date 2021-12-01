@@ -75,10 +75,10 @@ export default {
     title: '방 접속 실패',
     description: '입장 가능 인원수가 초과되어 입장이 불가능 합니다',
   }),
-  roomCreateSuccess: (): IToast => ({
+  roomEnterSuccess: (): IToast => ({
     type: 'success',
-    title: '방 생성',
-    description: '성공적으로 방이 생성됐습니다!',
+    title: '방 접속',
+    description: '성공적으로 방에 접속했습니다!',
   }),
   roomCreateDanger: (): IToast => ({
     type: 'danger',
