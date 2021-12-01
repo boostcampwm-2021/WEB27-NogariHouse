@@ -26,12 +26,13 @@ import {
 type urlParams = { chatDocumentId: string };
 
 interface IChattingLog {
+  key: string,
   message: string,
   profileUrl: string,
   userName: string,
   userDocumentId: string,
   date: string,
-  linkTo: string,
+  linkTo?: string,
 }
 
 function ChatRoomDetailView() {
@@ -49,7 +50,7 @@ function ChatRoomDetailView() {
   let previousY = 0;
   let previousRatio = 0;
 
-  const addChattingLog = (chatLog: any) => {
+  const addChattingLog = (chatLog: IChattingLog) => {
     dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog } });
     chattingLogDiv.current!.scrollTop = chattingLogDiv.current!.scrollHeight - chattingLogDiv.current!.clientHeight;
   };
@@ -70,7 +71,7 @@ function ChatRoomDetailView() {
     });
   };
 
-  const moveToLink = (linkTo: string) => {
+  const moveToLink = (linkTo: string | undefined) => {
     if (!linkTo) return;
     setRoomView('inRoomView');
     setRoomDocumentId(linkTo);
@@ -83,7 +84,14 @@ function ChatRoomDetailView() {
       getChattingLog(chatDocumentId, chatState.chattingLog.length)
         .then((res: any) => {
           setNowFetching(false);
-          dispatch({ type: 'UPDATE', payload: { responseChattingLog: res.chattingLog, participantsInfo: location.state.participantsInfo, user } });
+          dispatch({
+            type: 'UPDATE',
+            payload: {
+              responseChattingLog: res.chattingLog,
+              participantsInfo: location.state.participantsInfo,
+              user,
+            },
+          });
         });
     }
   }, [nowFetching]);
@@ -101,7 +109,7 @@ function ChatRoomDetailView() {
   useEffect(() => {
     if (!chatSocket) return;
     chatSocket.emit(chatSocketMessage.roomJoin, chatDocumentId);
-    chatSocket.on(chatSocketMessage.sendMsg, (payload: any) => {
+    chatSocket.on(chatSocketMessage.sendMsg, (payload: IChattingLog) => {
       dispatch({ type: 'ADD_CHATTING_LOG', payload: { chatLog: payload } });
     });
     return () => {
@@ -130,9 +138,9 @@ function ChatRoomDetailView() {
       <ChatRoomHeader participantsInfo={location.state.participantsInfo} />
       <ChattingLog ref={chattingLogDiv}>
         {chatState.chattingLog.map(({
-          message, profileUrl, userName, userDocumentId, date, linkTo,
-        } : IChattingLog, index: number) => (
-          <Chat key={index} isMyMsg={userDocumentId === user.userDocumentId}>
+          message, profileUrl, userName, userDocumentId, date, linkTo, key,
+        } : IChattingLog) => (
+          <Chat key={key} isMyMsg={userDocumentId === user.userDocumentId}>
             <UserProfile src={profileUrl} />
             <Message isMyMsg={userDocumentId === user.userDocumentId} onClick={() => moveToLink(linkTo)}>
               {userDocumentId === user.userDocumentId
@@ -151,7 +159,7 @@ function ChatRoomDetailView() {
         addChattingLog={addChattingLog}
         chatDocumentId={chatDocumentId}
         chatSocket={chatSocket}
-        participants={location.state.participantsInfo.map((participant: any) => participant.userDocumentId)}
+        participants={location.state.participantsInfo.map((participant: IChattingLog) => participant.userDocumentId)}
       />
     </ChatRoomsLayout>
   );

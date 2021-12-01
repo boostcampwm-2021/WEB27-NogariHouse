@@ -1,14 +1,31 @@
 import { useRef } from 'react';
 import { FiSend } from 'react-icons/fi';
 import { useRecoilValue } from 'recoil';
+import { Socket } from 'socket.io-client';
 
 import userType from '@atoms/user';
 import { makeDateToHourMinute } from '@utils/index';
 import { ChatRoomFooterStyle, MsgInput, SendBtnDiv } from './style';
 
+interface IChattingLog {
+  key: string,
+  message: string,
+  profileUrl: string,
+  userName: string,
+  userDocumentId: string,
+  date: string,
+}
+
+interface IChatFooterProps {
+  addChattingLog: (arg: IChattingLog) => void,
+  chatDocumentId: string,
+  chatSocket: Socket,
+  participants: Array<string>,
+}
+
 export default function ChatRoomFooter({
   addChattingLog, chatDocumentId, chatSocket, participants,
-}: any) {
+}: IChatFooterProps) {
   const messageInputRef = useRef<HTMLTextAreaElement>(null);
   const user = useRecoilValue(userType);
 
@@ -32,7 +49,12 @@ export default function ChatRoomFooter({
     chatSocket?.emit('chat:alertMsg', { participants, chatDocumentId });
     chatSocket?.emit('chat:updateCount', participants, chatDocumentId);
     addChattingLog({
-      userDocumentId: user.userDocumentId, userName: user.userName, profileUrl: user.profileUrl, message, date: makeDateToHourMinute(new Date()),
+      key: `${nowDate.getTime()}_${user.userDocumentId}`,
+      userDocumentId: user.userDocumentId,
+      userName: user.userName,
+      profileUrl: user.profileUrl,
+      message,
+      date: makeDateToHourMinute(nowDate),
     });
   };
 
