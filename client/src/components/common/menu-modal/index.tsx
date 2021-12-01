@@ -30,26 +30,26 @@ function SliderMenu({ isActivityChecked, unReadMsgCount }: any) {
     setIsOpenRoom(false);
   };
 
-  const makeLinkListToStyledLink = (list: ILinkList) => {
-    if (list.key === 'chat-rooms') {
+  const makeLinkListToStyledLink = (listItem: ILinkList) => {
+    if (listItem.key === 'chat-rooms') {
       return (
-        <MenuWrap to={list.link} key={list.key} aria-label="chat-rooms">
-          <LinkMenu>{list.text}</LinkMenu>
+        <MenuWrap to={listItem.link} key={listItem.key} aria-label="chat-rooms">
+          <LinkMenu>{listItem.text}</LinkMenu>
           {unReadMsgCount > 0 ? <MsgCount><span style={{ margin: '5px' }}>{unReadMsgCount > 99 ? '99+' : unReadMsgCount}</span></MsgCount> : ''}
         </MenuWrap>
       );
     }
-    if (list.key === 'activity') {
+    if (listItem.key === 'activity') {
       return (
-        <MenuWrap to={list.link} key={list.key} aria-label="activity">
-          <LinkMenu>{list.text}</LinkMenu>
+        <MenuWrap to={listItem.link} key={listItem.key} aria-label="activity">
+          <LinkMenu>{listItem.text}</LinkMenu>
           {isActivityChecked ? <ActiveDot /> : ''}
         </MenuWrap>
       );
     }
     return (
-      <StyledLink to={list.link} key={list.key} aria-label={list.key as string}>
-        <LinkMenu>{list.text}</LinkMenu>
+      <StyledLink to={listItem.link} key={listItem.key} aria-label={listItem.key as string}>
+        <LinkMenu>{listItem.text}</LinkMenu>
       </StyledLink>
     );
   };
