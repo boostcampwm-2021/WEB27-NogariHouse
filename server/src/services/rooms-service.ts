@@ -107,6 +107,9 @@ class RoomService {
   async getRandomRoomDocumentId() {
     try {
       const rooms = await Rooms.find({ type: 'public', isAnonymous: true });
+      if (rooms.length === 0) {
+        return 'NO_ROOM';
+      }
       const index = Math.floor(Math.random() * rooms.length);
       return rooms[index]._id.toString();
     } catch (error) {

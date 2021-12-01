@@ -16,6 +16,8 @@ import { nowCountState, nowFetchingState, nowItemsListState } from '@atoms/main-
 import isOpenSliderMenuState from '@atoms/is-open-slider-menu';
 import isOpenRoomState from '@atoms/is-open-room';
 import SliderMenu from '@common/menu-modal';
+import chatSocketMessage from '@constants/socket-message/chat';
+import userSocketMessage from '@constants/socket-message/user';
 import { IconAndLink } from '@interfaces/index';
 import { getUnReadMsgCount } from '@api/chat';
 import getIsActivityChecked from '@api/activity';
@@ -59,20 +61,20 @@ function DefaultHeader() {
 
   useEffect(() => {
     getUnReadMsgCount().then((res: any) => setUnReadMsgCount(res.unReadMsgCount));
-    chatSocket.emit('chat:viewJoin', user.userDocumentId);
-    chatSocket.on('chat:updateCount', () => {
-      if (!window.location.pathname.includes('/chat-rooms/')) setUnReadMsgCount((oldCount) => oldCount + 1);
+    chatSocket.emit(chatSocketMessage.viewJoin, user.userDocumentId);
+    chatSocket.on(chatSocketMessage.updateCount, (chatDocumentId) => {
+      if (!window.location.pathname.includes(`${chatDocumentId}`)) setUnReadMsgCount((oldCount) => oldCount + 1);
     });
     return () => {
-      chatSocket.off('chat:updateCount');
+      chatSocket.off(chatSocketMessage.updateCount);
     };
   }, [chatSocket]);
 
   useEffect(() => {
     if (!userSocket) return;
-    userSocket.on('user:getActivity', () => setActivityChecked(true));
+    userSocket.on(userSocketMessage.getActivity, () => setActivityChecked(true));
     return () => {
-      userSocket.off('user:getActivity');
+      userSocket.off(userSocketMessage.getActivity);
     };
   }, [userSocket]);
 

@@ -2,12 +2,14 @@ import React, { useEffect, useState, RefObject } from 'react';
 import { useSetRecoilState, useResetRecoilState } from 'recoil';
 import { FiPlus, FiMic, FiMicOff } from 'react-icons/fi';
 
+import toastListSelector from '@selectors/toast-list';
 import roomDocumentIdState from '@atoms/room-document-id';
 import roomViewState from '@atoms/room-view-type';
 import isOpenRoomState from '@atoms/is-open-room';
 import { isOpenRoomModalState } from '@atoms/is-open-modal';
 import DefaultButton from '@common/default-button';
 import { IParticipant, InRoomUserBox, InRoomOtherUserBox } from '@components/room/in-view/in-room-user-box';
+import roomSocketMessage from '@constants/socket-message/room';
 import { getRoomInfo } from '@api/room';
 import { useRtc, IRTC } from '@hooks/useRtc';
 import {
@@ -27,6 +29,7 @@ function InRoomModal() {
   const resetRoomDocumentId = useResetRecoilState(roomDocumentIdState);
   const setIsOpenRoom = useSetRecoilState(isOpenRoomState);
   const setIsOpenModal = useSetRecoilState(isOpenRoomModalState);
+  const setToastList = useSetRecoilState(toastListSelector);
   const [roomInfo, setRoomInfo] = useState<IRooms>();
   const [isMic, setMic] = useState(false);
   const [
@@ -37,7 +40,14 @@ function InRoomModal() {
     getRoomInfo(roomDocumentId)
       .then((res: any) => {
         if (!res) setRoomView('notFoundRoomView');
-        else setRoomInfo(res);
+        else if (res.participants.length > 5) {
+          setRoomView('createRoomView');
+          setToastList({
+            type: 'danger',
+            title: '방 접속 실패',
+            description: '입장 가능 인원수가 초과되어 입장이 불가능 합니다',
+          });
+        } else setRoomInfo(res);
       });
 
     return () => {
@@ -48,7 +58,7 @@ function InRoomModal() {
   useEffect(() => {
     let isMount = true;
 
-    socket?.on('room:mic', ({ userData }: any) => {
+    socket?.on(roomSocketMessage.mic, ({ userData }: any) => {
       if (isMount) {
         const newParticipants = participants.reduce((acc: Array<IRTC>, cur: IRTC) => {
           if (userData.userDocumentId === cur.userDocumentId) {
@@ -69,12 +79,12 @@ function InRoomModal() {
 
     return () => {
       isMount = false;
-      socket?.off('room:mic');
+      socket?.off(roomSocketMessage.mic);
     };
   }, [socket, participants]);
 
   const micToggle = (isMicOn : boolean) => {
-    socket?.emit('room:mic', { roomDocumentId, userDocumentId: user.userDocumentId, isMicOn });
+    socket?.emit(roomSocketMessage.mic, { roomDocumentId, userDocumentId: user.userDocumentId, isMicOn });
     setMic(isMicOn);
     myStreamRef.current!
       .getAudioTracks()
