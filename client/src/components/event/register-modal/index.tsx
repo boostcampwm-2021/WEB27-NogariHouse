@@ -6,6 +6,7 @@ import toastListSelector from '@selectors/toast-list';
 import { BackgroundWrapper } from '@styles/modal';
 import postEvent from '@api/event';
 import { nowCountState, nowFetchingState, nowItemsListState } from '@src/recoil/atoms/main-section-scroll';
+import toastMessage from '@constants/toast-message';
 import EventSelectUserDropdown from './select-uesr-dropdown';
 import {
   CustomEventRegisterModal, ModalHeader, CustomEventForm, CustomFormBox,
@@ -51,11 +52,7 @@ function EventRegisterModal() {
       };
 
       await postEvent(eventInfo);
-      setToastList({
-        type: 'success',
-        title: '등록 성공',
-        description: `${inputTitleRef.current?.value} 이벤트가 등록되었습니다!`,
-      });
+      setToastList(toastMessage.addEventSuccess(`${inputTitleRef.current?.value} 이벤트가 등록되었습니다!`));
 
       changeModalState();
       resetNowItemsList();

@@ -7,6 +7,7 @@ import { useSetRecoilState } from 'recoil';
 import toastListSelector from '@selectors/toast-list';
 import { CustomInputBox, CustomInputBar } from '@styles/custom-inputbar';
 import DefaultButton from '@common/default-button';
+import toastMessage from '@constants/toast-message';
 import LoadingSpinner from '@styles/loading-spinner';
 import { testEmailValidation } from '@utils/index';
 import { InviteBody, InviteInputLayout, InputTitle } from './style';
@@ -36,19 +37,11 @@ function InviteView({ history }: RouteComponentProps) {
     }).then((res) => res.json()) as { isUnique: boolean };
     if (isUnique) {
       setLoading(false);
-      setToastList({
-        type: 'success',
-        title: '전송 완료',
-        description: '초대장이 발송되었습니다',
-      });
+      setToastList(toastMessage.inviteSuccess());
       history.push('/');
     } else {
       setLoading(false);
-      setToastList({
-        type: 'warning',
-        title: '초대장 에러',
-        description: '이미 존재하는 이메일입니다',
-      });
+      setToastList(toastMessage.inviteWarning('exist'));
     }
   };
 
@@ -59,11 +52,7 @@ function InviteView({ history }: RouteComponentProps) {
       setLoading(true);
       fetchPostInviteMail(inputEmailValue);
     } else {
-      setToastList({
-        type: 'warning',
-        title: '초대장 에러',
-        description: '올바른 형식의 이메일을 입력해주세요',
-      });
+      setToastList(toastMessage.inviteWarning('validation'));
     }
   };
 

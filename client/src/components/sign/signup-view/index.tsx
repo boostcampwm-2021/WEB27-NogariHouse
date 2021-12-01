@@ -11,6 +11,7 @@ import { SignBody } from '@components/sign/common/style';
 import { CustomInputBox, CustomInputBar, CustomInputBoxLayout } from '@styles/custom-inputbar';
 import { testEmailValidation } from '@utils/index';
 import { postCheckMail } from '@api/user';
+import toastMessage from '@src/constants/toast-message';
 import CustomBackgroundWrapper from './style';
 
 function SignUpView() {
@@ -47,11 +48,7 @@ function SignUpView() {
       setIsEmailInputView(false);
     } else {
       setLoading(false);
-      setToastList({
-        type: 'warning',
-        title: '로그인 에러',
-        description: '이미 존재하는 이메일입니다',
-      });
+      setToastList(toastMessage.signupWarning('emailExist'));
     }
   };
 
@@ -62,11 +59,7 @@ function SignUpView() {
       setLoading(true);
       fetchPostMail(inputEmailValue);
     } else {
-      setToastList({
-        type: 'warning',
-        title: '로그인 에러',
-        description: '올바른 이메일을 입력해주세요',
-      });
+      setToastList(toastMessage.signupWarning('emailValidation'));
     }
   };
 
@@ -76,11 +69,7 @@ function SignUpView() {
     if (inputVerificationValue === (verificationNumberRef.current?.toString())) {
       history.replace('/signup/info', { email: emailState.current });
     } else {
-      setToastList({
-        type: 'warning',
-        title: '로그인 에러',
-        description: '인증번호를 확인하세요.',
-      });
+      setToastList(toastMessage.signupWarning('verification'));
     }
   };
 

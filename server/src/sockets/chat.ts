@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 /* eslint-disable array-callback-return */
 /* eslint-disable prefer-destructuring */
 import { Socket, Namespace } from 'socket.io';

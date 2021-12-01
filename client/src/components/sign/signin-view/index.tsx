@@ -2,14 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { useHistory } from 'react-router-dom';
 
-import toastListSelector from '@selectors/toast-list';
+import { postSignIn } from '@api/user';
 import SignHeader from '@components/sign/common/sign-header';
 import SignTitle from '@components/sign/common/sign-title';
 import { SignBody } from '@components/sign/common/style';
 import DefaultButton from '@common/default-button';
+import toastMessage from '@constants/toast-message';
+import toastListSelector from '@selectors/toast-list';
 import { CustomInputBox, CustomInputBar } from '@styles/custom-inputbar';
 import { setAccessToken } from '@utils/index';
-import { postSignIn } from '@api/user';
 
 function SignInView() {
   const inputEmailRef = useRef<HTMLInputElement>(null);
@@ -36,11 +37,7 @@ function SignInView() {
       setAccessToken(json.accessToken as string);
       history.go(0);
     } else {
-      setToastList({
-        type: 'warning',
-        title: '로그인 에러',
-        description: '로그인 정보를 확인하세요',
-      });
+      setToastList(toastMessage.signInWarning());
     }
   };
 
