@@ -24,6 +24,11 @@ function ShareModal() {
   const [potentialProfileImage, setPotentialProfileImage] = useState<any>(null);
   const followingList = useRecoilValue(followingListState);
 
+  const checkFileSize = (image: File) => {
+    if (image.size > 2097152) return false;
+    return true;
+  };
+
   const inputOnChange = (e : any) => {
     if (e.target.files[0]) {
       const imageFile = e.target.files[0];
@@ -35,6 +40,15 @@ function ShareModal() {
 
   const changeImageHandler = async () => {
     if (potentialProfileImage) {
+      if (!checkFileSize(potentialProfileImage)) {
+        setToastList({
+          type: 'warning',
+          title: '프로필 사진 이미지 제한',
+          description: '프로필 사진의 크기는 2MB 이하입니다.',
+        });
+
+        return;
+      }
       const formData = new FormData();
       formData.append('profileImage', potentialProfileImage);
       formData.append('userDocumentId', user.userDocumentId);

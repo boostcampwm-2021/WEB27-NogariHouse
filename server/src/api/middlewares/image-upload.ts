@@ -18,10 +18,10 @@ const storage = multerS3({
   acl: 'public-read',
 
   key(req:Request, file, cb) {
-    const originFilename = file.originalname;
-    const extension = originFilename.substring(originFilename.lastIndexOf('.'));
+    const originFileName = file.originalname;
+    const extension = originFileName.substring(originFileName.lastIndexOf('.'));
     cb(null, `uploads/profile-images/${new Date().getTime()}-${v4()}${extension}`);
   },
 });
 
-export default multer({ storage });
+export default multer({ storage, limits: { fileSize: 2 * 1024 * 1024 } });
