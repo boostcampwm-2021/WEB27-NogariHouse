@@ -75,7 +75,7 @@ export default function RoomCard({
         </RoomCardProfileDiv>
         <RoomCardUsers>
           {userNameList(userNames)}
-          <ParticipantsNumberSpan>{`${participantsInfo.length} people`}</ParticipantsNumberSpan>
+          <ParticipantsNumberSpan>{`${participantsInfo.length} / 6 people`}</ParticipantsNumberSpan>
         </RoomCardUsers>
       </RoomCardInfo>
     </RoomCardLayout>
