@@ -29,27 +29,27 @@ function RoomModal() {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const submitButtonHandler = () => {
-    const roomInfo = {
-      type: roomType,
-      title: inputRef.current?.value as string,
-      userId: user.userId,
-      userName: user.userName,
-      isAnonymous: (roomType !== 'closed') ? isAnonymous : false,
-    };
-    postRoomInfo(roomInfo)
-      .then((roomDocumentId: any) => {
-        setRoomDocumentId(roomDocumentId);
-        if (roomType === 'closed') setIsOpenModal(true);
-        else if (isAnonymous) setRoomView('selectModeView');
-        else {
-          setRoomView('inRoomView');
-        }
-      })
-      .catch((err) => {
-        setToastList(toastMessage.roomCreateDanger());
-        console.error(err);
-      });
+  const submitButtonHandler = async () => {
+    try {
+      const roomInfo = {
+        type: roomType,
+        title: inputRef.current?.value as string,
+        userId: user.userId,
+        userName: user.userName,
+        isAnonymous: (roomType !== 'closed') ? isAnonymous : false,
+      };
+
+      await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+
+      const roomDocumentId = await postRoomInfo(roomInfo);
+      setRoomDocumentId(roomDocumentId as unknown as string);
+      if (roomType === 'closed') setIsOpenModal(true);
+      else if (isAnonymous) setRoomView('selectModeView');
+      else setRoomView('inRoomView');
+    } catch (error: any) {
+      if (error.name === 'NotAllowedError') setToastList(toastMessage.roomAllowMicDanger());
+      else setToastList(toastMessage.roomCreateDanger());
+    }
   };
 
   const inputHandler = () => {

@@ -125,14 +125,12 @@ export const useRtc = <T extends IRTC>(): [
     const init = async () => {
       try {
         await getLocalStream();
-        if (!myStreamRef.current) throw new Error('NOT_ALLOW_MIC');
         socket.emit(roomSocketMessage.join, {
           roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
         });
         setToastList(toastMessage.roomCreateSuccess());
       } catch (error) {
-        console.error(error);
-        setToastList(toastMessage.roomAllowMicDanger());
+        setToastList(toastMessage.roomCreateDanger());
         setRoomView('createRoomView');
       }
     };

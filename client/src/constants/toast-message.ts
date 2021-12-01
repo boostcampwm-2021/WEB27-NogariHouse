@@ -65,6 +65,11 @@ export default {
     title: '방 초대',
     description: '초대 메세지를 보냈습니다!',
   }),
+  roomInviteDanger: (): IToast => ({
+    type: 'danger',
+    title: '방 초대',
+    description: '초대 메세지 전송 실패했습니다!',
+  }),
   roomLimitOverDanger: (): IToast => ({
     type: 'danger',
     title: '방 접속 실패',
