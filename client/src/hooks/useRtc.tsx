@@ -125,14 +125,12 @@ export const useRtc = <T extends IRTC>(): [
     const init = async () => {
       try {
         await getLocalStream();
-        if (!myStreamRef.current) throw new Error('NOT_ALLOW_MIC');
         socket.emit(roomSocketMessage.join, {
           roomDocumentId, userDocumentId: user.userDocumentId, socketId: socket!.id, isAnonymous,
         });
-        setToastList(toastMessage.roomCreateSuccess());
+        setToastList(toastMessage.roomEnterSuccess());
       } catch (error) {
-        console.error(error);
-        setToastList(toastMessage.roomAllowMicDanger());
+        setToastList(toastMessage.roomCreateDanger());
         setRoomView('createRoomView');
       }
     };
@@ -140,16 +138,20 @@ export const useRtc = <T extends IRTC>(): [
     init();
 
     socket.on(roomSocketMessage.join, async (participantsInfo: Array<T>) => {
-      participantsInfo.forEach(async (participant: T) => {
-        if (!myStreamRef.current) return;
-        const peerConnection = setPeerConnection(participant, socket);
-        if (!(peerConnection && socket)) return;
-        peerConnectionsRef.current = { ...peerConnectionsRef.current, [participant.socketId as string]: peerConnection };
-        const offer = await peerConnection.createOffer();
-        peerConnection.setLocalDescription(offer);
+      try {
+        participantsInfo.forEach(async (participant: T) => {
+          if (!myStreamRef.current) return;
+          const peerConnection = setPeerConnection(participant, socket);
+          if (!(peerConnection && socket)) return;
+          peerConnectionsRef.current = { ...peerConnectionsRef.current, [participant.socketId as string]: peerConnection };
+          const offer = await peerConnection.createOffer();
+          peerConnection.setLocalDescription(offer);
 
-        socket.emit(roomSocketMessage.offer, offer, participant.socketId);
-      });
+          socket.emit(roomSocketMessage.offer, offer, participant.socketId);
+        });
+      } catch (error) {
+        console.error(error);
+      }
     });
 
     // eslint-disable-next-line @typescript-eslint/no-shadow

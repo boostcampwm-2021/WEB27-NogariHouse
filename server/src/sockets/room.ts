@@ -33,12 +33,17 @@ export default function RoomHandler(socket : Socket, namespace : Namespace) {
   };
 
   const handleRoomLeave = async () => {
-    if (!users[socket.id]) return;
-    const { roomDocumentId, userDocumentId } = users[socket.id];
-    delete users[socket.id];
+    try {
+      if (!users[socket.id]) return;
+      const { roomDocumentId, userDocumentId } = users[socket.id];
+      delete users[socket.id];
 
-    await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
-    socket.to(roomDocumentId).emit(roomSocketMessage.leave, socket.id);
+      await RoomService.deleteParticipant(roomDocumentId, userDocumentId);
+
+      socket.to(roomDocumentId).emit(roomSocketMessage.leave, socket.id);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   // eslint-disable-next-line no-undef
