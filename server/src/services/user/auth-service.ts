@@ -56,9 +56,27 @@ class AuthService {
 
   async signup(info: ISignupUserInfo) {
     try {
-      await Users.insertMany([info]);
+      const newUsers = await Users.insertMany([info]);
+      return newUsers[0];
     } catch (error) {
       console.error(error);
+      throw Error('signup error');
+    }
+  }
+
+  async getGuestInfo() {
+    try {
+      const guestInfo = {
+        loginType: 'normal',
+        userId: `guest${String(Math.floor(Math.random() * 9999))}`,
+        password: 'nogariguest',
+        userName: `guest${String(Math.floor(Math.random() * 9999))}`,
+        userEmail: `guest${String(Math.floor(Math.random() * 9999))}@nogari.dev`,
+      };
+      const newInfo = await this.signup(guestInfo);
+      return { ok: true, email: newInfo.userEmail, password: 'nogariguest' };
+    } catch (e) {
+      return { ok: false };
     }
   }
 
