@@ -1,6 +1,6 @@
 ## 👨🏻‍🏫 노가리 하우스 소개
 
-<img src="https://img.shields.io/badge/version-v0.4.1-red" alt="version0.4.1" />
+<img src="https://img.shields.io/badge/version-v1.0.4-red" alt="version1.0.4" />
    
    
 ### ***언제 어디서나 편하게 노가리를 깔 수 있는곳! 노가리 하우스🏖로 놀러오세요***
