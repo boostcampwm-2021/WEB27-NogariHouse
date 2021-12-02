@@ -1,5 +1,6 @@
+/* eslint-disable react/jsx-no-bind */
 /* eslint-disable object-shorthand */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 
 import roomDocumentIdState from '@atoms/room-document-id';
@@ -29,7 +30,7 @@ function RoomModal() {
   const [isAnonymous, setIsAnonymous] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const submitButtonHandler = async () => {
+  const submitButtonHandler = useCallback(async () => {
     try {
       const roomInfo = {
         type: roomType,
@@ -50,7 +51,7 @@ function RoomModal() {
       if (error.name === 'NotAllowedError') setToastList(toastMessage.roomAllowMicDanger());
       else setToastList(toastMessage.roomCreateDanger());
     }
-  };
+  }, [roomType]);
 
   const inputHandler = () => {
     setIsDisabled(!inputRef.current?.value);
@@ -64,7 +65,7 @@ function RoomModal() {
     setRoomType(checkBoxName);
   };
 
-  const randomlyAssignedHandler = async () => {
+  const randomlyAssignedHandler = useCallback(async () => {
     const roomDocumentId = await getRandomRoomDocumentId();
     if (roomDocumentId === 'NO_ROOM') {
       setToastList(toastMessage.roomMatchingDanger());
@@ -72,30 +73,36 @@ function RoomModal() {
       setRoomDocumentId(roomDocumentId);
       setRoomView('selectModeView');
     }
-  };
+  }, []);
+
+  const CheckBoxs = React.memo(() => (
+    <CheckboxLayout>
+      <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeHandler.bind(null, 'public')} roomType={roomType} />
+      <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeHandler.bind(null, 'closed')} roomType={roomType} />
+    </CheckboxLayout>
+  ));
+
+  const Buttons = React.memo(() => (
+    <ButtonLayout>
+      <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
+        Let&apos;s Go
+      </DefaultButton>
+      <DefaultButton buttonType="thirdly" size="medium" onClick={randomlyAssignedHandler}>
+        Randomly assigned
+      </DefaultButton>
+    </ButtonLayout>
+  ));
 
   return (
     <>
       <h2> Let&apos;s have fun together! </h2>
-      <CheckboxLayout>
-        {/* eslint-disable-next-line react/jsx-no-bind */}
-        <RoomTypeCheckBox checkBoxName="public" onClick={roomTypeHandler.bind(null, 'public')} roomType={roomType} />
-        {/* eslint-disable-next-line react/jsx-no-bind */}
-        <RoomTypeCheckBox checkBoxName="closed" onClick={roomTypeHandler.bind(null, 'closed')} roomType={roomType} />
-      </CheckboxLayout>
+      <CheckBoxs />
       <AnonymousCheckBox checked={isAnonymous} onChange={checkboxHandler} roomType={roomType} text="Allow anonymous ?" />
       <CustomTitleForm>
         <TitleInputbarLabel>Add a Room Title</TitleInputbarLabel>
         <TitleInputbar ref={inputRef} onChange={inputHandler} data-testid="TitleInputbar" />
       </CustomTitleForm>
-      <ButtonLayout>
-        <DefaultButton buttonType="secondary" size="medium" onClick={submitButtonHandler} isDisabled={isDisabled}>
-          Let&apos;s Go
-        </DefaultButton>
-        <DefaultButton buttonType="thirdly" size="medium" onClick={randomlyAssignedHandler}>
-          Randomly assigned
-        </DefaultButton>
-      </ButtonLayout>
+      <Buttons />
     </>
   );
 }
