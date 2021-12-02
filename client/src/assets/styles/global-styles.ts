@@ -36,6 +36,11 @@ const GlobalStyle = createGlobalStyle`
     overflow: hidden;
   }
 
+  a {
+    text-decoration: none;
+    color: black;
+  }
+
   #root {
     position: relative;
     height: 100vh;

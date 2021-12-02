@@ -1,4 +1,4 @@
-import React, { MouseEvent } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 import EventCard from '@components/event/card';
@@ -34,6 +34,6 @@ export const makeEventToCard = (event: EventCardProps) => (
   />
 );
 
-export default function EventCardList({ eventList, setEventModal }: { eventList: EventCardProps[], setEventModal: ((e: MouseEvent) => void) }) {
-  return <EventDiv onClick={setEventModal}>{eventList.map(makeEventToCard)}</EventDiv>;
+export default function EventCardList({ eventList }: { eventList: EventCardProps[] }) {
+  return <EventDiv>{eventList.map(makeEventToCard)}</EventDiv>;
 }

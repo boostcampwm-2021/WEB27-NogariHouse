@@ -4,16 +4,16 @@ import { ModalBox } from '@styles/modal';
 
 export const CustomEventRegisterModal = styled(ModalBox)`
   top: 15vh;
-  flex-grow: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 500px;
+  min-width: min(80vw,600px);
   min-height: 500px;
   padding: 0px;
   background-color:white;
   border-radius: 30px;
   background-color: #F1F0E4;
+  margin-left: calc(50% - min(40vw, 300px));
 `;
 
 export const ModalHeader = styled.div`
