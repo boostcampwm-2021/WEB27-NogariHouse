@@ -27,7 +27,7 @@ const RoomModalLayout = styled.div`
 
 `;
 
-function RightSideBar() {
+const RightSideBar = React.memo(() => {
   const roomView = useRecoilValue(roomViewType);
 
   if (roomView === 'createRoomView') {
@@ -69,6 +69,6 @@ function RightSideBar() {
   }
 
   return (<div>Error</div>);
-}
+});
 
 export default RightSideBar;

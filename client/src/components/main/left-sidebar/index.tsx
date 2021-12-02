@@ -20,7 +20,7 @@ interface IActiveFollowingUser {
   isActive: boolean,
 }
 
-function LeftSideBar() {
+const LeftSideBar = React.memo(() => {
   const user = useRecoilValue(userState);
   const followingList = useRecoilValue(followingListState);
   const setToastList = useSetRecoilState(toastListSelector);
@@ -100,6 +100,6 @@ function LeftSideBar() {
         ))}
     </ActiveFollowingListWrapper>
   );
-}
+});
 
 export default LeftSideBar;
