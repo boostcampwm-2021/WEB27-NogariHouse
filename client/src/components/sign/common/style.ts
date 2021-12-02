@@ -5,11 +5,14 @@ export const SignBody = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
   align-items: center;
   width: 100%;
   height: calc(100vh - 100px);
   ${scrollbarStyle};
+
+  button {
+    margin-top: 30px;
+  }
 `;
 
 export const TitleDiv = styled.div`

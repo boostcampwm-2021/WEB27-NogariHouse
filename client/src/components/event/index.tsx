@@ -6,7 +6,6 @@ import LoadingSpinner from '@styles/loading-spinner';
 import EventCardList from '@components/event/card-list';
 import useFetchItems from '@hooks/useFetchItems';
 import useItemFecthObserver from '@hooks/useItemFetchObserver';
-import useSetEventModal from '@hooks/useSetEventModal';
 import ObserverBlock from './style';
 
 interface EventUser {
@@ -28,7 +27,6 @@ function EventView() {
   const [loading, setLoading] = useState(true);
   const nowFetching = useRecoilValue(nowFetchingState);
   const [targetRef] = useItemFecthObserver(loading);
-  const setEventModal = useSetEventModal();
 
   useEffect(() => {
     if (nowItemList && nowItemType === 'event') {
@@ -42,7 +40,7 @@ function EventView() {
 
   return (
     <>
-      <EventCardList setEventModal={setEventModal} eventList={nowItemList} />
+      <EventCardList eventList={nowItemList} />
       <ObserverBlock ref={targetRef}>
         {nowFetching && <LoadingSpinner />}
       </ObserverBlock>
