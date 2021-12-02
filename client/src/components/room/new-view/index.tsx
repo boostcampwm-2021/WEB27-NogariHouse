@@ -51,7 +51,7 @@ function RoomModal() {
       if (error.name === 'NotAllowedError') setToastList(toastMessage.roomAllowMicDanger());
       else setToastList(toastMessage.roomCreateDanger());
     }
-  }, [roomType]);
+  }, [roomType, isAnonymous, user]);
 
   const inputHandler = () => {
     setIsDisabled(!inputRef.current?.value);
