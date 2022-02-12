@@ -17,6 +17,8 @@
 - 모바일에서는 못쓰냐구요? **반응형 UI**로 어디서든 사용하세요! 🤩
 - ⭐  ***믿음직한 개발팀*** ⭐  이 노가리 하우스를 만들었고 **항상 고민과 개선을 하고 있습니다**!
 
+### [개발과정이 궁금하다면?? Wiki 바로가기](https://github.com/boostcampwm-2021/WEB27-NogariHouse/wiki)
+
 ## 🧑🏻‍💻 팀원
 
 |                                **Mulgyeol**                                 |                                 **HanCiHu**                                 |                                 **NEM-NE**                                 |                                 **iHoHyeon**                                 |
